@@ -51,7 +51,7 @@ const Upload: FunctionComponent = () => {
 
   const upload = async (formData: FormData, progressInfo: UploadStatusI): Promise<void> => {
     const { id } = progressInfo;
-    const URL = "http://115.29.148.227:8083/rest-api/dicom/upload/";
+    const URL = "https://mi.mediclouds.cn/rest-api/dicom/upload/";
     // const URL = "http://125.29.148.227:8083/rest-api/dicom/upload/";
     try {
       await axios.post(URL, formData, {
