@@ -130,28 +130,28 @@ export declare interface ExamIndexFormI {
 
 /* ===============  根据Tower文档整理的接口相关的interface =============== */
 // 性别枚举
-export declare enum GenderE {
+export enum GenderE {
   UNKNOW = 0,
   MALE = 1,
   FEMALE = 2,
 }
 
 // 是否是mpr类型 枚举
-export declare enum MprFlagE {
+export enum MprFlagE {
   TRUE = 1,
   FALSE = 0,
 }
 
-export declare enum CollectionTypeE {
+export enum CollectionTypeE {
   MARK = "mark",
   SKETCH = "sketch",
 }
 
 // mpr顺序
-export declare type MprOrderT = 0 | 1 | 2;
+export type MprOrderT = 0 | 1 | 2;
 
 // 影像集
-export declare interface ExamIndexI {
+export interface ExamIndexI {
   id: string;
   modality: string;
   patient_name: string;
@@ -166,7 +166,7 @@ export declare interface ExamIndexI {
 }
 
 // 用户信息
-export declare interface UserI {
+export interface UserI {
   id: number;
   username: string;
   nickname: string;
@@ -183,15 +183,15 @@ export declare interface UserI {
 }
 
 // 单张图片
-export declare interface ImageI {
+export interface ImageI {
   id: string;
   mpr_order: MprOrderT;
   frame_order: number;
   url: string;
 }
 
-// 单个影像序列
-export declare interface SeriesI {
+// 影像序列基础结构 - SeriesList内使用
+export interface SeriesBasicI {
   id: string;
   series_number: number;
   mpr_flag: mprFlagE;
@@ -199,11 +199,19 @@ export declare interface SeriesI {
   window_center: number;
   thumbnail: string;
   display_frame_rate: number;
-  pictures?: ImageI[] | ImageI[][];
+}
+
+// 单个影像序列
+export interface SeriesI extends SeriesBasicI {
+  pictures: ImageI[];
+}
+
+export interface SeriesMprI extends SeriesBasicI {
+  pictures: ImageI[][];
 }
 
 // 影像序列列表
-export declare interface SeriesListI {
+export interface SeriesListI {
   patient_name: string;
   patient_id: string;
   sex: string;
@@ -215,7 +223,7 @@ export declare interface SeriesListI {
 }
 
 // 作品集
-export declare interface CollectionI {
+export interface CollectionI {
   id?: string;
   dicom_pic_id: string;
   type: CollectionTypeE;
@@ -229,7 +237,7 @@ export declare interface CollectionI {
 }
 
 // 标签
-export declare interface TagI {
+export interface TagI {
   id?: number;
   content: string;
   auth_flag: number;

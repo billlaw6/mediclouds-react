@@ -49,7 +49,13 @@ import {
 import "./Player.less";
 import { Icon, Slider, Progress } from "antd";
 import { isIE as isIEFunc } from "_helper";
-import { CustomHTMLDivElement, ImageI, SeriesListI, SeriesI } from "_constants/interface";
+import {
+  CustomHTMLDivElement,
+  ImageI,
+  SeriesListI,
+  SeriesI,
+  SeriesMprI,
+} from "_constants/interface";
 import { RouteComponentProps } from "react-router-dom";
 
 // import axios from "axios";
@@ -80,7 +86,7 @@ const getSeries = async (id: string): Promise<SeriesI> => {
 };
 
 /* 获取mpr序列 */
-const getMprSeries = async (id: string): Promise<SeriesI> => {
+const getMprSeries = async (id: string): Promise<SeriesMprI> => {
   const result = await getDicomSeriesMprDetail({ id: id });
   return result.data;
 };
@@ -341,7 +347,11 @@ const Player: FunctionComponent<RouteComponentProps> = props => {
 
   // 播放
   const play = (): void => {
-    cacheDone && setPlay(true);
+    if (cacheDone && currentSeries) {
+      const currentImgIndex = imgIndexs[seriesIndex - 1];
+      if (currentSeries.pictures.length === currentImgIndex) first();
+      setPlay(true);
+    }
   };
 
   // 暂停
@@ -495,8 +505,6 @@ const Player: FunctionComponent<RouteComponentProps> = props => {
 
       const { width, height } = currentImg;
       const drawInfo = getDrawInfo(viewportSize[0], viewportSize[1], width, height);
-      console.log("drawInfo: ", drawInfo);
-      console.log("currentImg: ", currentImg);
 
       ctx.clearRect(0, 0, viewportSize[0], viewportSize[1]);
       ctx.drawImage(
@@ -583,7 +591,7 @@ const Player: FunctionComponent<RouteComponentProps> = props => {
 
     if (isMpr) drawMpr(ctx);
     else drawNormal(ctx);
-  }, [drawMpr, drawNormal, isMpr]);
+  }, [ctx, drawMpr, drawNormal, isMpr]);
 
   // 显示Mpr
   const showMpr = (mpr: boolean): void => {
@@ -787,7 +795,8 @@ const Player: FunctionComponent<RouteComponentProps> = props => {
           !isMpr && nextSeries();
           break;
         case PLAY_PAUSE:
-          setPlay(!isPlay);
+          isPlay ? pause() : play();
+          // setPlay(!isPlay);
           break;
         default:
           return;
