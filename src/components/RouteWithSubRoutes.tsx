@@ -16,7 +16,7 @@ class RouteWithSubRoutes extends Component<RoutesI & MapStateToPropsI> {
       } else {
         // console.log(token);
         // console.log(token.length);
-        history.push({ pathname: "/login" });
+        if (process.env.NODE_ENV !== "development") history.push({ pathname: "/login" });
       }
     }
     // 使用localStorage的值会有滞后，首次登录会校验错误

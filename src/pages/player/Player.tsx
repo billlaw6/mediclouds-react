@@ -120,14 +120,15 @@ const getDrawInfo = (
 
 let playTimer: number | undefined = undefined;
 let showPanelsTimer: number | undefined = undefined;
-let ctx: CanvasRenderingContext2D | null = null;
 
 const Player: FunctionComponent<RouteComponentProps> = props => {
+  // let ctx: CanvasRenderingContext2D | null = null;
   const { state } = props.location;
   /* =============== use ref =============== */
   const $player = useRef<CustomHTMLDivElement>(null);
   const $viewport = useRef<HTMLCanvasElement>(null);
   /* =============== use state =============== */
+  const [ctx, setCtx] = useState<CanvasRenderingContext2D>();
   const [isMpr, setIsMpr] = useState(false); // 是否为mpr模式
   const [progress, setProgress] = useState(0); // 加载进度
   const [patient, setPatient] = useState<PatientI>({
@@ -494,6 +495,8 @@ const Player: FunctionComponent<RouteComponentProps> = props => {
 
       const { width, height } = currentImg;
       const drawInfo = getDrawInfo(viewportSize[0], viewportSize[1], width, height);
+      console.log("drawInfo: ", drawInfo);
+      console.log("currentImg: ", currentImg);
 
       ctx.clearRect(0, 0, viewportSize[0], viewportSize[1]);
       ctx.drawImage(
@@ -844,9 +847,10 @@ const Player: FunctionComponent<RouteComponentProps> = props => {
   }, [isFullscreen, isMpr]);
   useEffect(() => {
     if ($viewport && $viewport.current && !ctx) {
-      ctx = $viewport.current.getContext("2d");
+      const _ctx = $viewport.current.getContext("2d");
+      _ctx && setCtx(_ctx);
     }
-  }, []);
+  }, [ctx]);
   /* =============== components =============== */
   const seriesListCmp = (list?: SeriesListI): ReactNode => {
     if (!list)
