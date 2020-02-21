@@ -388,7 +388,7 @@ class Home extends Component<HomePropsI, HomeStateI> {
               <img src={emptyImg} alt="no-dicom" />
             </div>
           )}
-          <PrivacyNotice user={user} onChecked={this.onChecked}></PrivacyNotice>
+          <PrivacyNotice onChecked={this.onChecked}></PrivacyNotice>
         </section>
       );
   }

@@ -2,15 +2,15 @@
 import React, { FunctionComponent, useState, useEffect } from "react";
 import { Modal, Button, Checkbox } from "antd";
 import { getPrivacyNotice, agreePrivacyNotice } from "_services/user";
-// import { connect } from "react-redux";
-// import { StoreStateI } from "_constants/interface";
-// import { MapStateToPropsI } from "./type";
+import { connect } from "react-redux";
+import { StoreStateI } from "_constants/interface";
 
 import "./PrivacyNotice.less";
-import { PrivacyNoticePropsI } from "./type";
+import { PrivacyNoticePropsI, MapStateToPropsI, MapDispatchToPropsI } from "./type";
+import { setUserAction } from "_actions/user";
 
 const PrivacyNotice: FunctionComponent<PrivacyNoticePropsI> = props => {
-  const { user, onChecked } = props;
+  const { user, onChecked, setUserAction } = props;
   const { privacy_notice = 0 } = user;
 
   const [checkWarn, setCheckWarn] = useState(false); // 当未选中同意时，点击确定 提醒
@@ -20,8 +20,6 @@ const PrivacyNotice: FunctionComponent<PrivacyNoticePropsI> = props => {
   const [show, setShow] = useState(true); // 是否现实modal窗
 
   useEffect(() => {
-    // axios
-    //   .get("http://115.29.148.227:8083/rest-api/user/privacy-notice/")
     getPrivacyNotice()
       .then(result => {
         const { id, content } = result.data;
@@ -44,7 +42,8 @@ const PrivacyNotice: FunctionComponent<PrivacyNoticePropsI> = props => {
       console.log(privacyNotice);
       agreePrivacyNotice({ privacy_notice_id: privacyNotice }).then(
         (res: any): void => {
-          console.log(res);
+          // console.log(res);
+          setUserAction(Object.assign({}, user, { privacy_notice: privacyNotice }));
           setShow(false);
           onChecked && onChecked();
         },
@@ -90,13 +89,14 @@ const PrivacyNotice: FunctionComponent<PrivacyNoticePropsI> = props => {
   return null;
 };
 
-// export default PrivacyNotice;
-// const mapStateToProps = (state: StoreStateI): MapStateToPropsI => {
-//   // console.log(state);
-//   return {
-//     router: state.router,
-//     user: state.user,
-//   };
-// };
+const mapStateToProps = (state: StoreStateI): MapStateToPropsI => {
+  return {
+    user: state.user,
+  };
+};
 
-export default PrivacyNotice;
+const mapDispatchToProps: MapDispatchToPropsI = {
+  setUserAction: setUserAction,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(PrivacyNotice);
