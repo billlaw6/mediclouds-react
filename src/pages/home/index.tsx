@@ -25,6 +25,7 @@ import PrivacyNotice from "./components/PrivacyNotice";
 import emptyImg from "_images/empty.png";
 import "./Home.less";
 import { Redirect } from "react-router";
+import { setUserAction } from "_actions/user";
 
 const DEFAULT_PAGE_SIZE = 12;
 

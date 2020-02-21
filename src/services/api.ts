@@ -115,6 +115,8 @@ axios.interceptors.response.use(
         case 404: // 资源找不到；
           history.push("/");
           return Promise.reject(error);
+        default:
+          return Promise.reject(error);
       }
     } else {
       if (!window.navigator.onLine) {

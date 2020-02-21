@@ -41,7 +41,7 @@ const Upload: FunctionComponent = () => {
     const { id } = progressInfo;
     const URL = baseURL + "dicom/upload/";
     try {
-      await axios.post(URL, formData, {
+      const res = await axios.post(URL, formData, {
         // .post(`${axios.defaults.baseURL}dicom/upload/`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -57,6 +57,8 @@ const Upload: FunctionComponent = () => {
         },
       });
 
+      console.log("upload res: ", res);
+      // getExamIndex({});
       updateCurrentLoad(
         Object.assign({}, progressInfo, {
           progress: 100,

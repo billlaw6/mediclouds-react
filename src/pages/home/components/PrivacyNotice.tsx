@@ -55,7 +55,10 @@ const PrivacyNotice: FunctionComponent<PrivacyNoticePropsI> = props => {
     }
   }
 
-  if (!privacy_notice || privacyNotice !== privacy_notice)
+  console.log("privacy_notice", privacy_notice);
+  console.log("privacyNotice", privacyNotice);
+  console.log("privacyNoticeContent", privacyNoticeContent);
+  if (privacyNoticeContent && (!privacy_notice || privacyNotice !== privacy_notice))
     return (
       <Modal
         className="privacy-notice"
