@@ -1,7 +1,7 @@
 import React, { useState, FunctionComponent, useRef } from "react";
 import { Icon, Switch } from "antd";
 import { useDropzone } from "react-dropzone";
-import axios from "axios";
+import axios from "_services/api";
 
 import { UploadStatusI } from "./type";
 
@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import { FileProgressStatusEnum } from "_components/FileProgress/type";
 
 import "./Upload.less";
+import { getExamIndex } from "_services/dicom";
 // let headersAuthorization = "";
 // const persistRootStr = localStorage.getItem("persist:root");
 // if (!isNull(persistRootStr)) {
@@ -51,10 +52,10 @@ const Upload: FunctionComponent = () => {
 
   const upload = async (formData: FormData, progressInfo: UploadStatusI): Promise<void> => {
     const { id } = progressInfo;
-    const URL = "https://mi.mediclouds.cn/rest-api/dicom/upload/";
+    // const URL = "https://mi.mediclouds.cn/rest-api/dicom/upload/";
     // const URL = "http://125.29.148.227:8083/rest-api/dicom/upload/";
     try {
-      await axios.post(URL, formData, {
+      const res = await axios.post("/dicom/upload/", formData, {
         // .post(`${axios.defaults.baseURL}dicom/upload/`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -70,6 +71,8 @@ const Upload: FunctionComponent = () => {
         },
       });
 
+      console.log("upload res: ", res);
+      getExamIndex({});
       updateCurrentLoad(
         Object.assign({}, progressInfo, {
           progress: 100,

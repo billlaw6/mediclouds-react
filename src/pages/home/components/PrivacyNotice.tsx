@@ -8,9 +8,11 @@ import { getPrivacyNotice, agreePrivacyNotice } from "_services/user";
 
 import "./PrivacyNotice.less";
 import { PrivacyNoticePropsI } from "./type";
+import { setUserAction } from "_actions/user";
 
 const PrivacyNotice: FunctionComponent<PrivacyNoticePropsI> = props => {
   const { user, onChecked } = props;
+  console.log("User: ", user);
   const { privacy_notice = 0 } = user;
 
   const [checkWarn, setCheckWarn] = useState(false); // 当未选中同意时，点击确定 提醒
@@ -43,7 +45,9 @@ const PrivacyNotice: FunctionComponent<PrivacyNoticePropsI> = props => {
       /* =========== 这里应当返回成功以后再执行 先放到finally内 后删 ============= */
       console.log(privacyNotice);
       agreePrivacyNotice({ privacy_notice_id: privacyNotice }).then(
-        (): void => {
+        (res): void => {
+          console.log("successed", res);
+          setUserAction(Object.assign({}, user, { privacy_notice: privacyNotice }));
           setShow(false);
           onChecked && onChecked();
         },
@@ -60,7 +64,10 @@ const PrivacyNotice: FunctionComponent<PrivacyNoticePropsI> = props => {
     }
   }
 
-  if (!privacy_notice || privacyNotice !== privacy_notice)
+  console.log("privacy_notice", privacy_notice);
+  console.log("privacyNotice", privacyNotice);
+  console.log("privacyNoticeContent", privacyNoticeContent);
+  if (privacyNoticeContent && (!privacy_notice || privacyNotice !== privacy_notice))
     return (
       <Modal
         className="privacy-notice"
