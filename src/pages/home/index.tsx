@@ -339,7 +339,6 @@ class Home extends Component<HomePropsI, HomeStateI> {
   delDicom = async (): Promise<void> => {
     const { selections } = this.state;
     const { delList } = this.props;
-    console.log("del selected dicom: ", selections);
     delList(selections);
   };
   /* === APIS 与服务器交互数据的方法 END === */

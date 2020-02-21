@@ -1,14 +1,15 @@
-import React, { FunctionComponent, useState, useRef } from "react";
+import React, { FunctionComponent, useState, useRef, useEffect } from "react";
 import { Form, Input, Row, Col, Select, DatePicker } from "antd";
 import moment, { Moment } from "moment";
-import { connect, MapDispatchToProps } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 
 import { StoreStateI } from "_constants/interface";
 import { MapStateToPropsI, MapDispatchToPropsI } from "./type";
 
 import "./Profile.less";
 import DEFAULT_AVATAR from "_images/avatar.png";
-import { updateUserAction } from "_actions/user";
+import { updateUserAction, setUserAction } from "_actions/user";
+import { getUserInfo } from "_services/user";
 
 const { Item } = Form;
 const { Option } = Select;
@@ -19,6 +20,8 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = props
 
   const [userInfo, setUserInfo] = useState(user); // 网页中的用户信息 默认为服务器端用户信息
   const [isEdit, setIsEdit] = useState(false); // 是否是编辑模式
+
+  const dispatch = useDispatch();
 
   // 取消修改
   const onCancel = (): void => {
@@ -37,6 +40,10 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = props
     //   console.log(" Key: ", key, "  value: ", value);
     // });
     // console.groupEnd();
+
+    // if (!(formData.get("avatar") as File).size) {
+    //   formData.delete("avatar");
+    // }
 
     updateUserAction(formData);
     setIsEdit(false);
@@ -61,8 +68,16 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = props
     setUserInfo(Object.assign({}, userInfo, { [name]: value }));
   };
 
-  // console.log("user: ", user);
-
+  /* effect */
+  useEffect(() => {
+    // ========= 登录profile页面 获取一次userInfo ======== //
+    getUserInfo()
+      .then(res => {
+        dispatch(setUserAction(res.data));
+      })
+      .catch(err => console.error(err));
+  }, [dispatch]);
+  /* render */
   return (
     <section className="profile">
       <div className="profile-header">个人信息</div>
@@ -131,7 +146,7 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = props
                   <DatePicker
                     className="profile-form-birthday"
                     disabled={!isEdit}
-                    value={moment(userInfo.birthday)}
+                    value={userInfo.birthday ? moment(userInfo.birthday) : undefined}
                     onChange={(_date: Moment | null, dateString: string): void => {
                       setUserInfo(
                         Object.assign({}, userInfo, {

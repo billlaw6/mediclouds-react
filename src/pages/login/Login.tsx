@@ -1,9 +1,5 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { Carousel } from "antd";
-import { connect } from "react-redux";
-
-import { setUserAction } from "_actions/user";
-import { StoreStateI } from "_constants/interface";
 
 import img1 from "_images/login-spinner-1.png";
 import img2 from "_images/login-spinner-2.png";
@@ -83,15 +79,4 @@ const Login: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = props =
   );
 };
 
-const mapStateToProps = (state: StoreStateI): MapStateToPropsI => {
-  // console.log(state);
-  return {
-    user: state.user,
-  };
-};
-
-const mapDispatchToProps: MapDispatchToPropsI = {
-  setUserAction,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default Login;
