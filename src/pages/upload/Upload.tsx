@@ -1,6 +1,7 @@
 import React, { useState, FunctionComponent, useRef } from "react";
 import { Icon, Switch } from "antd";
 import { useDropzone } from "react-dropzone";
+import * as type from "_store/action-types";
 import { baseURL } from "_services/api";
 import axios from "axios";
 
@@ -12,8 +13,10 @@ import { Link } from "react-router-dom";
 import { FileProgressStatusEnum } from "_components/FileProgress/type";
 
 import "./Upload.less";
+import { useDispatch } from "react-redux";
 
 const Upload: FunctionComponent = () => {
+  const dispatch = useDispatch();
   const ref = useRef(null);
   const [currentLoad, updateCurrentLoad] = useState<UploadStatusI | undefined>(undefined);
   const [uploadList, updateLoadList] = useState<UploadStatusI[]>([]);
@@ -59,6 +62,7 @@ const Upload: FunctionComponent = () => {
 
       console.log("upload res: ", res);
       // getExamIndex({});
+      dispatch(type.GET_EXAM_INDEX_LIST);
       updateCurrentLoad(
         Object.assign({}, progressInfo, {
           progress: 100,
@@ -115,7 +119,7 @@ const Upload: FunctionComponent = () => {
     },
   });
 
-  console.log("updateLoadList", uploadList);
+  // console.log("updateLoadList", uploadList);
   if (currentLoad && currentLoad.id) {
     _updateLoadList(currentLoad);
   }

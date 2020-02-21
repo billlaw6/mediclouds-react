@@ -9,7 +9,8 @@
       "_images/*": ["assets/images/*"],
       "_actions/*": ["store/actions/*"],
       "_helper": ["helper/index.ts"],
-      "_services/*":["services/*"]
+      "_services/*":["services/*"],
+      "_store/*":["store/*"],
     }
   }
 }
