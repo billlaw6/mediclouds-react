@@ -60,9 +60,7 @@ const Upload: FunctionComponent = () => {
         },
       });
 
-      console.log("upload res: ", res);
-      // getExamIndex({});
-      dispatch(type.GET_EXAM_INDEX_LIST);
+      dispatch({ type: type.GET_EXAM_INDEX_LIST });
       updateCurrentLoad(
         Object.assign({}, progressInfo, {
           progress: 100,
