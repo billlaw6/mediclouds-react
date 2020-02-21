@@ -129,4 +129,5 @@ axios.interceptors.response.use(
   },
 );
 
+export const baseURL = axios.defaults.baseURL;
 export default axios;
