@@ -25,7 +25,6 @@ import PrivacyNotice from "./components/PrivacyNotice";
 import emptyImg from "_images/empty.png";
 import "./Home.less";
 import { Redirect } from "react-router";
-import { setUserAction } from "_actions/user";
 
 const DEFAULT_PAGE_SIZE = 12;
 
@@ -389,7 +388,7 @@ class Home extends Component<HomePropsI, HomeStateI> {
               <img src={emptyImg} alt="no-dicom" />
             </div>
           )}
-          <PrivacyNotice onChecked={this.onChecked}></PrivacyNotice>
+          <PrivacyNotice user={user} onChecked={this.onChecked}></PrivacyNotice>
         </section>
       );
   }

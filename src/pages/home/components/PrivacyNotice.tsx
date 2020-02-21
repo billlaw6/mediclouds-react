@@ -2,15 +2,15 @@
 import React, { FunctionComponent, useState, useEffect } from "react";
 import { Modal, Button, Checkbox } from "antd";
 import { getPrivacyNotice, agreePrivacyNotice } from "_services/user";
-import { connect } from "react-redux";
-import { StoreStateI } from "_constants/interface";
 
 import "./PrivacyNotice.less";
-import { PrivacyNoticePropsI, MapStateToPropsI, MapDispatchToPropsI } from "./type";
+import { PrivacyNoticePropsI } from "./type";
 import { setUserAction } from "_actions/user";
+import { useDispatch } from "react-redux";
 
 const PrivacyNotice: FunctionComponent<PrivacyNoticePropsI> = props => {
-  const { user, onChecked, setUserAction } = props;
+  const { user, onChecked } = props;
+  console.log("User: ", user);
   const { privacy_notice = 0 } = user;
 
   const [checkWarn, setCheckWarn] = useState(false); // 当未选中同意时，点击确定 提醒
@@ -18,6 +18,8 @@ const PrivacyNotice: FunctionComponent<PrivacyNoticePropsI> = props => {
   const [privacyNoticeContent, setPrivacyNoticeContent] = useState(""); // 隐私协议内容
   const [privacyNotice, setPrivacyNotice] = useState(privacy_notice); // 隐私协议版本
   const [show, setShow] = useState(true); // 是否现实modal窗
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     getPrivacyNotice()
@@ -41,9 +43,9 @@ const PrivacyNotice: FunctionComponent<PrivacyNoticePropsI> = props => {
       /* =========== 这里应当返回成功以后再执行 先放到finally内 后删 ============= */
       console.log(privacyNotice);
       agreePrivacyNotice({ privacy_notice_id: privacyNotice }).then(
-        (res: any): void => {
-          // console.log(res);
-          setUserAction(Object.assign({}, user, { privacy_notice: privacyNotice }));
+        (res): void => {
+          console.log("successed", res);
+          dispatch(setUserAction(Object.assign({}, user, { privacy_notice: privacyNotice })));
           setShow(false);
           onChecked && onChecked();
         },
@@ -52,6 +54,11 @@ const PrivacyNotice: FunctionComponent<PrivacyNoticePropsI> = props => {
           console.error(err);
         },
       );
+      //   .catch(error => console.error(error));
+      /* =========== 这里应当返回成功以后再执行 先放到finally内 后删 ============= */
+      // agreePrivacyNoticeAction({ privacy_notice_id: privacyNotice });
+      // setShow(false);
+      // onChecked && onChecked();
     }
   }
 
@@ -92,14 +99,4 @@ const PrivacyNotice: FunctionComponent<PrivacyNoticePropsI> = props => {
   return null;
 };
 
-const mapStateToProps = (state: StoreStateI): MapStateToPropsI => {
-  return {
-    user: state.user,
-  };
-};
-
-const mapDispatchToProps: MapDispatchToPropsI = {
-  setUserAction: setUserAction,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(PrivacyNotice);
+export default PrivacyNotice;
