@@ -43,7 +43,8 @@ const PrivacyNotice: FunctionComponent<PrivacyNoticePropsI> = props => {
       /* =========== 这里应当返回成功以后再执行 先放到finally内 后删 ============= */
       console.log(privacyNotice);
       agreePrivacyNotice({ privacy_notice_id: privacyNotice }).then(
-        (): void => {
+        (res: any): void => {
+          console.log(res);
           setShow(false);
           onChecked && onChecked();
         },
@@ -52,11 +53,6 @@ const PrivacyNotice: FunctionComponent<PrivacyNoticePropsI> = props => {
           console.error(err);
         },
       );
-      //   .catch(error => console.error(error));
-      /* =========== 这里应当返回成功以后再执行 先放到finally内 后删 ============= */
-      // agreePrivacyNoticeAction({ privacy_notice_id: privacyNotice });
-      // setShow(false);
-      // onChecked && onChecked();
     }
   }
 

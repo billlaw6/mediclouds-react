@@ -12,19 +12,6 @@ import { Link } from "react-router-dom";
 import { FileProgressStatusEnum } from "_components/FileProgress/type";
 
 import "./Upload.less";
-// let headersAuthorization = "";
-// const persistRootStr = localStorage.getItem("persist:root");
-// if (!isNull(persistRootStr)) {
-//   const persistRoot = JSON.parse(persistRootStr);
-//   if (
-//     persistRoot.currentUser &&
-//     JSON.parse(persistRoot.currentUser).token &&
-//     JSON.parse(persistRoot.currentUser).token.length > 2
-//   ) {
-//     console.log("valid token");
-//     headersAuthorization = "Token " + JSON.parse(persistRoot.currentUser).token;
-//   }
-// }
 
 const Upload: FunctionComponent = () => {
   const ref = useRef(null);
@@ -52,7 +39,6 @@ const Upload: FunctionComponent = () => {
 
   const upload = async (formData: FormData, progressInfo: UploadStatusI): Promise<void> => {
     const { id } = progressInfo;
-    // const URL = "https://mi.mediclouds.cn/rest-api/dicom/upload/";
     const URL = baseURL + "dicom/upload/";
     try {
       await axios.post(URL, formData, {
@@ -60,7 +46,7 @@ const Upload: FunctionComponent = () => {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-        onUploadProgress: function (progressEvent: any) {
+        onUploadProgress: function(progressEvent: any) {
           // console.log("progressEvent: ", progressEvent);
           const { loaded, total } = progressEvent;
           updateCurrentLoad(
@@ -123,42 +109,6 @@ const Upload: FunctionComponent = () => {
         });
         formData.append("privacy", delPrivacy ? "1" : "0");
         upload(formData, progressInfo);
-        // axios
-        //   .post("http://115.29.148.227:8083/rest-api/dicom/upload/", formData, {
-        //     // .post(`${axios.defaults.baseURL}dicom/upload/`, formData, {
-        //     headers: {
-        //       "Content-Type": "multipart/form-data",
-        //     },
-        //     onUploadProgress: function(progressEvent: any) {
-        //       console.log("progressEvent: ", progressEvent);
-        //       const { loaded, total } = progressEvent;
-        //       updateCurrentLoad(
-        //         Object.assign({}, progressInfo, {
-        //           progress: (loaded / total) * 100,
-        //         }),
-        //       );
-        //     },
-        //   })
-        //   .then(result => {
-        //     // console.log("result: ", uploadList);
-        //     updateCurrentLoad(
-        //       Object.assign({}, progressInfo, {
-        //         progress: 100,
-        //         status: FileProgressStatusEnum.SUCCESS,
-        //       }),
-        //     );
-        //     if (reupdateMap.get(parseInt(progressInfo.id, 10))) {
-        //       reupdateMap.delete(parseInt(progressInfo.id, 10));
-        //     }
-        //   })
-        //   .catch(err => {
-        //     updateCurrentLoad(
-        //       Object.assign({}, progressInfo, {
-        //         status: FileProgressStatusEnum.FAIL,
-        //       }),
-        //     );
-        //     setReupdateMap(reupdateMap.set(parseInt(progressInfo.id, 10), formData));
-        //   });
       }
     },
   });
