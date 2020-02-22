@@ -3,6 +3,7 @@ import { ComponentType } from "react";
 import Home from "_pages/home/index";
 import Player from "_pages/player/Player";
 import Login from "_pages/login/Login";
+import LoginForm from "_pages/login_form/Login";
 import Upload from "_pages/upload/Upload";
 import Profile from "_pages/profile/Profile";
 
@@ -28,6 +29,11 @@ const routes: RoutesI[] = [
     exact: true,
     component: Home,
     permission: ["login"],
+  },
+  {
+    name: "login_form",
+    path: "/login_form",
+    component: LoginForm,
   },
   {
     name: "login",
