@@ -75,7 +75,7 @@ const MPR_VIEWPORT_HEIGHT_DEFAULT = 420; // mpr 视图默认高
 
 /* 获取series列表 */
 const getSeriesList = async (id: string): Promise<SeriesListI> => {
-  const result = await getDicomSeries();
+  const result = await getDicomSeries({ id: id });
   return result.data;
 };
 
@@ -612,7 +612,7 @@ const Player: FunctionComponent<RouteComponentProps> = props => {
         if (
           cacheMprSeries &&
           cacheMprSeries[0].length + cacheMprSeries[1].length + cacheMprSeries[2].length ===
-            picTotalCount
+          picTotalCount
         )
           return;
 
@@ -1012,7 +1012,7 @@ const Player: FunctionComponent<RouteComponentProps> = props => {
         <i
           className={`iconfont icon-ic icon-ic_mpr player-mpr-btn ${mpr ? "" : "disabled"} ${
             isMpr ? "active" : ""
-          }`}
+            }`}
           onClick={(): void => showMpr(mpr)}
         ></i>
         <Icon
