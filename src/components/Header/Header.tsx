@@ -2,7 +2,7 @@ import React, { FunctionComponent, ReactElement } from "react";
 import { Menu, Layout, Avatar, Dropdown } from "antd";
 import { ClickParam } from "antd/lib/menu";
 
-import logo from "_images/logo_temp.png";
+import logo from "_images/logo.png";
 
 import { HeaderPropsI } from "./type";
 
