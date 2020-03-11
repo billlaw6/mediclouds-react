@@ -621,21 +621,21 @@ const Player: FunctionComponent<RouteComponentProps> = props => {
         let mprCount = 0;
         let progressCount = 0;
 
-        pictures.forEach((pics, index) => {
+        pictures.forEach(pics => {
           const currentPicsCache: HTMLImageElement[] = [];
           let imgCount = 0;
-          pics.forEach(pic => {
-            const { url, frame_order, mpr_order } = pic;
+          pics.forEach((pic, index) => {
+            const { url, mpr_order } = pic;
             const $img = new Image();
             $img.src = url;
             $img.onload = (): void => {
-              currentPicsCache[frame_order] = $img;
+              currentPicsCache[index] = $img;
               imgCount += 1;
               progressCount += 1;
               setProgress((progressCount * 100) / picTotalCount);
               if (imgCount === pics.length) {
                 // _cache[mpr_order] = currentPicsCache;
-                _cache[index] = currentPicsCache; // 这里需要用mpr_order 目前没有提供
+                _cache[mpr_order] = currentPicsCache; // 这里需要用mpr_order 目前没有提供
                 mprCount += 1;
                 if (mprCount === pictures.length) {
                   setMprCache(mprCache.set(id, _cache));
@@ -731,11 +731,11 @@ const Player: FunctionComponent<RouteComponentProps> = props => {
     const _imgs: HTMLImageElement[] = [];
     let count = 0;
 
-    pics.forEach(pic => {
+    pics.forEach((pic, index) => {
       const $img = new Image();
       $img.src = pic.url;
       $img.onload = (): void => {
-        _imgs[pic.frame_order] = $img;
+        _imgs[index] = $img;
         count += 1;
         setProgress((count / pics.length) * 100);
         if (count === pics.length) {
