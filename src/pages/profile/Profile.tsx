@@ -101,7 +101,15 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = props
               />
               <img src={userInfo.avatar || DEFAULT_AVATAR} alt="avatar" />
             </Item>
-            <span onClick={(): void => setIsEdit(true)}>编辑信息</span>
+            <Item>
+              <Input
+                className="profile-form-btn profile-form-edit"
+                type="button"
+                name="edit"
+                value="编辑信息"
+                onClick={(): void => setIsEdit(true)}
+              ></Input>
+            </Item>
             <div className="profile-form-avatar-desc">
               <span>选择新头像</span>
               <span>你可以选择PNG格式的图片作为头像</span>
@@ -204,7 +212,7 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = props
               <Col span={5}>
                 <Item>
                   <Input
-                    className="profile-form-cancel"
+                    className="profile-form-btn profile-form-cancel"
                     type="button"
                     name="cancel"
                     value="取消"
@@ -215,7 +223,7 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = props
               <Col span={5}>
                 <Item>
                   <Input
-                    className="profile-form-submit"
+                    className="profile-form-btn profile-form-submit"
                     type="button"
                     name="submit"
                     value="保存"
