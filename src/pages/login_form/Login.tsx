@@ -9,12 +9,13 @@ import {
   SetTokenActionFuncI,
   SetUserActionFuncT,
 } from "_actions/user";
-import { loginUser, getUserInfo } from "_services/user";
+import { loginUser } from "_services/user";
+import { history } from "../../store/configureStore";
 import "./Login.less";
 
 class LoginForm extends React.Component<FormComponentProps & MapDispatchToPropsI> {
   handleSubmit = (e: any): void => {
-    const { setTokenAction, setUserAction} = this.props;
+    const { setTokenAction } = this.props;
     e.preventDefault();
     this.props.form.validateFields((err: any, values: any) => {
       if (!err) {
@@ -24,6 +25,7 @@ class LoginForm extends React.Component<FormComponentProps & MapDispatchToPropsI
           .then(res => {
             console.log(res);
             setTokenAction(res.data.key);
+            history.replace("/");
           })
           .catch(err => {
             console.log(err);
