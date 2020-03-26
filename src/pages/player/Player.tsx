@@ -252,6 +252,7 @@ const Player: FunctionComponent<RouteComponentProps> = props => {
 
   // 下一张图片
   const next = useCallback((): void => {
+    console.log("next", cacheDone);
     if (!cacheDone) return;
     if (!currentSeries || !currentSeries.pictures) return;
 
@@ -360,10 +361,12 @@ const Player: FunctionComponent<RouteComponentProps> = props => {
   };
 
   // 鼠标滚轮切换图片
-  const wheelChange = (event: React.WheelEvent<HTMLCanvasElement>): void => {
+  const wheelChange = (event: WheelEvent): void => {
     const { deltaY } = event;
     if (deltaY > 0) isMpr ? nextMpr() : next();
     if (deltaY < 0) isMpr ? prevMpr() : prev();
+
+    event.preventDefault();
   };
 
   // 显示所有 动作&信息面板
@@ -674,15 +677,18 @@ const Player: FunctionComponent<RouteComponentProps> = props => {
   useEffect(() => {
     // 修改root的背景色
     const $wrapper = document.getElementById("defaultLayout");
-    if ($wrapper) {
+    console.log("$viewport.current", $viewport.current);
+    if ($wrapper && $viewport.current) {
       const classNameCache = $wrapper.className;
       $wrapper.className = `${$wrapper.className} theme-dark`;
 
+      $viewport.current.addEventListener("wheel", wheelChange, { passive: false });
       return (): void => {
         $wrapper.className = classNameCache;
+        $viewport.current && $viewport.current.removeEventListener("wheel", wheelChange);
       };
     }
-  }, []);
+  }, [wheelChange]);
   useEffect(() => {
     // 获取seriesList 执行一次
     if (state && state.id) {
@@ -801,8 +807,10 @@ const Player: FunctionComponent<RouteComponentProps> = props => {
         default:
           return;
       }
+
+      e.preventDefault();
     };
-    document.addEventListener("keydown", onKeydown);
+    document.addEventListener("keydown", onKeydown, { passive: false });
 
     return (): void => {
       document.removeEventListener("keydown", onKeydown);
@@ -1010,7 +1018,7 @@ const Player: FunctionComponent<RouteComponentProps> = props => {
           }}
         />
         <i
-          className={`iconfont icon-ic icon-ic_mpr player-mpr-btn ${mpr ? "" : "disabled"} ${
+          className={`iconfont icon-ic iconic_mpr player-mpr-btn ${mpr ? "" : "disabled"} ${
             isMpr ? "active" : ""
           }`}
           onClick={(): void => showMpr(mpr)}
@@ -1043,7 +1051,7 @@ const Player: FunctionComponent<RouteComponentProps> = props => {
             <canvas
               className="player-viewport"
               ref={$viewport}
-              onWheel={wheelChange}
+              // onWheel={wheelChange}
               onMouseOut={(): void => window.clearTimeout(showPanelsTimer)}
               onMouseOver={(): void => showPanels(isFullscreen, isShowPanels)}
               onMouseMove={(): void => showPanels(isFullscreen, isShowPanels)}

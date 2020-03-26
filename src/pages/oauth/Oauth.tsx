@@ -14,6 +14,7 @@ class Oauth extends React.Component<any, any> {
     // console.log(query);
     const obj = qs.parse(query);
     // console.log(obj);
+    if (process.env.NODE_ENV === "development") return null;
     if (obj.code) {
       // 清空旧的token，以免因旧token导致401报错
       setToken("");

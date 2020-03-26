@@ -25,6 +25,8 @@ import PrivacyNotice from "./components/PrivacyNotice";
 import emptyImg from "_images/empty.png";
 import "./Home.less";
 import { Redirect } from "react-router";
+import { checkDicomParseProgress } from "_helper";
+import Notify from "_components/Notify";
 
 const DEFAULT_PAGE_SIZE = 12;
 
@@ -39,11 +41,16 @@ class Home extends Component<HomePropsI, HomeStateI> {
       page: 1,
       selections: [],
       redirectUpload: false,
+      parsing: 0,
+      showNotify: false,
     };
   }
 
   componentDidMount(): void {
     const { getList } = this.props;
+    checkDicomParseProgress()
+      .then(res => this.setState({ parsing: res, showNotify: !!res }))
+      .catch(err => console.error(err));
     getList && getList({ dtRange: [new Date(), new Date()], keyword: "" });
   }
 
@@ -350,8 +357,9 @@ class Home extends Component<HomePropsI, HomeStateI> {
    */
   sortList = (list: ExamIndexI[]): ExamIndexI[] => {
     const { sortType } = this.state;
+    const temp = [...list];
 
-    return list.sort((a, b) => {
+    return temp.sort((a, b) => {
       if (sortType === SortTypeEnum.TIME) {
         const studyDateA = a.study_date;
         const studyDateB = b.study_date;
@@ -368,13 +376,27 @@ class Home extends Component<HomePropsI, HomeStateI> {
   };
 
   render(): ReactElement {
-    const { examIndexList, user } = this.props;
-    const { viewType, redirectUpload } = this.state;
+    const { examIndexList, user, getList } = this.props;
+    const { viewType, redirectUpload, showNotify, parsing } = this.state;
 
     if (redirectUpload) return <Redirect to="/upload" />;
     else
       return (
         <section className="home">
+          {showNotify ? (
+            <Notify
+              mode={parsing ? "parsing" : "successed"}
+              onChange={(parsing): void => {
+                getList && getList({ dtRange: [new Date(), new Date()], keyword: "" });
+                this.setState({ parsing });
+              }}
+              onClose={(): void => this.setState({ showNotify: false })}
+            >
+              {parsing
+                ? `您上传的DICOM文件仍有${parsing}个正在解析，展示的不是全部影像，请点击刷新获取最新解析结果。`
+                : "DICOM文件已经全部解析成功"}
+            </Notify>
+          ) : null}
           {this.controller()}
           {examIndexList.length ? (
             viewType === ViewTypeEnum.GRID ? (

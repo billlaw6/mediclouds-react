@@ -68,6 +68,15 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = props
     setUserInfo(Object.assign({}, userInfo, { [name]: value }));
   };
 
+  const updateInputWidthMaxTotal = (
+    total: number,
+    payload: { name: string; value: string },
+  ): void => {
+    const { name, value } = payload;
+    if (value.length > total) return;
+    setUserInfo(Object.assign({}, userInfo, { [name]: value }));
+  };
+
   /* effect */
   useEffect(() => {
     // ========= 登录profile页面 获取一次userInfo ======== //
@@ -122,7 +131,13 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = props
                 type="text"
                 name="nickname"
                 value={userInfo.nickname}
-                onInput={updateInputVal}
+                onInput={(e): void =>
+                  updateInputWidthMaxTotal(20, {
+                    name: e.currentTarget.name,
+                    value: e.currentTarget.value,
+                  })
+                }
+                suffix={<span className="text-count">{userInfo.nickname.length}/20</span>}
               />
             </Item>
             <Row className="profile-hoz" gutter={22}>
@@ -179,7 +194,12 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = props
                 type="text"
                 name="sign"
                 value={userInfo.sign}
-                onInput={updateInputVal}
+                onInput={(e): void =>
+                  updateInputWidthMaxTotal(30, {
+                    name: e.currentTarget.name,
+                    value: e.currentTarget.value,
+                  })
+                }
                 suffix={<span className="text-count">{userInfo.sign.length}/30</span>}
               />
             </Item>
@@ -189,7 +209,13 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = props
                 type="text"
                 name="address"
                 value={userInfo.address}
-                onInput={updateInputVal}
+                onInput={(e): void =>
+                  updateInputWidthMaxTotal(30, {
+                    name: e.currentTarget.name,
+                    value: e.currentTarget.value,
+                  })
+                }
+                suffix={<span className="text-count">{userInfo.address.length}/30</span>}
               />
             </Item>
             <Item label="手机" colon={false}>

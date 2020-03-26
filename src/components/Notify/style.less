@@ -1,0 +1,46 @@
+@successedBgColor: #f6ffed;
+@successedBorderColor: #b7eb8f;
+@successedFontColor: #52c41a;
+@parsingBorderColor: #91d5ff;
+@parsingBgColor: #e6f7ff;
+@parsingFontColor: #1890ff;
+
+.notify {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 56px;
+  margin-bottom: 12px;
+  box-sizing: border-box;
+  padding: 16px;
+  border-radius: 2px;
+  color: @successedFontColor;
+  border: 1px solid @successedBorderColor;
+  background-color: @successedBgColor;
+  font-size: 14px;
+
+  &-text {
+    flex-grow: 1;
+    line-height: 1.2;
+    color: rgba(0, 0, 0, 0.65);
+    margin-right: 8px;
+  }
+
+  .iconfont {
+    font-size: 20px;
+
+    &:not(:last-child) {
+      margin-right: 8px;
+    }
+    &:last-child {
+      cursor: pointer;
+    }
+  }
+
+  &-parsing {
+    color: @parsingFontColor;
+    border-color: @parsingBorderColor;
+    background-color: @parsingBgColor;
+  }
+}
