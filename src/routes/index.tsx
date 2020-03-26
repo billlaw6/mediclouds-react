@@ -7,6 +7,7 @@ import LoginForm from "_pages/login_form/Login";
 import Upload from "_pages/upload/Upload";
 import Profile from "_pages/profile/Profile";
 import UserManage from "_pages/users/UserManage";
+import Feedback from "_pages/feedback/Feedback";
 
 import DefaultLayout from "_layout/Default/Default";
 import FullscreenLayout from "_layout/FullscreenLayout/FullscreenLayout";
@@ -63,6 +64,12 @@ const routes: RoutesI[] = [
     name: "profile",
     path: "/profile",
     component: Profile,
+    permission: ["login"],
+  },
+  {
+    name: "feedback",
+    path: "/feedback",
+    component: Feedback,
     permission: ["login"],
   },
   {

@@ -17,6 +17,16 @@ export const getUserList = async () => {
   return res;
 };
 
+export const deactivateUsers = async (params: any) => {
+  const res = await axios.post(`/user/deactivate/`, { params: params });
+  return res;
+};
+
+export const activateUsers = async (params: any) => {
+  const res = await axios.post(`/user/activate/`, { params: params });
+  return res;
+};
+
 export const getUserInfo = async () => {
   const res = await axios.get(`/user/user-info/`);
   return res;
@@ -45,5 +55,20 @@ export const getPrivacyNotice = async () => {
 
 export const agreePrivacyNotice = async (params: any) => {
   const res = await axios.post(`/user/privacy-notice/agree/`, params);
+  return res;
+};
+
+export const getFeedbackType = async () => {
+  const res = await axios.get(`/user/feedback-type/`);
+  return res;
+};
+
+export const getFeedback = async (params: any) => {
+  const res = await axios.get(`/user/feedback/`, { params: params });
+  return res;
+};
+
+export const createFeedback = async (params: any) => {
+  const res = await axios.post(`/user/feedback/`, params);
   return res;
 };

@@ -8,5 +8,6 @@ export interface MapStateToPropsI {
 export type UserManagePropsI = MapStateToPropsI & RouteComponentProps;
 export interface UserManageStateI {
   userList: UserI[];
+  searchResult: UserI[];
   selectedRowKeys: string[];
 }

@@ -244,6 +244,28 @@ export interface TagI {
   auth_flag: number;
 }
 
+// 用户反馈类型
+export interface FeedbackTypeI {
+  code: string;
+  title: string;
+}
+
+// 用户反馈回复
+export interface FeedbackReplyI {
+  owner: string;
+  title: string;
+  content: string;
+  created_at: string;
+}
+
+// 用户反馈
+export interface FeedbackI {
+  owner: string;
+  title: string;
+  content: string;
+  created_at: string;
+  replies?: FeedbackReply[];
+}
 /* ===============  根据Tower文档整理的接口相关的interface END =============== */
 
 export declare interface RouteI {
