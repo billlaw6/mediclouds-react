@@ -50,7 +50,7 @@ const DicomCard: FunctionComponent<DicomCardPropsI & RouteComponentProps> = (
         className="dicom-card-content"
         onClick={(): void => onClick && onClick(id)}
         cover={
-          <>
+          <div className="dicom-card-inner">
             <Skeleton loading={loaded} active></Skeleton>
             <img
               style={{ display: loaded ? "none" : "block" }}
@@ -59,7 +59,7 @@ const DicomCard: FunctionComponent<DicomCardPropsI & RouteComponentProps> = (
                 switchLoading(false);
               }}
             ></img>
-          </>
+          </div>
         }
       >
         <div className="dicom-card-info">

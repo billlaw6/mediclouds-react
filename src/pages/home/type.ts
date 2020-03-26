@@ -20,6 +20,8 @@ export interface HomeStateI {
   page: number; // 当前在第几页 从1开始
   selections: string[]; //当前已选择的dicom id 集
   redirectUpload: boolean; // 是否重定向到upload页
+  parsing: number; // 剩余解析量
+  showNotify: boolean; // 是否显示提示
 }
 
 // 排序类型

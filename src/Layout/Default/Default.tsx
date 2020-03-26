@@ -19,11 +19,11 @@ const { Content } = Layout;
 class DefalutLayout extends Component<StoreStateI & MapDispatchToPropsI> {
   render(): ReactElement {
     const { children, user, logout } = this.props;
-    const { avatar, nickname, cell_phone: cellPhone } = user;
+    const { avatar, nickname } = user;
 
     return (
       <Layout id="defaultLayout">
-        <Header avatar={avatar} nickname={nickname} cellPhone={cellPhone} logout={logout}></Header>
+        <Header avatar={avatar} nickname={nickname} logout={logout}></Header>
         <Content id="content">{children}</Content>
         <Footer></Footer>
       </Layout>
