@@ -180,6 +180,7 @@ export interface UserI {
   unionid?: string;
   privacy_notice: number;
   birthday: string;
+  is_active?: boolean;
 }
 
 // 单张图片

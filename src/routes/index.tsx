@@ -6,6 +6,7 @@ import Login from "_pages/login/Login";
 import LoginForm from "_pages/login_form/Login";
 import Upload from "_pages/upload/Upload";
 import Profile from "_pages/profile/Profile";
+import UserManage from "_pages/users/UserManage";
 
 import DefaultLayout from "_layout/Default/Default";
 import FullscreenLayout from "_layout/FullscreenLayout/FullscreenLayout";
@@ -62,6 +63,12 @@ const routes: RoutesI[] = [
     name: "profile",
     path: "/profile",
     component: Profile,
+    permission: ["login"],
+  },
+  {
+    name: "user_manage",
+    path: "/users",
+    component: UserManage,
     permission: ["login"],
   },
 ];

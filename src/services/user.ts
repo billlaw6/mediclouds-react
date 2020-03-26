@@ -12,6 +12,11 @@ export const loginUser = async (params: any) => {
   return res;
 };
 
+export const getUserList = async () => {
+  const res = await axios.get(`/user/list/`);
+  return res;
+};
+
 export const getUserInfo = async () => {
   const res = await axios.get(`/user/user-info/`);
   return res;
