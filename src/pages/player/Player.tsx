@@ -60,6 +60,7 @@ import { RouteComponentProps } from "react-router-dom";
 
 // import axios from "axios";
 import { getDicomSeries, getDicomSeriesDetail, getDicomSeriesMprDetail } from "_services/dicom";
+import Shortcut from "./components/Shortcut";
 
 const VIEWPORT_WIDTH_DEFAULT = 890; // 视图默认宽
 const VIEWPORT_HEIGHT_DEFAULT = 508; // 视图默认高
@@ -127,7 +128,7 @@ const getDrawInfo = (
 let playTimer: number | undefined = undefined;
 let showPanelsTimer: number | undefined = undefined;
 
-const Player: FunctionComponent<RouteComponentProps> = props => {
+const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = (props) => {
   // let ctx: CanvasRenderingContext2D | null = null;
   const { state } = props.location;
   /* =============== use ref =============== */
@@ -165,6 +166,8 @@ const Player: FunctionComponent<RouteComponentProps> = props => {
   const [mprImgRange, setMprImgRange] = useState<ImgDrawInfoI[]>([]); // 保存当前mpr每个img在视图区域的范围
   const [mprImgIndexs, setMprImgIndexs] = useState<number[]>([1, 1, 1]); // mpr每个序列当前图片的索引
   const [currentSeries, setCurrentSeries] = useState<SeriesI>(); // 当前的序列
+
+  const [showShortcut, setShowShortcut] = useState(false); // 是否显示快捷键
   /* =============== methods =============== */
 
   // 获取当前series信息
@@ -306,13 +309,13 @@ const Player: FunctionComponent<RouteComponentProps> = props => {
   }, [cacheDone, mprImgIndexs, mprSeriesIndex]);
 
   // 第一张图片
-  const first = (): void => {
+  const first = useCallback((): void => {
     if (!cacheDone) return;
     const next = [...imgIndexs];
     next[seriesIndex - 1] = 1;
 
     setImgIndexs(next);
-  };
+  }, [cacheDone, imgIndexs, seriesIndex]);
 
   // 第一张MPR图片
   const firstMpr = (): void => {
@@ -347,27 +350,30 @@ const Player: FunctionComponent<RouteComponentProps> = props => {
   };
 
   // 播放
-  const play = (): void => {
+  const play = useCallback((): void => {
     if (cacheDone && currentSeries) {
       const currentImgIndex = imgIndexs[seriesIndex - 1];
       if (currentSeries.pictures.length === currentImgIndex) first();
       setPlay(true);
     }
-  };
+  }, [cacheDone, currentSeries, first, imgIndexs, seriesIndex]);
 
   // 暂停
-  const pause = (): void => {
+  const pause = useCallback((): void => {
     cacheDone && setPlay(false);
-  };
+  }, [cacheDone]);
 
   // 鼠标滚轮切换图片
-  const wheelChange = (event: WheelEvent): void => {
-    const { deltaY } = event;
-    if (deltaY > 0) isMpr ? nextMpr() : next();
-    if (deltaY < 0) isMpr ? prevMpr() : prev();
+  const wheelChange = useCallback(
+    (event: WheelEvent): void => {
+      const { deltaY } = event;
+      if (deltaY > 0) isMpr ? nextMpr() : next();
+      if (deltaY < 0) isMpr ? prevMpr() : prev();
 
-    event.preventDefault();
-  };
+      event.preventDefault();
+    },
+    [isMpr, next, nextMpr, prev, prevMpr],
+  );
 
   // 显示所有 动作&信息面板
   const showPanels = (isFullscreen: boolean, isShowPanels: boolean): void => {
@@ -442,7 +448,7 @@ const Player: FunctionComponent<RouteComponentProps> = props => {
       } else {
         const viewWidth = canvasWidth - 4 * devicePixelRatio;
         const viewHeight = canvasHeight - 2 * devicePixelRatio;
-        size.forEach(img => {
+        size.forEach((img) => {
           /* 
             // ====== 当非全屏时 ====
             并排排列，先求出3张图片宽度总和 && 最高的高度 然后计算渲染位置并输出
@@ -459,7 +465,7 @@ const Player: FunctionComponent<RouteComponentProps> = props => {
           const scaleNum = drawW / totalWidth;
           let drawX = 1 * devicePixelRatio;
 
-          return size.map(item => {
+          return size.map((item) => {
             const result = {
               x: drawX,
               y: initDrawY,
@@ -478,7 +484,7 @@ const Player: FunctionComponent<RouteComponentProps> = props => {
           const scaleNum = drawW / totalHeight;
           let drawX = initDrawX;
 
-          return size.map(item => {
+          return size.map((item) => {
             const result = {
               img: item.img,
               x: drawX,
@@ -539,7 +545,7 @@ const Player: FunctionComponent<RouteComponentProps> = props => {
       ];
 
       const drawInfo = getMprDrawInfo(
-        imgs.map(img => ({
+        imgs.map((img) => ({
           img,
           width: img.width * devicePixelRatio,
           height: img.height * devicePixelRatio,
@@ -604,7 +610,7 @@ const Player: FunctionComponent<RouteComponentProps> = props => {
     setProgress(0);
     setIsMpr(true);
     getMprSeries(currentSeries.id)
-      .then(result => {
+      .then((result) => {
         const { id } = result;
         const pictures = result.pictures as ImageI[][];
         const picTotalCount = pictures[0].length + pictures[1].length + pictures[2].length;
@@ -624,7 +630,7 @@ const Player: FunctionComponent<RouteComponentProps> = props => {
         let mprCount = 0;
         let progressCount = 0;
 
-        pictures.forEach(pics => {
+        pictures.forEach((pics) => {
           const currentPicsCache: HTMLImageElement[] = [];
           let imgCount = 0;
           pics.forEach((pic, index) => {
@@ -649,7 +655,7 @@ const Player: FunctionComponent<RouteComponentProps> = props => {
           });
         });
       })
-      .catch(err => console.error(err));
+      .catch((err) => console.error(err));
   };
 
   // 选择MPR模式下的图片
@@ -663,7 +669,7 @@ const Player: FunctionComponent<RouteComponentProps> = props => {
       const { x, y, width, height } = mprImgRange[i];
       if (mouseX >= x && mouseY >= y && mouseX <= x + width && mouseY <= y + height) {
         if (isFullscreen) {
-          const TEMP = [0, 1, 2].filter(item => item !== mprSeriesIndex - 1); // 获取全屏模式下另外两个图像的index
+          const TEMP = [0, 1, 2].filter((item) => item !== mprSeriesIndex - 1); // 获取全屏模式下另外两个图像的index
           if (i !== 0) {
             return setMprSeriesIndex(TEMP[i - 1] + 1);
             // return updateViewport();
@@ -692,7 +698,7 @@ const Player: FunctionComponent<RouteComponentProps> = props => {
   useEffect(() => {
     // 获取seriesList 执行一次
     if (state && state.id) {
-      getSeriesList(state.id).then(result => {
+      getSeriesList(state.id).then((result) => {
         const { children, ...args } = result;
 
         setPatient({ ...args });
@@ -711,7 +717,7 @@ const Player: FunctionComponent<RouteComponentProps> = props => {
     children.forEach((series, index) => {
       const { id } = series;
       getSeries(id)
-        .then(series => {
+        .then((series) => {
           _seriesMap.set(id, series);
           index === 0 && setCurrentSeries(series);
           count += 1;
@@ -719,7 +725,7 @@ const Player: FunctionComponent<RouteComponentProps> = props => {
             setSeriesMap(_seriesMap);
           }
         })
-        .catch(error => console.error(error));
+        .catch((error) => console.error(error));
     });
   }, [seriesList]);
   useEffect(() => {
@@ -815,7 +821,7 @@ const Player: FunctionComponent<RouteComponentProps> = props => {
     return (): void => {
       document.removeEventListener("keydown", onKeydown);
     };
-  }, [isPlay, isMpr, next, nextSeries, prev, prevSeries, prevMpr, nextMpr]);
+  }, [isPlay, isMpr, next, nextSeries, prev, prevSeries, prevMpr, nextMpr, pause, play]);
   useEffect(() => {
     // 更新 canvas 视图
     playTimer !== undefined && window.clearTimeout(playTimer);
@@ -1039,8 +1045,12 @@ const Player: FunctionComponent<RouteComponentProps> = props => {
   return (
     <section className={className}>
       <div className="player-header">
-        <h1>影像播放器</h1>
-        <LinkButton to="/" icon="arrow-left" type="light">
+        <h1 className="player-header-title">影像播放器</h1>
+        <i
+          className="player-header-shortcut-btn iconfont iconic_help"
+          onClick={(): void => setShowShortcut(true)}
+        ></i>
+        <LinkButton className="player-header-back" to="/" icon="arrow-left" type="light">
           返回
         </LinkButton>
       </div>
@@ -1048,6 +1058,7 @@ const Player: FunctionComponent<RouteComponentProps> = props => {
         <div className={`player-view ${isMpr ? "player-mpr" : ""}`}>
           {seriesListCmp(seriesList)}
           <div className="player-view-inner">
+            <Shortcut show={showShortcut} onClose={(): void => setShowShortcut(false)}></Shortcut>
             <canvas
               className="player-viewport"
               ref={$viewport}

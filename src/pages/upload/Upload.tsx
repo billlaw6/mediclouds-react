@@ -25,7 +25,7 @@ const Upload: FunctionComponent = () => {
 
   const _updateLoadList = (item: UploadStatusI): void => {
     const { id, status } = item;
-    const nextupLoadList = uploadList.map(sub => {
+    const nextupLoadList = uploadList.map((sub) => {
       if (sub.id === id) {
         if (status === FileProgressStatusEnum.FAIL) {
           item.progress = sub.progress;
@@ -49,7 +49,7 @@ const Upload: FunctionComponent = () => {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-        onUploadProgress: function(progressEvent: any) {
+        onUploadProgress: function (progressEvent: any) {
           // console.log("progressEvent: ", progressEvent);
           const { loaded, total } = progressEvent;
           updateCurrentLoad(
@@ -80,7 +80,7 @@ const Upload: FunctionComponent = () => {
   };
 
   const reload = (id: string): void => {
-    const targetLoad = uploadList.find(item => item.id === id);
+    const targetLoad = uploadList.find((item) => item.id === id);
     if (!targetLoad) return;
     const currentFormData = reupdateMap.get(id);
     if (!currentFormData) return;
@@ -95,7 +95,7 @@ const Upload: FunctionComponent = () => {
   };
 
   const { getRootProps, getInputProps } = useDropzone({
-    onDropAccepted: files => {
+    onDropAccepted: (files) => {
       if (files && files.length) {
         const progressInfo: UploadStatusI = {
           id: `${uploadList.length}`,
@@ -108,7 +108,7 @@ const Upload: FunctionComponent = () => {
         updateLoadList(nextUploadList);
 
         const formData = new FormData();
-        files.map(item => {
+        files.map((item) => {
           formData.append("file", item);
         });
         formData.append("privacy", delPrivacy ? "1" : "0");
@@ -169,7 +169,7 @@ const Upload: FunctionComponent = () => {
         </article>
       </div>
       <div className="upload-list">
-        {uploadList.map(item => {
+        {uploadList.map((item) => {
           const { id, ...others } = item;
           return (
             <FileProgress key={id} {...others} onReload={(): void => reload(id)}></FileProgress>

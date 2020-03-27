@@ -9,17 +9,17 @@ interface NotifyPropsI {
   onChange?: (count: number) => void;
 }
 
-const Notify: FunctionComponent<NotifyPropsI> = props => {
+const Notify: FunctionComponent<NotifyPropsI> = (props) => {
   const { mode, onClose, onChange } = props;
 
   const onClick = (): void => {
     if (mode === "successed" && onClose) onClose();
     else
       checkDicomParseProgress()
-        .then(res => {
+        .then((res) => {
           onChange && onChange(res);
         })
-        .catch(err => {
+        .catch((err) => {
           console.error("pull parsing count error: ", err);
         });
   };

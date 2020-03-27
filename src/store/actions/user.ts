@@ -6,7 +6,7 @@ export type SetTokenActionT = ActionI<string, string>;
 export interface SetTokenActionFuncI {
   (payload: string): SetTokenActionT;
 }
-export const setTokenAction: SetTokenActionFuncI = payload => ({
+export const setTokenAction: SetTokenActionFuncI = (payload) => ({
   type: types.SET_TOKEN,
   payload,
 });
@@ -16,7 +16,7 @@ export type SetUserActionT = ActionI<string, UserI>;
 export interface SetUserActionFuncT {
   (payload: UserI): SetUserActionT;
 }
-export const setUserAction: SetUserActionFuncT = payload => ({
+export const setUserAction: SetUserActionFuncT = (payload) => ({
   type: types.SET_USER,
   payload,
 });
@@ -26,7 +26,7 @@ export type UpdateUserActionT = ActionI<string, FormData>;
 export interface UpdateUserActionFuncT {
   (payload: FormData): UpdateUserActionT;
 }
-export const updateUserAction: UpdateUserActionFuncT = payload => ({
+export const updateUserAction: UpdateUserActionFuncT = (payload) => ({
   type: types.UPDATE_USER,
   payload,
 });
@@ -36,7 +36,7 @@ export type LogoutUserActionT = ActionI<string, void>;
 export interface LogoutUserActionFuncT {
   (payload: void): LogoutUserActionT;
 }
-export const logoutUserAction: LogoutUserActionFuncT = payload => ({
+export const logoutUserAction: LogoutUserActionFuncT = (payload) => ({
   type: types.LOGOUT_USER,
   payload,
 });

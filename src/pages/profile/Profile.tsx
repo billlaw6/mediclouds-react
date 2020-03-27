@@ -14,7 +14,7 @@ import { getUserInfo } from "_services/user";
 const { Item } = Form;
 const { Option } = Select;
 
-const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = props => {
+const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (props) => {
   const { user, updateUserAction } = props;
   const $form = useRef<HTMLFormElement>(null);
 
@@ -81,10 +81,10 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = props
   useEffect(() => {
     // ========= 登录profile页面 获取一次userInfo ======== //
     getUserInfo()
-      .then(res => {
+      .then((res) => {
         dispatch(setUserAction(res.data));
       })
-      .catch(err => console.error(err));
+      .catch((err) => console.error(err));
   }, [dispatch]);
   /* render */
   return (

@@ -22,12 +22,12 @@ class LoginForm extends React.Component<FormComponentProps & MapDispatchToPropsI
         console.log("Received values of form: ", values);
         setTokenAction("");
         loginUser(values)
-          .then(res => {
+          .then((res) => {
             console.log(res);
             setTokenAction(res.data.key);
             history.replace("/");
           })
-          .catch(err => {
+          .catch((err) => {
             console.log(err);
           });
       }

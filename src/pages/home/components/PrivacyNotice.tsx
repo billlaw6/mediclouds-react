@@ -8,7 +8,7 @@ import { PrivacyNoticePropsI } from "./type";
 import { setUserAction } from "_actions/user";
 import { useDispatch } from "react-redux";
 
-const PrivacyNotice: FunctionComponent<PrivacyNoticePropsI> = props => {
+const PrivacyNotice: FunctionComponent<PrivacyNoticePropsI> = (props) => {
   const { user, onChecked } = props;
 
   const { privacy_notice = 0 } = user;
@@ -23,14 +23,14 @@ const PrivacyNotice: FunctionComponent<PrivacyNoticePropsI> = props => {
 
   useEffect(() => {
     getPrivacyNotice()
-      .then(result => {
+      .then((result) => {
         const { id, content } = result.data;
         if (id) setPrivacyNotice(id);
         // 在useEffect外才能看见结果
         // console.log(privacyNotice);
         if (content) setPrivacyNoticeContent(content);
       })
-      .catch(error => console.error(error));
+      .catch((error) => console.error(error));
   }, []);
 
   // 更新用户隐私声明
@@ -47,7 +47,7 @@ const PrivacyNotice: FunctionComponent<PrivacyNoticePropsI> = props => {
           setShow(false);
           onChecked && onChecked();
         },
-        err => {
+        (err) => {
           setShow(false);
           console.error(err);
         },

@@ -6,7 +6,7 @@ export type GetExamIndexListActionT = ActionI<string, SearchFormI>;
 export interface GetExamIndexListActionFuncI {
   (payload: SearchFormI): GetExamIndexListActionT;
 }
-export const getExamIndexListAction: GetExamIndexListActionFuncI = payload => ({
+export const getExamIndexListAction: GetExamIndexListActionFuncI = (payload) => ({
   type: types.GET_EXAM_INDEX_LIST,
   payload,
 });
@@ -16,7 +16,7 @@ export type DeleteExamIndexListActionT = ActionI<string, string[]>;
 export interface DeleteExamIndexListActionFuncI {
   (payload: string[]): DeleteExamIndexListActionT;
 }
-export const deleteExamIndexListAction: DeleteExamIndexListActionFuncI = payload => ({
+export const deleteExamIndexListAction: DeleteExamIndexListActionFuncI = (payload) => ({
   type: types.DELETE_EXAM_INDEX_LIST,
   payload,
 });
@@ -26,7 +26,7 @@ export type SetExamIndexListActionT = ActionI<string, ExamIndexI[]>;
 export interface SetExamIndexListActionFuncI {
   (payload: ExamIndexI[]): SetExamIndexListActionT;
 }
-export const setExamIndexListAction: SetExamIndexListActionFuncI = payload => ({
+export const setExamIndexListAction: SetExamIndexListActionFuncI = (payload) => ({
   type: types.SET_EXAM_INDEX_LIST,
   payload,
 });
