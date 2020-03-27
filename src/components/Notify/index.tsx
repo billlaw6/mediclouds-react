@@ -29,7 +29,7 @@ const Notify: FunctionComponent<NotifyPropsI> = (props) => {
       <i className="iconfont iconic_info"></i>
       <span className="notify-text">{props.children}</span>
       <i
-        className={`iconfont ${mode === "parsing" ? "iconic_refresh" : "iconic_close1"}`}
+        className={`notify-ctl iconfont ${mode === "parsing" ? "iconic_refresh" : "iconic_close1"}`}
         onClick={onClick}
       ></i>
     </div>
