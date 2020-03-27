@@ -16,7 +16,7 @@ const Shortcut: FunctionComponent<ShortcutPropsI> = (props) => {
   return (
     <section className={`shortcut ${show ? "show" : ""}`}>
       <i
-        className="shortcut-close iconfont iconic_guanbi"
+        className="shortcut-close iconfont iconic_close"
         onClick={(): void => onClose && onClose()}
       ></i>
       <header className="shortcut-header">快捷键</header>

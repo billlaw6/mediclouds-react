@@ -26,10 +26,10 @@ const Notify: FunctionComponent<NotifyPropsI> = (props) => {
 
   return (
     <div className={`notify ${mode === "parsing" ? "notify-parsing" : ""}`}>
-      <i className="iconfont iconic_tishi"></i>
+      <i className="iconfont iconic_info"></i>
       <span className="notify-text">{props.children}</span>
       <i
-        className={`iconfont ${mode === "parsing" ? "iconic_shuaxin" : "iconic_guanbi"}`}
+        className={`iconfont ${mode === "parsing" ? "iconic_refresh" : "iconic_close1"}`}
         onClick={onClick}
       ></i>
     </div>
