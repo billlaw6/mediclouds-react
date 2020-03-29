@@ -127,7 +127,7 @@ const getDrawInfo = (
 let playTimer: number | undefined = undefined;
 let showPanelsTimer: number | undefined = undefined;
 
-const Player: FunctionComponent<RouteComponentProps> = props => {
+const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = props => {
   // let ctx: CanvasRenderingContext2D | null = null;
   const { state } = props.location;
   /* =============== use ref =============== */
@@ -615,7 +615,7 @@ const Player: FunctionComponent<RouteComponentProps> = props => {
         if (
           cacheMprSeries &&
           cacheMprSeries[0].length + cacheMprSeries[1].length + cacheMprSeries[2].length ===
-            picTotalCount
+          picTotalCount
         )
           return;
 
@@ -1020,7 +1020,7 @@ const Player: FunctionComponent<RouteComponentProps> = props => {
         <i
           className={`iconfont icon-ic iconic_mpr player-mpr-btn ${mpr ? "" : "disabled"} ${
             isMpr ? "active" : ""
-          }`}
+            }`}
           onClick={(): void => showMpr(mpr)}
         ></i>
         <Icon

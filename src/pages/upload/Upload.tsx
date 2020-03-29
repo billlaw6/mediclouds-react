@@ -112,6 +112,7 @@ const Upload: FunctionComponent = () => {
           formData.append("file", item);
         });
         formData.append("privacy", delPrivacy ? "1" : "0");
+        // console.log(formData);
         upload(formData, progressInfo);
       }
     },

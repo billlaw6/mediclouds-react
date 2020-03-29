@@ -9,7 +9,7 @@ import {
   SetTokenActionFuncI,
   SetUserActionFuncT,
 } from "_actions/user";
-import { loginUser } from "_services/user";
+import { loginUser, getUserInfo } from "_services/user";
 import { history } from "../../store/configureStore";
 import "./Login.less";
 
@@ -25,7 +25,7 @@ class LoginForm extends React.Component<FormComponentProps & MapDispatchToPropsI
           .then(res => {
             console.log(res);
             setTokenAction(res.data.key);
-            history.replace("/");
+            // history.replace("/");
           })
           .catch(err => {
             console.log(err);
@@ -34,44 +34,63 @@ class LoginForm extends React.Component<FormComponentProps & MapDispatchToPropsI
     });
   };
 
+  fetchUserInfo = (): void => {
+    const { setUserAction } = this.props;
+    getUserInfo()
+      .then(res => {
+        console.log(res.data);
+        setUserAction(res.data);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
   render(): ReactElement {
     const { getFieldDecorator } = this.props.form;
     return (
-      <Form onSubmit={this.handleSubmit} className="login-form">
-        <Form.Item>
-          {getFieldDecorator("username", {
-            rules: [{ required: true, message: "Please input your username!" }],
-          })(
-            <Input
-              prefix={<Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />}
-              placeholder="Username"
-            />,
-          )}
-        </Form.Item>
-        <Form.Item>
-          {getFieldDecorator("password", {
-            rules: [{ required: true, message: "Please input your Password!" }],
-          })(
-            <Input
-              prefix={<Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />}
-              type="password"
-              placeholder="Password"
-            />,
-          )}
-        </Form.Item>
-        <Form.Item>
-          {getFieldDecorator("remember", {
-            valuePropName: "checked",
-            initialValue: true,
-          })(<Checkbox>Remember me</Checkbox>)}
-          <a className="login-form-forgot" href="">
-            Forgot password
-          </a>
-          <Button type="primary" htmlType="submit" className="login-form-button">
-            Log in
-          </Button>
-        </Form.Item>
-      </Form>
+      <div className="login">
+        <div className="login-form">
+          <Form onSubmit={this.handleSubmit} className="login-form">
+            <Form.Item>
+              {getFieldDecorator("username", {
+                rules: [{ required: true, message: "Please input your username!" }],
+              })(
+                <Input
+                  prefix={<Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />}
+                  placeholder="Username"
+                />,
+              )}
+            </Form.Item>
+            <Form.Item>
+              {getFieldDecorator("password", {
+                rules: [{ required: true, message: "Please input your Password!" }],
+              })(
+                <Input
+                  prefix={<Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />}
+                  type="password"
+                  placeholder="Password"
+                />,
+              )}
+            </Form.Item>
+            <Form.Item>
+              {getFieldDecorator("remember", {
+                valuePropName: "checked",
+                initialValue: true,
+              })(<Checkbox>Remember me</Checkbox>)}
+              <a className="login-form-forgot" href="">
+                Forgot password
+              </a>
+              <Button type="primary" htmlType="submit" className="login-form-button">
+                Log in
+              </Button>
+            </Form.Item>
+          </Form>
+        </div>
+        <div>
+          <Button onClick={this.fetchUserInfo}>UserInfo</Button>
+        </div>
+      </div>
     );
   }
 }
