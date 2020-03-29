@@ -11,3 +11,4 @@ assets
 *.hbs
 *.json
 *.text
+.DS_Store

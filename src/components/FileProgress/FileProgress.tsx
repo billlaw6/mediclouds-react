@@ -6,7 +6,7 @@ import { FileProgressPropsI, FileProgressStatusEnum } from "./type";
 import "./FileProgress.less";
 import { Link } from "react-router-dom";
 
-const FileProgress: FunctionComponent<FileProgressPropsI> = props => {
+const FileProgress: FunctionComponent<FileProgressPropsI> = (props) => {
   const {
     progress,
     status,

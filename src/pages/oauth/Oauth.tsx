@@ -19,13 +19,13 @@ class Oauth extends React.Component<any, any> {
       // 清空旧的token，以免因旧token导致401报错
       setToken("");
       weChatLoginUser(obj)
-        .then(res => {
+        .then((res) => {
           // console.log(res.data.user_info);
           setToken(res.data.token);
           setUser(res.data.user_info);
           history.replace("/");
         })
-        .catch(error => {
+        .catch((error) => {
           setToken("");
           setUser({});
           history.replace("/login");

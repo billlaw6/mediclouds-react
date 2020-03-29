@@ -8,6 +8,7 @@ import Upload from "_pages/upload/Upload";
 import Profile from "_pages/profile/Profile";
 import UserManage from "_pages/users/UserManage";
 import Feedback from "_pages/feedback/Feedback";
+import Dashboard from "_pages/dashboard/Dashboard";
 
 import DefaultLayout from "_layout/Default/Default";
 import FullscreenLayout from "_layout/FullscreenLayout/FullscreenLayout";
@@ -73,10 +74,16 @@ const routes: RoutesI[] = [
     permission: ["login"],
   },
   {
+    name: "dashboard",
+    path: "/dashboard",
+    component: Dashboard,
+    permission: ["login", "is_superuser"],
+  },
+  {
     name: "user_manage",
     path: "/users",
     component: UserManage,
-    permission: ["login"],
+    permission: ["login", "is_superuser"],
   },
 ];
 

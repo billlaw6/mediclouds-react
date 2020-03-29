@@ -13,7 +13,7 @@ import { MapStateToPropsI, MapDispatchToPropsI } from "./type";
 const APPID = "wxed42db352deaa115";
 const REDIRECT_URL = "https://mi.mediclouds.cn/oauth/";
 
-const Login: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = props => {
+const Login: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (props) => {
   const [hiddenScan, setHiddenScan] = useState(false);
   useEffect(() => {
     const timer = setTimeout(() => {

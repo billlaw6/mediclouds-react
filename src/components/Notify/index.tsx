@@ -9,27 +9,27 @@ interface NotifyPropsI {
   onChange?: (count: number) => void;
 }
 
-const Notify: FunctionComponent<NotifyPropsI> = props => {
+const Notify: FunctionComponent<NotifyPropsI> = (props) => {
   const { mode, onClose, onChange } = props;
 
   const onClick = (): void => {
     if (mode === "successed" && onClose) onClose();
     else
       checkDicomParseProgress()
-        .then(res => {
+        .then((res) => {
           onChange && onChange(res);
         })
-        .catch(err => {
+        .catch((err) => {
           console.error("pull parsing count error: ", err);
         });
   };
 
   return (
     <div className={`notify ${mode === "parsing" ? "notify-parsing" : ""}`}>
-      <i className="iconfont iconic_tishi"></i>
+      <i className="iconfont iconic_info"></i>
       <span className="notify-text">{props.children}</span>
       <i
-        className={`iconfont ${mode === "parsing" ? "iconic_shuaxin" : "iconic_guanbi"}`}
+        className={`notify-ctl iconfont ${mode === "parsing" ? "iconic_refresh" : "iconic_close1"}`}
         onClick={onClick}
       ></i>
     </div>

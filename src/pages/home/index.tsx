@@ -49,8 +49,8 @@ class Home extends Component<HomePropsI, HomeStateI> {
   componentDidMount(): void {
     const { getList } = this.props;
     checkDicomParseProgress()
-      .then(res => this.setState({ parsing: res, showNotify: !!res }))
-      .catch(err => console.error(err));
+      .then((res) => this.setState({ parsing: res, showNotify: !!res }))
+      .catch((err) => console.error(err));
     getList && getList({ dtRange: [new Date(), new Date()], keyword: "" });
   }
 
@@ -80,7 +80,7 @@ class Home extends Component<HomePropsI, HomeStateI> {
     const dataSource: TableDataI[] = [];
     const renderList = this.getCurrentItem();
 
-    renderList.forEach(data => {
+    renderList.forEach((data) => {
       const { desc, ...others } = data;
       const editorDesc = (
         <ListDesc
@@ -133,7 +133,7 @@ class Home extends Component<HomePropsI, HomeStateI> {
 
       let count = 0;
 
-      renderList.forEach(item => {
+      renderList.forEach((item) => {
         const { id, patient_name, study_date, desc, thumbnail, modality } = item;
         if (count >= 4) {
           count = 0;
@@ -186,18 +186,23 @@ class Home extends Component<HomePropsI, HomeStateI> {
     }
   };
 
+  /**
+   * 点击某个dicom 切换到播放器
+   *
+   * @memberof Home
+   */
   onClickItem = (id: string): void => {
     const { history, examIndexList } = this.props;
     const { isSelectable, selections } = this.state;
 
     if (isSelectable) {
-      const nextSelections = selections.filter(item => item !== id);
+      const nextSelections = selections.filter((item) => item !== id);
       if (nextSelections.length === selections.length) {
         nextSelections.push(id);
       }
       this.setState({ selections: nextSelections });
     } else {
-      const currentExam = examIndexList.find(item => item.id === id);
+      const currentExam = examIndexList.find((item) => item.id === id);
       if (currentExam) {
         const { id } = currentExam;
         history.push("/player", {
@@ -256,7 +261,7 @@ class Home extends Component<HomePropsI, HomeStateI> {
       selections:
         currentItems.length === this.state.selections.length
           ? []
-          : currentItems.map(item => item.id),
+          : currentItems.map((item) => item.id),
     });
   };
 
