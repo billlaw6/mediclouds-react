@@ -27,6 +27,7 @@ import "./Home.less";
 import { Redirect } from "react-router";
 import { checkDicomParseProgress } from "_helper";
 import Notify from "_components/Notify";
+import axios from "_services/api";
 
 const DEFAULT_PAGE_SIZE = 12;
 
@@ -340,7 +341,13 @@ class Home extends Component<HomePropsI, HomeStateI> {
    * @memberof Home
    */
   updateDesc = (id: string, value: string): void => {
-    console.log("update desc ", id, value);
+    axios
+      .post(`/dicom/exam-index/${id}/`, { desc: value })
+      .then(() => {
+        const { getList } = this.props;
+        getList && getList({ dtRange: [new Date(), new Date()], keyword: "" });
+      })
+      .catch((err) => console.error(err));
   };
 
   /**
