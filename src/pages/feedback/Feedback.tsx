@@ -1,5 +1,5 @@
 import React, { ReactElement } from "react";
-import { Table, Icon, Button, Form, Input } from "antd";
+import { Table, Icon, Button, Form, Input, Comment, Avatar, List } from "antd";
 import moment, { Moment } from "moment";
 import { FeedbackI, FeedbackReplyI, FeedbackTypeI } from "_constants/interface";
 import { getFeedbackType, getFeedback, createFeedback } from "_services/user";
@@ -13,8 +13,8 @@ class Feedback extends React.Component<FeedbackPropsI, FeedbackStateI> {
   constructor(props: FeedbackPropsI) {
     super(props);
     this.state = {
-      feedbackType: [],
-      feedback: [],
+      feedbackTypeList: [],
+      feedbackList: [],
     };
   }
 
@@ -22,7 +22,7 @@ class Feedback extends React.Component<FeedbackPropsI, FeedbackStateI> {
     getFeedbackType()
       .then((res: any) => {
         console.log(res);
-        this.setState({ feedbackType: res.data });
+        this.setState({ feedbackTypeList: res.data });
       })
       .catch((err: any) => {
         console.error(err);
@@ -37,7 +37,7 @@ class Feedback extends React.Component<FeedbackPropsI, FeedbackStateI> {
     getFeedback(params)
       .then((res: any) => {
         console.log(res);
-        this.setState({ feedback: res.data });
+        this.setState({ feedbackList: res.data });
       })
       .catch((err: any) => {
         console.error(err);
@@ -54,12 +54,23 @@ class Feedback extends React.Component<FeedbackPropsI, FeedbackStateI> {
 
   render(): ReactElement {
     const { user } = this.props;
-    const { feedback } = this.state;
+    const { feedbackList } = this.state;
 
     return (
       <div className="feedback">
         <div className="feedback-header">
           <h2>用户反馈</h2>
+        </div>
+        <div className="feedback-history">
+          <List
+            dataSource={feedbackList}
+            header={`${feedbackList.length} ${feedbackList.length > 1 ? "replies" : "reply"}`}
+            itemLayout="horizontal"
+            renderItem={props => <Comment {...props} />}
+          />
+          {feedbackList.map((item: FeedbackI) => {
+            return <div>item.title</div>;
+          })}
         </div>
         <div className="feedback-input">
           <Form layout="inline">

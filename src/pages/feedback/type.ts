@@ -7,6 +7,6 @@ export interface MapStateToPropsI {
 
 export type FeedbackPropsI = MapStateToPropsI & RouteComponentProps;
 export interface FeedbackStateI {
-  feedbackType: FeedbackTypeI[];
-  feedback: FeedbackI[];
+  feedbackTypeList: FeedbackTypeI[];
+  feedbackList: FeedbackI[];
 }
