@@ -30,7 +30,7 @@ const FileProgress: FunctionComponent<FileProgressPropsI> = (props) => {
           resText: successText,
           color: "#52C41A",
           ctlCmp: (
-            <Link style={{ color: "#52C41A", cursor: "pointer" }} to="/">
+            <Link style={{ color: "#52C41A", cursor: "pointer" }} to="/" target="_blank">
               查看文件
             </Link>
           ),
