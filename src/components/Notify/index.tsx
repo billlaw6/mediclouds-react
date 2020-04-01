@@ -24,8 +24,10 @@ const Notify: FunctionComponent<NotifyPropsI> = (props) => {
       setIsLoading(true);
       checkDicomParseProgress()
         .then((res) => {
-          onChange && onChange(res);
-          setIsLoading(false);
+          setTimeout(() => {
+            onChange && onChange(res);
+            setIsLoading(false);
+          }, 1500);
         })
         .catch((err) => {
           console.error("pull parsing count error: ", err);

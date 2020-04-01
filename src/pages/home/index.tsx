@@ -391,39 +391,40 @@ class Home extends Component<HomePropsI, HomeStateI> {
     const { examIndexList, user, getList } = this.props;
     const { viewType, redirectUpload, showNotify, parsing } = this.state;
 
-    if (redirectUpload) return <Redirect to="/upload" />;
-    else
-      return (
-        <section className="home">
-          {showNotify ? (
-            <Notify
-              mode={parsing ? "parsing" : "successed"}
-              onChange={(parsing): void => {
-                getList && getList({ dtRange: [new Date(), new Date()], keyword: "" });
-                this.setState({ parsing });
-              }}
-              onClose={(): void => this.setState({ showNotify: false })}
-            >
-              {parsing
-                ? `您上传的DICOM文件仍有${parsing}个正在解析，展示的不是全部影像，请点击刷新获取最新解析结果。`
-                : "DICOM文件已经全部解析成功"}
-            </Notify>
-          ) : null}
-          {this.controller()}
-          {examIndexList.length ? (
-            viewType === ViewTypeEnum.GRID ? (
-              this.dicoms()
-            ) : (
-              this.list()
-            )
+    // if (redirectUpload) return <Redirect to="/upload" />;
+    // else
+    return (
+      <section className="home">
+        {showNotify ? (
+          <Notify
+            // mode={parsing ? "parsing" : "successed"}
+            mode="parsing"
+            onChange={(parsing): void => {
+              getList && getList({ dtRange: [new Date(), new Date()], keyword: "" });
+              this.setState({ parsing });
+            }}
+            onClose={(): void => this.setState({ showNotify: false })}
+          >
+            {parsing
+              ? `您上传的DICOM文件仍有${parsing}个正在解析，展示的不是全部影像，请点击刷新获取最新解析结果。`
+              : "DICOM文件已经全部解析成功"}
+          </Notify>
+        ) : null}
+        {this.controller()}
+        {examIndexList.length ? (
+          viewType === ViewTypeEnum.GRID ? (
+            this.dicoms()
           ) : (
-            <div className="home-empty">
-              <img src={emptyImg} alt="no-dicom" />
-            </div>
-          )}
-          <PrivacyNotice user={user} onChecked={this.onChecked}></PrivacyNotice>
-        </section>
-      );
+            this.list()
+          )
+        ) : (
+          <div className="home-empty">
+            <img src={emptyImg} alt="no-dicom" />
+          </div>
+        )}
+        <PrivacyNotice user={user} onChecked={this.onChecked}></PrivacyNotice>
+      </section>
+    );
   }
 }
 
