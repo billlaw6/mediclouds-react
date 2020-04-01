@@ -6,12 +6,14 @@ const {
   addLessLoader,
   addWebpackAlias,
   addWebpackPlugin,
+  setWebpackPublicPath,
 } = require("customize-cra");
 const copyWebpackPlugin = require("copy-webpack-plugin");
 
 const SRC = path.resolve(__dirname, "src");
 
 module.exports = override(
+  setWebpackPublicPath(process.env.NODE_ENV === "production" ? "/web" : "/"),
   fixBabelImports("import", {
     libraryName: "antd",
     libraryDirectory: "es",

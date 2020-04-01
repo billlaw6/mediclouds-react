@@ -66,6 +66,7 @@
   "scripts": {
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
+    "postbuild": "mv build web && mkdir build && mv web build",
     "test": "react-app-rewired test --env=jsdom",
     "eject": "react-scripts eject",
     "format": "prettier --check --write './src/**/*'",
