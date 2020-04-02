@@ -39,7 +39,7 @@ const Login: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (props)
     `rst=&` +
     `style=&` +
     `href=` +
-    "https://mi.mediclouds.cn/static/css/qrcode.css" +
+    "https://mi.mediclouds.cn/web/static/css/qrcode.css" +
     "&" +
     `response_type=code&` +
     `#wechat_redirect`;
