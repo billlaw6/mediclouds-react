@@ -397,8 +397,7 @@ class Home extends Component<HomePropsI, HomeStateI> {
       <section className="home">
         {showNotify ? (
           <Notify
-            // mode={parsing ? "parsing" : "successed"}
-            mode="parsing"
+            mode={parsing ? "parsing" : "successed"}
             onChange={(parsing): void => {
               getList && getList({ dtRange: [new Date(), new Date()], keyword: "" });
               this.setState({ parsing });
