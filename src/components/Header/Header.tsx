@@ -13,7 +13,7 @@ const { Item: MenuItem, ItemGroup: MenuItemGroup, Divider } = Menu;
 const { Header: AntdHeader } = Layout;
 
 const getAvatarMenu: FunctionComponent<HeaderPropsI> = (props): ReactElement => {
-  const { nickname, logout } = props;
+  const { nickname, logout, isSuperuser } = props;
 
   const onClick = (e: ClickParam): void => {
     const { key } = e;
@@ -32,6 +32,13 @@ const getAvatarMenu: FunctionComponent<HeaderPropsI> = (props): ReactElement => 
         <MenuItem className="edit-user-info" key="editUserInfo">
           <Link to="/profile">个人信息编辑</Link>
         </MenuItem>
+        {isSuperuser ? (
+          <MenuItem className="dashboard" key="dashboard">
+            <Link to="/dashboard">管理看板</Link>
+          </MenuItem>
+        ) : (
+          <div></div>
+        )}
         <MenuItem className="logout" key="logout">
           退出
         </MenuItem>

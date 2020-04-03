@@ -181,6 +181,7 @@ export interface UserI {
   privacy_notice: number;
   birthday: string;
   is_active?: boolean;
+  is_superuser?: boolean;
 }
 
 // 单张图片
