@@ -22,12 +22,12 @@ import LinkButton from "_components/LinkButton/LinkButton";
 import ListDesc from "./components/ListDesc";
 import PrivacyNotice from "./components/PrivacyNotice";
 
-import emptyImg from "_images/empty.png";
-import "./Home.less";
-import { Redirect } from "react-router";
 import { checkDicomParseProgress } from "_helper";
 import Notify from "_components/Notify";
 import axios from "_services/api";
+import Empty from "./components/Empty/Empty";
+
+import "./Home.less";
 
 const DEFAULT_PAGE_SIZE = 12;
 
@@ -326,8 +326,8 @@ class Home extends Component<HomePropsI, HomeStateI> {
    * @memberof Home
    */
   onChecked = (): void => {
-    const { examIndexList } = this.props;
-    if (!examIndexList.length) this.setState({ redirectUpload: true });
+    // const { examIndexList } = this.props;
+    // if (!examIndexList.length) this.setState({ redirectUpload: true });
   };
 
   /* === APIS 与服务器交互数据的方法 START === */
@@ -417,9 +417,7 @@ class Home extends Component<HomePropsI, HomeStateI> {
             this.list()
           )
         ) : (
-          <div className="home-empty">
-            <img src={emptyImg} alt="no-dicom" />
-          </div>
+          <Empty></Empty>
         )}
         <PrivacyNotice user={user} onChecked={this.onChecked}></PrivacyNotice>
       </section>

@@ -128,7 +128,7 @@ const getDrawInfo = (
 let playTimer: number | undefined = undefined;
 let showPanelsTimer: number | undefined = undefined;
 
-const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = props => {
+const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = (props) => {
   // let ctx: CanvasRenderingContext2D | null = null;
   const { state } = props.location;
   /* =============== use ref =============== */
@@ -255,7 +255,6 @@ const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = p
 
   // 下一张图片
   const next = useCallback((): void => {
-    console.log("next", cacheDone);
     if (!cacheDone) return;
     if (!currentSeries || !currentSeries.pictures) return;
 
@@ -448,7 +447,7 @@ const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = p
       } else {
         const viewWidth = canvasWidth - 4 * devicePixelRatio;
         const viewHeight = canvasHeight - 2 * devicePixelRatio;
-        size.forEach(img => {
+        size.forEach((img) => {
           /* 
             // ====== 当非全屏时 ====
             并排排列，先求出3张图片宽度总和 && 最高的高度 然后计算渲染位置并输出
@@ -465,7 +464,7 @@ const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = p
           const scaleNum = drawW / totalWidth;
           let drawX = 1 * devicePixelRatio;
 
-          return size.map(item => {
+          return size.map((item) => {
             const result = {
               x: drawX,
               y: initDrawY,
@@ -484,7 +483,7 @@ const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = p
           const scaleNum = drawW / totalHeight;
           let drawX = initDrawX;
 
-          return size.map(item => {
+          return size.map((item) => {
             const result = {
               img: item.img,
               x: drawX,
@@ -545,7 +544,7 @@ const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = p
       ];
 
       const drawInfo = getMprDrawInfo(
-        imgs.map(img => ({
+        imgs.map((img) => ({
           img,
           width: img.width * devicePixelRatio,
           height: img.height * devicePixelRatio,
@@ -610,7 +609,7 @@ const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = p
     setProgress(0);
     setIsMpr(true);
     getMprSeries(currentSeries.id)
-      .then(result => {
+      .then((result) => {
         const { id } = result;
         const pictures = result.pictures as ImageI[][];
         const picTotalCount = pictures[0].length + pictures[1].length + pictures[2].length;
@@ -630,7 +629,7 @@ const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = p
         let mprCount = 0;
         let progressCount = 0;
 
-        pictures.forEach(pics => {
+        pictures.forEach((pics) => {
           const currentPicsCache: HTMLImageElement[] = [];
           let imgCount = 0;
           pics.forEach((pic, index) => {
@@ -655,7 +654,7 @@ const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = p
           });
         });
       })
-      .catch(err => console.error(err));
+      .catch((err) => console.error(err));
   };
 
   // 选择MPR模式下的图片
@@ -669,7 +668,7 @@ const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = p
       const { x, y, width, height } = mprImgRange[i];
       if (mouseX >= x && mouseY >= y && mouseX <= x + width && mouseY <= y + height) {
         if (isFullscreen) {
-          const TEMP = [0, 1, 2].filter(item => item !== mprSeriesIndex - 1); // 获取全屏模式下另外两个图像的index
+          const TEMP = [0, 1, 2].filter((item) => item !== mprSeriesIndex - 1); // 获取全屏模式下另外两个图像的index
           if (i !== 0) {
             return setMprSeriesIndex(TEMP[i - 1] + 1);
             // return updateViewport();
@@ -683,7 +682,7 @@ const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = p
   useEffect(() => {
     // 修改root的背景色
     const $wrapper = document.getElementById("defaultLayout");
-    console.log("$viewport.current", $viewport.current);
+
     if ($wrapper && $viewport.current) {
       const classNameCache = $wrapper.className;
       $wrapper.className = `${$wrapper.className} theme-dark`;
@@ -698,7 +697,7 @@ const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = p
   useEffect(() => {
     // 获取seriesList 执行一次
     if (state && state.id) {
-      getSeriesList(state.id).then(result => {
+      getSeriesList(state.id).then((result) => {
         const { children, ...args } = result;
 
         setPatient({ ...args });
@@ -717,7 +716,7 @@ const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = p
     children.forEach((series, index) => {
       const { id } = series;
       getSeries(id)
-        .then(series => {
+        .then((series) => {
           _seriesMap.set(id, series);
           index === 0 && setCurrentSeries(series);
           count += 1;
@@ -725,7 +724,7 @@ const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = p
             setSeriesMap(_seriesMap);
           }
         })
-        .catch(error => console.error(error));
+        .catch((error) => console.error(error));
     });
   }, [seriesList]);
   useEffect(() => {

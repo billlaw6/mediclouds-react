@@ -1,10 +1,115 @@
+@primaryColor: #7398ff;
+
 .feedback {
+  width: 80%;
+  max-width: 1280px;
+  margin: 0 auto;
+  font-size: 14px;
+
   &-header {
-    text-align: center;
-    margin: 20px 0px 20px 0px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 28px 0 18px;
+    h1 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 500;
+    }
   }
-  &-operate {
-    float: left;
-    margin: 10px;
+  &-content {
+    display: flex;
+    width: 100%;
+    box-sizing: border-box;
+    flex-direction: column;
+    align-items: center;
+
+    &-selector {
+      margin-bottom: 24px;
+    }
+
+    &-title {
+      margin-bottom: 8px;
+      b {
+        color: #595959;
+      }
+
+      span {
+        color: #8c8c8c;
+      }
+    }
+
+    &-textarea {
+      position: relative;
+      border-radius: 8px;
+
+      &-input {
+        resize: none;
+
+        &.ant-input {
+          height: 154px;
+        }
+        &:hover,
+        &:focus {
+          border-color: @primaryColor !important;
+        }
+      }
+      &-count {
+        position: absolute;
+        bottom: 8px;
+        right: 8px;
+        color: #bfbfbf;
+      }
+    }
+  }
+
+  &-detail {
+    margin-bottom: 24px;
+  }
+
+  &-radio {
+    margin-right: 40px;
+    &:last-child {
+      margin-right: 0;
+    }
+
+    .ant-radio-checked {
+      &::after {
+        border-color: @primaryColor;
+      }
+      .ant-radio-inner {
+        border-color: @primaryColor;
+        &::after {
+          background-color: @primaryColor;
+        }
+      }
+    }
+  }
+
+  &-submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 110px;
+    height: 38px;
+    font-size: 14px;
+    box-sizing: border-box;
+    border: 1px solid @primaryColor;
+    color: @primaryColor;
+    background-color: transparent;
+    transition: all 200ms;
+    border-radius: 30px;
+    cursor: pointer;
+
+    &:focus {
+      outline: none;
+    }
+    &:active {
+      opacity: 0.5;
+    }
+    &:hover {
+      color: #fff;
+      background-color: @primaryColor;
+    }
   }
 }

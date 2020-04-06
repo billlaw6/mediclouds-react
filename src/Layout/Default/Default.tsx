@@ -13,6 +13,7 @@ import "./Default.less";
 /* action */
 import { logoutUserAction } from "_actions/user";
 import { LOGOUT_USER } from "store/action-types";
+import SideBtns from "_components/SideBtns";
 
 const { Content } = Layout;
 
@@ -31,6 +32,7 @@ class DefalutLayout extends Component<StoreStateI & MapDispatchToPropsI> {
         ></Header>
         <Content id="content">{children}</Content>
         <Footer></Footer>
+        <SideBtns></SideBtns>
       </Layout>
     );
   }

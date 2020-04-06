@@ -251,13 +251,13 @@ export interface FeedbackTypeI {
   title: string;
 }
 
-// 用户反馈回复
-export interface FeedbackReplyI {
-  owner: string;
-  title: string;
-  content: string;
-  created_at: string;
-}
+// // 用户反馈回复
+// export interface FeedbackReplyI {
+//   owner: string;
+//   title: string;
+//   content: string;
+//   created_at: string;
+// }
 
 // 用户反馈
 export interface FeedbackI {
@@ -267,6 +267,14 @@ export interface FeedbackI {
   created_at: string;
   replies?: FeedbackReply[];
 }
+
+// 反馈回复
+export interface FeedbackReplyI {
+  type_id: string;
+  title?: string;
+  content: string;
+}
+
 /* ===============  根据Tower文档整理的接口相关的interface END =============== */
 
 export declare interface RouteI {

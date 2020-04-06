@@ -14,3 +14,16 @@ export const checkDicomParseProgress = async (): Promise<number> => {
     throw new Error(error);
   }
 };
+
+/**
+ * @description 检查dicom解析进度并返回所有上传的dicom计数
+ * @returns {Promise<number>}
+ */
+export const checkDicomTotalCount = async (): Promise<number> => {
+  try {
+    const res = await axios.get("/dicom/parse-progress");
+    return res.data.total as number;
+  } catch (error) {
+    throw new Error(error);
+  }
+};

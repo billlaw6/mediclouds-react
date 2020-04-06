@@ -30,7 +30,10 @@ const getAvatarMenu: FunctionComponent<HeaderPropsI> = (props): ReactElement => 
       <Divider></Divider>
       <MenuItemGroup>
         <MenuItem className="edit-user-info" key="editUserInfo">
-          <Link to="/profile">个人信息编辑</Link>
+          <Link to="/profile">个人信息</Link>
+        </MenuItem>
+        <MenuItem className="user-feedback" key="feedback">
+          <Link to="/feedback">意见反馈</Link>
         </MenuItem>
         {isSuperuser ? (
           <MenuItem className="dashboard" key="dashboard">

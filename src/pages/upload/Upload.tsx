@@ -1,4 +1,4 @@
-import React, { useState, FunctionComponent, useRef } from "react";
+import React, { useState, FunctionComponent, useRef, useEffect } from "react";
 import { Icon, Switch } from "antd";
 import { useDropzone } from "react-dropzone";
 import * as type from "_store/action-types";
@@ -14,6 +14,7 @@ import { FileProgressStatusEnum } from "_components/FileProgress/type";
 
 import "./Upload.less";
 import { useDispatch } from "react-redux";
+import { checkDicomTotalCount } from "_helper";
 
 const Upload: FunctionComponent = () => {
   const dispatch = useDispatch();
@@ -22,7 +23,10 @@ const Upload: FunctionComponent = () => {
   const [uploadList, updateLoadList] = useState<UploadStatusI[]>([]);
   const [delPrivacy, changeDelPrivacy] = useState(true);
   const [reupdateMap, setReupdateMap] = useState(new Map<string, FormData>()); // 重新上传的Map
+  const [total, setTotal] = useState(0); // 所有上传的影像列表计数
+  const [showTip, setShowTip] = useState(false); // 显示首次上传成功提示
 
+  // 更新上传列表
   const _updateLoadList = (item: UploadStatusI): void => {
     const { id, status } = item;
     const nextupLoadList = uploadList.map((sub) => {
@@ -57,6 +61,11 @@ const Upload: FunctionComponent = () => {
               progress: (loaded / total) * 100,
             }),
           );
+          if (loaded === total && total <= 0) {
+            // if (loaded === total && total > 0) {
+            setTotal(progressInfo.count);
+            setShowTip(true);
+          }
         },
       });
 
@@ -123,6 +132,15 @@ const Upload: FunctionComponent = () => {
     _updateLoadList(currentLoad);
   }
 
+  // 获取所有上传的dicom总量
+  useEffect(() => {
+    checkDicomTotalCount()
+      .then((res) => {
+        setTotal(res);
+      })
+      .catch((err) => console.error(err));
+  }, []);
+
   return (
     <section className="upload">
       <div className="upload-header">
@@ -176,6 +194,19 @@ const Upload: FunctionComponent = () => {
             <FileProgress key={id} {...others} onReload={(): void => reload(id)}></FileProgress>
           );
         })}
+      </div>
+      <div className={`upload-tip ${showTip ? "show" : ""}`}>
+        <div className="upload-tip-content">
+          <i
+            className="iconfont iconic_close"
+            onClick={(): void => {
+              setShowTip(false);
+            }}
+          ></i>
+          <img src="#" alt="wechat_qrcode" title="wechat-qrcode"></img>
+          <p>您的影像已上传成功</p>
+          <p>请打开微信“扫一扫”识别二维码</p>
+        </div>
       </div>
     </section>
   );
