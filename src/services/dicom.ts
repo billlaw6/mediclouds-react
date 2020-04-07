@@ -11,7 +11,7 @@ export const deleteExamIndex = async (params: string[]) => {
 };
 
 export const getExamIndexDetail = async (params: any) => {
-  const res = await axios.get(`/dicom/exam-index/${params.id}`, { params: params });
+  const res = await axios.get(`/dicom/exam-index/${params.id}/`, { params: params });
   return res;
 };
 
@@ -21,12 +21,12 @@ export const getDicomSeries = async (params: any) => {
 };
 
 export const getDicomSeriesDetail = async (params: any) => {
-  const res = await axios.get(`/dicom/dicom-series/${params.id}`);
+  const res = await axios.get(`/dicom/dicom-series/${params.id}/`);
   return res;
 };
 
 export const getDicomSeriesMprDetail = async (params: { id: string }) => {
-  const res = await axios.get(`/dicom/dicom-series/mpr/${params.id}`);
+  const res = await axios.get(`/dicom/dicom-series/mpr/${params.id}/`);
   return res;
 };
 
@@ -36,7 +36,7 @@ export const getDicomPicture = async (params: any) => {
 };
 
 export const getDicomPictureDetail = async (params: any) => {
-  const res = await axios.get(`/dicom/dicom-picture/${params.id}`, { params: params });
+  const res = await axios.get(`/dicom/dicom-picture/${params.id}/`, { params: params });
   return res;
 };
 
