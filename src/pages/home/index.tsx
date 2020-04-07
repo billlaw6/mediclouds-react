@@ -28,10 +28,13 @@ import axios from "_services/api";
 import Empty from "./components/Empty/Empty";
 
 import "./Home.less";
+import { isUndefined, isNull } from "util";
 
 const DEFAULT_PAGE_SIZE = 12;
 
 class Home extends Component<HomePropsI, HomeStateI> {
+  pollTimer: number | null;
+
   constructor(props: HomePropsI) {
     super(props);
 
@@ -44,16 +47,42 @@ class Home extends Component<HomePropsI, HomeStateI> {
       redirectUpload: false,
       parsing: 0,
       showNotify: false,
+      poll: false,
     };
+
+    this.pollTimer = null;
   }
 
   componentDidMount(): void {
     const { getList } = this.props;
     checkDicomParseProgress()
-      .then((res) => this.setState({ parsing: res, showNotify: !!res }))
+      .then((res) => this.setState({ parsing: res, showNotify: !!res, poll: !!res }))
       .catch((err) => console.error(err));
     getList && getList({ dtRange: [new Date(), new Date()], keyword: "" });
   }
+
+  componentDidUpdate(): void {
+    if (this.state.poll && isNull(this.pollTimer)) {
+      this.poll();
+    }
+  }
+
+  poll = (): void => {
+    const { getList } = this.props;
+
+    this.pollTimer = window.setInterval(() => {
+      getList && getList({ dtRange: [new Date(), new Date()], keyword: "" });
+      checkDicomParseProgress()
+        .then((res) => {
+          this.setState({ parsing: res, showNotify: !!res, poll: !!res });
+          if (res <= 0) {
+            this.pollTimer && window.clearInterval(this.pollTimer);
+            this.pollTimer = null;
+          }
+        })
+        .catch((err) => console.error(err));
+    }, 1000);
+  };
 
   list = (): ReactElement | undefined => {
     const { selections, isSelectable, page } = this.state;

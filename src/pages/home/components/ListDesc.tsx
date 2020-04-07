@@ -22,7 +22,8 @@ const ListDesc: FunctionComponent<ListDescPropsI> = (props): ReactElement => {
       <Input
         className={`dicom-list-desc-editor ${showEditor ? "dicom-list-desc-show" : ""}`}
         value={inputValue || ""}
-        placeholder="备注"
+        placeholder="备注上限20个字"
+        maxLength={20}
         onClick={(e): void => e.stopPropagation()}
         onInput={(e): void => changeInputValue(e.currentTarget.value)}
         addonAfter={

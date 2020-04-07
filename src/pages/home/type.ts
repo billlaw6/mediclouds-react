@@ -22,6 +22,7 @@ export interface HomeStateI {
   redirectUpload: boolean; // 是否重定向到upload页
   parsing: number; // 剩余解析量
   showNotify: boolean; // 是否显示提示
+  poll: boolean; // 是否开启轮询
 }
 
 // 排序类型
