@@ -22,9 +22,10 @@ import LinkButton from "_components/LinkButton/LinkButton";
 import ListDesc from "./components/ListDesc";
 import PrivacyNotice from "./components/PrivacyNotice";
 
-import { checkDicomParseProgress } from "_helper";
+// import { checkDicomParseProgress } from "_helper";
 import Notify from "_components/Notify";
 import axios from "_services/api";
+import { checkDicomParseProgress } from "_services/dicom";
 import Empty from "./components/Empty/Empty";
 
 import "./Home.less";
@@ -56,7 +57,7 @@ class Home extends Component<HomePropsI, HomeStateI> {
   componentDidMount(): void {
     const { getList } = this.props;
     checkDicomParseProgress()
-      .then((res) => this.setState({ parsing: res, showNotify: !!res, poll: !!res }))
+      .then((res) => this.setState({ parsing: res.data.parsing, showNotify: !!res, poll: !!res }))
       .catch((err) => console.error(err));
     getList && getList({ dtRange: [new Date(), new Date()], keyword: "" });
   }
@@ -74,8 +75,8 @@ class Home extends Component<HomePropsI, HomeStateI> {
       getList && getList({ dtRange: [new Date(), new Date()], keyword: "" });
       checkDicomParseProgress()
         .then((res) => {
-          this.setState({ parsing: res, showNotify: !!res, poll: !!res });
-          if (res <= 0) {
+          this.setState({ parsing: res.data.parsing, showNotify: !!res, poll: !!res });
+          if (res.data.parsing && res.data.parsing <= 0) {
             this.pollTimer && window.clearInterval(this.pollTimer);
             this.pollTimer = null;
           }

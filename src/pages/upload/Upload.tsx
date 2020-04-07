@@ -14,7 +14,8 @@ import { FileProgressStatusEnum } from "_components/FileProgress/type";
 
 import "./Upload.less";
 import { useDispatch } from "react-redux";
-import { checkDicomTotalCount } from "_helper";
+// import { checkDicomTotalCount } from "_helper";
+import { checkDicomTotalCount } from "_services/dicom";
 import wechatQrcode from "_images/wechat-qrcode.jpg";
 
 const Upload: FunctionComponent = () => {
@@ -137,7 +138,7 @@ const Upload: FunctionComponent = () => {
   useEffect(() => {
     checkDicomTotalCount()
       .then((res) => {
-        setTotal(res);
+        setTotal(res.data.total);
       })
       .catch((err) => console.error(err));
   }, []);

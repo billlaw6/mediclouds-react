@@ -2,7 +2,7 @@ import React, { ReactElement } from "react";
 import { Table, Icon, Button, Form, Input } from "antd";
 import moment, { Moment } from "moment";
 import { UserI } from "_constants/interface";
-import { getUserList, deactivateUsers, activateUsers } from "_services/user";
+import { getUserList, deactivateUsers, activateUsers, deleteUsers } from "_services/user";
 import { TableEventListeners } from "antd/lib/table";
 import { UserManagePropsI, UserManageStateI } from "_pages/users/type";
 import "./UserManage.less";
@@ -76,6 +76,20 @@ class UserManage extends React.Component<UserManagePropsI, UserManageStateI> {
     const { selectedRowKeys } = this.state;
     if (selectedRowKeys.length > 0) {
       activateUsers(selectedRowKeys)
+        .then((res: any) => {
+          // console.log(res);
+          this.fetchUserList();
+        })
+        .catch((err: any) => {
+          console.error(err);
+        });
+    }
+  };
+
+  batchDelete = (): void => {
+    const { selectedRowKeys } = this.state;
+    if (selectedRowKeys.length > 0) {
+      deleteUsers(selectedRowKeys)
         .then((res: any) => {
           // console.log(res);
           this.fetchUserList();
@@ -183,7 +197,7 @@ class UserManage extends React.Component<UserManagePropsI, UserManageStateI> {
           <Table
             ref="user-manage-table"
             rowSelection={rowSelection}
-            rowKey={record => {
+            rowKey={(record) => {
               return record.id.toString();
             }}
             className="user-manage-table"
@@ -211,6 +225,13 @@ class UserManage extends React.Component<UserManagePropsI, UserManageStateI> {
               style={{ margin: "10px" }}
             >
               批量启用
+            </Button>
+            <Button
+              onClick={this.batchDelete}
+              disabled={selectedRowKeys.length <= 0}
+              style={{ margin: "10px" }}
+            >
+              批量删除
             </Button>
           </div>
         </div>

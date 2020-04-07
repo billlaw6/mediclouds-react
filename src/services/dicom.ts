@@ -54,3 +54,13 @@ export const searchDicomFile = async (params: any) => {
   const res = await axios.get(`/dicom/dicom-file/`, { params: params });
   return res;
 };
+
+export const checkDicomParseProgress = async () => {
+  const res = await axios.get("/dicom/parse-progress/");
+  return res;
+};
+
+export const checkDicomTotalCount = async () => {
+  const res = await axios.get("/dicom/parse-progress/");
+  return res;
+};

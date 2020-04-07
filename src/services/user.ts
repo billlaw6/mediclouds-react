@@ -17,6 +17,11 @@ export const getUserList = async () => {
   return res;
 };
 
+export const deleteUsers = async (params: any) => {
+  const res = await axios.post(`/user/delete/`, { params: params });
+  return res;
+};
+
 export const deactivateUsers = async (params: any) => {
   const res = await axios.post(`/user/deactivate/`, { params: params });
   return res;
