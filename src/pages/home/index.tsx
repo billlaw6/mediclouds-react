@@ -57,13 +57,14 @@ class Home extends Component<HomePropsI, HomeStateI> {
   componentDidMount(): void {
     const { getList } = this.props;
     checkDicomParseProgress()
-      .then((res) => this.setState({ parsing: res.data.parsing, showNotify: !!res, poll: !!res }))
+      .then((res) => this.setState({ parsing: res, showNotify: !!res, poll: !!res }))
       .catch((err) => console.error(err));
     getList && getList({ dtRange: [new Date(), new Date()], keyword: "" });
   }
 
   componentDidUpdate(): void {
     if (this.state.poll && isNull(this.pollTimer)) {
+      console.log("poll", this.state.poll);
       this.poll();
     }
   }
@@ -75,8 +76,8 @@ class Home extends Component<HomePropsI, HomeStateI> {
       getList && getList({ dtRange: [new Date(), new Date()], keyword: "" });
       checkDicomParseProgress()
         .then((res) => {
-          this.setState({ parsing: res.data.parsing, showNotify: !!res, poll: !!res });
-          if (res.data.parsing && res.data.parsing <= 0) {
+          this.setState({ parsing: res, showNotify: !!res, poll: !!res });
+          if (res <= 0) {
             this.pollTimer && window.clearInterval(this.pollTimer);
             this.pollTimer = null;
           }
@@ -428,10 +429,10 @@ class Home extends Component<HomePropsI, HomeStateI> {
         {showNotify ? (
           <Notify
             mode={parsing ? "parsing" : "successed"}
-            onChange={(parsing): void => {
-              getList && getList({ dtRange: [new Date(), new Date()], keyword: "" });
-              this.setState({ parsing });
-            }}
+            // onChange={(parsing): void => {
+            //   getList && getList({ dtRange: [new Date(), new Date()], keyword: "" });
+            //   this.setState({ parsing });
+            // }}
             onClose={(): void => this.setState({ showNotify: false })}
           >
             {parsing

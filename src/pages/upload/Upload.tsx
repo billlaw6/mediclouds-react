@@ -14,7 +14,6 @@ import { FileProgressStatusEnum } from "_components/FileProgress/type";
 
 import "./Upload.less";
 import { useDispatch } from "react-redux";
-// import { checkDicomTotalCount } from "_helper";
 import { checkDicomTotalCount } from "_services/dicom";
 import wechatQrcode from "_images/wechat-qrcode.jpg";
 
@@ -25,7 +24,7 @@ const Upload: FunctionComponent = () => {
   const [uploadList, updateLoadList] = useState<UploadStatusI[]>([]);
   const [delPrivacy, changeDelPrivacy] = useState(false);
   const [reupdateMap, setReupdateMap] = useState(new Map<string, FormData>()); // 重新上传的Map
-  const [total, setTotal] = useState(0); // 所有上传的影像列表计数
+  const [globaltotal, setTotal] = useState(0); // 所有上传的影像列表计数
   const [showTip, setShowTip] = useState(false); // 显示首次上传成功提示
 
   // 更新上传列表
@@ -63,7 +62,7 @@ const Upload: FunctionComponent = () => {
               progress: (loaded / total) * 100,
             }),
           );
-          if (loaded === total && total <= 0) {
+          if (loaded === total && globaltotal <= 0) {
             // if (loaded === total && total > 0) {
             setTotal(progressInfo.count);
             setShowTip(true);
@@ -138,7 +137,7 @@ const Upload: FunctionComponent = () => {
   useEffect(() => {
     checkDicomTotalCount()
       .then((res) => {
-        setTotal(res.data.total);
+        setTotal(res);
       })
       .catch((err) => console.error(err));
   }, []);

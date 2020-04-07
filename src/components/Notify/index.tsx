@@ -39,7 +39,11 @@ const Notify: FunctionComponent<NotifyPropsI> = (props) => {
     <div className={`notify ${mode === "parsing" ? "notify-parsing" : ""}`}>
       <i className="iconfont iconic_info"></i>
       <span className="notify-text">{props.children}</span>
-      <Spin indicator={antIcon} />
+      {mode === "parsing" ? (
+        <Spin indicator={antIcon} />
+      ) : (
+        <i className={`notify-ctl iconfont iconic_close1`} onClick={onClick}></i>
+      )}
       {/* {isLoading ? (
         <Spin indicator={antIcon} />
       ) : (
