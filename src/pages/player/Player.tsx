@@ -1079,13 +1079,13 @@ const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = (
         </div>
         <div className={`player-ctl ${cacheDone ? "" : "player-disabled"}`}>
           <div className="player-ctl-playbtns">
-            <Icon className="iconfont" type="step-backward" onClick={isMpr ? firstMpr : first} />
-            <Icon className="iconfont" type="left" onClick={isMpr ? prevMpr : prev} />
             <Icon
               className="iconfont iconfont-isPlay"
               type={`${isPlay ? "pause" : "caret-right"}`}
               onClick={isPlay ? pause : play}
             />
+            <Icon className="iconfont" type="step-backward" onClick={isMpr ? firstMpr : first} />
+            <Icon className="iconfont" type="left" onClick={isMpr ? prevMpr : prev} />
             {slider()}
             <Icon className="iconfont" type="right" onClick={isMpr ? nextMpr : next} />
             <Icon className="iconfont" type="step-forward" onClick={isMpr ? lastMpr : last} />

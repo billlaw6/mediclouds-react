@@ -1,6 +1,7 @@
 import React, { FunctionComponent, useState } from "react";
 import "./Empty.less";
 import { Redirect } from "react-router";
+import { DownloadOutlined } from "@ant-design/icons";
 
 interface EmptyPropsI {
   className?: string;
@@ -23,7 +24,7 @@ const Empty: FunctionComponent<EmptyPropsI> = (props) => {
         如果您暂时没有可用的影像，医影将为您提供一些Dicom文件（文件仅供试用体验）
       </p>
       <button className="empty-download" onClick={onClick}>
-        <i className="iconfont iconic_complete"></i>
+        <i className="iconfont iconic_download"></i>
         <span>下载</span>
       </button>
 

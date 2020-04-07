@@ -15,13 +15,14 @@ import { FileProgressStatusEnum } from "_components/FileProgress/type";
 import "./Upload.less";
 import { useDispatch } from "react-redux";
 import { checkDicomTotalCount } from "_helper";
+import wechatQrcode from "_images/wechat-qrcode.jpg";
 
 const Upload: FunctionComponent = () => {
   const dispatch = useDispatch();
   const ref = useRef(null);
   const [currentLoad, updateCurrentLoad] = useState<UploadStatusI | undefined>(undefined);
   const [uploadList, updateLoadList] = useState<UploadStatusI[]>([]);
-  const [delPrivacy, changeDelPrivacy] = useState(true);
+  const [delPrivacy, changeDelPrivacy] = useState(false);
   const [reupdateMap, setReupdateMap] = useState(new Map<string, FormData>()); // 重新上传的Map
   const [total, setTotal] = useState(0); // 所有上传的影像列表计数
   const [showTip, setShowTip] = useState(false); // 显示首次上传成功提示
@@ -167,7 +168,7 @@ const Upload: FunctionComponent = () => {
             {...getInputProps({ name: "file", multiple: true })}
           />
           <Icon className="iconfont" type="inbox" />
-          <p>点击或将文件拖拽到这里上传</p>
+          <p>将文件或文件夹拖拽到这里上传</p>
           <small>系统自动整理影像种类</small>
         </div>
         <article className="upload-ctl">
@@ -203,7 +204,7 @@ const Upload: FunctionComponent = () => {
               setShowTip(false);
             }}
           ></i>
-          <img src="#" alt="wechat_qrcode" title="wechat-qrcode"></img>
+          <img src={wechatQrcode} alt="wechat_qrcode" title="wechat-qrcode"></img>
           <p>您的影像已上传成功</p>
           <p>请打开微信“扫一扫”识别二维码</p>
         </div>

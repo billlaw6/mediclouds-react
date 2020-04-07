@@ -80,8 +80,9 @@ const DicomCard: FunctionComponent<DicomCardPropsI & RouteComponentProps> = (
         <Input
           className="dicom-card-desc-editor"
           value={inputValue || ""}
-          placeholder="备注"
+          placeholder="备注上限20个字"
           onInput={(value): void => changeInputValue(value.currentTarget.value)}
+          maxLength={20}
           addonAfter={
             <div className="dicom-card-desc-ctl">
               <Icon

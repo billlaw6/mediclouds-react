@@ -132,12 +132,12 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
                 name="nickname"
                 value={userInfo.nickname}
                 onInput={(e): void =>
-                  updateInputWidthMaxTotal(20, {
+                  updateInputWidthMaxTotal(15, {
                     name: e.currentTarget.name,
                     value: e.currentTarget.value,
                   })
                 }
-                suffix={<span className="text-count">{userInfo.nickname.length}/20</span>}
+                suffix={<span className="text-count">{userInfo.nickname.length}/15</span>}
               />
             </Item>
             <Row className="profile-hoz" gutter={22}>
@@ -195,12 +195,12 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
                 name="sign"
                 value={userInfo.sign}
                 onInput={(e): void =>
-                  updateInputWidthMaxTotal(30, {
+                  updateInputWidthMaxTotal(20, {
                     name: e.currentTarget.name,
                     value: e.currentTarget.value,
                   })
                 }
-                suffix={<span className="text-count">{userInfo.sign.length}/30</span>}
+                suffix={<span className="text-count">{userInfo.sign.length}/20</span>}
               />
             </Item>
             <Item label="地址" colon={false}>
@@ -210,12 +210,12 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
                 name="address"
                 value={userInfo.address}
                 onInput={(e): void =>
-                  updateInputWidthMaxTotal(30, {
+                  updateInputWidthMaxTotal(20, {
                     name: e.currentTarget.name,
                     value: e.currentTarget.value,
                   })
                 }
-                suffix={<span className="text-count">{userInfo.address.length}/30</span>}
+                suffix={<span className="text-count">{userInfo.address.length}/20</span>}
               />
             </Item>
             <Item label="手机" colon={false}>
