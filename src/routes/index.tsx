@@ -9,6 +9,7 @@ import Profile from "_pages/profile/Profile";
 import UserManage from "_pages/users/UserManage";
 import Feedback from "_pages/feedback/Feedback";
 import Dashboard from "_pages/dashboard/Dashboard";
+import MdEditor from "_pages/mdEditor/MdEditor";
 
 import DefaultLayout from "_layout/Default/Default";
 import FullscreenLayout from "_layout/FullscreenLayout/FullscreenLayout";
@@ -84,6 +85,12 @@ const routes: RoutesI[] = [
     path: "/users",
     component: UserManage,
     permission: ["login", "is_superuser"],
+  },
+  {
+    name: "mdEditor",
+    path: "/mdeditor",
+    component: MdEditor,
+    permission: ["login"],
   },
 ];
 
