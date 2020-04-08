@@ -11,9 +11,7 @@ const Empty: FunctionComponent<EmptyPropsI> = (props) => {
   const [redirect, setRedirect] = useState(false);
 
   const onClick = (): void => {
-    window.open(
-      "http://www.ddzimu.com/download/63fdcef995908e6cc3762862994e360b1586185504/22NWU4YjM5NjgyMjVmZCQ4ODM4JDE1ODYxODI1MDQ5e8b39682264b.sub",
-    );
+    window.open("http://www.dodowon.com/test_dicom.zip");
     setRedirect(true);
   };
 

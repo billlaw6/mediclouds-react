@@ -922,18 +922,18 @@ const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = (
   };
   const info = (): ReactElement => {
     const {
-      patient_name = "匿名",
-      patient_id = "未知",
-      birthday = "未知",
-      sex,
-      study_date,
-      institution_name = "未知",
-      modality = "未知",
+      patient_name = "NULL",
+      patient_id = "NULL",
+      birthday = "NULL",
+      sex = "NULL",
+      study_date = "NULL",
+      institution_name = "NULL",
+      modality = "NULL",
     } = patient;
 
     let max = 1,
-      windowWidth = "未知",
-      windowCenter = "未知";
+      windowWidth = "0",
+      windowCenter = "0";
 
     if (currentSeries) {
       const { pictures, window_center, window_width } = currentSeries;
@@ -962,7 +962,7 @@ const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = (
           </span>
           <span title="序列">Series: {seriesIndex}</span>
           <span>
-            <span title="窗宽">WL: {windowWidth}</span>
+            <span title="窗宽">WW: {windowWidth}</span>
             <span title="窗位">WL: {windowCenter}</span>
           </span>
         </div>

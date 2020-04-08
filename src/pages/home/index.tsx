@@ -64,7 +64,6 @@ class Home extends Component<HomePropsI, HomeStateI> {
 
   componentDidUpdate(): void {
     if (this.state.poll && isNull(this.pollTimer)) {
-      console.log("poll", this.state.poll);
       this.poll();
     }
   }
@@ -76,7 +75,7 @@ class Home extends Component<HomePropsI, HomeStateI> {
       getList && getList({ dtRange: [new Date(), new Date()], keyword: "" });
       checkDicomParseProgress()
         .then((res) => {
-          this.setState({ parsing: res, showNotify: !!res, poll: !!res });
+          this.setState({ parsing: res, poll: !!res });
           if (res <= 0) {
             this.pollTimer && window.clearInterval(this.pollTimer);
             this.pollTimer = null;
@@ -436,7 +435,7 @@ class Home extends Component<HomePropsI, HomeStateI> {
             onClose={(): void => this.setState({ showNotify: false })}
           >
             {parsing
-              ? `您上传的DICOM文件仍有${parsing}个正在解析，展示的不是全部影像，请点击刷新获取最新解析结果。`
+              ? `您上传的DICOM文件仍有${parsing}个正在解析，展示的不是全部影像，请耐心等待。`
               : "DICOM文件已经全部解析成功"}
           </Notify>
         ) : null}
