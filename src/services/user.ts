@@ -63,6 +63,9 @@ export const agreePrivacyNotice = async (params: any) => {
   return res;
 };
 
+export const updatePrivacyNotice = async (data: { id?: number; content: string }): Promise<any> =>
+  await axios.post("/user/privacy-notice/", data);
+
 export const getFeedbackType = async () => {
   const res = await axios.get(`/user/feedback-type/`);
   return res;
