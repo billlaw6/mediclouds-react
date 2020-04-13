@@ -8,7 +8,7 @@
   z-index: 1;
 }
 
-.info.status.status_succ {
+.info .status.status_succ {
   position: fixed;
   margin: 0;
   left: 0;
