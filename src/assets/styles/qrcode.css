@@ -23,3 +23,7 @@
   z-index: 2;
   background-color: rgba(0,0,0,.8);
 }
+
+.info .status.status_succ .status_txt {
+  color: #fff;
+}
