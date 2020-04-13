@@ -275,6 +275,12 @@ export interface FeedbackReplyI {
   content: string;
 }
 
+// 用户协议
+export interface PrivacyNoticeI {
+  id: 0 | number;
+  content: string;
+}
+
 /* ===============  根据Tower文档整理的接口相关的interface END =============== */
 
 export declare interface RouteI {

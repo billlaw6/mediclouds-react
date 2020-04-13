@@ -11,6 +11,7 @@
       "_helper": ["helper/index.ts"],
       "_services/*":["services/*"],
       "_store/*":["store/*"],
+      "_assets/*": ["assets/*"]
     }
   }
 }

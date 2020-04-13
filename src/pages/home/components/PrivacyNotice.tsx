@@ -17,7 +17,7 @@ const PrivacyNotice: FunctionComponent<PrivacyNoticePropsI> = (props) => {
   const [check, setCheck] = useState(false); // 是否勾选同意
   const [privacyNoticeContent, setPrivacyNoticeContent] = useState(""); // 隐私协议内容
   const [privacyNotice, setPrivacyNotice] = useState(privacy_notice); // 隐私协议版本
-  const [show, setShow] = useState(true); // 是否现实modal窗
+  const [show, setShow] = useState(true); // 是否显示modal窗
 
   const dispatch = useDispatch();
 
@@ -60,7 +60,7 @@ const PrivacyNotice: FunctionComponent<PrivacyNoticePropsI> = (props) => {
     }
   }
 
-  if (privacyNoticeContent && (!privacy_notice || privacyNotice !== privacy_notice))
+  if (!privacy_notice || privacyNotice !== privacy_notice)
     return (
       <Modal
         className="privacy-notice"
@@ -88,9 +88,14 @@ const PrivacyNotice: FunctionComponent<PrivacyNoticePropsI> = (props) => {
           </Button>,
         ]}
       >
-        {privacyNoticeContent}
+        <iframe
+          className="privacy-notice-content"
+          marginWidth={0}
+          src="https://mi.mediclouds.cn/mc-privacy-notice/"
+        ></iframe>
       </Modal>
     );
+
   return null;
 };
 

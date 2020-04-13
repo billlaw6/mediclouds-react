@@ -6,7 +6,7 @@ export const getExamIndex = async (params: any) => {
 };
 
 export const deleteExamIndex = async (params: string[]) => {
-  const res = await axios.post(`/dicom/exam-index/del/`, { params: params });
+  const res = await axios.post(`/dicom/exam-index/del/`, { id: params });
   return res;
 };
 

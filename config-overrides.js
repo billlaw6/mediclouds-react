@@ -38,5 +38,6 @@ module.exports = override(
     ["_helper"]: path.join(SRC, "helper", "index.ts"),
     ["_services"]: path.join(SRC, "services"),
     ["_store"]: path.join(SRC, "store"),
+    ["_assets"]: path.join(SRC, "assets"),
   }),
 );

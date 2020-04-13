@@ -4,8 +4,10 @@ import { Carousel } from "antd";
 import img1 from "_images/login-spinner-1.png";
 import img2 from "_images/login-spinner-2.png";
 import img3 from "_images/login-spinner-3.png";
+
 import logo from "_images/logo.png";
 import wechatScan from "_images/wechat-scan.png";
+import welcome from "_assets/videos/welcome.mp4";
 
 import "./Login.less";
 import { MapStateToPropsI, MapDispatchToPropsI } from "./type";
@@ -47,7 +49,8 @@ const Login: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (props)
   return (
     <div className="login">
       <div className="login-spinner">
-        <Carousel autoplay effect="fade">
+        <video className="login-show" src={welcome} autoPlay loop></video>
+        {/* <Carousel autoplay effect="fade">
           <div>
             <div className="login-spinner-item" style={{ backgroundImage: `url(${img1})` }}></div>
           </div>
@@ -57,7 +60,7 @@ const Login: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (props)
           <div>
             <div className="login-spinner-item" style={{ backgroundImage: `url(${img3})` }}></div>
           </div>
-        </Carousel>
+        </Carousel> */}
       </div>
       <div className="login-content">
         <img className="login-logo" src={logo} alt="logo" />
