@@ -281,6 +281,27 @@ export interface PrivacyNoticeI {
   content: string;
 }
 
+// 图集
+export interface GalleryI {
+  [key: string]: any;
+  id?: string; // 唯一id
+  upload_to: string; // 上传文件路径
+  md5: string; // 文件的MD5值
+  source: string; // 来源类型
+  doi: string; // 文章DOI值
+  title: string; // 文章标题
+  journal: string; // 杂志
+  authors: string; // 作者
+  source_url: string; // 资源链接
+  description: string; // 描述
+  figure_series: string; // 图片在文章里的序列号
+  pictures: string[]; // 图片url地址数组
+  dicom_flag: string; // 是否是DICOM文件
+  flag: string; // 可视标志
+  published_at: string; // 文章发表时间
+  created_at: string; // 资源收录时间
+}
+
 /* ===============  根据Tower文档整理的接口相关的interface END =============== */
 
 export declare interface RouteI {

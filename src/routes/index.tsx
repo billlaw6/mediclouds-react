@@ -15,6 +15,7 @@ import DefaultLayout from "_layout/Default/Default";
 import FullscreenLayout from "_layout/FullscreenLayout/FullscreenLayout";
 
 import Oauth from "../pages/oauth/Oauth";
+import Gallery from "_pages/gallery/Gallery";
 
 export interface RoutesI {
   name: string;
@@ -90,6 +91,13 @@ const routes: RoutesI[] = [
     name: "mdEditor",
     path: "/mdeditor",
     component: MdEditor,
+    permission: ["login"],
+    layout: FullscreenLayout,
+  },
+  {
+    name: "gallery",
+    path: "/gallery",
+    component: Gallery,
     permission: ["login"],
     layout: FullscreenLayout,
   },
