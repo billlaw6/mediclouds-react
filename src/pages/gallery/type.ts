@@ -3,7 +3,7 @@ import { ElementRef } from "react";
 
 export interface GalleryListPropsI {
   search?: {
-    date?: string;
+    date?: [string, string];
     title?: string;
   }; // 搜索字段
   items: GalleryI[]; // 图集

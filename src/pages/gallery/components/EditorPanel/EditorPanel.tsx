@@ -1,28 +1,15 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import React, { FunctionComponent, useState, useEffect } from "react";
-import {
-  Modal,
-  Form,
-  Input,
-  Row,
-  Col,
-  Switch,
-  DatePicker,
-  Radio,
-  Upload,
-  Button,
-  Icon,
-} from "antd";
-import { useDropzone } from "react-dropzone";
+import { Modal, Form, Input, Row, Col, Switch, DatePicker, Radio, Upload, Button } from "antd";
 import { EditorPanelPropsI } from "_pages/gallery/type";
 
 import { isUndefined } from "util";
 import moment from "moment";
 
 import "./EditorPanel.less";
-import { UploadOutlined, ThunderboltOutlined } from "@ant-design/icons";
+import { UploadOutlined } from "@ant-design/icons";
 import { RcFile } from "antd/lib/upload/interface";
-import axios, { baseURL } from "_services/api";
+import { uploadPublicImage, updatePublicImage } from "_services/dicom";
 
 /* 
 
@@ -48,9 +35,6 @@ const FormItem = Form.Item;
 
 const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
   const { isShow, gallery, onCancel, onOk, uploadMode } = props;
-
-  // console.log("gallery.dicom_flag", gallery.dicom_flag === "1");
-  // console.log("gallery.flag", gallery.flag === "1");
 
   const [uploadData, setUploadData] = useState<{ [key: string]: any }>({});
 
@@ -96,35 +80,11 @@ const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
     changeUploadData(key, val);
   };
 
-  // const { getRootProps, getInputProps } = useDropzone({
-  //   onDropAccepted: (files) => {
-  //     console.log("files", files);
-  //     let nextFiles: File[] = [];
-
-  //     if (uploadData["file"]) {
-  //       nextFiles = [...uploadData["file"], ...files];
-  //     } else {
-  //       nextFiles = [...files];
-  //     }
-  //     changeUploadData("file", nextFiles);
-  //     // const _files = [...(uploadData["file"] as File[])];
-  //     // if (_files) {
-  //     //   const index = files.findIndex((item) => item.name === );
-  //     //   if (index > -1) {
-  //     //     files.splice(index, 1);
-  //     //     changeUploadData("file", files.length ? files : undefined);
-  //     //   }
-  //     // }
-  //   },
-  // });
-
   useEffect(() => {
     if (!isShow) {
       setUploadData({});
     }
   }, [isShow]);
-
-  console.log("uploadData before", uploadData);
 
   /**
    * 更新或上传
@@ -141,21 +101,16 @@ const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
           formData.append(key, uploadData[key]);
         }
       }
-      let url = `${baseURL}dicom/public-image/upload/`;
 
-      if (!uploadMode) {
+      if (uploadMode) {
+        const res = await uploadPublicImage(formData);
+        console.log("upload res", res);
+      } else {
         const id = gallery.id || "";
-        url = `${baseURL}dicom/public-image/${id}/`;
         formData.append("id", id);
+        const res = await updatePublicImage(id, formData);
+        console.log("update res", res);
       }
-
-      const res = await axios.post(url, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      console.log(res);
     } catch (error) {
       throw new Error(error);
     }
@@ -175,14 +130,6 @@ const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
           <Row>
             <Col span={12}>
               <FormItem label="上传" htmlFor="upload">
-                {/* <div {...getRootProps({ className: "gallery-editor-uploader" })}>
-                  <input
-                    className="gallery-editor-uploader-input"
-                    {...getInputProps({ name: "file", multiple: true })}
-                  />
-                  <Icon className="iconfont" type="inbox" />
-                  <p>将文件或文件夹拖拽到这里上传</p>
-                </div> */}
                 <Upload
                   name="upload"
                   customRequest={(): void => {
@@ -304,23 +251,19 @@ const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
           </Col>
         </Row>
         <Row gutter={24}>
-          <Col span={6}>
-            <FormItem label="是否为dicom">
-              <Switch
-                checked={getVal("dicom_flag", "1")}
-                onChange={(checked): void => changeSwitch("dicom_flag", checked)}
-              ></Switch>
+          <Col span={8}>
+            <FormItem label="图片分组" htmlFor="series_id">
+              <Input
+                disabled={getVal("series_id", "1")}
+                name="series_id"
+                value={getVal("series_id")}
+                onInput={(e): void => {
+                  changeUploadData("series_id", e.currentTarget.value);
+                }}
+              ></Input>
             </FormItem>
           </Col>
-          <Col span={6}>
-            <FormItem label="是否可见">
-              <Switch
-                checked={getVal("flag", "1")}
-                onChange={(checked): void => changeSwitch("flag", checked)}
-              ></Switch>
-            </FormItem>
-          </Col>
-          <Col span={12}>
+          <Col span={8}>
             <FormItem label="图片序列号" htmlFor="figure_series">
               <Input
                 disabled={getVal("dicom_flag", "1")}
@@ -332,6 +275,14 @@ const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
               ></Input>
             </FormItem>
           </Col>
+          <Col span={8}>
+            <FormItem label="是否可见">
+              <Switch
+                checked={getVal("flag", "1")}
+                onChange={(checked): void => changeSwitch("flag", checked)}
+              ></Switch>
+            </FormItem>
+          </Col>
         </Row>
         {uploadMode ? null : (
           <Row gutter={24}>
@@ -340,6 +291,9 @@ const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
             </Col>
             <Col span={8}>
               <FormItem label="md5值">{gallery.md5}</FormItem>
+            </Col>
+            <Col span={8}>
+              <FormItem label="是否为dicom">{getVal("dicom_flag", "1") ? "是" : "否"}</FormItem>
             </Col>
           </Row>
         )}

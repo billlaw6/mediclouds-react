@@ -22,12 +22,13 @@
 import React, { FunctionComponent, useState, useEffect } from "react";
 
 import "./Gallery.less";
-import { Input, Button, Popconfirm } from "antd";
+import { Input, Button, Popconfirm, DatePicker } from "antd";
 import { Random } from "mockjs";
 import { GalleryI } from "_constants/interface";
 import GalleryList from "./components/List/List";
 import EditorPanel from "./components/EditorPanel/EditorPanel";
 import axios, { baseURL } from "_services/api";
+import { getPublicImages } from "_services/dicom";
 
 const GALLERY = {
   id: "",
@@ -46,6 +47,7 @@ const GALLERY = {
   flag: "0",
   published_at: "",
   created_at: "",
+  series_id: "",
 };
 
 const getMock = (count: number): GalleryI[] => {
@@ -69,6 +71,7 @@ const getMock = (count: number): GalleryI[] => {
       flag: `${Random.natural(0, 1)}`,
       published_at: Random.date("yyyy-MM-dd"),
       created_at: Random.date("yyyy-MM-dd"),
+      series_id: Random.string(),
     });
   }
 
@@ -77,7 +80,7 @@ const getMock = (count: number): GalleryI[] => {
 
 const Gallery: FunctionComponent = () => {
   const [gallery, setGallery] = useState<GalleryI[]>([]);
-  const [search, setSearch] = useState<{ date?: string; title?: string }>({});
+  const [search, setSearch] = useState<{ date?: [string, string]; title?: string }>({});
   const [isShow, setIsShow] = useState(false);
   const [currentGallery, setCurrentGallery] = useState<GalleryI>(GALLERY);
   const [uploadMode, setUploadMode] = useState(false); // 是否为上传模式
@@ -85,7 +88,11 @@ const Gallery: FunctionComponent = () => {
 
   useEffect(() => {
     /* 这里从后台获取gallery */
-    setGallery(getMock(200));
+    // setGallery(getMock(200));
+
+    getPublicImages()
+      .then((res) => setGallery(res))
+      .catch((err) => console.error(err));
   }, []);
 
   console.log("gallery", gallery);
@@ -114,7 +121,16 @@ const Gallery: FunctionComponent = () => {
               )
             }
           />
-          <Input
+          <DatePicker.RangePicker
+            onChange={(_momentArr, dateStringArr): void =>
+              setSearch(
+                Object.assign({}, search, {
+                  date: dateStringArr.filter((item) => !!item),
+                }),
+              )
+            }
+          ></DatePicker.RangePicker>
+          {/* <Input
             className="gallery-header-input"
             addonBefore="发表时间"
             placeholder="输入文章发表时间"
@@ -125,7 +141,7 @@ const Gallery: FunctionComponent = () => {
                 }),
               )
             }
-          />
+          /> */}
           <div className="gallery-header-btns">
             <Button
               type="primary"

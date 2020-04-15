@@ -1,4 +1,5 @@
 import axios from "./api";
+import { GalleryI } from "_constants/interface";
 
 export const getExamIndex = async (params: any) => {
   const res = await axios.get(`/dicom/exam-index/`, { params: params });
@@ -76,6 +77,51 @@ export const checkDicomTotalCount = async (): Promise<number> => {
   try {
     const res = await axios.get("/dicom/parse-progress/");
     return res.data.total as number;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+/**
+ * 获取公共图像集合
+ */
+export const getPublicImages = async (): Promise<GalleryI[]> => {
+  try {
+    const res = await axios.get("/dicom/public-image/");
+    return res.data;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+/**
+ * 上传公共图像
+ * @param {FormData} data
+ */
+export const uploadPublicImage = async (data: FormData): Promise<void> => {
+  try {
+    await axios.post("/dicom/public-image/upload/", data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+/**
+ * 更新公共图像
+ * @param {string} id 目标图像id
+ * @param {FormData} data
+ */
+export const updatePublicImage = async (id: string, data: FormData): Promise<void> => {
+  try {
+    await axios.post(`/dicom/public-image/${id}/`, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
   } catch (error) {
     throw new Error(error);
   }

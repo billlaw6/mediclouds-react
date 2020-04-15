@@ -300,6 +300,7 @@ export interface GalleryI {
   flag: string; // 可视标志
   published_at: string; // 文章发表时间
   created_at: string; // 资源收录时间
+  series_id: string; // 序列号
 }
 
 /* ===============  根据Tower文档整理的接口相关的interface END =============== */

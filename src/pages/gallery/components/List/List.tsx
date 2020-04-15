@@ -5,6 +5,7 @@ import { GalleryListPropsI } from "_pages/gallery/type";
 import "./List.less";
 import { Table } from "antd";
 import { GalleryI } from "_constants/interface";
+import moment from "moment";
 
 /* 
 
@@ -47,13 +48,19 @@ const columns = [
 ];
 
 /* 过滤 */
-const filter = (items: GalleryI[], search?: { date?: string; title?: string }): GalleryI[] => {
+const filter = (
+  items: GalleryI[],
+  search?: { date?: [string, string]; title?: string },
+): GalleryI[] => {
   if (!search) return items;
   const { title, date } = search;
 
   let res = [...items];
   if (title) res = res.filter((item) => item.title.indexOf(title) >= 0);
-  if (date) res = res.filter((item) => item.published_at.indexOf(date) >= 0);
+  if (date && date.length)
+    res = res.filter((item) => {
+      return moment(item.published_at).isBetween(...date);
+    });
 
   /* 还要加上是否显示的过滤 */
 
