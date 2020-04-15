@@ -1,6 +1,18 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import React, { FunctionComponent, useState, useEffect } from "react";
-import { Modal, Form, Input, Row, Col, Switch, DatePicker, Radio, Upload, Button } from "antd";
+import {
+  Modal,
+  Form,
+  Input,
+  Row,
+  Col,
+  Switch,
+  DatePicker,
+  Radio,
+  Upload,
+  Button,
+  AutoComplete,
+} from "antd";
 import { EditorPanelPropsI } from "_pages/gallery/type";
 
 import { isUndefined } from "util";
@@ -10,6 +22,7 @@ import "./EditorPanel.less";
 import { UploadOutlined } from "@ant-design/icons";
 import { RcFile } from "antd/lib/upload/interface";
 import { uploadPublicImage, updatePublicImage } from "_services/dicom";
+import { isImageUrl } from "antd/lib/upload/utils";
 
 /* 
 
@@ -34,9 +47,10 @@ import { uploadPublicImage, updatePublicImage } from "_services/dicom";
 const FormItem = Form.Item;
 
 const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
-  const { isShow, gallery, onCancel, onOk, uploadMode } = props;
+  const { isShow, gallery, onCancel, onUpdate, onUpload, uploadMode, seriesIds } = props;
 
   const [uploadData, setUploadData] = useState<{ [key: string]: any }>({});
+  const [validateErr, setValidateErr] = useState<string[]>([]);
 
   /**
    * 获取显示的值
@@ -76,7 +90,7 @@ const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
 
   /* 切换开关内容 */
   const changeSwitch = (key: string, checked: boolean): void => {
-    const val = checked ? "1" : "0";
+    const val = checked ? 1 : 0;
     changeUploadData(key, val);
   };
 
@@ -90,6 +104,8 @@ const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
    * 更新或上传
    */
   const update = async (): Promise<void> => {
+    if (validateErr.length) return;
+
     try {
       const formData = new FormData();
       for (const key in uploadData) {
@@ -104,12 +120,12 @@ const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
 
       if (uploadMode) {
         const res = await uploadPublicImage(formData);
-        console.log("upload res", res);
+        onUpload && onUpload(res.data);
       } else {
         const id = gallery.id || "";
         formData.append("id", id);
         const res = await updatePublicImage(id, formData);
-        console.log("update res", res);
+        onUpdate && onUpdate(res.data);
       }
     } catch (error) {
       throw new Error(error);
@@ -196,10 +212,27 @@ const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
             </FormItem>
           </Col>
           <Col span={12}>
-            <FormItem label="资源链接" htmlFor="source_url">
+            <FormItem
+              label="资源链接"
+              validateStatus={validateErr.indexOf("source_url") >= 0 ? "error" : ""}
+              help="请输入正确的url地址"
+              htmlFor="source_url"
+              hasFeedback={validateErr.indexOf("source_url") >= 0}
+            >
               <Input
                 name="source_url"
-                onChange={(e): void => changeUploadData("source_url", e.currentTarget.value)}
+                onChange={(e): void => {
+                  const nextValidateErr = [...validateErr];
+                  const i = nextValidateErr.findIndex((item) => item === "source_url");
+                  if (new RegExp("^((https?|ftp|file)://).*", "gm").test(e.currentTarget.value)) {
+                    if (i > -1) nextValidateErr.splice(i, 1);
+                  } else {
+                    if (i < 0) nextValidateErr.push("source_url");
+                  }
+
+                  changeUploadData("source_url", e.currentTarget.value);
+                  setValidateErr(nextValidateErr);
+                }}
                 value={getVal("source_url")}
               ></Input>
             </FormItem>
@@ -239,7 +272,6 @@ const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
           </Col>
           <Col span={12}>
             <FormItem label="文章发表时间" htmlFor="published_at">
-              {/* <Input name="published_at"></Input> */}
               <DatePicker
                 value={moment(getVal("published_at") || new Date())}
                 format={"YYYY-MM-DD"}
@@ -252,21 +284,33 @@ const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
         </Row>
         <Row gutter={24}>
           <Col span={8}>
-            <FormItem label="图片分组" htmlFor="series_id">
-              <Input
-                disabled={getVal("series_id", "1")}
-                name="series_id"
-                value={getVal("series_id")}
-                onInput={(e): void => {
-                  changeUploadData("series_id", e.currentTarget.value);
+            <FormItem label="序列分组" htmlFor="series_id">
+              <AutoComplete
+                allowClear
+                placeholder="选择或新建分组"
+                onChange={(val): void => {
+                  changeUploadData("series_id", val);
                 }}
-              ></Input>
+                filterOption={(input, option): boolean => {
+                  if (!option.props.value) return false;
+                  return (
+                    option.props.value.toString().toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  );
+                }}
+              >
+                {seriesIds &&
+                  seriesIds.map((item) => (
+                    <AutoComplete.Option key={item} value={item}>
+                      {item}
+                    </AutoComplete.Option>
+                  ))}
+              </AutoComplete>
             </FormItem>
           </Col>
           <Col span={8}>
             <FormItem label="图片序列号" htmlFor="figure_series">
               <Input
-                disabled={getVal("dicom_flag", "1")}
+                disabled={getVal("dicom_flag", 1)}
                 name="figure_series"
                 value={getVal("figure_series")}
                 onInput={(e): void => {
@@ -278,7 +322,7 @@ const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
           <Col span={8}>
             <FormItem label="是否可见">
               <Switch
-                checked={getVal("flag", "1")}
+                checked={getVal("flag", 1)}
                 onChange={(checked): void => changeSwitch("flag", checked)}
               ></Switch>
             </FormItem>
@@ -293,7 +337,7 @@ const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
               <FormItem label="md5值">{gallery.md5}</FormItem>
             </Col>
             <Col span={8}>
-              <FormItem label="是否为dicom">{getVal("dicom_flag", "1") ? "是" : "否"}</FormItem>
+              <FormItem label="是否为dicom">{getVal("dicom_flag", 1) ? "是" : "否"}</FormItem>
             </Col>
           </Row>
         )}

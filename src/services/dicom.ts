@@ -98,9 +98,9 @@ export const getPublicImages = async (): Promise<GalleryI[]> => {
  * 上传公共图像
  * @param {FormData} data
  */
-export const uploadPublicImage = async (data: FormData): Promise<void> => {
+export const uploadPublicImage = async (data: FormData): Promise<GalleryI> => {
   try {
-    await axios.post("/dicom/public-image/upload/", data, {
+    return await axios.post("/dicom/public-image/upload/", data, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -115,9 +115,9 @@ export const uploadPublicImage = async (data: FormData): Promise<void> => {
  * @param {string} id 目标图像id
  * @param {FormData} data
  */
-export const updatePublicImage = async (id: string, data: FormData): Promise<void> => {
+export const updatePublicImage = async (id: string, data: FormData): Promise<GalleryI> => {
   try {
-    await axios.post(`/dicom/public-image/${id}/`, data, {
+    return await axios.post(`/dicom/public-image/${id}/`, data, {
       headers: {
         "Content-Type": "multipart/form-data",
       },

@@ -4,7 +4,7 @@ import { GalleryListPropsI } from "_pages/gallery/type";
 
 import "./List.less";
 import { Table } from "antd";
-import { GalleryI } from "_constants/interface";
+import { GalleryI, GalleryByTable } from "_constants/interface";
 import moment from "moment";
 
 /* 
@@ -37,6 +37,7 @@ const columns = [
   { title: "上传路径", key: "upload_to", dataIndex: "upload_to" },
   // { title: "md5值", key: "md5", dataIndex: "md5" },
   { title: "来源类型", key: "source", dataIndex: "source" },
+  { title: "序列分组", key: "series_id", dataIndex: "series_id" },
   { title: "DOI值", key: "doi", dataIndex: "doi" },
   { title: "杂志", key: "journal", dataIndex: "journal" },
   { title: "资源链接", key: "source_url", dataIndex: "source_url" },
@@ -71,9 +72,11 @@ const GalleryList: FunctionComponent<GalleryListPropsI> = (props) => {
   const { items, search, onClick, onSelect } = props;
 
   /* 处理某些字段 */
-  const handle = (items: GalleryI[]): (GalleryI & { edit: JSX.Element })[] =>
+  const handle = (items: GalleryI[]) =>
     items.map((item) => {
-      const res: GalleryI & { edit: JSX.Element } = Object.assign({}, item, {
+      const res = Object.assign({}, item, {
+        // dicom_flag: item.dicom_flag === 1 ? "是" : "否",
+        // flag: item.flag === 1 ? "是" : "否",
         edit: (
           <div
             className="gallery-list-item"
@@ -85,8 +88,6 @@ const GalleryList: FunctionComponent<GalleryListPropsI> = (props) => {
           </div>
         ),
       });
-      res.dicom_flag = res.dicom_flag === "1" ? "是" : "否";
-      res.flag = res.flag === "1" ? "是" : "否";
       switch (res.source) {
         case "article":
           res.source = "文章";

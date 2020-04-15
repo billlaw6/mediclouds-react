@@ -27,8 +27,8 @@ import { Random } from "mockjs";
 import { GalleryI } from "_constants/interface";
 import GalleryList from "./components/List/List";
 import EditorPanel from "./components/EditorPanel/EditorPanel";
-import axios, { baseURL } from "_services/api";
 import { getPublicImages } from "_services/dicom";
+import { isNull } from "util";
 
 const GALLERY = {
   id: "",
@@ -43,8 +43,8 @@ const GALLERY = {
   description: "",
   figure_series: "",
   pictures: [],
-  dicom_flag: "0",
-  flag: "0",
+  dicom_flag: 0,
+  flag: 0,
   published_at: "",
   created_at: "",
   series_id: "",
@@ -67,8 +67,8 @@ const getMock = (count: number): GalleryI[] => {
       description: Random.csentence(5, 20),
       figure_series: `${Random.natural()}`,
       pictures: [Random.url()],
-      dicom_flag: `${Random.natural(0, 1)}`,
-      flag: `${Random.natural(0, 1)}`,
+      dicom_flag: Random.natural(0, 1),
+      flag: Random.natural(0, 1),
       published_at: Random.date("yyyy-MM-dd"),
       created_at: Random.date("yyyy-MM-dd"),
       series_id: Random.string(),
@@ -101,6 +101,14 @@ const Gallery: FunctionComponent = () => {
     setUploadMode(false);
     setCurrentGallery(item);
     setIsShow(true);
+  };
+
+  const onSuccessed = (): void => {
+    getPublicImages()
+      .then((res) => setGallery(res))
+      .catch((err) => console.error(err));
+    setCurrentGallery(GALLERY);
+    setIsShow(false);
   };
 
   return (
@@ -181,9 +189,44 @@ const Gallery: FunctionComponent = () => {
         isShow={isShow}
         gallery={currentGallery}
         uploadMode={uploadMode}
+        seriesIds={Array.from(
+          new Set(
+            gallery
+              .map((item) => {
+                const { series_id } = item;
+                if (!series_id || isNull(series_id)) return "";
+                return series_id;
+              })
+              .filter((item) => !!item),
+          ),
+        )}
         onCancel={(): void => {
           setIsShow(false);
           setCurrentGallery(GALLERY);
+        }}
+        onUpdate={(resGallery): void => {
+          console.log("update gallery", resGallery);
+          setGallery(
+            gallery.map((item) => {
+              if (item.id === resGallery.id) {
+                item = resGallery;
+              }
+
+              return item;
+            }),
+          );
+          setCurrentGallery(GALLERY);
+          setIsShow(false);
+        }}
+        onUpload={(resGallery): void => {
+          console.log("onUpload gallery", resGallery);
+          getPublicImages()
+            .then((res) => {
+              setGallery(res);
+              setCurrentGallery(GALLERY);
+              setIsShow(false);
+            })
+            .catch((err) => console.error(err));
         }}
       ></EditorPanel>
     </div>
