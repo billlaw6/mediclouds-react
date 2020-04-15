@@ -22,13 +22,13 @@
 import React, { FunctionComponent, useState, useEffect } from "react";
 
 import "./Gallery.less";
-import { Input, Button, Popconfirm, DatePicker } from "antd";
+import { Input, Button, Popconfirm, DatePicker, message } from "antd";
 import { Random } from "mockjs";
 import { GalleryI } from "_constants/interface";
 import GalleryList from "./components/List/List";
 import EditorPanel from "./components/EditorPanel/EditorPanel";
-import { getPublicImages } from "_services/dicom";
-import { isNull } from "util";
+import { getPublicImages, delPublicImages } from "_services/dicom";
+import { isNull, isUndefined } from "util";
 
 const GALLERY = {
   id: "",
@@ -84,7 +84,7 @@ const Gallery: FunctionComponent = () => {
   const [isShow, setIsShow] = useState(false);
   const [currentGallery, setCurrentGallery] = useState<GalleryI>(GALLERY);
   const [uploadMode, setUploadMode] = useState(false); // 是否为上传模式
-  const [selected, setSelected] = useState<GalleryI[]>([]); // 已选择的节点
+  const [selected, setSelected] = useState<string[]>([]); // 已选择的节点
 
   useEffect(() => {
     /* 这里从后台获取gallery */
@@ -101,14 +101,6 @@ const Gallery: FunctionComponent = () => {
     setUploadMode(false);
     setCurrentGallery(item);
     setIsShow(true);
-  };
-
-  const onSuccessed = (): void => {
-    getPublicImages()
-      .then((res) => setGallery(res))
-      .catch((err) => console.error(err));
-    setCurrentGallery(GALLERY);
-    setIsShow(false);
   };
 
   return (
@@ -165,10 +157,20 @@ const Gallery: FunctionComponent = () => {
             <Popconfirm
               disabled={!selected.length}
               title={`确定要删除${selected.length}个数据吗？`}
-              onConfirm={() => {
-                console.log("删除");
+              onConfirm={(): void => {
                 /* 从这里删除 */
-                // axios.post(`${baseURL}`)
+                selected.length &&
+                  delPublicImages(selected)
+                    .then(() => {
+                      setGallery(gallery.filter((item) => selected.indexOf(item.id || "") < 0));
+                      setSelected([]);
+                      message.success("删除成功");
+                    })
+                    .catch((err) => {
+                      console.error("%c >> 删除public image出错： ", err, "color: red;");
+                      setSelected([]);
+                      message.error("删除失败 请查看console");
+                    });
               }}
             >
               <Button type="danger">删除</Button>
@@ -180,7 +182,7 @@ const Gallery: FunctionComponent = () => {
           search={search}
           onClick={edit}
           onSelect={(selectedIds, selectedItems): void => {
-            setSelected(selectedItems);
+            setSelected(selectedIds as string[]);
           }}
         ></GalleryList>
       </section>
@@ -205,7 +207,6 @@ const Gallery: FunctionComponent = () => {
           setCurrentGallery(GALLERY);
         }}
         onUpdate={(resGallery): void => {
-          console.log("update gallery", resGallery);
           setGallery(
             gallery.map((item) => {
               if (item.id === resGallery.id) {
@@ -218,8 +219,7 @@ const Gallery: FunctionComponent = () => {
           setCurrentGallery(GALLERY);
           setIsShow(false);
         }}
-        onUpload={(resGallery): void => {
-          console.log("onUpload gallery", resGallery);
+        onUpload={(): void => {
           getPublicImages()
             .then((res) => {
               setGallery(res);

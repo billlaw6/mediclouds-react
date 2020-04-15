@@ -126,3 +126,18 @@ export const updatePublicImage = async (id: string, data: FormData): Promise<Gal
     throw new Error(error);
   }
 };
+
+/**
+ * 更新公共图像
+ * @param {string} id 目标图像id
+ * @param {FormData} data
+ */
+export const delPublicImages = async (id: string[]): Promise<any> => {
+  try {
+    return await axios.post(`/dicom/public-image/delete/`, {
+      id,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+};

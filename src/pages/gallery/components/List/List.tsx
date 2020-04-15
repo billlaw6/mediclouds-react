@@ -42,7 +42,7 @@ const columns = [
   { title: "杂志", key: "journal", dataIndex: "journal" },
   { title: "资源链接", key: "source_url", dataIndex: "source_url" },
   { title: "是否为DICOM文件", key: "dicom_flag", dataIndex: "dicom_flag" },
-  { title: "是否可见", key: "flag", dataIndex: "flag" },
+  // { title: "是否可见", key: "flag", dataIndex: "flag" },
   { title: "发表时间", key: "published_at", dataIndex: "published_at" },
   { title: "收录时间", key: "created_at", dataIndex: "created_at" },
   { title: "编辑", key: "edit", dataIndex: "edit" },

@@ -12,17 +12,18 @@ import {
   Upload,
   Button,
   AutoComplete,
+  message,
 } from "antd";
 import { EditorPanelPropsI } from "_pages/gallery/type";
 
 import { isUndefined } from "util";
 import moment from "moment";
 
-import "./EditorPanel.less";
 import { UploadOutlined } from "@ant-design/icons";
 import { RcFile } from "antd/lib/upload/interface";
 import { uploadPublicImage, updatePublicImage } from "_services/dicom";
-import { isImageUrl } from "antd/lib/upload/utils";
+
+import "./EditorPanel.less";
 
 /* 
 
@@ -215,7 +216,7 @@ const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
             <FormItem
               label="资源链接"
               validateStatus={validateErr.indexOf("source_url") >= 0 ? "error" : ""}
-              help="请输入正确的url地址"
+              help={validateErr.indexOf("source_url") >= 0 ? "请输入正确的url地址" : ""}
               htmlFor="source_url"
               hasFeedback={validateErr.indexOf("source_url") >= 0}
             >
@@ -273,7 +274,7 @@ const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
           <Col span={12}>
             <FormItem label="文章发表时间" htmlFor="published_at">
               <DatePicker
-                value={moment(getVal("published_at") || new Date())}
+                value={getVal("published_at") ? moment(getVal("published_at")) : null}
                 format={"YYYY-MM-DD"}
                 onChange={(data, dataString): void => {
                   changeUploadData("published_at", dataString);
