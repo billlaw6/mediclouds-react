@@ -42,6 +42,9 @@ class Dashboard extends React.Component<DashboardPropsI, DashboardStateI> {
         <div className="dashboard-input">
           <a href="/users">用户管理</a>
         </div>
+        <div className="dashboard-input">
+          <a href="/mdeditor">用户协议编辑器</a>
+        </div>
       </div>
     );
   }

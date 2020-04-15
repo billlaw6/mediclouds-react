@@ -91,7 +91,7 @@ const routes: RoutesI[] = [
     name: "mdEditor",
     path: "/mdeditor",
     component: MdEditor,
-    permission: ["login"],
+    permission: ["login", "is_superuser"],
     layout: FullscreenLayout,
   },
   {
