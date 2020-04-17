@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState, useRef, useEffect } from "react";
-import { Form, Input, Row, Col, Select, DatePicker } from "antd";
+import { Form, Input, Row, Col, Select, DatePicker, Icon } from "antd";
 import moment, { Moment } from "moment";
 import { connect, useDispatch } from "react-redux";
 
@@ -10,6 +10,7 @@ import "./Profile.less";
 import DEFAULT_AVATAR from "_images/avatar.png";
 import { updateUserAction, setUserAction } from "_actions/user";
 import { getUserInfo } from "_services/user";
+import { Link } from "react-router-dom";
 
 const { Item } = Form;
 const { Option } = Select;
@@ -89,7 +90,13 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
   /* render */
   return (
     <section className="profile">
-      <div className="profile-header">个人信息</div>
+      <div className="profile-header">
+        <h1>个人信息</h1>
+        <Link className="profile-back" to="/">
+          <Icon className="iconfont" type="arrow-left" />
+          <span>返回</span>
+        </Link>
+      </div>
       <div className="profile-content">
         <form
           className="profile-form"
@@ -99,13 +106,14 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
           method="post"
         >
           <div className={`profile-form-header ${isEdit ? "profile-editing" : ""}`}>
-            <Item className="profile-form-avatar">
+            <Item className={`profile-form-avatar`}>
+              {isEdit ? <span className="mask"></span> : null}
               <Input
                 disabled={!isEdit}
                 type="file"
                 name="avatar"
-                // accept="image/png, image/jpg, image/jpeg, image/gif"
-                accept="image/png"
+                accept="image/png, image/jpg, image/jpeg, image/gif"
+                // accept="image/png"
                 onChange={previewAvatar}
               />
               <img src={userInfo.avatar || DEFAULT_AVATAR} alt="avatar" />
@@ -121,7 +129,6 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
             </Item>
             <div className="profile-form-avatar-desc">
               <span>选择新头像</span>
-              <span>你可以选择PNG格式的图片作为头像</span>
             </div>
           </div>
           <div className="profile-form-info">
@@ -190,6 +197,7 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
             </Row>
             <Item label="个性签名" colon={false}>
               <Input
+                placeholder="未填写"
                 disabled={!isEdit}
                 type="text"
                 name="sign"
@@ -203,8 +211,9 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
                 suffix={<span className="text-count">{userInfo.sign.length}/20</span>}
               />
             </Item>
-            <Item label="地址" colon={false}>
+            <Item label="通讯地址" colon={false}>
               <Input
+                placeholder="未填写"
                 disabled={!isEdit}
                 type="text"
                 name="address"
@@ -216,6 +225,22 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
                   })
                 }
                 suffix={<span className="text-count">{userInfo.address.length}/20</span>}
+              />
+            </Item>
+            <Item label="就职单位" colon={false}>
+              <Input
+                placeholder="未填写"
+                disabled={!isEdit}
+                type="text"
+                name="unit"
+                value={userInfo.unit}
+                onInput={(e): void =>
+                  updateInputWidthMaxTotal(20, {
+                    name: e.currentTarget.name,
+                    value: e.currentTarget.value,
+                  })
+                }
+                suffix={<span className="text-count">{userInfo.unit.length}/20</span>}
               />
             </Item>
             <Item label="手机" colon={false}>

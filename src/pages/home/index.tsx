@@ -262,15 +262,17 @@ class Home extends Component<HomePropsI, HomeStateI> {
           <LinkButton className="controller-upload" to="/upload" icon="cloud-upload">
             上传
           </LinkButton>
-          <div className={`controller-del ${isSelectable ? "controller-del-open" : ""}`}>
-            <Icon
-              className="iconfont"
-              type={isSelectable ? "arrow-left" : "delete"}
-              onClick={(): void => this.setState({ isSelectable: !isSelectable, selections: [] })}
-            />
-            <span onClick={this.selectedAll}>全选</span>
-            <span onClick={this.showConfirm}>删除</span>
-          </div>
+          {examIndexList.length ? (
+            <div className={`controller-del ${isSelectable ? "controller-del-open" : ""}`}>
+              <Icon
+                className="iconfont"
+                type={isSelectable ? "arrow-left" : "delete"}
+                onClick={(): void => this.setState({ isSelectable: !isSelectable, selections: [] })}
+              />
+              {/* <span onClick={this.selectedAll}>全选</span> */}
+              <span onClick={this.showConfirm}>删除</span>
+            </div>
+          ) : null}
         </div>
         <div className={`controller-right ${examIndexList.length ? "" : "hidden"}`}>
           <Dropdown overlay={this.dropdownContent()} placement="bottomRight">

@@ -9,6 +9,7 @@ let requestName: string; // 每次发起请求都会携带这个参数，用于�
 switch (process.env.NODE_ENV) {
   case "development":
     axios.defaults.baseURL = "http://115.29.148.227:8083/rest-api/";
+
     break;
   case "production":
     axios.defaults.baseURL = "https://mi.mediclouds.cn/rest-api/";

@@ -27,7 +27,7 @@ const Notify: FunctionComponent<NotifyPropsI> = (props) => {
           setTimeout(() => {
             onChange && onChange(res);
             setIsLoading(false);
-          }, 1500);
+          }, 3000);
         })
         .catch((err) => {
           console.error("pull parsing count error: ", err);

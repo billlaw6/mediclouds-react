@@ -145,7 +145,7 @@ const Upload: FunctionComponent = () => {
   return (
     <section className="upload">
       <div className="upload-header">
-        <h1>上传</h1>
+        <h1>上传影像</h1>
         <Link className="upload-back" to="/">
           <Icon className="iconfont" type="arrow-left" />
           <span>返回</span>
@@ -168,8 +168,9 @@ const Upload: FunctionComponent = () => {
             {...getInputProps({ name: "file", multiple: true })}
           />
           <Icon className="iconfont" type="inbox" />
-          <p>将文件或文件夹拖拽到这里上传</p>
-          <small>系统自动整理影像种类</small>
+          <p>将DICOM文件或含有DICOM文件的文件夹拖拽到这里上传</p>
+          <p>（注意：目前系统不支持后缀为.zip，.rar，.7z等压缩包文件）</p>
+          <small>医影系统会自动解析整理影像类型及序列分组</small>
         </div>
         <article className="upload-ctl">
           <div className="upload-ctl-header">
@@ -180,11 +181,13 @@ const Upload: FunctionComponent = () => {
             ></Switch>
           </div>
           <div className="upload-ctl-content">
-            <p> 为了保护患者隐私,我们提供患者信息删除功能 </p>
-            <ul>
-              <li>· 开启隐私删除,将文件拖拽进来,系统将自动删除患者所有信息。</li>
-              <li>· 影像删除后将无法找回，你可以重新上传影像来获取信息。</li>
-            </ul>
+            <p>
+              为保护患者的隐私，我们会对影像中涉及患者隐私的信息（包括姓名、性别、年龄等），提供隐私保护的功能。
+            </p>
+            <p>
+              开启该功能后：
+              系统将自动抹除患者的隐私信息，且不会记录、保存相关信息，以达到保护隐私的目的。
+            </p>
           </div>
         </article>
       </div>
@@ -206,7 +209,7 @@ const Upload: FunctionComponent = () => {
           ></i>
           <img src={wechatQrcode} alt="wechat_qrcode" title="wechat-qrcode"></img>
           <p>您的影像已上传成功</p>
-          <p>请打开微信“扫一扫”识别二维码</p>
+          <p>请用微信扫码即刻体验医影小程序</p>
         </div>
       </div>
     </section>

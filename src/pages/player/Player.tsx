@@ -1044,7 +1044,7 @@ const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = (
   return (
     <section className={className}>
       <div className="player-header">
-        <h1 className="player-header-title">影像播放器</h1>
+        <h1 className="player-header-title">医影浏览器</h1>
         <i
           className="player-header-shortcut-btn iconfont iconic_help"
           onClick={(): void => setShowShortcut(true)}

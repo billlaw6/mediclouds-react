@@ -64,7 +64,7 @@ const PrivacyNotice: FunctionComponent<PrivacyNoticePropsI> = (props) => {
     return (
       <Modal
         className="privacy-notice"
-        title="隐私政策"
+        title="用户协议"
         visible={show}
         closable={false}
         footer={[

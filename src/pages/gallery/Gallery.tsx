@@ -80,7 +80,9 @@ const getMock = (count: number): GalleryI[] => {
 
 const Gallery: FunctionComponent = () => {
   const [gallery, setGallery] = useState<GalleryI[]>([]);
-  const [search, setSearch] = useState<{ date?: [string, string]; title?: string }>({});
+  const [search, setSearch] = useState<{ date?: [string, string]; title?: string; desc?: string }>(
+    {},
+  );
   const [isShow, setIsShow] = useState(false);
   const [currentGallery, setCurrentGallery] = useState<GalleryI>(GALLERY);
   const [uploadMode, setUploadMode] = useState(false); // 是否为上传模式
@@ -108,28 +110,43 @@ const Gallery: FunctionComponent = () => {
       <h1>Gallery Manager</h1>
       <section className="gallery-inner">
         <header className="gallery-header">
-          <b className="gallery-header-title">搜索：</b>
-          <Input
-            className="gallery-header-input"
-            addonBefore="标题"
-            placeholder="输入标题名称"
-            onInput={(e): void =>
-              setSearch(
-                Object.assign({}, search, {
-                  title: e.currentTarget.value,
-                }),
-              )
-            }
-          />
-          <DatePicker.RangePicker
-            onChange={(_momentArr, dateStringArr): void =>
-              setSearch(
-                Object.assign({}, search, {
-                  date: dateStringArr.filter((item) => !!item),
-                }),
-              )
-            }
-          ></DatePicker.RangePicker>
+          <div className="gallery-search">
+            <b className="gallery-header-title">搜索：</b>
+            <Input
+              className="gallery-search-item"
+              addonBefore="标题"
+              placeholder="搜索标题名称"
+              onInput={(e): void =>
+                setSearch(
+                  Object.assign({}, search, {
+                    title: e.currentTarget.value,
+                  }),
+                )
+              }
+            />
+            <Input
+              className="gallery-search-item"
+              addonBefore="描述"
+              placeholder="搜索描述信息"
+              onInput={(e): void =>
+                setSearch(
+                  Object.assign({}, search, {
+                    desc: e.currentTarget.value,
+                  }),
+                )
+              }
+            />
+            <DatePicker.RangePicker
+              className="gallery-search-item"
+              onChange={(_momentArr, dateStringArr): void =>
+                setSearch(
+                  Object.assign({}, search, {
+                    date: dateStringArr.filter((item) => !!item),
+                  }),
+                )
+              }
+            ></DatePicker.RangePicker>
+          </div>
           {/* <Input
             className="gallery-header-input"
             addonBefore="发表时间"

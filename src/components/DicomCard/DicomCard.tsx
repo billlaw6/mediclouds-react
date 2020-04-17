@@ -43,6 +43,7 @@ const DicomCard: FunctionComponent<DicomCardPropsI & RouteComponentProps> = (
           className="dicom-card-checkbox"
           checked={props.checked}
           value={props.id}
+          onClick={(): void => onClick && onClick(id)}
         ></Checkbox>
       ) : null}
       <Card

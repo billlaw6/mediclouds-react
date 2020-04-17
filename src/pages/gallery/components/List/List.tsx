@@ -51,13 +51,14 @@ const columns = [
 /* 过滤 */
 const filter = (
   items: GalleryI[],
-  search?: { date?: [string, string]; title?: string },
+  search?: { date?: [string, string]; title?: string; desc?: string },
 ): GalleryI[] => {
   if (!search) return items;
-  const { title, date } = search;
-
+  const { title, date, desc } = search;
+  console.log("desc", desc);
   let res = [...items];
   if (title) res = res.filter((item) => item.title.indexOf(title) >= 0);
+  if (desc) res = res.filter((item) => item.description.indexOf(desc) >= 0);
   if (date && date.length)
     res = res.filter((item) => {
       return moment(item.published_at).isBetween(...date);
