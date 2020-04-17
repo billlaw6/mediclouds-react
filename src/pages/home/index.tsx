@@ -305,6 +305,8 @@ class Home extends Component<HomePropsI, HomeStateI> {
   };
 
   showConfirm = (): void => {
+    if (!this.state.selections.length) return;
+
     Modal.confirm({
       centered: true,
       className: "del-confirm",

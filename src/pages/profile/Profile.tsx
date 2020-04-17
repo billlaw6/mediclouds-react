@@ -176,6 +176,10 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
                   <DatePicker
                     className="profile-form-birthday"
                     disabled={!isEdit}
+                    disabledDate={(date): boolean => {
+                      if (date && date.isBetween("1900-01-01", moment.now())) return false;
+                      return true;
+                    }}
                     value={userInfo.birthday ? moment(userInfo.birthday) : undefined}
                     onChange={(_date: Moment | null, dateString: string): void => {
                       setUserInfo(

@@ -204,12 +204,18 @@ const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = (
     }
   };
 
+  // 暂停
+  const pause = useCallback((): void => {
+    cacheDone && setPlay(false);
+  }, [cacheDone]);
+
   /**
    * 切换全屏状态
    * @param {boolean} isFullscreen 当前全屏状态
    */
   const changeFullscreen = (isFullscreen: boolean): void => {
     if (!cacheDone) return;
+    if (isPlay) pause();
     if ($player && $player.current) {
       if (isFullscreen) {
         const document: any = window.document; // magic
@@ -232,6 +238,7 @@ const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = (
   // 下一个序列
   const nextSeries = useCallback((): void => {
     if (!seriesList || !seriesMap) return;
+    if (isPlay) pause();
     const nextSeriesIndex = Math.min(seriesIndex + 1, seriesList.children.length);
     setSeriesIndex(nextSeriesIndex);
     setCurrentSeries(seriesMap.get(seriesList.children[nextSeriesIndex - 1].id));
@@ -239,11 +246,12 @@ const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = (
       setCacheDone(false);
       setProgress(0);
     }
-  }, [cache, seriesIndex, seriesList, seriesMap]);
+  }, [cache, isPlay, pause, seriesIndex, seriesList, seriesMap]);
 
   // 上一个序列
   const prevSeries = useCallback((): void => {
     if (!seriesList || !seriesMap) return;
+    if (isPlay) pause();
     const nextSeriesIndex = Math.max(seriesIndex - 1, 1);
     setSeriesIndex(nextSeriesIndex);
     setCurrentSeries(seriesMap.get(seriesList.children[nextSeriesIndex - 1].id));
@@ -251,7 +259,7 @@ const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = (
       setCacheDone(false);
       setProgress(0);
     }
-  }, [cache, seriesIndex, seriesList, seriesMap]);
+  }, [cache, isPlay, pause, seriesIndex, seriesList, seriesMap]);
 
   // 下一张图片
   const next = useCallback((): void => {
@@ -357,21 +365,17 @@ const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = (
     }
   }, [cacheDone, currentSeries, first, imgIndexs, seriesIndex]);
 
-  // 暂停
-  const pause = useCallback((): void => {
-    cacheDone && setPlay(false);
-  }, [cacheDone]);
-
   // 鼠标滚轮切换图片
   const wheelChange = useCallback(
     (event: WheelEvent): void => {
       const { deltaY } = event;
+      if (isPlay) pause();
       if (deltaY > 0) isMpr ? nextMpr() : next();
       if (deltaY < 0) isMpr ? prevMpr() : prev();
 
       event.preventDefault();
     },
-    [isMpr, next, nextMpr, prev, prevMpr],
+    [isMpr, isPlay, next, nextMpr, pause, prev, prevMpr],
   );
 
   // 显示所有 动作&信息面板
@@ -794,9 +798,11 @@ const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = (
     const onKeydown = (e: KeyboardEvent): void => {
       switch (e.keyCode) {
         case LEFT:
+          isPlay && pause();
           isMpr ? prevMpr() : prev();
           break;
         case RIGHT:
+          isPlay && pause();
           isMpr ? nextMpr() : next();
           break;
         case UP:

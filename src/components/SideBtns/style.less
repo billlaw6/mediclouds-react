@@ -6,9 +6,13 @@
   &-item {
     position: relative;
     transition: all 200ms;
+    margin-bottom: 24px;
+    &:last-child {
+      margin-bottom: 0;
+    }
     &:hover &-pop {
       display: flex;
-      min-width: 100px;
+      min-width: 162px;
       min-height: 100px;
       width: auto;
       height: auto;
@@ -19,8 +23,6 @@
       position: absolute;
       width: 0;
       height: 0;
-      // min-width: 100px;
-      // min-height: 100px;
       background-color: #fff;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
       box-sizing: border-box;
@@ -32,7 +34,7 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding: 18px;
+      padding: 24px 30px;
 
       &::after {
         content: "";
@@ -45,12 +47,15 @@
         transform: rotate(45deg);
         background-color: #fff;
       }
-      b {
+      b:not(:last-child) {
         margin-bottom: 16px;
       }
       img {
-        width: 102px;
-        height: 102px;
+        width: 100px;
+        height: 100px;
+      }
+      img:not(:last-child) {
+        margin-bottom: 18px;
       }
     }
 
@@ -66,7 +71,7 @@
     }
   }
   .iconfont {
-    line-height: 32px;
-    font-size: 32px;
+    line-height: 28px;
+    font-size: 28px;
   }
 }
