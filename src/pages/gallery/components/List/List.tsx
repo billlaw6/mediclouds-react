@@ -55,7 +55,7 @@ const filter = (
 ): GalleryI[] => {
   if (!search) return items;
   const { title, date, desc } = search;
-  console.log("desc", desc);
+
   let res = [...items];
   if (title) res = res.filter((item) => item.title.indexOf(title) >= 0);
   if (desc) res = res.filter((item) => item.description.indexOf(desc) >= 0);
@@ -66,11 +66,32 @@ const filter = (
 
   /* 还要加上是否显示的过滤 */
 
+  /* 排序 */
+  res.sort((a, b) => {
+    return moment(b.created_at).isAfter(moment(a.created_at)) ? 1 : -1;
+  });
+
   return res;
 };
 
 const GalleryList: FunctionComponent<GalleryListPropsI> = (props) => {
   const { items, search, onClick, onSelect } = props;
+  const dicoms: GalleryI[] = [],
+    imgs: GalleryI[] = [];
+
+  items.forEach((item) => {
+    const { dicom_flag, series_id, created_at, ...others } = item;
+    if (dicom_flag) {
+      const index = dicoms.findIndex((item) => item.series_id === series_id);
+      if (index >= 0) {
+        dicoms[index] = { ...others, series_id, dicom_flag, created_at };
+      } else {
+        dicoms.push(item);
+      }
+    } else {
+      imgs.push(item);
+    }
+  });
 
   /* 处理某些字段 */
   const handle = (items: GalleryI[]) =>
@@ -114,7 +135,7 @@ const GalleryList: FunctionComponent<GalleryListPropsI> = (props) => {
       }}
       className="gallery-list"
       rowKey="id"
-      dataSource={handle(filter(items, search))}
+      dataSource={handle(filter([...dicoms, ...imgs], search))}
       columns={columns}
     ></Table>
   );

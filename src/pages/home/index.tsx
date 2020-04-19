@@ -433,7 +433,6 @@ class Home extends Component<HomePropsI, HomeStateI> {
   };
 
   render(): ReactElement {
-    console.log(this.props);
     const { examIndexList, user, getList, dicomSettings } = this.props;
     const { redirectUpload, showNotify, parsing } = this.state;
     const { viewMode } = dicomSettings;
