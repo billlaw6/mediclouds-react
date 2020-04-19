@@ -1,5 +1,6 @@
 import { ActionI, SearchFormI, ExamIndexI } from "_constants/interface";
 import * as types from "../action-types";
+import { ViewTypeEnum, SortTypeEnum } from "_pages/home/type";
 
 // 用于在SAGA中触发请求
 export type GetExamIndexListActionT = ActionI<string, SearchFormI>;
@@ -29,6 +30,26 @@ export interface SetExamIndexListActionFuncI {
 export const setExamIndexListAction: SetExamIndexListActionFuncI = (payload) => ({
   type: types.SET_EXAM_INDEX_LIST,
   payload,
+});
+
+// 改变dicom list 显示模式
+export type SetViewModeActionT = ActionI<string, ViewTypeEnum>;
+export interface SetViewModeActionFuncI {
+  (mode: ViewTypeEnum): SetViewModeActionT;
+}
+export const setViewModeAction: SetViewModeActionFuncI = (mode) => ({
+  type: types.SET_VIEW_MODE,
+  payload: mode,
+});
+
+// 改变dicom list 排序
+export type SetViewSortByActionT = ActionI<string, SortTypeEnum>;
+export interface SetViewSortByActionFuncI {
+  (mode: SortTypeEnum): SetViewSortByActionT;
+}
+export const SetViewSortByAction: SetViewSortByActionFuncI = (sortBy) => ({
+  type: types.SET_VIEW_SORY_BY,
+  payload: sortBy,
 });
 
 // export const getDicomSeriesMprAction = (payload: string) => ({

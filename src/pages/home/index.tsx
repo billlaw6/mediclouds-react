@@ -14,7 +14,12 @@ import {
   MapDispatchToPropsI,
   TableDataI,
 } from "./type";
-import { getExamIndexListAction, deleteExamIndexListAction } from "_actions/dicom";
+import {
+  getExamIndexListAction,
+  deleteExamIndexListAction,
+  SetViewSortByAction,
+  setViewModeAction,
+} from "_actions/dicom";
 
 import { Gutter } from "antd/lib/grid/row";
 import { PaginationConfig, ColumnProps, TableEventListeners } from "antd/lib/table";
@@ -299,9 +304,11 @@ class Home extends Component<HomePropsI, HomeStateI> {
   };
 
   changeViewType = (): void => {
+    const { dicomSettings, setViewMode } = this.props;
+
     const nextType =
-      this.state.viewType === ViewTypeEnum.GRID ? ViewTypeEnum.LIST : ViewTypeEnum.GRID;
-    this.setState({ viewType: nextType });
+      dicomSettings.viewMode === ViewTypeEnum.GRID ? ViewTypeEnum.LIST : ViewTypeEnum.GRID;
+    setViewMode(nextType);
   };
 
   showConfirm = (): void => {
@@ -336,18 +343,21 @@ class Home extends Component<HomePropsI, HomeStateI> {
    * @memberof Home
    */
   dropdownContent = (): ReactElement => {
-    const { sortType } = this.state;
+    const { dicomSettings, setSortBy } = this.props;
+    const { sortBy } = dicomSettings;
+
     return (
       <Menu
         className="home-dicom-sort"
         onClick={(data): void => {
-          this.setState({ sortType: data.key as SortTypeEnum });
+          // this.setState({ sortType: data.key as SortTypeEnum });
+          setSortBy(data.key as SortTypeEnum);
         }}
       >
-        <Menu.Item disabled={sortType === SortTypeEnum.TIME} key={SortTypeEnum.TIME}>
+        <Menu.Item disabled={sortBy === SortTypeEnum.TIME} key={SortTypeEnum.TIME}>
           时间排序
         </Menu.Item>
-        <Menu.Item disabled={sortType === SortTypeEnum.TYPE} key={SortTypeEnum.TYPE}>
+        <Menu.Item disabled={sortBy === SortTypeEnum.TYPE} key={SortTypeEnum.TYPE}>
           种类排序
         </Menu.Item>
       </Menu>
@@ -402,16 +412,17 @@ class Home extends Component<HomePropsI, HomeStateI> {
    * @memberof Home
    */
   sortList = (list: ExamIndexI[]): ExamIndexI[] => {
-    const { sortType } = this.state;
+    // const { sortType } = this.state;
+    const { sortBy } = this.props.dicomSettings;
     const temp = [...list];
 
     return temp.sort((a, b) => {
-      if (sortType === SortTypeEnum.TIME) {
+      if (sortBy === SortTypeEnum.TIME) {
         const studyDateA = a.study_date;
         const studyDateB = b.study_date;
         return studyDateA < studyDateB ? 1 : -1;
       }
-      if (sortType === SortTypeEnum.TYPE) {
+      if (sortBy === SortTypeEnum.TYPE) {
         const modalityA = a.modality;
         const modalityB = b.modality;
         return modalityA < modalityB ? -1 : 1;
@@ -422,8 +433,10 @@ class Home extends Component<HomePropsI, HomeStateI> {
   };
 
   render(): ReactElement {
-    const { examIndexList, user, getList } = this.props;
-    const { viewType, redirectUpload, showNotify, parsing } = this.state;
+    console.log(this.props);
+    const { examIndexList, user, getList, dicomSettings } = this.props;
+    const { redirectUpload, showNotify, parsing } = this.state;
+    const { viewMode } = dicomSettings;
 
     // if (redirectUpload) return <Redirect to="/upload" />;
     // else
@@ -445,7 +458,7 @@ class Home extends Component<HomePropsI, HomeStateI> {
         ) : null}
         {this.controller()}
         {examIndexList.length ? (
-          viewType === ViewTypeEnum.GRID ? (
+          viewMode === ViewTypeEnum.GRID ? (
             this.dicoms()
           ) : (
             this.list()
@@ -462,9 +475,12 @@ class Home extends Component<HomePropsI, HomeStateI> {
 const mapStateToProps = (state: StoreStateI): MapStateToPropsI => ({
   examIndexList: state.examIndexList,
   user: state.user,
+  dicomSettings: state.dicomSettings,
 });
 const mapDispatchToProps: MapDispatchToPropsI = {
   getList: getExamIndexListAction,
   delList: deleteExamIndexListAction,
+  setSortBy: SetViewSortByAction,
+  setViewMode: setViewModeAction,
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

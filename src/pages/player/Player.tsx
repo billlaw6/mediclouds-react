@@ -139,13 +139,13 @@ const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = (
   const [isMpr, setIsMpr] = useState(false); // 是否为mpr模式
   const [progress, setProgress] = useState(0); // 加载进度
   const [patient, setPatient] = useState<PatientI>({
-    patient_name: "匿名",
-    patient_id: "未知",
-    birthday: "未知",
-    sex: "",
-    study_date: "",
-    institution_name: "未知",
-    modality: "未知",
+    patient_name: "NA",
+    patient_id: "NA",
+    birthday: "NA",
+    sex: "NA",
+    study_date: "NA",
+    institution_name: "NA",
+    modality: "NA",
   });
   const [cacheDone, setCacheDone] = useState(false); // 是否缓存图片完毕
   const [seriesIndex, setSeriesIndex] = useState(1); // 序列索引
@@ -928,13 +928,13 @@ const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = (
   };
   const info = (): ReactElement => {
     const {
-      patient_name = "NULL",
-      patient_id = "NULL",
-      birthday = "NULL",
-      sex = "NULL",
-      study_date = "NULL",
-      institution_name = "NULL",
-      modality = "NULL",
+      patient_name = "NA",
+      patient_id = "NA",
+      birthday = "NA",
+      sex = "NA",
+      study_date = "NA",
+      institution_name = "NA",
+      modality = "NA",
     } = patient;
 
     let max = 1,

@@ -1,15 +1,26 @@
 import { ExamIndexI, UserI } from "_constants/interface";
-import { getExamIndexListAction, deleteExamIndexListAction } from "_actions/dicom";
+import {
+  getExamIndexListAction,
+  deleteExamIndexListAction,
+  SetViewSortByAction,
+  setViewModeAction,
+} from "_actions/dicom";
 import { RouteComponentProps } from "react-router";
 import { ReactElement } from "react";
 
 export interface MapStateToPropsI {
   examIndexList: ExamIndexI[];
   user: UserI;
+  dicomSettings: {
+    sortBy: SortTypeEnum;
+    viewMode: ViewTypeEnum;
+  };
 }
 export interface MapDispatchToPropsI {
   getList: typeof getExamIndexListAction;
   delList: typeof deleteExamIndexListAction;
+  setSortBy: typeof SetViewSortByAction;
+  setViewMode: typeof setViewModeAction;
 }
 
 export type HomePropsI = MapStateToPropsI & MapDispatchToPropsI & RouteComponentProps;

@@ -1,4 +1,5 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
+import wechatQrcode from "_images/wechat-qrcode.jpg";
 import { Carousel } from "antd";
 
 import img1 from "_images/login-spinner-1.png";
@@ -15,6 +16,8 @@ import Footer from "_components/Footer/Footer";
 
 const APPID = "wxed42db352deaa115";
 const REDIRECT_URL = "https://mi.mediclouds.cn/oauth/";
+
+const IS_MOBILE = /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent);
 
 const Login: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (props) => {
   const [hiddenScan, setHiddenScan] = useState(false);
@@ -46,6 +49,16 @@ const Login: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (props)
     "&" +
     `response_type=code&` +
     `#wechat_redirect`;
+
+  if (IS_MOBILE)
+    return (
+      <div className="login-mobile-tip">
+        <div className="login-mobile-tip-content">
+          <img src={wechatQrcode} alt="wechat_qrcode" title="wechat-qrcode"></img>
+          <p>请用微信扫码即刻体验医影小程序</p>
+        </div>
+      </div>
+    );
 
   return (
     <>

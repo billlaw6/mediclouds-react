@@ -3,6 +3,7 @@ import { History } from "history";
 import { connectRouter } from "connected-react-router";
 import { tokenReducer, userReducer } from "./user";
 import { examIndexListReducer } from "./dicom";
+import dicomSettings from "./dicomSettings";
 
 // 每个reducer必须都返回state类型的数据！
 const createRootReducer = (history: History) =>
@@ -11,6 +12,7 @@ const createRootReducer = (history: History) =>
     token: tokenReducer,
     user: userReducer,
     examIndexList: examIndexListReducer,
+    dicomSettings,
   });
 
 // IState不能作为组件创建时props类型！！！必须用store.d里定义的！三天的教训！

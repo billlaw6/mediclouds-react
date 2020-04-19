@@ -343,6 +343,10 @@ export declare interface StoreStateI {
   token: string;
   user: UserI;
   examIndexList: ExamIndexI[];
+  dicomSettings: {
+    sortBy: SortTypeEnum;
+    viewMode: ViewTypeEnum;
+  };
 }
 
 export declare interface CustomHTMLDivElement extends HTMLDivElement {

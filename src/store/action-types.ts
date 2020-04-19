@@ -8,6 +8,10 @@ export const SET_TOKEN = "set_token";
 export const GET_EXAM_INDEX_LIST = "get_exam_index_list";
 export const SET_EXAM_INDEX_LIST = "set_exam_index_list";
 export const DELETE_EXAM_INDEX_LIST = "delete_exam_index_list";
+
+export const SET_VIEW_MODE = "set_view_mode";
+export const SET_VIEW_SORY_BY = "set_view_sort_by";
+
 ///////////////////////////////////////
 // // 单一用户信息，用于用户管理
 // export const SET_USER_INFO = "set_user_info";
