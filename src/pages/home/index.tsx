@@ -258,8 +258,8 @@ class Home extends Component<HomePropsI, HomeStateI> {
   };
 
   controller = (): ReactElement => {
-    const { examIndexList } = this.props;
-    const { isSelectable, viewType } = this.state;
+    const { examIndexList, dicomSettings } = this.props;
+    const { isSelectable } = this.state;
     return (
       <div id="controller" className={`controller`}>
         <div className="controller-left">
@@ -285,7 +285,7 @@ class Home extends Component<HomePropsI, HomeStateI> {
           </Dropdown>
           <Icon
             className="controller-select-view iconfont"
-            type={viewType === ViewTypeEnum.GRID ? "menu" : "appstore"}
+            type={dicomSettings.viewMode === ViewTypeEnum.GRID ? "menu" : "appstore"}
             onClick={this.changeViewType}
           />
         </div>
