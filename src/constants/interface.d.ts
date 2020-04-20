@@ -295,7 +295,7 @@ export interface GalleryI {
   source_url: string; // 资源链接
   description: string; // 描述
   figure_series: string; // 图片在文章里的序列号
-  pictures: string[]; // 图片url地址数组
+  picture: string; // 图片url地址数组
   dicom_flag: number; // 是否是DICOM文件
   flag: number; // 可视标志
   published_at: string; // 文章发表时间
@@ -311,10 +311,12 @@ export interface GalleryByTable {
   source: string; // 来源类型
   doi: string; // 文章DOI值
   title: string; // 文章标题
+  title_en: string; // 英文标题
   journal: string; // 杂志
   authors: string; // 作者
   source_url: string; // 资源链接
   description: string; // 描述
+  description_en: string; // 英文描述
   figure_series: string; // 图片在文章里的序列号
   pictures: string[]; // 图片url地址数组
   dicom_flag: "是" | "否"; // 是否是DICOM文件

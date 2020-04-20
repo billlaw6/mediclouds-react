@@ -134,7 +134,7 @@ export const updatePublicImage = async (id: string, data: FormData): Promise<Gal
  */
 export const delPublicImages = async (id: string[]): Promise<any> => {
   try {
-    return await axios.post(`/dicom/public-image/delete/`, {
+    return await axios.post(`/dicom/public-image/del/`, {
       id,
     });
   } catch (error) {

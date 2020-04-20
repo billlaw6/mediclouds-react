@@ -64,7 +64,12 @@ const Feedback: FunctionComponent = () => {
                 .sort((a, b) => parseInt(a.code, 10) - parseInt(b.code, 10))
                 .map((type) => {
                   return (
-                    <Radio className="feedback-radio" key={type.code} value={type.code}>
+                    <Radio
+                      checked={currentType && currentType.code === type.code}
+                      className="feedback-radio"
+                      key={type.code}
+                      value={type.code}
+                    >
                       {type.title}
                     </Radio>
                   );

@@ -49,7 +49,6 @@ const FormItem = Form.Item;
 
 const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
   const { isShow, gallery, onCancel, onUpdate, onUpload, uploadMode, seriesIds } = props;
-
   const [uploadData, setUploadData] = useState<{ [key: string]: any }>({});
   const [validateErr, setValidateErr] = useState<string[]>([]);
 
@@ -199,6 +198,26 @@ const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
         </Row>
         <Row gutter={24}>
           <Col span={12}>
+            <FormItem label="英文标题" htmlFor="title_en">
+              <Input
+                name="title_en"
+                onChange={(e): void => changeUploadData("title_en", e.currentTarget.value)}
+                value={getVal("title_en")}
+              ></Input>
+            </FormItem>
+          </Col>
+          <Col span={12}>
+            <FormItem label="英文描述" htmlFor="description_en">
+              <Input
+                name="description_en"
+                onChange={(e): void => changeUploadData("description_en", e.currentTarget.value)}
+                value={getVal("description_en")}
+              ></Input>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row gutter={24}>
+          <Col span={6}>
             <FormItem label="来源类型" htmlFor="source">
               {/* <Input name="source" value={getVal("source")}></Input> */}
               <Radio.Group
@@ -210,6 +229,17 @@ const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
                 <Radio.Button value="ppt">幻灯片</Radio.Button>
                 <Radio.Button value="public_db">公共数据</Radio.Button>
               </Radio.Group>
+            </FormItem>
+          </Col>
+          <Col span={6}>
+            <FormItem label="文章DOI值" htmlFor="doi">
+              <Input
+                name="doi"
+                value={getVal("doi")}
+                onInput={(e): void => {
+                  changeUploadData("doi", e.currentTarget.value);
+                }}
+              ></Input>
             </FormItem>
           </Col>
           <Col span={12}>
@@ -260,18 +290,7 @@ const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
           </Col>
         </Row>
         <Row gutter={24}>
-          <Col span={12}>
-            <FormItem label="文章DOI值" htmlFor="doi">
-              <Input
-                name="doi"
-                value={getVal("doi")}
-                onInput={(e): void => {
-                  changeUploadData("doi", e.currentTarget.value);
-                }}
-              ></Input>
-            </FormItem>
-          </Col>
-          <Col span={12}>
+          <Col span={6}>
             <FormItem label="文章发表时间" htmlFor="published_at">
               <DatePicker
                 value={getVal("published_at") ? moment(getVal("published_at")) : null}
@@ -282,9 +301,15 @@ const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
               ></DatePicker>
             </FormItem>
           </Col>
-        </Row>
-        <Row gutter={24}>
-          <Col span={8}>
+          <Col span={6}>
+            <FormItem label="是否可见">
+              <Switch
+                checked={getVal("flag", 1)}
+                onChange={(checked): void => changeSwitch("flag", checked)}
+              ></Switch>
+            </FormItem>
+          </Col>
+          <Col span={6}>
             <FormItem label="序列分组" htmlFor="series_id">
               <AutoComplete
                 allowClear
@@ -308,7 +333,7 @@ const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
               </AutoComplete>
             </FormItem>
           </Col>
-          <Col span={8}>
+          <Col span={6}>
             <FormItem label="图片序列号" htmlFor="figure_series">
               <Input
                 disabled={getVal("dicom_flag", 1)}
@@ -320,25 +345,22 @@ const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
               ></Input>
             </FormItem>
           </Col>
-          <Col span={8}>
-            <FormItem label="是否可见">
-              <Switch
-                checked={getVal("flag", 1)}
-                onChange={(checked): void => changeSwitch("flag", checked)}
-              ></Switch>
-            </FormItem>
-          </Col>
         </Row>
         {uploadMode ? null : (
           <Row gutter={24}>
-            <Col span={8}>
+            <Col span={6}>
               <FormItem label="资源收录时间">{gallery.created_at}</FormItem>
             </Col>
-            <Col span={8}>
+            <Col span={6}>
               <FormItem label="md5值">{gallery.md5}</FormItem>
             </Col>
-            <Col span={8}>
-              <FormItem label="是否为dicom">{getVal("dicom_flag", 1) ? "是" : "否"}</FormItem>
+            <Col span={6}>
+              <FormItem label="是否为dicom">{gallery.dicom_flag === 1 ? "是" : "否"}</FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem label="图片">
+                <img style={{ width: "100%" }} src={gallery.picture}></img>
+              </FormItem>
             </Col>
           </Row>
         )}
