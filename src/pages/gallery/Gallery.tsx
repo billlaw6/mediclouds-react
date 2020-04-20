@@ -97,8 +97,6 @@ const Gallery: FunctionComponent = () => {
       .catch((err) => console.error(err));
   }, []);
 
-  // console.log("gallery", gallery);
-
   const edit = (item: GalleryI): void => {
     setUploadMode(false);
     setCurrentGallery(item);

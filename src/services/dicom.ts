@@ -87,7 +87,7 @@ export const checkDicomTotalCount = async (): Promise<number> => {
  */
 export const getPublicImages = async (): Promise<GalleryI[]> => {
   try {
-    const res = await axios.get("/dicom/public-image/");
+    const res = await axios.get("/dicom/public-image/manage/");
     return res.data;
   } catch (error) {
     throw new Error(error);

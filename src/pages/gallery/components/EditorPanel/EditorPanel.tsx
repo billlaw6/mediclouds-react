@@ -24,6 +24,7 @@ import { RcFile } from "antd/lib/upload/interface";
 import { uploadPublicImage, updatePublicImage } from "_services/dicom";
 
 import "./EditorPanel.less";
+import TextArea from "antd/lib/input/TextArea";
 
 /* 
 
@@ -188,11 +189,11 @@ const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
           </Col>
           <Col span={12}>
             <FormItem label="描述" htmlFor="description">
-              <Input
+              <TextArea
                 name="description"
                 onChange={(e): void => changeUploadData("description", e.currentTarget.value)}
                 value={getVal("description")}
-              ></Input>
+              ></TextArea>
             </FormItem>
           </Col>
         </Row>
@@ -208,11 +209,11 @@ const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
           </Col>
           <Col span={12}>
             <FormItem label="英文描述" htmlFor="description_en">
-              <Input
+              <TextArea
                 name="description_en"
                 onChange={(e): void => changeUploadData("description_en", e.currentTarget.value)}
                 value={getVal("description_en")}
-              ></Input>
+              ></TextArea>
             </FormItem>
           </Col>
         </Row>
@@ -312,6 +313,13 @@ const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
           <Col span={6}>
             <FormItem label="序列分组" htmlFor="series_id">
               <AutoComplete
+                value={
+                  uploadData["series_id"]
+                    ? uploadMode
+                      ? uploadData["series_id"]
+                      : ""
+                    : gallery.series_id
+                }
                 allowClear
                 placeholder="选择或新建分组"
                 onChange={(val): void => {
