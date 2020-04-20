@@ -61,11 +61,15 @@ import { RouteComponentProps } from "react-router-dom";
 // import axios from "axios";
 import { getDicomSeries, getDicomSeriesDetail, getDicomSeriesMprDetail } from "_services/dicom";
 import Shortcut from "./components/Shortcut";
+import imgLoaderrImg from "_images/img-load-err.jpg";
 
 const VIEWPORT_WIDTH_DEFAULT = 890; // 视图默认宽
 const VIEWPORT_HEIGHT_DEFAULT = 508; // 视图默认高
 const MPR_VIEWPORT_WIDTH_DEFAULT = 1152; // mpr 视图默认宽
 const MPR_VIEWPORT_HEIGHT_DEFAULT = 420; // mpr 视图默认高
+
+const imgLoadErr = new Image();
+imgLoadErr.src = imgLoaderrImg;
 
 // const req = axios.create({
 //   baseURL: "http://115.29.148.227:8083/rest-api",
@@ -759,6 +763,12 @@ const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = (
           setCache(nextCache);
           setCacheDone(true);
         }
+      };
+      $img.onerror = (err): void => {
+        console.log("img load err", err);
+        _imgs[index] = imgLoadErr;
+        count += 1;
+        setProgress((count / pics.length) * 100);
       };
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
