@@ -12,7 +12,6 @@ import {
   Upload,
   Button,
   AutoComplete,
-  message,
 } from "antd";
 import { EditorPanelPropsI } from "_pages/gallery/type";
 
@@ -313,13 +312,7 @@ const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
           <Col span={6}>
             <FormItem label="序列分组" htmlFor="series_id">
               <AutoComplete
-                value={
-                  uploadData["series_id"]
-                    ? uploadMode
-                      ? uploadData["series_id"]
-                      : ""
-                    : gallery.series_id
-                }
+                value={getVal("series_id")}
                 allowClear
                 placeholder="选择或新建分组"
                 onChange={(val): void => {
@@ -357,17 +350,17 @@ const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
         {uploadMode ? null : (
           <Row gutter={24}>
             <Col span={6}>
-              <FormItem label="资源收录时间">{gallery.created_at}</FormItem>
+              <FormItem label="资源收录时间">{getVal("created_at")}</FormItem>
             </Col>
             <Col span={6}>
-              <FormItem label="md5值">{gallery.md5}</FormItem>
+              <FormItem label="md5值">{getVal("md5")}</FormItem>
             </Col>
             <Col span={6}>
-              <FormItem label="是否为dicom">{gallery.dicom_flag === 1 ? "是" : "否"}</FormItem>
+              <FormItem label="是否为dicom">{getVal("dicom_flag", 1) ? "是" : "否"}</FormItem>
             </Col>
             <Col span={6}>
               <FormItem label="图片">
-                <img style={{ width: "100%" }} src={gallery.picture}></img>
+                <img style={{ width: "100%" }} src={getVal("picture")}></img>
               </FormItem>
             </Col>
           </Row>
