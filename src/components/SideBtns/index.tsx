@@ -9,7 +9,7 @@ const SideBtns: FunctionComponent = () => {
     <div className="side-btns">
       <div className="side-btns-item">
         <div className="side-btns-item-pop">
-          <b>解决关于DICOM的 各种问题，请用微 信扫码添加。</b>
+          <b>解决关于DICOM的各种问题，请用微信扫码添加。</b>
           <img src={medicloudsQrcode}></img>
           <b>医影二维码</b>
         </div>
