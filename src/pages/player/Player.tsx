@@ -64,7 +64,7 @@ import Shortcut from "./components/Shortcut";
 import imgLoaderrImg from "_images/img-load-err.jpg";
 
 const VIEWPORT_WIDTH_DEFAULT = 890; // 视图默认宽
-const VIEWPORT_HEIGHT_DEFAULT = 508; // 视图默认高
+const VIEWPORT_HEIGHT_DEFAULT = 550; // 视图默认高
 const MPR_VIEWPORT_WIDTH_DEFAULT = 1152; // mpr 视图默认宽
 const MPR_VIEWPORT_HEIGHT_DEFAULT = 420; // mpr 视图默认高
 
@@ -765,7 +765,7 @@ const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = (
         }
       };
       $img.onerror = (err): void => {
-        console.log("img load err", err);
+        // console.log("img load err", err);
         _imgs[index] = imgLoadErr;
         count += 1;
         setProgress((count / pics.length) * 100);

@@ -83,9 +83,11 @@ const Feedback: FunctionComponent = () => {
           </div>
           <div className="feedback-content-title">
             <b>详细描述</b>
-            <span>
+            {/* <span>
               （欢迎提出您在使用过程中遇到的问题或宝贵意见，感谢您对医影的支持。200个汉字以内）
-            </span>
+            </span> */}
+
+            <span>（欢迎提出您在使用过程中遇到的问题或宝贵意见，感谢您对医影的支持。）</span>
           </div>
           <div className="feedback-content-textarea">
             <Input.TextArea
