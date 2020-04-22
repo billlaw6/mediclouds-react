@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import React, { FunctionComponent, useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { Icon, Radio, Input } from "antd";
+import { Icon, Radio, Input, message } from "antd";
 
 import { FeedbackTypeI } from "_constants/interface";
 import axios from "_services/api";
@@ -17,13 +17,18 @@ const Feedback: FunctionComponent = () => {
 
   const onSubmit = (): void => {
     if (currentType) {
-      axios
-        .post("/user/feedback/", { type_id: currentType.code, content: value })
-        .then((_res) => {
-          setCurrentType(undefined);
-          setValue("");
-        })
-        .catch((err) => console.error(err));
+      if (!value) message.warning("详细描述不能为空");
+      else
+        axios
+          .post("/user/feedback/", { type_id: currentType.code, content: value })
+          .then((_res) => {
+            setCurrentType(feedbackTypes[0]);
+            setValue("");
+            message.success("反馈提交成功！", 3);
+          })
+          .catch((err) => {
+            message.error("提交失败，请重试", 3);
+          });
     }
   };
 
