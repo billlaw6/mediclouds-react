@@ -889,6 +889,10 @@ const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = (
       _ctx && setCtx(_ctx);
     }
   }, [ctx]);
+  useEffect(() => {
+    document.oncontextmenu = (): boolean => false;
+    document.oncopy = (): boolean => false;
+  }, []);
   /* =============== components =============== */
   const seriesListCmp = (list?: SeriesListI): ReactNode => {
     if (!list)
@@ -1100,11 +1104,39 @@ const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = (
               type={`${isPlay ? "pause" : "caret-right"}`}
               onClick={isPlay ? pause : play}
             />
-            <Icon className="iconfont" type="step-backward" onClick={isMpr ? firstMpr : first} />
-            <Icon className="iconfont" type="left" onClick={isMpr ? prevMpr : prev} />
+            <Icon
+              className="iconfont"
+              type="step-backward"
+              onClick={(): void => {
+                isPlay && pause();
+                isMpr ? firstMpr() : first();
+              }}
+            />
+            <Icon
+              className="iconfont"
+              type="left"
+              onClick={(): void => {
+                isPlay && pause();
+                isMpr ? prevMpr() : prev();
+              }}
+            />
             {slider()}
-            <Icon className="iconfont" type="right" onClick={isMpr ? nextMpr : next} />
-            <Icon className="iconfont" type="step-forward" onClick={isMpr ? lastMpr : last} />
+            <Icon
+              className="iconfont"
+              type="right"
+              onClick={(): void => {
+                isPlay && pause();
+                isMpr ? nextMpr() : next();
+              }}
+            />
+            <Icon
+              className="iconfont"
+              type="step-forward"
+              onClick={(): void => {
+                isPlay && pause();
+                isMpr ? lastMpr() : last();
+              }}
+            />
           </div>
           {ctlbtns(isShowInfo, currentSeries ? currentSeries.mpr_flag : false)}
         </div>
