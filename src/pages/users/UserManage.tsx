@@ -184,7 +184,7 @@ class UserManage extends React.Component<UserManagePropsI, UserManageStateI> {
         key: "last_login",
         render: (value: string) => {
           const dt = moment(new Date(value));
-          return <span>{dt.format("YYYY-MM-DD")}</span>;
+          return <span>{dt.locale("zh-cn").format("YYYY-MM-DD HH:mm")}</span>;
         },
         sorter: (a: UserI, b: UserI) => {
           if (a.last_login && b.last_login) {
@@ -211,7 +211,7 @@ class UserManage extends React.Component<UserManagePropsI, UserManageStateI> {
           return <span>{(value / (1024 * 1024)).toFixed(2)} M</span>;
         },
         sorter: (a: UserI, b: UserI) => {
-          return a.file_count! - b.file_count!;
+          return a.volumn_count! - b.volumn_count!;
         },
       },
       // {
