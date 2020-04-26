@@ -37,11 +37,15 @@ class UserManage extends React.Component<UserManagePropsI, UserManageStateI> {
     if (value) {
       const searchResult = userList.filter((item: UserI) => {
         // console.log(item.nickname.toLowerCase().indexOf(value.toLowerCase()));
-        if (
-          item.nickname.toLowerCase().indexOf(value.toLowerCase()) >= 0 ||
+        if (item.nickname && item.nickname.toLowerCase().indexOf(value.toLowerCase()) >= 0) {
+          return true;
+        } else if (
+          item.cell_phone &&
           item.cell_phone.toLowerCase().indexOf(value.toLowerCase()) >= 0
         ) {
           return true;
+        } else {
+          return false;
         }
       });
       this.setState({ searchResult: searchResult });
