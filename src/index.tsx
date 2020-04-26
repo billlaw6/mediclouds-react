@@ -21,6 +21,10 @@ import locale from "antd/es/locale/zh_CN";
 // 设置依赖组件moment的国际化
 import moment from "moment";
 import "moment/locale/zh-cn";
+
+import "core-js/stable";
+import "regenerator-runtime/runtime";
+
 moment.locale("zh-cn");
 
 export const store = configureStore();
