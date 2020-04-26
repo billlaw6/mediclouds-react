@@ -182,6 +182,10 @@ export interface UserI {
   birthday: string;
   is_active?: boolean;
   is_superuser?: boolean;
+  date_joined?: string;
+  last_login?: string;
+  file_count?: number;
+  volumn_count?: number;
 }
 
 // 单张图片

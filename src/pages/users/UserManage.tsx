@@ -157,6 +157,59 @@ class UserManage extends React.Component<UserManagePropsI, UserManageStateI> {
           return record.is_active === value;
         },
       },
+      {
+        title: "注册时间",
+        dataIndex: "date_joined",
+        key: "date_joined",
+        render: (value: string) => {
+          const dt = moment(new Date(value));
+          return <span>{dt.format("YYYY-MM-DD")}</span>;
+        },
+        sorter: (a: UserI, b: UserI) => {
+          if (a.date_joined && b.date_joined) {
+            const a1 = new Date(a.date_joined).valueOf();
+            const b1 = new Date(b.date_joined).valueOf();
+            return a1 - b1;
+          }
+          return true;
+        },
+      },
+      {
+        title: "最新登录",
+        dataIndex: "last_login",
+        key: "last_login",
+        render: (value: string) => {
+          const dt = moment(new Date(value));
+          return <span>{dt.format("YYYY-MM-DD")}</span>;
+        },
+        sorter: (a: UserI, b: UserI) => {
+          if (a.last_login && b.last_login) {
+            const a1 = new Date(a.last_login).valueOf();
+            const b1 = new Date(b.last_login).valueOf();
+            return a1 - b1;
+          }
+          return true;
+        },
+      },
+      {
+        title: "文件数量",
+        dataIndex: "file_count",
+        key: "cell_phone",
+        sorter: (a: UserI, b: UserI) => {
+          return a.file_count! - b.file_count!;
+        },
+      },
+      {
+        title: "文件容量",
+        dataIndex: "volumn_count",
+        key: "volumn_count",
+        render: (value: number) => {
+          return <span>{(value / (1024 * 1024)).toFixed(2)} M</span>;
+        },
+        sorter: (a: UserI, b: UserI) => {
+          return a.file_count! - b.file_count!;
+        },
+      },
       // {
       //     title: "操作",
       //     key: "action",
