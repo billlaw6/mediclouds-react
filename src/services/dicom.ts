@@ -1,5 +1,5 @@
 import axios from "./api";
-import { GalleryI } from "_constants/interface";
+import { GalleryI, GalleryStatsI } from "_constants/interface";
 
 export const getExamIndex = async (params: any) => {
   const res = await axios.get(`/dicom/exam-index/`, { params: params });
@@ -77,6 +77,20 @@ export const checkDicomTotalCount = async (): Promise<number> => {
   try {
     const res = await axios.get("/dicom/parse-progress/");
     return res.data.total as number;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+/**
+ * 公共影像集统计
+ *
+ * @returns {Promise<any>}
+ */
+export const getPublicImageStats = async (): Promise<GalleryStatsI[]> => {
+  try {
+    const res = await axios.get("/dicom/public-image/stats/");
+    return res.data;
   } catch (error) {
     throw new Error(error);
   }

@@ -22,12 +22,12 @@
 import React, { FunctionComponent, useState, useEffect } from "react";
 
 import "./Gallery.less";
-import { Input, Button, Popconfirm, DatePicker, message } from "antd";
+import { Input, Button, Popconfirm, DatePicker, message, Select } from "antd";
 import { Random } from "mockjs";
-import { GalleryI } from "_constants/interface";
+import { GalleryI, GalleryStatsI } from "_constants/interface";
 import GalleryList from "./components/List/List";
 import EditorPanel from "./components/EditorPanel/EditorPanel";
-import { getPublicImages, delPublicImages } from "_services/dicom";
+import { getPublicImages, delPublicImages, getPublicImageStats } from "_services/dicom";
 import { isNull, isUndefined } from "util";
 
 const GALLERY = {
@@ -48,41 +48,58 @@ const GALLERY = {
   published_at: "",
   created_at: "",
   series_id: "",
+  image_type: "",
+  image_type_name: "",
 };
 
-const getMock = (count: number): GalleryI[] => {
-  const result: GalleryI[] = [];
+// const getMock = (count: number): GalleryI[] => {
+//   const result: GalleryI[] = [];
 
-  for (; count > 0; count--) {
-    result.push({
-      id: Random.string(),
-      upload_to: Random.url(),
-      md5: Random.string(),
-      source: ["article", "ppt", "public_db"][Random.natural(0, 2)],
-      doi: Random.string(),
-      title: Random.title(1, 4),
-      journal: Random.ctitle(1, 2),
-      authors: Random.cname(),
-      source_url: Random.url(),
-      description: Random.csentence(5, 20),
-      figure_series: `${Random.natural()}`,
-      picture: Random.url(),
-      dicom_flag: Random.natural(0, 1),
-      flag: Random.natural(0, 1),
-      published_at: Random.date("yyyy-MM-dd"),
-      created_at: Random.date("yyyy-MM-dd"),
-      series_id: Random.string(),
-    });
+//   for (; count > 0; count--) {
+//     result.push({
+//       id: Random.string(),
+//       upload_to: Random.url(),
+//       md5: Random.string(),
+//       source: ["article", "ppt", "public_db"][Random.natural(0, 2)],
+//       doi: Random.string(),
+//       title: Random.title(1, 4),
+//       journal: Random.ctitle(1, 2),
+//       authors: Random.cname(),
+//       source_url: Random.url(),
+//       description: Random.csentence(5, 20),
+//       figure_series: `${Random.natural()}`,
+//       picture: Random.url(),
+//       dicom_flag: Random.natural(0, 1),
+//       flag: Random.natural(0, 1),
+//       published_at: Random.date("yyyy-MM-dd"),
+//       created_at: Random.date("yyyy-MM-dd"),
+//       series_id: Random.string(),
+//     });
+//   }
+
+//   return result;
+// };
+
+const init = async (): Promise<{ stats: GalleryStatsI[]; gallery: GalleryI[] }> => {
+  try {
+    const stats = await getPublicImageStats();
+    const gallery = await getPublicImages();
+
+    return { stats, gallery };
+  } catch (error) {
+    throw new Error(error);
   }
-
-  return result;
 };
 
 const Gallery: FunctionComponent = () => {
+  const [galleryStats, setGalleryStats] = useState<GalleryStatsI[]>([]);
   const [gallery, setGallery] = useState<GalleryI[]>([]);
-  const [search, setSearch] = useState<{ date?: [string, string]; title?: string; desc?: string }>(
-    {},
-  );
+  const [search, setSearch] = useState<{
+    date?: [string, string];
+    title?: string;
+    desc?: string;
+    imgType?: string;
+  }>({});
   const [isShow, setIsShow] = useState(false);
   const [currentGallery, setCurrentGallery] = useState<GalleryI>(GALLERY);
   const [uploadMode, setUploadMode] = useState(false); // 是否为上传模式
@@ -90,10 +107,11 @@ const Gallery: FunctionComponent = () => {
 
   useEffect(() => {
     /* 这里从后台获取gallery */
-    // setGallery(getMock(200));
-
-    getPublicImages()
-      .then((res) => setGallery(res))
+    init()
+      .then((res) => {
+        setGallery(res.gallery);
+        setGalleryStats(res.stats);
+      })
       .catch((err) => console.error(err));
   }, []);
 
@@ -109,7 +127,32 @@ const Gallery: FunctionComponent = () => {
       <section className="gallery-inner">
         <header className="gallery-header">
           <div className="gallery-search">
-            <b className="gallery-header-title">搜索：</b>
+            <b className="gallery-header-title">搜索/过滤</b>
+
+            <div
+              className="gallery-search-item"
+              style={{ maxWidth: "200px", display: "flex", alignItems: "center" }}
+            >
+              <div>影像集类型：</div>
+              <Select
+                defaultValue=""
+                style={{ flexGrow: 1 }}
+                onChange={(val: string): void =>
+                  setSearch(
+                    Object.assign({}, search, {
+                      imgType: val,
+                    }),
+                  )
+                }
+              >
+                <Select.Option value="">全部</Select.Option>
+                {galleryStats.map((item) => (
+                  <Select.Option value={item.image_type} key={`header_gallery_${item.image_type}`}>
+                    {item.image_type_name}
+                  </Select.Option>
+                ))}
+              </Select>
+            </div>
             <Input
               className="gallery-search-item"
               addonBefore="标题"
@@ -205,6 +248,7 @@ const Gallery: FunctionComponent = () => {
       <EditorPanel
         isShow={isShow}
         gallery={currentGallery}
+        galleryStats={galleryStats}
         uploadMode={uploadMode}
         seriesIds={Array.from(
           new Set(

@@ -285,6 +285,13 @@ export interface PrivacyNoticeI {
   content: string;
 }
 
+// 图集信息
+export interface GalleryStatsI {
+  total: number;
+  image_type: string;
+  image_type_name: string;
+}
+
 // 图集
 export interface GalleryI {
   [key: string]: any;
@@ -305,6 +312,8 @@ export interface GalleryI {
   published_at: string; // 文章发表时间
   created_at: string; // 资源收录时间
   series_id: string; // 序列号
+  image_type: string; // 图像类型
+  image_type_name: string; // 图像类型名称
 }
 
 export interface GalleryByTable {

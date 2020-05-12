@@ -12,6 +12,7 @@ import {
   Upload,
   Button,
   AutoComplete,
+  Select,
 } from "antd";
 import { EditorPanelPropsI } from "_pages/gallery/type";
 
@@ -48,7 +49,16 @@ import TextArea from "antd/lib/input/TextArea";
 const FormItem = Form.Item;
 
 const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
-  const { isShow, gallery, onCancel, onUpdate, onUpload, uploadMode, seriesIds } = props;
+  const {
+    isShow,
+    gallery,
+    onCancel,
+    onUpdate,
+    onUpload,
+    uploadMode,
+    seriesIds,
+    galleryStats,
+  } = props;
   const [uploadData, setUploadData] = useState<{ [key: string]: any }>({});
   const [validateErr, setValidateErr] = useState<string[]>([]);
 
@@ -64,6 +74,7 @@ const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
         ? uploadData[key] === queryVale
         : gallery[key] === queryVale;
 
+    console.log("uploadData[key]", uploadData[key]);
     return isUndefined(uploadData[key]) ? gallery[key] : uploadData[key];
   };
 
@@ -85,6 +96,7 @@ const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
       });
     }
 
+    console.log("nextUoloadData", nextUoloadData);
     setUploadData(nextUoloadData);
   };
 
@@ -231,7 +243,7 @@ const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
               </Radio.Group>
             </FormItem>
           </Col>
-          <Col span={6}>
+          <Col span={2}>
             <FormItem label="文章DOI值" htmlFor="doi">
               <Input
                 name="doi"
@@ -240,6 +252,25 @@ const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
                   changeUploadData("doi", e.currentTarget.value);
                 }}
               ></Input>
+            </FormItem>
+          </Col>
+          <Col span={4}>
+            <FormItem label="影像集类别" htmlFor="image_type">
+              <Select
+                value={getVal("image_type")}
+                onChange={(val: string): void => {
+                  console.log("val", val);
+                  changeUploadData("image_type", val);
+                }}
+              >
+                {galleryStats.map((item) => {
+                  return (
+                    <Select.Option key={`gallery_${item.image_type}`} value={item.image_type}>
+                      {item.image_type_name}
+                    </Select.Option>
+                  );
+                })}
+              </Select>
             </FormItem>
           </Col>
           <Col span={12}>

@@ -1,4 +1,4 @@
-import { GalleryI } from "_constants/interface";
+import { GalleryI, GalleryStatsI } from "_constants/interface";
 import { ElementRef } from "react";
 
 export interface GalleryListPropsI {
@@ -22,4 +22,5 @@ export interface EditorPanelPropsI {
   onUpload?: (gallery: GalleryI) => void; // 上传完毕
   uploadMode?: boolean; // 是否为上传模式
   seriesIds?: string[]; // 序列分组id
+  galleryStats: GalleryStatsI[];
 }

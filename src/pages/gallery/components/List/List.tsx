@@ -56,12 +56,13 @@ const columns = [
 /* 过滤 */
 const filter = (
   items: GalleryI[],
-  search?: { date?: [string, string]; title?: string; desc?: string },
+  search?: { date?: [string, string]; title?: string; desc?: string; imgType?: string },
 ): GalleryI[] => {
   if (!search) return items;
-  const { title, date, desc } = search;
+  const { title, date, desc, imgType } = search;
 
   let res = [...items];
+  if (imgType && imgType !== "_NONE_") res = res.filter((item) => item.image_type === imgType);
   if (title) res = res.filter((item) => item.title.indexOf(title) >= 0);
   if (desc) res = res.filter((item) => item.description.indexOf(desc) >= 0);
   if (date && date.length)
