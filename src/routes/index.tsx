@@ -11,6 +11,8 @@ import Feedback from "_pages/feedback/Feedback";
 import Dashboard from "_pages/dashboard/Dashboard";
 import MdEditor from "_pages/mdEditor/MdEditor";
 
+import MobileUpload from "_pages/mobileUpload/MobileUpload";
+
 import DefaultLayout from "_layout/Default/Default";
 import FullscreenLayout from "_layout/FullscreenLayout/FullscreenLayout";
 
@@ -100,6 +102,12 @@ const routes: RoutesI[] = [
     component: Gallery,
     permission: ["login"],
     layout: FullscreenLayout,
+  },
+  {
+    name: "mobileUpload",
+    path: "/mu",
+    component: MobileUpload,
+    permission: ["login"],
   },
 ];
 

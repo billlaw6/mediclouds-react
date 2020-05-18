@@ -1,4 +1,4 @@
-import React, { useReducer, createContext } from "react";
+import React, { useReducer, createContext, FunctionComponent } from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { AppContainer } from "react-hot-loader";
@@ -11,6 +11,7 @@ import zh_CN from "./locales/zh_CN";
 import en_US from "./locales/en_US";
 import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/es/integration/react";
+import wechatQrcode from "_images/wechat-qrcode.jpg";
 
 /* 
   为使用Antd的datePicker组件，需要正确设置国际化（针对antd组件）
@@ -51,22 +52,37 @@ if (module.hot) {
 
 const Loading = () => <div>loading</div>;
 
+// const IS_MOBILE = false;
+const IS_MOBILE = /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent);
+const MobileHome: FunctionComponent = () => (
+  <div className="mobile-tip">
+    <div className="mobile-tip-content">
+      <img src={wechatQrcode} alt="wechat_qrcode" title="wechat-qrcode"></img>
+      <p>请用微信扫码即刻体验医影小程序</p>
+    </div>
+  </div>
+);
+
 ReactDOM.render(
-  <AppContainer>
-    <Provider store={store}>
-      {/* place ConnectedRouter under Provider */}
-      <ConnectedRouter history={history}>
-        {/* your usual react-router v4/v5 routing */}
-        <IntlProvider locale="zh" messages={messages["zh"]}>
-          <PersistGate loading={<Loading />} persistor={persistor}>
-            <ConfigProvider locale={locale}>
-              <App />
-            </ConfigProvider>
-          </PersistGate>
-        </IntlProvider>
-      </ConnectedRouter>
-    </Provider>
-  </AppContainer>,
+  IS_MOBILE ? (
+    <MobileHome />
+  ) : (
+    <AppContainer>
+      <Provider store={store}>
+        {/* place ConnectedRouter under Provider */}
+        <ConnectedRouter history={history}>
+          {/* your usual react-router v4/v5 routing */}
+          <IntlProvider locale="zh" messages={messages["zh"]}>
+            <PersistGate loading={<Loading />} persistor={persistor}>
+              <ConfigProvider locale={locale}>
+                <App />
+              </ConfigProvider>
+            </PersistGate>
+          </IntlProvider>
+        </ConnectedRouter>
+      </Provider>
+    </AppContainer>
+  ),
   document.getElementById("root"),
 );
 
