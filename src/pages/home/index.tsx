@@ -156,6 +156,7 @@ class Home extends Component<HomePropsI, HomeStateI> {
   };
 
   dicoms = (): ReactElement | undefined => {
+    const { examIndexList } = this.props;
     const { page, isSelectable, selections } = this.state;
     const renderList = this.getCurrentItem();
 
@@ -212,7 +213,7 @@ class Home extends Component<HomePropsI, HomeStateI> {
             hideOnSinglePage={true}
             current={page}
             defaultPageSize={DEFAULT_PAGE_SIZE}
-            total={renderList.length}
+            total={examIndexList.length}
             onChange={(page): void => {
               this.setState({ page });
             }}
@@ -249,12 +250,13 @@ class Home extends Component<HomePropsI, HomeStateI> {
   };
 
   getCurrentItem = (): ExamIndexI[] => {
-    const { examIndexList } = this.props;
+    const { examIndexList, dicomSettings } = this.props;
     const { page } = this.state;
-    return this.sortList(examIndexList).slice(
-      (page - 1) * DEFAULT_PAGE_SIZE,
-      page * DEFAULT_PAGE_SIZE,
-    );
+    const resList = this.sortList(examIndexList);
+
+    if (dicomSettings.viewMode === ViewTypeEnum.GRID)
+      return resList.slice((page - 1) * DEFAULT_PAGE_SIZE, page * DEFAULT_PAGE_SIZE);
+    return resList;
   };
 
   controller = (): ReactElement => {
