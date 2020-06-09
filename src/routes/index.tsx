@@ -18,6 +18,8 @@ import FullscreenLayout from "_layout/FullscreenLayout/FullscreenLayout";
 
 import Oauth from "../pages/oauth/Oauth";
 import Gallery from "_pages/gallery/Gallery";
+import LoginAffiliate from "_pages/login_affiliate/LoginAffiliate";
+import OauthAffilate from "_pages/oauth/OauthAffilate";
 
 export interface RoutesI {
   name: string;
@@ -66,6 +68,11 @@ const routes: RoutesI[] = [
     component: Oauth,
   },
   {
+    name: "oauthAffiliate",
+    path: "/oauth-affiliate",
+    component: OauthAffilate,
+  },
+  {
     name: "profile",
     path: "/profile",
     component: Profile,
@@ -108,6 +115,13 @@ const routes: RoutesI[] = [
     path: "/mu",
     component: MobileUpload,
     permission: ["login"],
+  },
+  {
+    name: "loginAffiliate",
+    path: "/login-affiliate",
+    component: LoginAffiliate,
+    layout: FullscreenLayout,
+    // permission: ["login"],
   },
 ];
 

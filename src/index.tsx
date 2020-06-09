@@ -64,7 +64,7 @@ const MobileHome: FunctionComponent = () => (
 );
 
 ReactDOM.render(
-  IS_MOBILE ? (
+  IS_MOBILE && history.location.pathname !== "/login-affiliate/" ? (
     <MobileHome />
   ) : (
     <AppContainer>
