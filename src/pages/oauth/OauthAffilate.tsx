@@ -19,6 +19,7 @@ class OauthAffiliate extends React.Component<any, { registered: boolean }> {
       weChatLoginUser(obj)
         .then((res) => {
           console.log("res", res);
+          this.setState({ registered: true });
         })
         .catch((error) => console.error(error));
     } else {
