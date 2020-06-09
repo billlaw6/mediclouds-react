@@ -1,6 +1,9 @@
-import React, { ReactElement } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import qs from "qs";
+import { connect } from "react-redux";
+import { StoreStateI } from "_constants/interface";
+import { setTokenAction, setUserAction } from "_actions/user";
 import { weChatLoginUser } from "../../services/user";
 
 class OauthAffiliate extends React.Component<any, { registered: boolean }> {
@@ -11,6 +14,7 @@ class OauthAffiliate extends React.Component<any, { registered: boolean }> {
       registered: false,
     };
   }
+
   componentDidMount(): void {
     const query = this.props.router.location.search.substr(1);
     const obj = qs.parse(query);
@@ -27,7 +31,7 @@ class OauthAffiliate extends React.Component<any, { registered: boolean }> {
     }
   }
 
-  render(): ReactElement {
+  render() {
     const { registered } = this.state;
 
     return (
@@ -44,4 +48,14 @@ class OauthAffiliate extends React.Component<any, { registered: boolean }> {
   }
 }
 
-export default OauthAffiliate;
+const mapStateToProps = (state: StoreStateI) => {
+  return {
+    router: state.router,
+  };
+};
+
+const mapDispatchToProps = {
+  setToken: setTokenAction,
+  setUser: setUserAction,
+};
+export default connect(mapStateToProps, mapDispatchToProps)(OauthAffiliate);
