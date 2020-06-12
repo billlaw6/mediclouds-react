@@ -350,7 +350,7 @@ const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
                   changeUploadData("series_id", val);
                 }}
                 filterOption={(input, option): boolean => {
-                  if (!option.props.value) return false;
+                  if (!option || !option.props.value) return false;
                   return (
                     option.props.value.toString().toLowerCase().indexOf(input.toLowerCase()) >= 0
                   );

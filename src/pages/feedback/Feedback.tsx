@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import React, { FunctionComponent, useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { Icon, Radio, Input, message } from "antd";
+import { Radio, Input, message } from "antd";
 
 import { FeedbackTypeI } from "_constants/interface";
 import axios from "_services/api";
 
 import "./Feedback.less";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 
 const TOTAL = 200;
 
@@ -50,7 +51,7 @@ const Feedback: FunctionComponent = () => {
       <div className="feedback-header">
         <h1>意见反馈</h1>
         <Link className="feedback-back" to="/">
-          <Icon className="iconfont" type="arrow-left" />
+          <ArrowLeftOutlined className="iconfont"></ArrowLeftOutlined>
           <span>返回</span>
         </Link>
       </div>

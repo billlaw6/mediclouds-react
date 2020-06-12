@@ -165,9 +165,6 @@
     &-birthday {
       width: 100%;
     }
-    .ant-row {
-      margin-bottom: 8px;
-    }
 
     label {
       color: #8c8c8c;
@@ -191,8 +188,22 @@
     font-size: 14px;
     color: #595959;
     font-weight: 500;
-    border-radius: 8px;
+    border-radius: 4px;
     border-color: #b6b6b6;
+  }
+
+  .ant-form-item {
+    flex-direction: column;
+
+    .ant-form-item-label {
+      align-self: flex-start;
+    }
+  }
+
+  .ant-picker,
+  .ant-select-selector,
+  .ant-input-affix-wrapper {
+    border-radius: 4px !important;
   }
 
   .ant-input:focus,
@@ -202,14 +213,16 @@
     border-color: @primaryColor;
   }
 
-  .ant-select-disabled .ant-select-selection,
+  .ant-picker-disabled,
+  .ant-input-affix-wrapper-disabled,
+  .ant-select-disabled .ant-select-selector,
   .ant-input-disabled {
-    cursor: default;
-    background: transparent;
-    border-color: #e8e8e8;
-    color: #595959;
+    cursor: default !important;
+    background: transparent !important;
+    border-color: #e8e8e8 !important;
+    color: #595959 !important;
     &:hover {
-      border-color: #e8e8e8;
+      border-color: #e8e8e8 !important;
     }
   }
 
@@ -238,7 +251,7 @@
   .text-count {
     display: inline-block;
     position: absolute;
-    top: -48px;
+    top: -26px;
     right: 0;
     color: #bfbfbf;
   }

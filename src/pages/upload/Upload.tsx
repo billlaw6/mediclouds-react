@@ -1,5 +1,5 @@
 import React, { useState, FunctionComponent, useRef, useEffect } from "react";
-import { Icon, Switch } from "antd";
+import { Switch } from "antd";
 import { useDropzone } from "react-dropzone";
 import * as type from "_store/action-types";
 import { baseURL } from "_services/api";
@@ -16,6 +16,7 @@ import "./Upload.less";
 import { useDispatch } from "react-redux";
 import { checkDicomTotalCount } from "_services/dicom";
 import wechatQrcode from "_images/wechat-qrcode.jpg";
+import { InboxOutlined, ArrowLeftOutlined } from "@ant-design/icons";
 
 const Upload: FunctionComponent = () => {
   const dispatch = useDispatch();
@@ -147,7 +148,7 @@ const Upload: FunctionComponent = () => {
       <div className="upload-header">
         <h1>上传影像</h1>
         <Link className="upload-back" to="/">
-          <Icon className="iconfont" type="arrow-left" />
+          <ArrowLeftOutlined className="iconfont"></ArrowLeftOutlined>
           <span>返回</span>
         </Link>
       </div>
@@ -167,7 +168,7 @@ const Upload: FunctionComponent = () => {
             ref={ref}
             {...getInputProps({ name: "file", multiple: true })}
           />
-          <Icon className="iconfont" type="inbox" />
+          <InboxOutlined className="iconfont"></InboxOutlined>
           <p>将DICOM文件或含有DICOM文件的文件夹拖拽到这里上传</p>
           <p>（注意：目前系统不支持后缀为.zip，.rar，.7z等压缩包文件）</p>
           <small>医影系统会自动解析整理影像类型及序列分组</small>

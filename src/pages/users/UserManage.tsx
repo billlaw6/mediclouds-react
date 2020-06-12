@@ -1,11 +1,11 @@
 import React, { ReactElement } from "react";
-import { Table, Icon, Button, Form, Input } from "antd";
+import { Table, Button, Form, Input } from "antd";
 import moment, { Moment } from "moment";
 import { UserI } from "_constants/interface";
 import { getUserList, deactivateUsers, activateUsers, deleteUsers } from "_services/user";
-import { TableEventListeners } from "antd/lib/table";
 import { UserManagePropsI, UserManageStateI } from "_pages/users/type";
 import "./UserManage.less";
+import { KeyOutlined } from "@ant-design/icons";
 
 const dateFormat = "YYYY-MM-DD HH:mm:ss";
 
@@ -242,7 +242,7 @@ class UserManage extends React.Component<UserManagePropsI, UserManageStateI> {
           <Form layout="inline">
             <Form.Item label="检索词">
               <Input
-                prefix={<Icon type="key" style={{ color: "rgba(0,0,0, .25)" }} />}
+                prefix={<KeyOutlined style={{ color: "rgba(0,0,0, .25)" }}></KeyOutlined>}
                 type="text"
                 placeholder="手机号 | 昵称"
                 onChange={this.searchUser}
@@ -252,7 +252,7 @@ class UserManage extends React.Component<UserManagePropsI, UserManageStateI> {
         </div>
         <div className="user-table">
           <Table
-            ref="user-manage-table"
+            // ref="user-manage-table"
             rowSelection={rowSelection}
             rowKey={(record) => {
               return record.id.toString();
@@ -260,7 +260,7 @@ class UserManage extends React.Component<UserManagePropsI, UserManageStateI> {
             className="user-manage-table"
             columns={columns}
             dataSource={searchResult}
-            onRow={(record): TableEventListeners => {
+            onRow={(record) => {
               return {
                 onClick: (): void => {
                   // this.onClickItem(record.id);

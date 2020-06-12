@@ -1,16 +1,18 @@
 import React, { FunctionComponent, useState, useRef, useEffect } from "react";
-import { Form, Input, Row, Col, Select, DatePicker, Icon } from "antd";
+import { Form, Input, Row, Col, Select, DatePicker } from "antd";
 import moment, { Moment } from "moment";
 import { connect, useDispatch } from "react-redux";
 
 import { StoreStateI } from "_constants/interface";
 import { MapStateToPropsI, MapDispatchToPropsI } from "./type";
 
-import "./Profile.less";
 import DEFAULT_AVATAR from "_images/avatar.png";
 import { updateUserAction, setUserAction } from "_actions/user";
 import { getUserInfo } from "_services/user";
 import { Link } from "react-router-dom";
+import { ArrowLeftOutlined } from "@ant-design/icons";
+
+import "./Profile.less";
 
 const { Item } = Form;
 const { Option } = Select;
@@ -93,7 +95,7 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
       <div className="profile-header">
         <h1>个人信息</h1>
         <Link className="profile-back" to="/">
-          <Icon className="iconfont" type="arrow-left" />
+          <ArrowLeftOutlined className="iconfont"></ArrowLeftOutlined>
           <span>返回</span>
         </Link>
       </div>
@@ -132,7 +134,7 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
             </div>
           </div>
           <div className="profile-form-info">
-            <Item label="姓名" colon={false}>
+            <Item className="profile-form-item" label="姓名" colon={false}>
               <Input
                 disabled={!isEdit}
                 type="text"
@@ -147,7 +149,7 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
                 suffix={<span className="text-count">{userInfo.nickname.length}/15</span>}
               />
             </Item>
-            <Row className="profile-hoz" gutter={22}>
+            <Row className="profile-hoz profile-form-item" gutter={22}>
               <Col span={12}>
                 <Item label="性别" colon={false}>
                   <Select
@@ -199,7 +201,7 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
                 </Item>
               </Col>
             </Row>
-            <Item label="个性签名" colon={false}>
+            <Item className="profile-form-item" label="个性签名" colon={false}>
               <Input
                 placeholder="未填写"
                 disabled={!isEdit}
@@ -215,7 +217,7 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
                 suffix={<span className="text-count">{userInfo.sign.length}/20</span>}
               />
             </Item>
-            <Item label="通讯地址" colon={false}>
+            <Item className="profile-form-item" label="通讯地址" colon={false}>
               <Input
                 placeholder="未填写"
                 disabled={!isEdit}
@@ -231,7 +233,7 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
                 suffix={<span className="text-count">{userInfo.address.length}/20</span>}
               />
             </Item>
-            <Item label="就职单位" colon={false}>
+            <Item className="profile-form-item" label="就职单位" colon={false}>
               <Input
                 placeholder="未填写"
                 disabled={!isEdit}
@@ -247,7 +249,7 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
                 suffix={<span className="text-count">{userInfo.unit.length}/20</span>}
               />
             </Item>
-            <Item label="手机" colon={false}>
+            <Item className="profile-form-item" label="手机" colon={false}>
               <Input
                 disabled={true}
                 type="number"
@@ -259,7 +261,6 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
             <Row
               className="profile-form-btns"
               gutter={35}
-              type="flex"
               align="middle"
               justify="center"
               style={{ visibility: isEdit ? "visible" : "hidden" }}

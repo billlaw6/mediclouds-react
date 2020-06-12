@@ -20,13 +20,15 @@ module.exports = override(
     style: "css",
   }),
   addLessLoader({
-    javascriptEnable: true,
-    // modifyVars: { "@primary-color": "#7398FF" }, // 不注释掉不能修改主题色
+    lessOptions: {
+      javascriptEnable: true,
+      // modifyVars: { "@primary-color": "#7398FF" }, // 不注释掉不能修改主题色
+    },
   }),
   addWebpackPlugin(
-    new copyWebpackPlugin([
-      { from: "src/assets/styles/qrcode.css", to: "static/css/[name].[ext]" },
-    ]),
+    new copyWebpackPlugin({
+      patterns: [{ from: "src/assets/styles/qrcode.css", to: "static/css/[name].[ext]" }],
+    }),
   ),
   addWebpackAlias({
     ["_components"]: path.join(SRC, "components"),

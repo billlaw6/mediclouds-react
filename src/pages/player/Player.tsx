@@ -47,7 +47,7 @@ import {
   MprImgAndSizeI,
 } from "./type";
 import "./Player.less";
-import { Icon, Slider, Progress } from "antd";
+import { Slider, Progress } from "antd";
 import { isIE as isIEFunc } from "_helper";
 import {
   CustomHTMLDivElement,
@@ -62,6 +62,19 @@ import { RouteComponentProps } from "react-router-dom";
 import { getDicomSeries, getDicomSeriesDetail, getDicomSeriesMprDetail } from "_services/dicom";
 import Shortcut from "./components/Shortcut";
 import imgLoaderrImg from "_images/img-load-err.jpg";
+import {
+  ArrowLeftOutlined,
+  FullscreenExitOutlined,
+  FullscreenOutlined,
+  EyeOutlined,
+  EyeInvisibleOutlined,
+  PauseOutlined,
+  CaretRightOutlined,
+  StepForwardOutlined,
+  StepBackwardOutlined,
+  LeftOutlined,
+  RightOutlined,
+} from "@ant-design/icons";
 
 const VIEWPORT_WIDTH_DEFAULT = 890; // 视图默认宽
 const VIEWPORT_HEIGHT_DEFAULT = 550; // 视图默认高
@@ -1035,24 +1048,38 @@ const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = (
   const ctlbtns = (isShowInfo: boolean, mpr: boolean): ReactElement => {
     return (
       <div className="player-ctl-btns">
-        <Icon
-          className={`iconfont ${isShowInfo ? "" : "active"}`}
-          type={`${isShowInfo ? "eye" : "eye-invisible"}`}
-          onClick={(): void => {
-            cacheDone && setShowInfo(!isShowInfo);
-          }}
-        />
+        {isShowInfo ? (
+          <EyeOutlined
+            className="iconfont active"
+            onClick={(): void => {
+              cacheDone && setShowInfo(!isShowInfo);
+            }}
+          ></EyeOutlined>
+        ) : (
+          <EyeInvisibleOutlined
+            className="iconfont"
+            onClick={(): void => {
+              cacheDone && setShowInfo(!isShowInfo);
+            }}
+          ></EyeInvisibleOutlined>
+        )}
         <i
           className={`iconfont icon-ic iconic_mpr player-mpr-btn ${mpr ? "" : "disabled"} ${
             isMpr ? "active" : ""
           }`}
           onClick={(): void => showMpr(mpr)}
         ></i>
-        <Icon
-          className={`iconfont ${isFullscreen ? "active" : ""}`}
-          type={isFullscreen ? "fullscreen-exit" : "fullscreen"}
-          onClick={(): void => changeFullscreen(isFullscreen)}
-        />
+        {isFullscreen ? (
+          <FullscreenExitOutlined
+            className="iconfont active"
+            onClick={(): void => changeFullscreen(isFullscreen)}
+          ></FullscreenExitOutlined>
+        ) : (
+          <FullscreenOutlined
+            className="iconfont"
+            onClick={(): void => changeFullscreen(isFullscreen)}
+          ></FullscreenOutlined>
+        )}
       </div>
     );
   };
@@ -1069,7 +1096,7 @@ const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = (
           className="player-header-shortcut-btn iconfont iconic_help"
           onClick={(): void => setShowShortcut(true)}
         ></i>
-        <LinkButton className="player-header-back" to="/" icon="arrow-left" type="light">
+        <LinkButton className="player-header-back" to="/" icon={<ArrowLeftOutlined />} type="light">
           返回
         </LinkButton>
       </div>
@@ -1099,44 +1126,43 @@ const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = (
         </div>
         <div className={`player-ctl ${cacheDone ? "" : "player-disabled"}`}>
           <div className="player-ctl-playbtns">
-            <Icon
-              className="iconfont iconfont-isPlay"
-              type={`${isPlay ? "pause" : "caret-right"}`}
-              onClick={isPlay ? pause : play}
-            />
-            <Icon
+            {isPlay ? (
+              <PauseOutlined className="iconfont iconfont-isPlay" onClick={pause}></PauseOutlined>
+            ) : (
+              <CaretRightOutlined
+                className="iconfont iconfont-isPlay"
+                onClick={play}
+              ></CaretRightOutlined>
+            )}
+            <StepBackwardOutlined
               className="iconfont"
-              type="step-backward"
               onClick={(): void => {
                 isPlay && pause();
                 isMpr ? firstMpr() : first();
               }}
-            />
-            <Icon
+            ></StepBackwardOutlined>
+            <LeftOutlined
               className="iconfont"
-              type="left"
               onClick={(): void => {
                 isPlay && pause();
                 isMpr ? prevMpr() : prev();
               }}
-            />
+            ></LeftOutlined>
             {slider()}
-            <Icon
+            <RightOutlined
               className="iconfont"
-              type="right"
               onClick={(): void => {
                 isPlay && pause();
                 isMpr ? nextMpr() : next();
               }}
-            />
-            <Icon
+            ></RightOutlined>
+            <StepForwardOutlined
               className="iconfont"
-              type="step-forward"
               onClick={(): void => {
                 isPlay && pause();
                 isMpr ? lastMpr() : last();
               }}
-            />
+            ></StepForwardOutlined>
           </div>
           {ctlbtns(isShowInfo, currentSeries ? currentSeries.mpr_flag : false)}
         </div>

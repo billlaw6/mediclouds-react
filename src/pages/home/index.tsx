@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import React, { ReactElement, Component } from "react";
 import { connect } from "react-redux";
-import { Row, Col, Dropdown, Menu, Icon, Pagination, Table, Checkbox, Modal } from "antd";
+import { Row, Col, Dropdown, Menu, Pagination, Table, Checkbox, Modal } from "antd";
 import DicomCard from "_components/DicomCard/DicomCard";
 import { StoreStateI, ExamIndexI } from "_constants/interface";
 
@@ -22,7 +22,7 @@ import {
 } from "_actions/dicom";
 
 import { Gutter } from "antd/lib/grid/row";
-import { PaginationConfig, ColumnProps, TableEventListeners } from "antd/lib/table";
+import { ColumnProps, TablePaginationConfig } from "antd/lib/table";
 import LinkButton from "_components/LinkButton/LinkButton";
 import ListDesc from "./components/ListDesc";
 import PrivacyNotice from "./components/PrivacyNotice";
@@ -35,6 +35,14 @@ import Empty from "./components/Empty/Empty";
 
 import "./Home.less";
 import { isUndefined, isNull } from "util";
+import {
+  CloudUploadOutlined,
+  ArrowLeftOutlined,
+  DeleteOutlined,
+  SortAscendingOutlined,
+  MenuOutlined,
+  AppstoreOutlined,
+} from "@ant-design/icons";
 
 const DEFAULT_PAGE_SIZE = 12;
 
@@ -127,12 +135,12 @@ class Home extends Component<HomePropsI, HomeStateI> {
       dataSource.push({ ...others, desc: editorDesc });
     });
 
-    const paginationConfig: PaginationConfig = {
+    const paginationConfig: TablePaginationConfig = {
       current: page,
       defaultPageSize: DEFAULT_PAGE_SIZE,
       total: renderList.length,
       hideOnSinglePage: true,
-      onChange: (page): void => {
+      onChange: (page: number): void => {
         this.setState({ page });
       },
     };
@@ -144,7 +152,7 @@ class Home extends Component<HomePropsI, HomeStateI> {
         columns={columns}
         dataSource={dataSource}
         pagination={paginationConfig}
-        onRow={(record): TableEventListeners => {
+        onRow={(record) => {
           return {
             onClick: (): void => {
               this.onClickItem(record.id);
@@ -175,7 +183,7 @@ class Home extends Component<HomePropsI, HomeStateI> {
         if (count >= 4) {
           count = 0;
           rows.push(
-            <Row key={rows.length} type="flex" gutter={gutter} align="middle">
+            <Row key={rows.length} gutter={gutter} align="middle">
               {cols}
             </Row>,
           );
@@ -201,7 +209,7 @@ class Home extends Component<HomePropsI, HomeStateI> {
       });
 
       rows.push(
-        <Row key={rows.length} type="flex" gutter={gutter} align="top">
+        <Row key={rows.length} gutter={gutter} align="top">
           {cols}
         </Row>,
       );
@@ -266,16 +274,31 @@ class Home extends Component<HomePropsI, HomeStateI> {
       <div id="controller" className={`controller`}>
         <div className="controller-left">
           <span className="controller-title">影像列表</span>
-          <LinkButton className="controller-upload" to="/upload" icon="cloud-upload">
+          <LinkButton className="controller-upload" to="/upload" icon={<CloudUploadOutlined />}>
             上传
           </LinkButton>
           {examIndexList.length ? (
             <div className={`controller-del ${isSelectable ? "controller-del-open" : ""}`}>
-              <Icon
+              {isSelectable ? (
+                <ArrowLeftOutlined
+                  className="iconfont"
+                  onClick={(): void =>
+                    this.setState({ isSelectable: !isSelectable, selections: [] })
+                  }
+                ></ArrowLeftOutlined>
+              ) : (
+                <DeleteOutlined
+                  className="iconfont"
+                  onClick={(): void =>
+                    this.setState({ isSelectable: !isSelectable, selections: [] })
+                  }
+                ></DeleteOutlined>
+              )}
+              {/* <Icon
                 className="iconfont"
                 type={isSelectable ? "arrow-left" : "delete"}
                 onClick={(): void => this.setState({ isSelectable: !isSelectable, selections: [] })}
-              />
+              /> */}
               {/* <span onClick={this.selectedAll}>全选</span> */}
               <span onClick={this.showConfirm}>删除</span>
             </div>
@@ -283,13 +306,25 @@ class Home extends Component<HomePropsI, HomeStateI> {
         </div>
         <div className={`controller-right ${examIndexList.length ? "" : "hidden"}`}>
           <Dropdown overlay={this.dropdownContent()} placement="bottomRight">
-            <Icon className="controller-select-sort iconfont" type="sort-ascending" />
+            <SortAscendingOutlined className="controller-select-sort iconfont"></SortAscendingOutlined>
+            {/* <Icon className="controller-select-sort iconfont" type="sort-ascending" /> */}
           </Dropdown>
-          <Icon
+          {dicomSettings.viewMode === ViewTypeEnum.GRID ? (
+            <MenuOutlined
+              className="controller-select-view iconfont"
+              onClick={this.changeViewType}
+            ></MenuOutlined>
+          ) : (
+            <AppstoreOutlined
+              className="controller-select-view iconfont"
+              onClick={this.changeViewType}
+            ></AppstoreOutlined>
+          )}
+          {/* <Icon
             className="controller-select-view iconfont"
             type={dicomSettings.viewMode === ViewTypeEnum.GRID ? "menu" : "appstore"}
             onClick={this.changeViewType}
-          />
+          /> */}
         </div>
       </div>
     );

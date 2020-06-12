@@ -9,7 +9,7 @@ export interface GalleryListPropsI {
   items: GalleryI[]; // 图集
   onClick?: (item: GalleryI) => void; // 点击某条字段触发
   onSelect?: (
-    selectedRowKeys: string[] | number[],
+    selectedRowKeys: (string | number)[],
     selectedRows: (GalleryI & { edit: JSX.Element })[],
   ) => void;
 }

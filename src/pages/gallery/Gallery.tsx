@@ -231,7 +231,7 @@ const Gallery: FunctionComponent = () => {
                     });
               }}
             >
-              <Button type="danger">删除</Button>
+              <Button danger>删除</Button>
             </Popconfirm>
           </div>
         </header>

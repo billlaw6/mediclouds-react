@@ -1,7 +1,5 @@
 import React, { FunctionComponent, ReactNode } from "react";
 import { Link } from "react-router-dom";
-import { isString } from "util";
-import { Icon } from "antd";
 
 import { LinkButtonPropsI } from "./type";
 
@@ -26,7 +24,7 @@ const LinkButton: FunctionComponent<LinkButtonPropsI> = (props) => {
       className: "link-btn-icon",
     };
 
-    if (isString(icon)) return <Icon {...attrs} type={icon}></Icon>;
+    // if (isString(icon)) return <Icon {...attrs} type={icon}></Icon>;
     return <i {...attrs}>{icon}</i>;
   };
 

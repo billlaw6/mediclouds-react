@@ -37,13 +37,6 @@
 
   .user {
     color: #606060;
-    &-name {
-      font-size: 20px;
-    }
-
-    &-cell-phone {
-      font-size: 12px;
-    }
   }
 
   .edit-user-info,
@@ -58,15 +51,22 @@
       color: #7398ff;
     }
   }
-}
 
-.avatar-dropdown {
-  max-width: 244px;
-  .user-name {
+  .ant-menu-item-group-title {
+    font-size: 20px;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
     margin-bottom: 8px;
+  }
+}
+
+.avatar-dropdown {
+  max-width: 244px;
+
+  .ant-menu-root.ant-menu-vertical {
+    box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08),
+      0 9px 28px 8px rgba(0, 0, 0, 0.05);
   }
 
   .ant-dropdown-menu-item:not(:last-child) {

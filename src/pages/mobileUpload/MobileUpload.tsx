@@ -1,5 +1,4 @@
 import React, { useState, FunctionComponent, useRef, useEffect } from "react";
-import { Icon, Switch } from "antd";
 import { useDropzone } from "react-dropzone";
 import * as type from "_store/action-types";
 import { baseURL } from "_services/api";
@@ -15,6 +14,7 @@ import { FileProgressStatusEnum } from "_components/FileProgress/type";
 import { useDispatch } from "react-redux";
 
 import "./MobileUpload.less";
+import { InboxOutlined } from "@ant-design/icons";
 
 const MobileUpload: FunctionComponent = () => {
   const dispatch = useDispatch();
@@ -133,7 +133,7 @@ const MobileUpload: FunctionComponent = () => {
             ref={ref}
             {...getInputProps({ name: "file", multiple: true })}
           />
-          <Icon className="iconfont" type="inbox" />
+          <InboxOutlined className="iconfont"></InboxOutlined>
           <p>点击打开文件管理器，选择DICOM文件上传</p>
           <p>（注意：目前系统不支持后缀为.zip，.rar，.7z等压缩包文件）</p>
           <small>医影系统会自动解析整理影像类型及序列分组</small>

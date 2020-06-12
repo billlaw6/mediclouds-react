@@ -17,7 +17,9 @@ import SideBtns from "_components/SideBtns";
 
 const { Content } = Layout;
 
-class DefalutLayout extends Component<StoreStateI & MapDispatchToPropsI> {
+class DefalutLayout extends Component<
+  StoreStateI & MapDispatchToPropsI & { children: ReactElement }
+> {
   render(): ReactElement {
     const { children, user, logout } = this.props;
     const { avatar, nickname, is_superuser: isSuperuser } = user;

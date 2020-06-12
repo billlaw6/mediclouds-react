@@ -12,7 +12,7 @@ import { Link } from "react-router-dom";
 const { Item: MenuItem, ItemGroup: MenuItemGroup, Divider } = Menu;
 const { Header: AntdHeader } = Layout;
 
-const getAvatarMenu: FunctionComponent<HeaderPropsI> = (props): ReactElement => {
+const AvatarMenu: FunctionComponent<HeaderPropsI> = (props): ReactElement => {
   const { nickname, logout, isSuperuser } = props;
 
   const onClick = (e: ClickParam): void => {
@@ -22,13 +22,8 @@ const getAvatarMenu: FunctionComponent<HeaderPropsI> = (props): ReactElement => 
 
   return (
     <Menu className="header-avatar-menu" onClick={onClick}>
-      <MenuItemGroup>
-        <ul className="user">
-          <li className="user-name">{nickname || "匿名"}</li>
-        </ul>
-      </MenuItemGroup>
-      <Divider></Divider>
-      <MenuItemGroup>
+      <MenuItemGroup title={nickname || "匿名"}>
+        <Divider></Divider>
         <MenuItem className="edit-user-info" key="editUserInfo">
           <Link to="/profile">个人信息</Link>
         </MenuItem>
@@ -61,7 +56,7 @@ const Header: FunctionComponent<HeaderPropsI> = (props): ReactElement => {
         </a>
         <Dropdown
           className="avatar"
-          overlay={getAvatarMenu(props)}
+          overlay={() => <AvatarMenu {...props}></AvatarMenu>}
           overlayClassName="avatar-dropdown"
           placement="bottomRight"
         >

@@ -47,7 +47,7 @@ axios.interceptors.request.use(
       // console.log(config.data);
       // console.log(qs.parse(config.data));
       if (config.data && qs.parse(config.data).requestName) {
-        requestName = qs.parse(config.data).requestName;
+        requestName = qs.parse(config.data).requestName as string;
       } else {
         requestName = new Date().getTime().toString();
       }

@@ -1,8 +1,9 @@
 import React, { ReactElement, FunctionComponent, useState } from "react";
-import { Card, Input, Skeleton, Icon, Checkbox } from "antd";
+import { Card, Input, Skeleton, Checkbox } from "antd";
 import { withRouter, RouteComponentProps } from "react-router-dom";
 import holdimg from "_images/placeholder_270x262.png";
 import "./DicomCard.less";
+import { EditOutlined, CloseCircleOutlined, CheckCircleOutlined } from "@ant-design/icons";
 
 interface DicomCardPropsI {
   id: string;
@@ -72,9 +73,8 @@ const DicomCard: FunctionComponent<DicomCardPropsI & RouteComponentProps> = (
       <div className={`dicom-card-desc ${showEditor ? "dicom-card-desc-editing" : ""}`}>
         <div className="dicom-card-desc-text">
           <div>{desc || "备注"}</div>
-          <Icon
+          <EditOutlined
             className="dicom-card-desc-edit iconfont icon_ic-edit"
-            type="edit"
             onClick={(): void => editDesc(true)}
           />
         </div>
@@ -86,19 +86,17 @@ const DicomCard: FunctionComponent<DicomCardPropsI & RouteComponentProps> = (
           maxLength={20}
           addonAfter={
             <div className="dicom-card-desc-ctl">
-              <Icon
+              <CheckCircleOutlined
                 className="iconfont icon_ic-complete"
-                type="check-circle"
                 onClick={(): void => {
                   updateDesc && updateDesc(inputValue);
                   editDesc(false);
                 }}
-              />
-              <Icon
-                type="close-circle"
+              ></CheckCircleOutlined>
+              <CloseCircleOutlined
                 className="iconfont icon_ic-close"
                 onClick={(): void => editDesc(false)}
-              />
+              ></CloseCircleOutlined>
             </div>
           }
         ></Input>
