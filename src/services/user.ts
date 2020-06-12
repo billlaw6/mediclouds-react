@@ -80,3 +80,8 @@ export const createFeedback = async (params: any) => {
   const res = await axios.post(`/user/feedback/`, params);
   return res;
 };
+
+export const getUserStats = async (params: any) => {
+  const res = await axios.get(`/user/user-stats/`, { params: params });
+  return res;
+};
