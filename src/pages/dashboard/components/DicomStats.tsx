@@ -3,15 +3,15 @@ import { connect } from "react-redux";
 
 import { StoreStateI } from "../../../constants/interface";
 import ReactEcharts from "echarts-for-react";
-import { getUserStats } from "../../../services/user";
+import { getDicomFileStats } from "../../../services/dicom";
 
 interface MapStateToPropsI {}
 
 interface StatsStateI {
-  totalCount: number;
-  dailyCount: {
+  totalAmount: number;
+  dailyAmount: {
     dt: string; // 年月日
-    rc: number; // 注册人次
+    amount: number; // 上传DICOM累计大小
   }[];
 }
 
@@ -19,26 +19,26 @@ class Stats extends React.Component<MapStateToPropsI, StatsStateI> {
   constructor(props: MapStateToPropsI) {
     super(props);
     this.state = {
-      totalCount: 0,
-      dailyCount: [],
+      totalAmount: 0,
+      dailyAmount: [],
     };
     this.getOption = this.getOption.bind(this); //
   }
   componentDidMount(): void {
-    getUserStats({}).then((res: any) => {
+    getDicomFileStats({}).then((res: any) => {
       const { data } = res;
-      this.setState({ totalCount: data.total_count });
-      this.setState({ dailyCount: data.daily_count });
+      this.setState({ totalAmount: data.total_amount });
+      this.setState({ dailyAmount: data.daily_amount });
     });
   }
 
   getOption(): any {
-    const { totalCount, dailyCount } = this.state;
-    // console.log(dailyCount);
+    const { totalAmount, dailyAmount } = this.state;
+    console.log(dailyAmount);
     return {
       title: {
-        text: "近14天注册用户统计(总用户： " + totalCount + "）",
-        // subtext: "历史累计用户数： " + totalCount,
+        text: "近14天上传统计，总计已上传: " + Math.round(totalAmount / (1024 * 1024)) + "Mb",
+        // subtext: "历史累计上传DICOM: " + Math.round(totalAmount / (1024 * 1024)) + "Mb",
         left: "50%",
         textAlign: "center",
         textStyle: {
@@ -54,7 +54,7 @@ class Stats extends React.Component<MapStateToPropsI, StatsStateI> {
         },
       },
       legend: {
-        data: ["注册人数"],
+        data: ["上传DICOM文件累计"],
         top: "10%",
       },
       toolbox: {
@@ -78,9 +78,10 @@ class Stats extends React.Component<MapStateToPropsI, StatsStateI> {
           type: "category",
           data: ((): string[] => {
             const xColumns: string[] = [];
-            dailyCount.forEach((item) => {
+            dailyAmount.forEach((item) => {
               xColumns.push(item.dt);
             });
+            console.log(xColumns);
             return xColumns;
           })(),
         },
@@ -92,7 +93,7 @@ class Stats extends React.Component<MapStateToPropsI, StatsStateI> {
       ],
       series: [
         {
-          name: "当日注册人数",
+          name: "当日上传DICOM累计",
           type: "bar",
           stack: "",
           label: {
@@ -101,10 +102,10 @@ class Stats extends React.Component<MapStateToPropsI, StatsStateI> {
           },
           data: ((): number[] => {
             const yValue: number[] = [];
-            dailyCount.forEach((item) => {
-              yValue.push(item.rc);
+            dailyAmount.forEach((item) => {
+              yValue.push(Math.round(item.amount));
             });
-            // console.log(yValue);
+            console.log(yValue);
             return yValue;
           })(),
           color: "#0780cf",

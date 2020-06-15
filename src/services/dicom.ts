@@ -57,7 +57,7 @@ export const searchDicomFile = async (params: any) => {
 };
 
 export const getDicomFileStats = async (params: any) => {
-  const res = await axios.get(`/dicom/dicom-file/stats/`, { params: params });
+  const res = await axios.get(`/dicom/dicom-stats/`, { params: params });
   return res;
 };
 
