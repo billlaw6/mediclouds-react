@@ -20,6 +20,7 @@ import Oauth from "../pages/oauth/Oauth";
 import Gallery from "_pages/gallery/Gallery";
 import LoginAffiliate from "_pages/login_affiliate/LoginAffiliate";
 import OauthAffilate from "_pages/oauth/OauthAffilate";
+import HomeResource from "_pages/homeResource/HomeResource";
 
 export interface RoutesI {
   name: string;
@@ -95,6 +96,13 @@ const routes: RoutesI[] = [
     path: "/users",
     component: UserManage,
     permission: ["login", "is_superuser"],
+  },
+  {
+    name: "homeRes",
+    path: "/home-res",
+    component: HomeResource,
+    // permission: ["login", "is_superuser"],
+    permission: ["login"],
   },
   {
     name: "mdEditor",

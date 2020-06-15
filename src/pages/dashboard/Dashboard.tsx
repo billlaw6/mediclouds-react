@@ -48,6 +48,9 @@ class Dashboard extends React.Component<DashboardPropsI, DashboardStateI> {
         <div className="dashboard-input">
           <a href="/gallery">公共影像集</a>
         </div>
+        <div className="dashboard-input">
+          <a href="/home-res">首页轮播图编辑</a>
+        </div>
       </div>
     );
   }
