@@ -56,6 +56,11 @@ export const searchDicomFile = async (params: any) => {
   return res;
 };
 
+export const getDicomFileStats = async (params: any) => {
+  const res = await axios.get(`/dicom/dicom-file/stats/`, { params: params });
+  return res;
+};
+
 /**
  * @description 检查dicom解析进度并返回剩余解析量
  * @returns {Promise<number>}

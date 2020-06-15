@@ -6,4 +6,6 @@ export interface MapStateToPropsI {
 }
 
 export type DashboardPropsI = MapStateToPropsI & RouteComponentProps;
-export interface DashboardStateI {}
+export interface DashboardStateI {
+  openKeys: string[];
+}
