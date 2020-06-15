@@ -4,6 +4,7 @@ import moment, { Moment } from "moment";
 import { AppstoreOutlined, MailOutlined, SettingOutlined } from "@ant-design/icons";
 import "./Dashboard.less";
 import UserStats from "./components/UserStats";
+import DicomStats from "./components/DicomStats";
 import { UserI } from "_constants/interface";
 import { RouteComponentProps } from "react-router";
 
@@ -76,14 +77,13 @@ class Dashboard extends React.Component<DashboardPropsI, DashboardStateI> {
           </Col>
           <Col xs={{ span: 18 }} lg={{ span: 20 }}>
             <Row>
-              <Col span={8}>
+              <Col span={24}>
                 <UserStats></UserStats>
               </Col>
-              <Col span={8}>
-                <UserStats></UserStats>
-              </Col>
-              <Col span={8}>
-                <UserStats></UserStats>
+            </Row>
+            <Row>
+              <Col span={12}>
+                <DicomStats></DicomStats>
               </Col>
             </Row>
           </Col>
