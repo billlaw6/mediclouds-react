@@ -1,94 +1,139 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import React, { ReactElement } from "react";
-import { Table, Button, Form, Input, Row, Col } from "antd";
-import moment, { Moment } from "moment";
-import { AppstoreOutlined, MailOutlined, SettingOutlined } from "@ant-design/icons";
-import "./Dashboard.less";
-import UserStats from "./components/UserStats";
-import DicomStats from "./components/DicomStats";
-import { UserI } from "_constants/interface";
-import { RouteComponentProps } from "react-router";
+import { Row, Col, Layout, Menu } from "antd";
+import { UserOutlined, CopyOutlined, CameraOutlined, DesktopOutlined } from "@ant-design/icons";
+import { getUserStats } from "_services/user";
+import { getDicomFileStats } from "_services/dicom";
 
-export interface MapStateToPropsI {
-  user: UserI;
+import logo from "_assets/images/logo.png";
+import "./Dashboard.less";
+interface UserStatsI {
+  dt: string;
+  rc: number;
 }
 
-export type DashboardPropsI = MapStateToPropsI & RouteComponentProps;
+interface DicomStatsI {
+  dt: string;
+  daily_count: number;
+}
+
 export interface DashboardStateI {
   openKeys: string[];
   rootSubmenuKeys: string[];
+  openSider: boolean;
+  userStats: {
+    total_count: number;
+    daily_count: UserStatsI[];
+  };
+  dicomStats: {
+    total_pictures: number;
+    daily_pictures: DicomStatsI[];
+  };
 }
 
-const dateFormat = "YYYY-MM-DD HH:mm:ss";
-
-class Dashboard extends React.Component<DashboardPropsI, DashboardStateI> {
-  constructor(props: DashboardPropsI) {
+class Dashboard extends React.Component<{}, DashboardStateI> {
+  constructor(props: {}) {
     super(props);
     this.state = {
+      userStats: {
+        total_count: 0,
+        daily_count: [],
+      },
+      dicomStats: {
+        total_pictures: 0,
+        daily_pictures: [],
+      },
       openKeys: [],
+      openSider: true,
       rootSubmenuKeys: ["sub1", "sub2", "sub3"],
     };
   }
 
-  fetchDashboard = (): void => {
-    const params = {
-      start: "2020-03-20",
-      end: "2020-04-01",
+  componentDidMount(): void {
+    this.syncStats()
+      .then((res) => {
+        this.setState(res);
+      })
+      .catch((err) => console.error(err));
+  }
+
+  syncStats = async () => {
+    const userStatsRes = await getUserStats();
+    const dicomStatsRes = await getDicomFileStats();
+
+    return {
+      userStats: userStatsRes.data,
+      dicomStats: dicomStatsRes.data,
     };
   };
 
-  onOpenChange = (openKeys: string[]) => {
-    const { rootSubmenuKeys } = this.state;
-    const latestOpenKey = openKeys.find((key) => this.state.openKeys.indexOf(key) === -1);
-    if (latestOpenKey && rootSubmenuKeys.indexOf(latestOpenKey) === -1) {
-      this.setState({ openKeys });
-    } else {
-      this.setState({
-        openKeys: latestOpenKey ? [latestOpenKey] : [],
-      });
-    }
-  };
-
-  componentDidMount(): void {
-    this.fetchDashboard();
-  }
-
   render(): ReactElement {
-    const { user } = this.props;
+    const { userStats, dicomStats } = this.state;
+    const { total_count: userTotal, daily_count: userDaily } = userStats;
+    const { total_pictures: dicomTotal, daily_pictures: dicomDaily } = dicomStats;
 
     return (
-      <div className="dashboard">
-        <div className="dashboard-header">
-          <h2>管理看板</h2>
-        </div>
-        <Row>
-          <Col xs={{ span: 6 }} lg={{ span: 4 }}>
-            <div className="dashboard-input">
+      <Layout className="dashboard">
+        <Layout.Sider
+          collapsible
+          collapsed={!this.state.openSider}
+          onCollapse={(): void => this.setState({ openSider: !this.state.openSider })}
+        >
+          <div className="dashboard-logo">
+            <img src={logo} alt="logo" />
+          </div>
+          <Menu theme="dark" mode="inline">
+            <Menu.Item key="users" icon={<UserOutlined></UserOutlined>}>
               <a href="/users">用户管理</a>
-            </div>
-            <div className="dashboard-input">
+            </Menu.Item>
+            <Menu.Item key="mdeditor" icon={<CopyOutlined />}>
               <a href="/mdeditor">用户协议编辑器</a>
-            </div>
-            <div className="dashboard-input">
+            </Menu.Item>
+            <Menu.Item key="gallery" icon={<CameraOutlined />}>
               <a href="/gallery">公共影像集</a>
-            </div>
-            <div className="dashboard-input">
+            </Menu.Item>
+            <Menu.Item key="home-res" icon={<DesktopOutlined />}>
               <a href="/home-res">首页轮播图编辑</a>
-            </div>
-          </Col>
-          <Col xs={{ span: 18 }} lg={{ span: 20 }}>
-            <Row>
-              <Col span={24}>
-                <UserStats></UserStats>
+            </Menu.Item>
+          </Menu>
+        </Layout.Sider>
+        <Layout>
+          <Layout.Header>
+            <h2 style={{ color: "#fff" }}>管理看板</h2>
+          </Layout.Header>
+          <Layout.Content className="dashboard-content">
+            <Row gutter={16}>
+              <Col className="stats-item" span={6}>
+                <h3 className="stats-item-title">总用户数</h3>
+                <div className="stats-item-content">
+                  <b>{userTotal}</b> 人
+                </div>
+              </Col>
+              <Col className="stats-item" span={6}>
+                <h3 className="stats-item-title">当日新增用户数</h3>
+                <div className="stats-item-content">
+                  <b>{userDaily.reverse()[0] ? userDaily.reverse()[0].rc : 0}</b> 人
+                </div>
+              </Col>
+              <Col className="stats-item" span={6}>
+                <h3 className="stats-item-title">影像图片累计</h3>
+                <div className="stats-item-content">
+                  <b>{dicomTotal}</b> 张
+                </div>
+              </Col>
+              <Col className="stats-item" span={6}>
+                <h3 className="stats-item-title">当日影像图片</h3>
+                <div className="stats-item-content">
+                  <b>
+                    {dicomDaily.reverse()[0] ? Math.round(dicomDaily.reverse()[0].daily_count) : 0}
+                  </b>{" "}
+                  张
+                </div>
               </Col>
             </Row>
-            <Row>
-              <Col span={12}>
-                <DicomStats></DicomStats>
-              </Col>
-            </Row>
-          </Col>
-        </Row>
-      </div>
+          </Layout.Content>
+        </Layout>
+      </Layout>
     );
   }
 }

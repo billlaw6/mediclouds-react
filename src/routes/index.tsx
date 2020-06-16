@@ -89,6 +89,7 @@ const routes: RoutesI[] = [
     name: "dashboard",
     path: "/dashboard",
     component: Dashboard,
+    layout: FullscreenLayout,
     permission: ["login", "is_superuser"],
   },
   {
@@ -101,8 +102,7 @@ const routes: RoutesI[] = [
     name: "homeRes",
     path: "/home-res",
     component: HomeResource,
-    // permission: ["login", "is_superuser"],
-    permission: ["login"],
+    permission: ["login", "is_superuser"],
   },
   {
     name: "mdEditor",
@@ -129,7 +129,6 @@ const routes: RoutesI[] = [
     path: "/login-affiliate",
     component: LoginAffiliate,
     layout: FullscreenLayout,
-    // permission: ["login"],
   },
 ];
 

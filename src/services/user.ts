@@ -81,7 +81,7 @@ export const createFeedback = async (params: any) => {
   return res;
 };
 
-export const getUserStats = async (params: any) => {
+export const getUserStats = async (params?: any) => {
   const res = await axios.get(`/user/user-stats/`, { params: params });
   return res;
 };

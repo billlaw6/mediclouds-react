@@ -6,7 +6,7 @@ import { Table, Button, Popconfirm } from "antd";
 import "./HomeResource.less";
 import EditPanel from "./EditPanel/EditPanel";
 import { HomeResI } from "./type";
-import { delHomeResList } from "_services/manager";
+import { delHomeResList, getHomeResList } from "_services/manager";
 import { cancel } from "redux-saga/effects";
 
 const columns = [
@@ -30,21 +30,6 @@ const columns = [
   },
 ];
 
-const mock: HomeResI[] = [
-  {
-    id: "1",
-    img_url: "https://www.baidu.com/favicon.ico",
-    link_url: "/page/gallery/index",
-    order: 0,
-  },
-  {
-    id: "2",
-    img_url: "https://www.google.com.hk/favicon.ico",
-    link_url: "/page/gallery/index",
-    order: 1,
-  },
-];
-
 const HomeResource: FunctionComponent = () => {
   const [res, setRes] = useState<HomeResI[]>([]);
   const [editItem, setEditItem] = useState<HomeResI>();
@@ -53,8 +38,6 @@ const HomeResource: FunctionComponent = () => {
     type: "create",
   });
   const [checked, setChecked] = useState<string[]>([]);
-
-  console.log("checked", checked);
 
   const handleRes = (data: HomeResI[]) => {
     return data.map((item) => {
@@ -75,8 +58,8 @@ const HomeResource: FunctionComponent = () => {
 
   const init = async () => {
     // 先拉取homeres数据
-    /* const _resListRes = await getHomeResList(); */
-    setRes(mock);
+    const _resListRes = await getHomeResList();
+    setRes(_resListRes.data);
   };
 
   const del = () => {
@@ -130,7 +113,13 @@ const HomeResource: FunctionComponent = () => {
         data={editItem}
         status={editStatus}
         onCancel={() => setEditStatus(Object.assign({}, editStatus, { show: false }))}
-        onOk={() => setEditStatus(Object.assign({}, editStatus, { show: false }))}
+        onOk={() => {
+          init()
+            .then(() => {
+              setEditStatus(Object.assign({}, editStatus, { show: false }));
+            })
+            .then((err) => console.error(err));
+        }}
       ></EditPanel>
       <Table
         rowSelection={{

@@ -1,3 +1,29 @@
 .dashboard {
   width: 100%;
+  min-height: 100%;
+
+  &-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 64px;
+
+    img {
+      height: 50%;
+    }
+  }
+
+  &-content {
+    margin: 24px 16px;
+    padding: 24px;
+  }
+
+  .stats {
+    &-item {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+  }
 }

@@ -2,7 +2,6 @@ import React, { FunctionComponent, useState } from "react";
 import { Modal, Form, Input, Upload, Button } from "antd";
 import { HomeResI } from "../type";
 import { UploadOutlined } from "@ant-design/icons";
-import { read } from "fs";
 import { updateHomeResList, createHomeResList } from "_services/manager";
 
 interface EditPanelPropsI {
@@ -20,12 +19,13 @@ const EditPanel: FunctionComponent<EditPanelPropsI> = (props) => {
   const { show, type } = status;
   const [preData, setPreData] = useState<HomeResI>({});
 
+  console.log("data", data);
   const isEdit = type === "edit";
 
-  const getVal = (key: string) => {
+  const getVal = (key: string): any => {
     return preData[key] || (data ? data[key] : undefined);
   };
-  const setVal = (key: string, val: any) => {
+  const setVal = (key: string, val: any): void => {
     setPreData(Object.assign({}, preData, { [key]: val }));
   };
 
@@ -50,13 +50,12 @@ const EditPanel: FunctionComponent<EditPanelPropsI> = (props) => {
         res = await createHomeResList(formData);
       }
 
+      setPreData({});
       return res;
     } catch (error) {
       throw new Error(error);
     }
   };
-
-  console.log("preData", preData);
 
   return (
     <Modal
@@ -74,19 +73,20 @@ const EditPanel: FunctionComponent<EditPanelPropsI> = (props) => {
     >
       {data ? (
         <Form>
-          <Form.Item name="link_url" label="跳转地址" initialValue={data.link_url}>
+          <Form.Item label="跳转地址">
             <Input
-              title="图片地址"
+              title="跳转地址"
               value={getVal("link_url")}
               onChange={(e) => setVal("link_url", e.target.value)}
             ></Input>
           </Form.Item>
 
-          <Form.Item name="img_url" label={isEdit ? "替换图片" : "上传图片"}>
+          <Form.Item label={isEdit ? "替换图片" : "上传图片"}>
             <Upload
+              multiple={false}
               accept="image/*"
               beforeUpload={(file, fileList): boolean => {
-                setVal("img_url", file);
+                setVal("file", file);
                 return false;
               }}
             >
@@ -98,8 +98,11 @@ const EditPanel: FunctionComponent<EditPanelPropsI> = (props) => {
               <img src={data.img_url} style={{ width: "200px", height: "200px" }}></img>
             ) : null}
           </Form.Item>
-          <Form.Item label="排序" name="order" initialValue={getVal("order") || 0}>
-            <Input onChange={(e) => setVal("order", parseInt(e.target.value, 10) || 0)}></Input>
+          <Form.Item label="排序">
+            <Input
+              value={getVal("order")}
+              onChange={(e) => setVal("order", parseInt(e.target.value, 10) || 0)}
+            ></Input>
           </Form.Item>
         </Form>
       ) : null}

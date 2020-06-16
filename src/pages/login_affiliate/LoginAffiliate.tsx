@@ -23,9 +23,9 @@ const LoginAffiliate: FunctionComponent = () => {
     `sizetype=L&` +
     `bgcolor=black&` +
     `rst=&` +
-    `style=&` +
-    `href=` +
-    "https://mi.mediclouds.cn/web/static/css/qrcode.css" +
+    // `style=&` +
+    // `href=` +
+    // "https://mi.mediclouds.cn/web/static/css/qrcode.css" +
     "&" +
     `response_type=code&` +
     `#wechat_redirect`;
