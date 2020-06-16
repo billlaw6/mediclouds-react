@@ -115,7 +115,7 @@ axios.interceptors.response.use(
           // history.push("/login");
           return Promise.reject(error);
         case 404: // 资源找不到；
-          // history.push("/");
+          history.push("/");
           return Promise.reject(error);
         default:
           return Promise.reject(error);

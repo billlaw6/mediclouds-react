@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import React, { useReducer, createContext, FunctionComponent } from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
@@ -36,7 +37,7 @@ const persistor = persistStore(store);
 //     en: zh_CN,
 //     zh: en_US,
 // }
-let messages = {
+const messages = {
   en: {},
   zh: {},
 };

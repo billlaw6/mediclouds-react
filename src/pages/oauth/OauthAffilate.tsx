@@ -35,14 +35,8 @@ class OauthAffiliate extends React.Component<any, { registered: boolean }> {
     const { registered } = this.state;
 
     return (
-      <div className="login-redirect">
-        {registered ? (
-          <span>正在注册...</span>
-        ) : (
-          <span>
-            注册成功，<Link to="/login-affiliate">点击返回注册页</Link>
-          </span>
-        )}
+      <div className="login-redirect" style={{ width: "100%", padding: "38px 0" }}>
+        {!registered ? <span>正在注册...</span> : <span>注册成功</span>}
       </div>
     );
   }
