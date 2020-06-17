@@ -112,7 +112,7 @@ class Dashboard extends React.Component<{}, DashboardStateI> {
               <Col className="stats-item" span={6}>
                 <h3 className="stats-item-title">当日新增用户数</h3>
                 <div className="stats-item-content">
-                  <b>{userDaily.reverse()[0] ? userDaily.reverse()[0].rc : 0}</b> 人
+                  <b>{userDaily.length ? userDaily.reverse()[0].rc : 0}</b> 人
                 </div>
               </Col>
               <Col className="stats-item" span={6}>
@@ -124,9 +124,7 @@ class Dashboard extends React.Component<{}, DashboardStateI> {
               <Col className="stats-item" span={6}>
                 <h3 className="stats-item-title">当日影像图片</h3>
                 <div className="stats-item-content">
-                  <b>
-                    {dicomDaily.reverse()[0] ? Math.round(dicomDaily.reverse()[0].daily_count) : 0}
-                  </b>{" "}
+                  <b>{dicomDaily.length ? Math.round(dicomDaily.reverse()[0].daily_count) : 0}</b>{" "}
                   张
                 </div>
               </Col>
