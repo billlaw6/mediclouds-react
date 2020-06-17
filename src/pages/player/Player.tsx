@@ -93,7 +93,7 @@ imgLoadErr.src = imgLoaderrImg;
 
 /* 获取series列表 */
 const getSeriesList = async (id: string): Promise<SeriesListI> => {
-  const result = await getDicomSeries({ id: id });
+  const result = await getDicomSeries(id);
   return result.data;
 };
 

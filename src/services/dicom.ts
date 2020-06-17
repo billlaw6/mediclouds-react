@@ -16,10 +16,7 @@ export const getExamIndexDetail = async (params: any) => {
   return res;
 };
 
-export const getDicomSeries = async (params: any) => {
-  const res = await axios.get(`/dicom/dicom-series/`, { params: params });
-  return res;
-};
+export const getDicomSeries = async (id: string) => await axios.get(`/dicom/exam-index/${id}/`);
 
 export const getDicomSeriesDetail = async (params: any) => {
   const res = await axios.get(`/dicom/dicom-series/${params.id}/`);
