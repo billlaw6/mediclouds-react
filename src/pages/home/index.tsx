@@ -62,6 +62,7 @@ class Home extends Component<HomePropsI, HomeStateI> {
       parsing: 0,
       showNotify: false,
       poll: false,
+      pageSize: DEFAULT_PAGE_SIZE,
     };
 
     this.pollTimer = null;
@@ -99,7 +100,7 @@ class Home extends Component<HomePropsI, HomeStateI> {
   };
 
   list = (): ReactElement | undefined => {
-    const { selections, isSelectable, page } = this.state;
+    const { selections, isSelectable, page, pageSize } = this.state;
     const columns: ColumnProps<TableDataI>[] = [
       {
         title: "类型",
@@ -137,7 +138,7 @@ class Home extends Component<HomePropsI, HomeStateI> {
 
     const paginationConfig: TablePaginationConfig = {
       current: page,
-      defaultPageSize: DEFAULT_PAGE_SIZE,
+      defaultPageSize: pageSize,
       total: renderList.length,
       hideOnSinglePage: true,
       onChange: (page: number): void => {
@@ -165,7 +166,7 @@ class Home extends Component<HomePropsI, HomeStateI> {
 
   dicoms = (): ReactElement | undefined => {
     const { examIndexList } = this.props;
-    const { page, isSelectable, selections } = this.state;
+    const { page, isSelectable, selections, pageSize } = this.state;
     const renderList = this.getCurrentItem();
 
     if (renderList && renderList.length) {
@@ -220,8 +221,12 @@ class Home extends Component<HomePropsI, HomeStateI> {
           <Pagination
             hideOnSinglePage={true}
             current={page}
-            defaultPageSize={DEFAULT_PAGE_SIZE}
+            pageSize={pageSize}
             total={examIndexList.length}
+            onShowSizeChange={(_current, size): void => {
+              // console.log("current, size", current, size);
+              this.setState({ pageSize: size });
+            }}
             onChange={(page): void => {
               this.setState({ page });
             }}
@@ -259,11 +264,11 @@ class Home extends Component<HomePropsI, HomeStateI> {
 
   getCurrentItem = (): ExamIndexI[] => {
     const { examIndexList, dicomSettings } = this.props;
-    const { page } = this.state;
+    const { page, pageSize } = this.state;
     const resList = this.sortList(examIndexList);
 
     if (dicomSettings.viewMode === ViewTypeEnum.GRID)
-      return resList.slice((page - 1) * DEFAULT_PAGE_SIZE, page * DEFAULT_PAGE_SIZE);
+      return resList.slice((page - 1) * pageSize, page * pageSize);
     return resList;
   };
 
