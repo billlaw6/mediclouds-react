@@ -1,7 +1,7 @@
 import { ComponentType } from "react";
 
 import Home from "_pages/home/index";
-import Player from "_pages/player/Player";
+import Player from "_pages/player/index";
 import Login from "_pages/login/Login";
 import LoginForm from "_pages/login_form/Login";
 import Upload from "_pages/upload/Upload";
@@ -21,6 +21,8 @@ import Gallery from "_pages/gallery/Gallery";
 import LoginAffiliate from "_pages/login_affiliate/LoginAffiliate";
 import OauthAffilate from "_pages/oauth/OauthAffilate";
 import HomeResource from "_pages/homeResource/HomeResource";
+
+const IS_MOBILE = /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent);
 
 export interface RoutesI {
   name: string;
@@ -55,6 +57,7 @@ const routes: RoutesI[] = [
     name: "player",
     path: "/player",
     component: Player,
+    layout: IS_MOBILE ? FullscreenLayout : DefaultLayout,
     permission: ["login"],
   },
   {

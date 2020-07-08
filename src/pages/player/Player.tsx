@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 /* 
 !=========== 所有列表的index从1开始算，与series保持一致 ============!
 !=========== 从Array里写入、读取时记得当前的index - 1 才是array内的index =========!
@@ -48,18 +47,9 @@ import {
 } from "./type";
 import "./Player.less";
 import { Slider, Progress } from "antd";
-import { isIE as isIEFunc } from "_helper";
-import {
-  CustomHTMLDivElement,
-  ImageI,
-  SeriesListI,
-  SeriesI,
-  SeriesMprI,
-} from "_constants/interface";
-import { RouteComponentProps } from "react-router-dom";
+import { CustomHTMLDivElement, ImageI, SeriesListI, SeriesI } from "_constants/interface";
 
 // import axios from "axios";
-import { getDicomSeries, getDicomSeriesDetail, getDicomSeriesMprDetail } from "_services/dicom";
 import Shortcut from "./components/Shortcut";
 import imgLoaderrImg from "_images/img-load-err.jpg";
 import {
@@ -75,6 +65,8 @@ import {
   LeftOutlined,
   RightOutlined,
 } from "@ant-design/icons";
+import PatientInfo from "./components/PatientInfo";
+import { getSeriesList, getSeries, getMprSeries } from "./actions";
 
 const VIEWPORT_WIDTH_DEFAULT = 890; // 视图默认宽
 const VIEWPORT_HEIGHT_DEFAULT = 550; // 视图默认高
@@ -83,33 +75,6 @@ const MPR_VIEWPORT_HEIGHT_DEFAULT = 420; // mpr 视图默认高
 
 const imgLoadErr = new Image();
 imgLoadErr.src = imgLoaderrImg;
-
-// const req = axios.create({
-//   baseURL: "http://115.29.148.227:8083/rest-api",
-//   // baseURL: "https://mi.mediclouds.cn/rest-api",
-//   timeout: 60 * 1000,
-// });
-// req.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
-
-/* 获取series列表 */
-const getSeriesList = async (id: string): Promise<SeriesListI> => {
-  const result = await getDicomSeries(id);
-  return result.data;
-};
-
-/* 获取序列 */
-const getSeries = async (id: string): Promise<SeriesI> => {
-  const result = await getDicomSeriesDetail({ id: id });
-  return result.data;
-};
-
-/* 获取mpr序列 */
-const getMprSeries = async (id: string): Promise<SeriesMprI> => {
-  const result = await getDicomSeriesMprDetail({ id: id });
-  return result.data;
-};
-
-const isIE = isIEFunc();
 
 /* ====== Helper Methods ====== */
 
@@ -145,9 +110,9 @@ const getDrawInfo = (
 let playTimer: number | undefined = undefined;
 let showPanelsTimer: number | undefined = undefined;
 
-const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = (props) => {
+const Player: FunctionComponent<{ id: string }> = (props) => {
   // let ctx: CanvasRenderingContext2D | null = null;
-  const { state } = props.location;
+  const { id } = props;
   /* =============== use ref =============== */
   const $player = useRef<CustomHTMLDivElement>(null);
   const $viewport = useRef<HTMLCanvasElement>(null);
@@ -717,8 +682,8 @@ const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = (
   }, [wheelChange]);
   useEffect(() => {
     // 获取seriesList 执行一次
-    if (state && state.id) {
-      getSeriesList(state.id).then((result) => {
+    if (id) {
+      getSeriesList(id).then((result) => {
         const { children, ...args } = result;
 
         setPatient({ ...args });
@@ -726,7 +691,7 @@ const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = (
         setImgIndexs(new Array<number>(children.length).fill(1));
       });
     }
-  }, [state]);
+  }, [id]);
   useEffect(() => {
     // 获取所有series  执行一次
     if (!seriesList) return;
@@ -953,58 +918,6 @@ const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = (
       </div>
     );
   };
-  const info = (): ReactElement => {
-    const {
-      patient_name = "NA",
-      patient_id = "NA",
-      birthday = "NA",
-      sex = "NA",
-      study_date = "NA",
-      institution_name = "NA",
-      modality = "NA",
-    } = patient;
-
-    let max = 1,
-      windowWidth = "0",
-      windowCenter = "0";
-
-    if (currentSeries) {
-      const { pictures, window_center, window_width } = currentSeries;
-      if (pictures) max = pictures.length;
-      if (window_width) windowWidth = `${window_width}`;
-      if (window_center) windowCenter = `${window_center}`;
-    }
-
-    return (
-      <div className={`player-info ${isShowInfo ? "" : isIE ? "player-nosee" : "filter-blur"}`}>
-        <div>
-          <span title="姓名">{patient_name}</span>
-          <span title="编号">{patient_id}</span>
-          <span>
-            <span title="生日">{birthday}</span>
-            <span title="性别">{sex}</span>
-          </span>
-        </div>
-        <div>
-          <span title="医院">{institution_name}</span>
-          <span title="日期">{study_date}</span>
-        </div>
-        <div>
-          <span title="图片索引">
-            Frame: {isMpr ? mprImgIndexs[mprSeriesIndex - 1] : imgIndexs[seriesIndex - 1]} / {max}
-          </span>
-          <span title="序列">Series: {seriesIndex}</span>
-          <span>
-            <span title="窗宽">WW: {windowWidth}</span>
-            <span title="窗位">WL: {windowCenter}</span>
-          </span>
-        </div>
-        <div>
-          <span title="类型">{modality}</span>
-        </div>
-      </div>
-    );
-  };
 
   const slider = (): ReactElement => {
     let max = 1;
@@ -1064,10 +977,10 @@ const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = (
           ></EyeInvisibleOutlined>
         )}
         <i
-          className={`iconfont icon-ic iconic_mpr player-mpr-btn ${mpr ? "" : "disabled"} ${
-            isMpr ? "active" : ""
-          }`}
-          onClick={(): void => showMpr(mpr)}
+          // className={`iconfont icon-ic iconic_mpr player-mpr-btn ${mpr ? "" : "disabled"} ${
+          //   isMpr ? "active" : ""
+          // }`}
+          className={`iconfont icon-ic iconic_mpr player-mpr-btn disabled`}
         ></i>
         {isFullscreen ? (
           <FullscreenExitOutlined
@@ -1122,7 +1035,14 @@ const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = (
               <span>Loading...</span>
             </div>
           </div>
-          {info()}
+          <PatientInfo
+            seriesIndex={seriesIndex}
+            imageIndex={isMpr ? mprImgIndexs[mprSeriesIndex - 1] : imgIndexs[seriesIndex - 1]}
+            imageIndexMax={currentSeries ? currentSeries.pictures.length : 1}
+            currentSeries={currentSeries}
+            show={isShowInfo}
+            patientInfo={patient}
+          ></PatientInfo>
         </div>
         <div className={`player-ctl ${cacheDone ? "" : "player-disabled"}`}>
           <div className="player-ctl-playbtns">

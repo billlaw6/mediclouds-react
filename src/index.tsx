@@ -64,10 +64,13 @@ const MobileHome: FunctionComponent = () => (
   </div>
 );
 
+const ignoreArr: string[] = [];
+// const ignoreArr = ["affiliate", "player"];
 const { pathname } = history.location;
+const showMobilePage = ignoreArr.every((item) => pathname.indexOf(item) < 0);
 
 ReactDOM.render(
-  IS_MOBILE && pathname.indexOf("affiliate") < 0 ? (
+  IS_MOBILE && showMobilePage ? (
     <MobileHome />
   ) : (
     <AppContainer>

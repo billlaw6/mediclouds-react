@@ -217,14 +217,14 @@ export interface SeriesMprI extends SeriesBasicI {
 }
 
 // 影像序列列表
-export interface SeriesListI {
-  patient_name: string;
-  patient_id: string;
-  sex: string;
-  birthday: string;
-  institution_name: string;
-  study_date: string;
-  modality: string;
+export interface SeriesListI extends PatientExamI {
+  // patient_name: string;
+  // patient_id: string;
+  // sex: string;
+  // birthday: string;
+  // institution_name: string;
+  // study_date: string;
+  // modality: string;
   children: SeriesI[];
 }
 
@@ -338,6 +338,17 @@ export interface GalleryByTable {
   created_at: string; // 资源收录时间
   series_id: string; // 序列号
   edit: JSX.Element;
+}
+
+// 病人检查信息
+export interface PatientExamI {
+  patient_name: string; //	病人姓名
+  patient_id: string; //	病人ID
+  sex: string; //	病人性别
+  birthday: string; //	病人生日
+  institution_name: string; //	检查单位
+  study_date: string; //	检查日期
+  modality: string; //	检查类型
 }
 
 /* ===============  根据Tower文档整理的接口相关的interface END =============== */
