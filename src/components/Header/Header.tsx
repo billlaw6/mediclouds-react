@@ -1,6 +1,5 @@
 import React, { FunctionComponent, ReactElement } from "react";
 import { Menu, Layout, Avatar, Dropdown } from "antd";
-import { ClickParam } from "antd/lib/menu";
 
 import logo from "_images/logo.png";
 
@@ -15,13 +14,19 @@ const { Header: AntdHeader } = Layout;
 const AvatarMenu: FunctionComponent<HeaderPropsI> = (props): ReactElement => {
   const { nickname, logout, isSuperuser } = props;
 
-  const onClick = (e: ClickParam): void => {
-    const { key } = e;
-    if (key === "logout" && logout) logout();
-  };
+  // const onClick = (e: { key: any }): void => {
+  //   const { key } = e;
+  //   if (key === "logout" && logout) logout();
+  // };
 
   return (
-    <Menu className="header-avatar-menu" onClick={onClick}>
+    <Menu
+      className="header-avatar-menu"
+      onClick={(info): void => {
+        const { key } = info;
+        if (key === "logout" && logout) logout();
+      }}
+    >
       <MenuItemGroup title={nickname || "匿名"}>
         <Divider></Divider>
         <MenuItem className="edit-user-info" key="editUserInfo">

@@ -183,7 +183,7 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
                       return true;
                     }}
                     value={userInfo.birthday ? moment(userInfo.birthday) : undefined}
-                    onChange={(_date: Moment | null, dateString: string): void => {
+                    onChange={(_date, dateString: string): void => {
                       setUserInfo(
                         Object.assign({}, userInfo, {
                           birthday: dateString,

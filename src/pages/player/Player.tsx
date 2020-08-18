@@ -942,7 +942,7 @@ const Player: FunctionComponent<{ id: string }> = (props) => {
         disabled={!cacheDone}
         className="player-ctl-slider"
         getTooltipPopupContainer={(): HTMLElement => $player.current || document.body}
-        onChange={(value): void => {
+        onChange={(value: number): void => {
           let _indexs = imgIndexs,
             _seriesIndex = seriesIndex,
             _updateImgIndexs = setImgIndexs;
@@ -952,7 +952,7 @@ const Player: FunctionComponent<{ id: string }> = (props) => {
             _updateImgIndexs = setMprImgIndexs;
           }
           const next = [..._indexs];
-          next[_seriesIndex - 1] = value as number;
+          next[_seriesIndex - 1] = value;
           _updateImgIndexs(next);
         }}
       ></Slider>
