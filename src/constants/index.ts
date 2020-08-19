@@ -1,4 +1,4 @@
-import { PatientExamI, SeriesBasicI } from "./interface";
+import { PatientExamI, SeriesBasicI } from "_types/api";
 
 /* 默认病人检查信息 */
 export const DEFALUT_PATIENT_INFO: PatientExamI = {
@@ -15,7 +15,7 @@ export const DEFALUT_PATIENT_INFO: PatientExamI = {
 export const DEFAULT_SERIES: SeriesBasicI = {
   id: "",
   series_number: 0,
-  mpr_flag: "",
+  mpr_flag: 0,
   window_width: 0,
   window_center: 0,
   thumbnail: "",

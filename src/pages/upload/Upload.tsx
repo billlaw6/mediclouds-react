@@ -2,7 +2,7 @@ import React, { useState, FunctionComponent, useRef, useEffect } from "react";
 import { Switch } from "antd";
 import { useDropzone } from "react-dropzone";
 import * as type from "_store/action-types";
-import { baseURL } from "_services/api";
+import config from "_config";
 import axios from "axios";
 
 import { UploadStatusI } from "./type";
@@ -14,7 +14,7 @@ import { FileProgressStatusEnum } from "_components/FileProgress/type";
 
 import "./Upload.less";
 import { useDispatch } from "react-redux";
-import { checkDicomTotalCount } from "_services/dicom";
+import { checkDicomTotalCount } from "_api/dicom";
 import wechatQrcode from "_images/wechat-qrcode.jpg";
 import { InboxOutlined, ArrowLeftOutlined } from "@ant-design/icons";
 
@@ -48,7 +48,7 @@ const Upload: FunctionComponent = () => {
 
   const upload = async (formData: FormData, progressInfo: UploadStatusI): Promise<void> => {
     const { id } = progressInfo;
-    const URL = baseURL + "dicom/upload/";
+    const URL = `${config.personalBaseUrl}/dicom/upload/`;
     try {
       const res = await axios.post(URL, formData, {
         // .post(`${axios.defaults.baseURL}dicom/upload/`, formData, {

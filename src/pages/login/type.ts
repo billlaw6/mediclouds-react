@@ -1,4 +1,4 @@
-import { LoginFormI, UserI } from "_constants/interface";
+import { UserI } from "_types/api";
 import { SetUserActionFuncT } from "_actions/user";
 
 export interface MapStateToPropsI {

@@ -47,7 +47,8 @@ import {
 } from "./type";
 import "./Player.less";
 import { Slider, Progress } from "antd";
-import { CustomHTMLDivElement, ImageI, SeriesListI, SeriesI } from "_constants/interface";
+import { ImageI, SeriesListI, SeriesI } from "_types/api";
+import { CustomHTMLDivElement } from "_types/core";
 
 // import axios from "axios";
 import Shortcut from "./components/Shortcut";
@@ -1084,7 +1085,7 @@ const Player: FunctionComponent<{ id: string }> = (props) => {
               }}
             ></StepForwardOutlined>
           </div>
-          {ctlbtns(isShowInfo, currentSeries ? currentSeries.mpr_flag : false)}
+          {ctlbtns(isShowInfo, currentSeries ? !!currentSeries.mpr_flag : false)}
         </div>
       </div>
     </section>

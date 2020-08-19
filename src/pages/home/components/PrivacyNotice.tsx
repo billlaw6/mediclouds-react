@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import React, { FunctionComponent, useState, useEffect } from "react";
 import { Modal, Button, Checkbox } from "antd";
-import { getPrivacyNotice, agreePrivacyNotice } from "_services/user";
+import { getPrivacyNotice, agreePrivacyNotice } from "_api/user";
 
 import "./PrivacyNotice.less";
 import { PrivacyNoticePropsI } from "./type";

@@ -1,9 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { StoreStateI, UserI } from "../../../constants/interface";
+import { UserI } from "_types/api";
+import { StoreStateI } from "_types/core";
 import ReactEcharts from "echarts-for-react";
-import { getUserStats } from "../../../services/user";
+import { getUserStats } from "_api/user";
 
 interface MapStateToPropsI {
   user: UserI;

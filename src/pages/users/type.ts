@@ -1,4 +1,4 @@
-import { UserI } from "_constants/interface";
+import { UserI } from "_types/api";
 import { RouteComponentProps } from "react-router";
 
 export interface MapStateToPropsI {

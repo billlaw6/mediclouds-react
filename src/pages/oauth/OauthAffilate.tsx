@@ -2,9 +2,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 import qs from "qs";
 import { connect } from "react-redux";
-import { StoreStateI } from "_constants/interface";
+import { StoreStateI } from "_types/core";
 import { setTokenAction, setUserAction } from "_actions/user";
-import { weChatLoginUser } from "../../services/user";
+import { wechatLogin } from "_api/user";
 
 class OauthAffiliate extends React.Component<any, { registered: boolean }> {
   constructor(props: any) {
@@ -20,7 +20,7 @@ class OauthAffiliate extends React.Component<any, { registered: boolean }> {
     const obj = qs.parse(query);
 
     if (obj.code) {
-      weChatLoginUser(obj)
+      wechatLogin(obj)
         .then((res) => {
           this.setState({ registered: true });
         })

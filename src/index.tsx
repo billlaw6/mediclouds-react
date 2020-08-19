@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import React, { useReducer, createContext, FunctionComponent } from "react";
+import React, { FunctionComponent } from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import { AppContainer } from "react-hot-loader";
+// import { AppContainer } from "react-hot-loader";
 import { ConnectedRouter } from "connected-react-router";
 import configureStore, { history } from "./store/configureStore";
 import App from "./App";
@@ -73,21 +73,19 @@ ReactDOM.render(
   IS_MOBILE && showMobilePage ? (
     <MobileHome />
   ) : (
-    <AppContainer>
-      <Provider store={store}>
-        {/* place ConnectedRouter under Provider */}
-        <ConnectedRouter history={history}>
-          {/* your usual react-router v4/v5 routing */}
-          <IntlProvider locale="zh" messages={messages["zh"]}>
-            <PersistGate loading={<Loading />} persistor={persistor}>
-              <ConfigProvider locale={locale}>
-                <App />
-              </ConfigProvider>
-            </PersistGate>
-          </IntlProvider>
-        </ConnectedRouter>
-      </Provider>
-    </AppContainer>
+    <Provider store={store}>
+      {/* place ConnectedRouter under Provider */}
+      <ConnectedRouter history={history}>
+        {/* your usual react-router v4/v5 routing */}
+        <IntlProvider locale="zh" messages={messages["zh"]}>
+          <PersistGate loading={<Loading />} persistor={persistor}>
+            <ConfigProvider locale={locale}>
+              <App />
+            </ConfigProvider>
+          </PersistGate>
+        </IntlProvider>
+      </ConnectedRouter>
+    </Provider>
   ),
   document.getElementById("root"),
 );

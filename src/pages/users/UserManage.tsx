@@ -1,8 +1,8 @@
 import React, { ReactElement } from "react";
 import { Table, Button, Form, Input } from "antd";
 import moment, { Moment } from "moment";
-import { UserI } from "_constants/interface";
-import { getUserList, deactivateUsers, activateUsers, deleteUsers } from "_services/user";
+import { UserI } from "_types/api";
+import { getUserList, deactivateUsers, activateUsers, deleteUsers } from "_api/user";
 import { UserManagePropsI, UserManageStateI } from "_pages/users/type";
 import "./UserManage.less";
 import { KeyOutlined } from "@ant-design/icons";

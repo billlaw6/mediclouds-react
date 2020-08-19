@@ -2,8 +2,8 @@
 import React, { ReactElement } from "react";
 import { Row, Col, Layout, Menu } from "antd";
 import { UserOutlined, CopyOutlined, CameraOutlined, DesktopOutlined } from "@ant-design/icons";
-import { getUserStats } from "_services/user";
-import { getDicomFileStats } from "_services/dicom";
+import { getUserStats } from "_api/user";
+import { getDicomFileStats } from "_api/dicom";
 
 import logo from "_assets/images/logo.png";
 import "./Dashboard.less";

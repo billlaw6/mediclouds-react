@@ -1,4 +1,5 @@
-import { ActionI, SearchFormI, ExamIndexI } from "_constants/interface";
+import { ExamIndexI } from "_types/api";
+import { ActionI, SearchFormI } from "_types/core";
 import * as types from "../action-types";
 import { ViewTypeEnum, SortTypeEnum } from "_pages/home/type";
 

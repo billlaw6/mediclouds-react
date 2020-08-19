@@ -1,7 +1,7 @@
 import React, { useState, FunctionComponent, useRef, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import * as type from "_store/action-types";
-import { baseURL } from "_services/api";
+import config from "_config";
 import axios from "axios";
 
 import { UploadStatusI } from "./type";
@@ -43,7 +43,7 @@ const MobileUpload: FunctionComponent = () => {
 
   const upload = async (formData: FormData, progressInfo: UploadStatusI): Promise<void> => {
     const { id } = progressInfo;
-    const URL = baseURL + "dicom/upload/";
+    const URL = `${config.personalBaseUrl}/dicom/upload/`;
     try {
       await axios.post(URL, formData, {
         headers: {

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { ExamIndexI } from "_constants/interface";
+import { ExamIndexI } from "_types/api";
 import { Random, mock } from "mockjs";
 
 const generateData = (count: number): ExamIndexI[] => {

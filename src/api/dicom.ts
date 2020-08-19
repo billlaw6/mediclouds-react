@@ -1,60 +1,61 @@
-import axios from "./api";
-import { GalleryI, GalleryStatsI } from "_constants/interface";
+import { personalApi } from ".";
+import { GalleryI, GalleryStatsI } from "_types/api";
 
 export const getExamIndex = async (params: any) => {
-  const res = await axios.get(`/dicom/exam-index/`, { params: params });
+  const res = await personalApi.get(`/dicom/exam-index/`, { params: params });
   return res;
 };
 
 export const deleteExamIndex = async (params: string[]) => {
-  const res = await axios.post(`/dicom/exam-index/del/`, { id: params });
+  const res = await personalApi.post(`/dicom/exam-index/del/`, { id: params });
   return res;
 };
 
 export const getExamIndexDetail = async (params: any) => {
-  const res = await axios.get(`/dicom/exam-index/${params.id}/`, { params: params });
+  const res = await personalApi.get(`/dicom/exam-index/${params.id}/`, { params: params });
   return res;
 };
 
-export const getDicomSeries = async (id: string) => await axios.get(`/dicom/exam-index/${id}/`);
+export const getDicomSeries = async (id: string) =>
+  await personalApi.get(`/dicom/exam-index/${id}/`);
 
 export const getDicomSeriesDetail = async (params: any) => {
-  const res = await axios.get(`/dicom/dicom-series/${params.id}/`);
+  const res = await personalApi.get(`/dicom/dicom-series/${params.id}/`);
   return res;
 };
 
 export const getDicomSeriesMprDetail = async (params: { id: string }) => {
-  const res = await axios.get(`/dicom/dicom-series/mpr/${params.id}/`);
+  const res = await personalApi.get(`/dicom/dicom-series/mpr/${params.id}/`);
   return res;
 };
 
 export const getDicomPicture = async (params: any) => {
-  const res = await axios.get(`/dicom/dicom-picture/`, { params: params });
+  const res = await personalApi.get(`/dicom/dicom-picture/`, { params: params });
   return res;
 };
 
 export const getDicomPictureDetail = async (params: any) => {
-  const res = await axios.get(`/dicom/dicom-picture/${params.id}/`, { params: params });
+  const res = await personalApi.get(`/dicom/dicom-picture/${params.id}/`, { params: params });
   return res;
 };
 
 export const searchDicomInfo = async (params: any) => {
-  const res = await axios.get(`/dicom/search/`, { params: params });
+  const res = await personalApi.get(`/dicom/search/`, { params: params });
   return res;
 };
 
 export const uploadDicomFile = async (params: any) => {
-  const res = await axios.post(`/dicom/upload/`, params);
+  const res = await personalApi.post(`/dicom/upload/`, params);
   return res;
 };
 
 export const searchDicomFile = async (params: any) => {
-  const res = await axios.get(`/dicom/dicom-file/`, { params: params });
+  const res = await personalApi.get(`/dicom/dicom-file/`, { params: params });
   return res;
 };
 
 export const getDicomFileStats = async (params?: any) => {
-  const res = await axios.get(`/dicom/dicom-stats/`, { params: params });
+  const res = await personalApi.get(`/dicom/dicom-stats/`, { params: params });
   return res;
 };
 
@@ -64,7 +65,7 @@ export const getDicomFileStats = async (params?: any) => {
  */
 export const checkDicomParseProgress = async (): Promise<number> => {
   try {
-    const res = await axios.get("/dicom/parse-progress/");
+    const res = await personalApi.get("/dicom/parse-progress/");
     return res.data.parsing as number;
   } catch (error) {
     throw new Error(error);
@@ -77,7 +78,7 @@ export const checkDicomParseProgress = async (): Promise<number> => {
  */
 export const checkDicomTotalCount = async (): Promise<number> => {
   try {
-    const res = await axios.get("/dicom/parse-progress/");
+    const res = await personalApi.get("/dicom/parse-progress/");
     return res.data.total as number;
   } catch (error) {
     throw new Error(error);
@@ -91,7 +92,7 @@ export const checkDicomTotalCount = async (): Promise<number> => {
  */
 export const getPublicImageStats = async (): Promise<GalleryStatsI[]> => {
   try {
-    const res = await axios.get("/dicom/public-image/stats/");
+    const res = await personalApi.get("/dicom/public-image/stats/");
     return res.data;
   } catch (error) {
     throw new Error(error);
@@ -103,7 +104,7 @@ export const getPublicImageStats = async (): Promise<GalleryStatsI[]> => {
  */
 export const getPublicImages = async (): Promise<GalleryI[]> => {
   try {
-    const res = await axios.get("/dicom/public-image/manage/");
+    const res = await personalApi.get("/dicom/public-image/manage/");
     return res.data;
   } catch (error) {
     throw new Error(error);
@@ -116,7 +117,7 @@ export const getPublicImages = async (): Promise<GalleryI[]> => {
  */
 export const uploadPublicImage = async (data: FormData): Promise<GalleryI> => {
   try {
-    return await axios.post("/dicom/public-image/upload/", data, {
+    return await personalApi.post("/dicom/public-image/upload/", data, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -133,7 +134,7 @@ export const uploadPublicImage = async (data: FormData): Promise<GalleryI> => {
  */
 export const updatePublicImage = async (id: string, data: FormData): Promise<GalleryI> => {
   try {
-    return await axios.post(`/dicom/public-image/${id}/`, data, {
+    return await personalApi.post(`/dicom/public-image/${id}/`, data, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -150,7 +151,7 @@ export const updatePublicImage = async (id: string, data: FormData): Promise<Gal
  */
 export const delPublicImages = async (id: string[]): Promise<any> => {
   try {
-    return await axios.post(`/dicom/public-image/del/`, {
+    return await personalApi.post(`/dicom/public-image/del/`, {
       id,
     });
   } catch (error) {

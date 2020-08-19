@@ -2,7 +2,7 @@ import React, { FunctionComponent, useState } from "react";
 import { Modal, Form, Input, Upload, Button } from "antd";
 import { HomeResI } from "../type";
 import { UploadOutlined } from "@ant-design/icons";
-import { updateHomeResList, createHomeResList } from "_services/manager";
+import { updateHomeResList, createHomeResList } from "_api/manager";
 
 interface EditPanelPropsI {
   status: {

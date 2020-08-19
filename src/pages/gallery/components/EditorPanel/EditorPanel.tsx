@@ -21,7 +21,7 @@ import moment from "moment";
 
 import { UploadOutlined } from "@ant-design/icons";
 import { RcFile } from "antd/lib/upload/interface";
-import { uploadPublicImage, updatePublicImage } from "_services/dicom";
+import { uploadPublicImage, updatePublicImage } from "_api/dicom";
 
 import "./EditorPanel.less";
 import TextArea from "antd/lib/input/TextArea";

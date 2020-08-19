@@ -5,7 +5,7 @@ import { connect, MapDispatchToProps } from "react-redux";
 /* components */
 import Header from "_components/Header/Header";
 import Footer from "_components/Footer/Footer";
-import { StoreStateI } from "_constants/interface";
+import { StoreStateI } from "_types/core";
 
 /* style */
 import "./Default.less";

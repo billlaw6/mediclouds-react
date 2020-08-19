@@ -24,10 +24,10 @@ import React, { FunctionComponent, useState, useEffect } from "react";
 import "./Gallery.less";
 import { Input, Button, Popconfirm, DatePicker, message, Select } from "antd";
 import { Random } from "mockjs";
-import { GalleryI, GalleryStatsI } from "_constants/interface";
+import { GalleryI, GalleryStatsI } from "_types/api";
 import GalleryList from "./components/List/List";
 import EditorPanel from "./components/EditorPanel/EditorPanel";
-import { getPublicImages, delPublicImages, getPublicImageStats } from "_services/dicom";
+import { getPublicImages, delPublicImages, getPublicImageStats } from "_api/dicom";
 import { isNull, isUndefined } from "util";
 
 const GALLERY = {

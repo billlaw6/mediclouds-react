@@ -1,9 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { StoreStateI, UserI } from "../../../constants/interface";
+import { StoreStateI } from "_types/core";
+import { UserI } from "_types/api";
 import ReactEcharts from "echarts-for-react";
-import { getDicomFileStats } from "../../../services/dicom";
+import { getDicomFileStats } from "_api/dicom";
 
 interface MapStateToPropsI {
   user: UserI;

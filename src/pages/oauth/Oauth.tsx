@@ -2,9 +2,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 import qs from "qs";
 import { connect } from "react-redux";
-import { StoreStateI } from "_constants/interface";
+import { StoreStateI } from "_types/core";
 import { setTokenAction, setUserAction } from "_actions/user";
-import { weChatLoginUser } from "../../services/user";
+import { wechatLogin } from "_api/user";
 import { history } from "../../store/configureStore";
 
 class Oauth extends React.Component<any, any> {
@@ -18,7 +18,7 @@ class Oauth extends React.Component<any, any> {
     if (obj.code) {
       // 清空旧的token，以免因旧token导致401报错
       setToken("");
-      weChatLoginUser(obj)
+      wechatLogin(obj)
         .then((res) => {
           // console.log(res.data.user_info);
           setToken(res.data.token);

@@ -3,7 +3,7 @@ import TextArea from "antd/lib/input/TextArea";
 import marked from "marked";
 
 import "./MdEditor.less";
-import { getPrivacyNotice, updatePrivacyNotice } from "_services/user";
+import { getPrivacyNotice, updatePrivacyNotice } from "_api/user";
 
 const domParser = new DOMParser();
 

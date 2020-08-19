@@ -3,8 +3,8 @@ import React, { FunctionComponent, useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Radio, Input, message } from "antd";
 
-import { FeedbackTypeI } from "_constants/interface";
-import axios from "_services/api";
+import { FeedbackTypeI } from "_types/api";
+import { personalApi } from "_axios";
 
 import "./Feedback.less";
 import { ArrowLeftOutlined } from "@ant-design/icons";
@@ -20,7 +20,7 @@ const Feedback: FunctionComponent = () => {
     if (currentType) {
       if (!value) message.warning("详细描述不能为空");
       else
-        axios
+        personalApi
           .post("/user/feedback/", { type_id: currentType.code, content: value })
           .then((_res) => {
             setCurrentType(feedbackTypes[0]);
@@ -34,7 +34,7 @@ const Feedback: FunctionComponent = () => {
   };
 
   useEffect(() => {
-    axios
+    personalApi
       .get("/user/feedback-type/")
       .then((res) => {
         const types = (res.data as FeedbackTypeI[]).sort(

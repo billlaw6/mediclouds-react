@@ -3,7 +3,8 @@ import React, { ReactElement, Component } from "react";
 import { connect } from "react-redux";
 import { Row, Col, Dropdown, Menu, Pagination, Table, Checkbox, Modal } from "antd";
 import DicomCard from "_components/DicomCard/DicomCard";
-import { StoreStateI, ExamIndexI } from "_constants/interface";
+import { ExamIndexI } from "_types/api";
+import { StoreStateI } from "_types/core";
 
 import {
   MapStateToPropsI,
@@ -29,8 +30,8 @@ import PrivacyNotice from "./components/PrivacyNotice";
 
 // import { checkDicomParseProgress } from "_helper";
 import Notify from "_components/Notify";
-import axios from "_services/api";
-import { checkDicomParseProgress } from "_services/dicom";
+import { personalApi } from "_axios";
+import { checkDicomParseProgress } from "_api/dicom";
 import Empty from "./components/Empty/Empty";
 
 import "./Home.less";
@@ -427,7 +428,7 @@ class Home extends Component<HomePropsI, HomeStateI> {
    * @memberof Home
    */
   updateDesc = (id: string, value: string): void => {
-    axios
+    personalApi
       .post(`/dicom/exam-index/${id}/`, { desc: value })
       .then(() => {
         const { getList } = this.props;

@@ -9,9 +9,12 @@
       "_images/*": ["assets/images/*"],
       "_actions/*": ["store/actions/*"],
       "_helper": ["helper/index.ts"],
-      "_services/*":["services/*"],
+      "_axios":["api/index"],
+      "_api/*": ["api/*"],
       "_store/*":["store/*"],
-      "_assets/*": ["assets/*"]
+      "_assets/*": ["assets/*"],
+      "_types/*": ["types/*"],
+      "_config": ["config.ts"],
     }
   }
 }

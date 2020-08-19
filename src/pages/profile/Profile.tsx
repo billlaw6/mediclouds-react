@@ -3,12 +3,12 @@ import { Form, Input, Row, Col, Select, DatePicker } from "antd";
 import moment, { Moment } from "moment";
 import { connect, useDispatch } from "react-redux";
 
-import { StoreStateI } from "_constants/interface";
+import { StoreStateI } from "_types/core";
 import { MapStateToPropsI, MapDispatchToPropsI } from "./type";
 
 import DEFAULT_AVATAR from "_images/avatar.png";
 import { updateUserAction, setUserAction } from "_actions/user";
-import { getUserInfo } from "_services/user";
+import { getUserInfo } from "_api/user";
 import { Link } from "react-router-dom";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 

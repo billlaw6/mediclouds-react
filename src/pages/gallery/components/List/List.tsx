@@ -4,7 +4,7 @@ import { GalleryListPropsI } from "_pages/gallery/type";
 
 import "./List.less";
 import { Table } from "antd";
-import { GalleryI, GalleryByTable } from "_constants/interface";
+import { GalleryI, GalleryByTable } from "_types/api";
 import moment from "moment";
 
 /* 

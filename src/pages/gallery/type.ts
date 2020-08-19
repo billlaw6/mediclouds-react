@@ -1,4 +1,4 @@
-import { GalleryI, GalleryStatsI } from "_constants/interface";
+import { GalleryI, GalleryStatsI } from "_types/api";
 import { ElementRef } from "react";
 
 export interface GalleryListPropsI {

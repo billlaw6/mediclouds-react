@@ -1,7 +1,8 @@
 import React, { Component, ReactElement } from "react";
 import { Route, RouteComponentProps } from "react-router-dom";
 import { connect } from "react-redux";
-import { StoreStateI, RouteI, UserI } from "_constants/interface";
+import { UserI } from "_types/api";
+import { StoreStateI, RouteI } from "_types/core";
 import { history } from "../store/configureStore";
 import { RoutesI } from "routes";
 import DefaultLayout from "_layout/Default/Default";

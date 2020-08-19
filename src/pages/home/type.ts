@@ -1,4 +1,4 @@
-import { ExamIndexI, UserI } from "_constants/interface";
+import { ExamIndexI, UserI } from "_types/api";
 import {
   getExamIndexListAction,
   deleteExamIndexListAction,

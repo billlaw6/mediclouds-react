@@ -1,4 +1,4 @@
-import { PatientExamI, SeriesI, SeriesBasicI } from "_constants/interface";
+import { PatientExamI, SeriesI, SeriesBasicI } from "_types/api";
 
 export interface PatientInfoPropsI {
   patientInfo: PatientExamI; // 病人检查信息

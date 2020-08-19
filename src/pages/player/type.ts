@@ -1,4 +1,4 @@
-import { ImageI, SeriesListI } from "_constants/interface";
+import { ImageI, SeriesListI } from "_types/api";
 
 export interface PatientI {
   patient_name: string;

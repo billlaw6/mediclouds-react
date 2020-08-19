@@ -1,14 +1,14 @@
 import React, { ReactElement } from "react";
 import { Form, Input, Button, Checkbox } from "antd";
 import { connect } from "react-redux";
-import { StoreStateI } from "_constants/interface";
+import { StoreStateI } from "_types/core";
 import {
   setTokenAction,
   setUserAction,
   SetTokenActionFuncI,
   SetUserActionFuncT,
 } from "_actions/user";
-import { loginUser, getUserInfo } from "_services/user";
+import { loginUser, getUserInfo } from "_api/user";
 import { history } from "../../store/configureStore";
 import "./Login.less";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
