@@ -1,6 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
-import { StoreStateI, ActionI, AccountActionTypes } from "_types/core";
+import { StoreStateI } from "_types/core";
 import { UserI } from "_types/api";
+import { AccountActionTypes } from "_types/actions";
 import { loginUser } from "_api/user";
 
 export default () => {

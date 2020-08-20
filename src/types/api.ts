@@ -214,3 +214,8 @@ export interface PatientExamI {
 }
 
 /* ===============  根据Tower文档整理的接口相关的interface END =============== */
+
+// Api请求接口
+export interface ApiFuncI {
+  <T = any>(...args: any): Promise<T>;
+}

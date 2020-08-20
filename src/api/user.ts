@@ -1,6 +1,6 @@
 import { personalApi } from "./index";
 import { UserI } from "_types/api";
-import { ApiFuncI } from "_types/core";
+import { ApiFuncI } from "_types/api";
 
 export const wechatLogin: ApiFuncI = async (params: any) =>
   await personalApi.post(`/user/wechat-oauth2-login/`, params);

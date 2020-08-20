@@ -1,8 +1,13 @@
 import { ComponentType } from "react";
+/* layouts */
+import DefaultLayout from "_layout/Default/Default";
+import FullscreenLayout from "_layout/FullscreenLayout/FullscreenLayout";
+import ManagerLayout from "_layout/Manager";
 
+/* Pages */
 import Home from "_pages/home/index";
 import Player from "_pages/player/index";
-import Login from "_pages/login/Login";
+import Login from "_pages/login";
 import LoginForm from "_pages/login_form/Login";
 import Upload from "_pages/upload/Upload";
 import Profile from "_pages/profile/Profile";
@@ -10,13 +15,8 @@ import UserManage from "_pages/users/UserManage";
 import Feedback from "_pages/feedback/Feedback";
 import Dashboard from "_pages/dashboard/Dashboard";
 import MdEditor from "_pages/mdEditor/MdEditor";
-
 import MobileUpload from "_pages/mobileUpload/MobileUpload";
-
-import DefaultLayout from "_layout/Default/Default";
-import FullscreenLayout from "_layout/FullscreenLayout/FullscreenLayout";
-
-import Oauth from "../pages/oauth/Oauth";
+import Oauth from "_pages/oauth/Oauth";
 import Gallery from "_pages/gallery/Gallery";
 import LoginAffiliate from "_pages/login_affiliate/LoginAffiliate";
 import OauthAffilate from "_pages/oauth/OauthAffilate";
