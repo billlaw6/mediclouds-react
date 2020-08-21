@@ -1,4 +1,4 @@
-import { SortTypeEnum, ViewTypeEnum } from "_pages/home/type";
+import { SortTypeEnum, ViewTypeEnum } from "_pages/resources/type";
 import { setViewModeAction, SetViewSortByAction } from "_actions/dicom";
 import * as types from "../action-types";
 

@@ -47,3 +47,14 @@ export const getQueryString = (): any => {
 };
 
 export default getQueryString;
+
+/**
+ * 设置token
+ * @param {string} token
+ */
+export const setToken = (token: string): void => window.localStorage.setItem("token", token);
+
+/**
+ * 获取token
+ */
+export const getToken = (): string => window.localStorage.getItem("token") || "";

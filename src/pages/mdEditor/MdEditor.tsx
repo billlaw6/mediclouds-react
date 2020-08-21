@@ -25,7 +25,7 @@ const MdEditor: FunctionComponent = () => {
       });
   };
 
-  const parseMd = (err: any, res: string): void => {
+  const parseMd = (err: string | undefined, res: string): void => {
     if (err) throw new Error(err);
     if ($preview.current && $preview.current.contentDocument) {
       const parseBody = domParser.parseFromString(res, "text/html").body;

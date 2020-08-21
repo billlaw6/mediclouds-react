@@ -1,11 +1,9 @@
-import { ComponentType } from "react";
 /* layouts */
 import DefaultLayout from "_layout/Default/Default";
 import FullscreenLayout from "_layout/FullscreenLayout/FullscreenLayout";
-import ManagerLayout from "_layout/Manager";
 
 /* Pages */
-import Home from "_pages/home/index";
+import Resources from "_pages/resources/index";
 import Player from "_pages/player/index";
 import Login from "_pages/login";
 import LoginForm from "_pages/login_form/Login";
@@ -21,18 +19,11 @@ import Gallery from "_pages/gallery/Gallery";
 import LoginAffiliate from "_pages/login_affiliate/LoginAffiliate";
 import OauthAffilate from "_pages/oauth/OauthAffilate";
 import HomeResource from "_pages/homeResource/HomeResource";
+import Home from "_pages/home";
+import { RoutesI } from "_types/router";
+import { AccountStatusE, AccountTypeE } from "_types/api";
 
 const IS_MOBILE = /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent);
-
-export interface RoutesI {
-  name: string;
-  path: string;
-  component: ComponentType<any>;
-  exact?: boolean;
-  routes?: RoutesI[];
-  permission?: string[];
-  layout?: typeof DefaultLayout | typeof FullscreenLayout; // 布局
-}
 
 const routes: RoutesI[] = [
   {
@@ -40,7 +31,13 @@ const routes: RoutesI[] = [
     path: "/",
     exact: true,
     component: Home,
-    permission: ["login"],
+    layout: FullscreenLayout,
+  },
+  {
+    name: "resources",
+    path: "/resources",
+    component: Resources,
+    permission: [AccountStatusE.LOGIN],
   },
   {
     name: "login_form",
@@ -58,13 +55,13 @@ const routes: RoutesI[] = [
     path: "/player",
     component: Player,
     layout: IS_MOBILE ? FullscreenLayout : DefaultLayout,
-    permission: ["login"],
+    permission: [AccountStatusE.LOGIN],
   },
   {
     name: "upload",
     path: "/upload",
     component: Upload,
-    permission: ["login"],
+    permission: [AccountStatusE.LOGIN],
   },
   {
     name: "oauth",
@@ -80,52 +77,52 @@ const routes: RoutesI[] = [
     name: "profile",
     path: "/profile",
     component: Profile,
-    permission: ["login"],
+    permission: [AccountStatusE.LOGIN],
   },
   {
     name: "feedback",
     path: "/feedback",
     component: Feedback,
-    permission: ["login"],
+    permission: [AccountStatusE.LOGIN],
   },
   {
     name: "dashboard",
     path: "/dashboard",
     component: Dashboard,
     layout: FullscreenLayout,
-    permission: ["login", "is_superuser"],
+    permission: [AccountStatusE.LOGIN, AccountTypeE.SUPER_ADMIN],
   },
   {
     name: "user_manage",
     path: "/users",
     component: UserManage,
-    permission: ["login", "is_superuser"],
+    permission: [AccountStatusE.LOGIN, AccountTypeE.SUPER_ADMIN],
   },
   {
     name: "homeRes",
     path: "/home-res",
     component: HomeResource,
-    permission: ["login", "is_superuser"],
+    permission: [AccountStatusE.LOGIN, AccountTypeE.SUPER_ADMIN],
   },
   {
     name: "mdEditor",
     path: "/mdeditor",
     component: MdEditor,
-    permission: ["login", "is_superuser"],
+    permission: [AccountStatusE.LOGIN, AccountTypeE.SUPER_ADMIN],
     layout: FullscreenLayout,
   },
   {
     name: "gallery",
     path: "/gallery",
     component: Gallery,
-    permission: ["login"],
+    permission: [AccountStatusE.LOGIN],
     layout: FullscreenLayout,
   },
   {
     name: "mobileUpload",
     path: "/mu",
     component: MobileUpload,
-    permission: ["login"],
+    permission: [AccountStatusE.LOGIN],
   },
   {
     name: "loginAffiliate",

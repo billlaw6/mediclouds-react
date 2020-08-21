@@ -1,7 +1,7 @@
 import { ExamIndexI } from "_types/api";
 import { ActionI, SearchFormI } from "_types/core";
 import * as types from "../action-types";
-import { ViewTypeEnum, SortTypeEnum } from "_pages/home/type";
+import { ViewTypeEnum, SortTypeEnum } from "_pages/resources/type";
 
 // 用于在SAGA中触发请求
 export type GetExamIndexListActionT = ActionI<string, SearchFormI>;

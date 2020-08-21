@@ -1,3 +1,15 @@
+/* 
+  TODO LIST
+
+  - 表单验证
+  - 表单登录逻辑
+  - 短信验证逻辑
+  - 机器人验证码
+  - 样式调整
+
+
+*/
+
 import React, { FunctionComponent, useState, useEffect } from "react";
 import { Tabs, Form, Button, Input, Space } from "antd";
 import Footer from "_components/Footer/Footer";
@@ -119,9 +131,9 @@ const Login: FunctionComponent = () => {
                   </TabPane>
                   <TabPane key="phone" tab="手机号登录">
                     <FormItem
-                      label="用户名"
-                      name="username"
-                      rules={[{ required: true, message: "请输入用户名" }]}
+                      label="手机号"
+                      name="cellphoneNumber"
+                      rules={[{ required: true, message: "请输入手机号" }]}
                     >
                       <Input value={loginFormData["username"] || ""}></Input>
                     </FormItem>
@@ -137,20 +149,20 @@ const Login: FunctionComponent = () => {
                     </FormItem>
                   </TabPane>
                 </Tabs>
+                <FormItem>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    onClick={() => console.log("loginType", loginType)}
+                  >
+                    登录
+                  </Button>
+                </FormItem>
               </Form>
             </div>
           )}
 
-          <div className="login-contorl">
-            <Space>
-              <LoginBtn onClick={(val): void => setType(val)} type={type}></LoginBtn>
-              {isPersonalType ? null : (
-                <Button type="primary" onClick={() => console.log("loginType", loginType)}>
-                  登录
-                </Button>
-              )}
-            </Space>
-          </div>
+          <LoginBtn onClick={(val): void => setType(val)} type={type}></LoginBtn>
         </div>
       </div>
       <Footer></Footer>
