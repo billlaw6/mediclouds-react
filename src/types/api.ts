@@ -70,6 +70,20 @@ export interface UserI {
   volumn_count?: number;
 }
 
+// 账户信息
+export interface AccountI {
+  id: string;
+  username: string;
+  nickname: string;
+  cell_phone: number;
+  avatar: string;
+  age: number;
+  privacy_notice: number;
+  gender: 0 | 1;
+  birthday: string;
+  user_type: AccountTypeE;
+}
+
 // 单张图片
 export interface ImageI {
   id: string;

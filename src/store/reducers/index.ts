@@ -2,6 +2,7 @@ import { combineReducers } from "redux";
 import { History } from "history";
 import { connectRouter } from "connected-react-router";
 import { tokenReducer, userReducer } from "./user";
+import account from "./account";
 import { examIndexListReducer } from "./dicom";
 import dicomSettings from "./dicomSettings";
 
@@ -13,6 +14,7 @@ const createRootReducer = (history: History) =>
     user: userReducer,
     examIndexList: examIndexListReducer,
     dicomSettings,
+    account,
   });
 
 // IState不能作为组件创建时props类型！！！必须用store.d里定义的！三天的教训！

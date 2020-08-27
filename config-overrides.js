@@ -44,5 +44,6 @@ module.exports = override(
     ["_assets"]: path.join(SRC, "assets"),
     ["_types"]: path.join(SRC, "types"),
     ["_config"]: path.join(SRC, "config.ts"),
+    ["_hooks"]: path.join(SRC, "hooks"),
   }),
 );

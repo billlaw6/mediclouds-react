@@ -1,5 +1,4 @@
-import { personalApi } from "./index";
-import { UserI } from "_types/api";
+import { personalApi, publicAPi } from "./index";
 import { ApiFuncI } from "_types/api";
 
 export const wechatLogin: ApiFuncI = async (params: any) =>
@@ -9,6 +8,11 @@ export const loginUser = async (params: any) => {
   const res = await personalApi.post(`/auth/login/`, params);
   return res;
 };
+
+/* 用户表单登录 */
+export const loginForm: ApiFuncI = async () => await publicAPi.post("/user/login-form");
+/* 用户手机号登录 */
+export const loginPhone: ApiFuncI = async () => await publicAPi.post("/user/login-phone");
 
 /* 获取用户列表 */
 export const getUserList: ApiFuncI = async () => await personalApi.get(`/user/list/`);
@@ -80,4 +84,10 @@ export const createFeedback = async (params: any) => {
 export const getUserStats = async (params?: any) => {
   const res = await personalApi.get(`/user/user-stats/`, { params: params });
   return res;
+};
+
+export default {
+  loginForm,
+  loginPhone,
+  loginWechat: wechatLogin,
 };

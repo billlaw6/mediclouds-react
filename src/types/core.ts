@@ -1,5 +1,5 @@
 import { SortTypeEnum, ViewTypeEnum } from "_pages/resources/type";
-import { CollectionI, GenderT, UserI, ExamIndexI } from "_types/api";
+import { CollectionI, GenderT, UserI, ExamIndexI, AccountI } from "_types/api";
 
 // Store相关接口
 // 本地变量遵循js规范使用驼峰式全名，需要与后台数据库字段对应的变量使用下划线风格。
@@ -138,6 +138,7 @@ export declare interface StoreStateI {
   token: string;
   user: UserI;
   examIndexList: ExamIndexI[];
+  account: AccountI & { login: boolean };
   dicomSettings: {
     sortBy: SortTypeEnum;
     viewMode: ViewTypeEnum;

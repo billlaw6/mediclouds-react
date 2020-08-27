@@ -24,13 +24,16 @@ import locale from "antd/es/locale/zh_CN";
 import moment from "moment";
 import "moment/locale/zh-cn";
 
+/* mock */
+import "./mock";
+
 import "core-js/stable";
 import "regenerator-runtime/runtime";
 
 moment.locale("zh-cn");
 
 export const store = configureStore();
-const persistor = persistStore(store);
+// const persistor = persistStore(store);
 
 // 下面两种模式有区别，原因未知。
 // let messages = {
@@ -78,11 +81,11 @@ ReactDOM.render(
       <ConnectedRouter history={history}>
         {/* your usual react-router v4/v5 routing */}
         <IntlProvider locale="zh" messages={messages["zh"]}>
-          <PersistGate loading={<Loading />} persistor={persistor}>
-            <ConfigProvider locale={locale}>
-              <App />
-            </ConfigProvider>
-          </PersistGate>
+          {/* <PersistGate loading={<Loading />} persistor={persistor}> */}
+          <ConfigProvider locale={locale}>
+            <App />
+          </ConfigProvider>
+          {/* </PersistGate> */}
         </IntlProvider>
       </ConnectedRouter>
     </Provider>

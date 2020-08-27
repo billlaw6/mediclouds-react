@@ -52,7 +52,8 @@ export default getQueryString;
  * 设置token
  * @param {string} token
  */
-export const setToken = (token: string): void => window.localStorage.setItem("token", token);
+export const setToken = (token: string): void =>
+  window.localStorage.setItem("token", `Token ${token}`);
 
 /**
  * 获取token

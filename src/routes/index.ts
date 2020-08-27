@@ -22,6 +22,8 @@ import HomeResource from "_pages/homeResource/HomeResource";
 import Home from "_pages/home";
 import { RoutesI } from "_types/router";
 import { AccountStatusE, AccountTypeE } from "_types/api";
+import Manager from "_pages/manager";
+import ManagerLayout from "_layout/Manager";
 
 const IS_MOBILE = /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent);
 
@@ -91,6 +93,20 @@ const routes: RoutesI[] = [
     component: Dashboard,
     layout: FullscreenLayout,
     permission: [AccountStatusE.LOGIN, AccountTypeE.SUPER_ADMIN],
+  },
+  {
+    name: "manager",
+    path: "/manager",
+    component: Manager,
+    layout: ManagerLayout,
+    exact: true,
+    permission: [
+      // AccountStatusE.LOGIN,
+      // AccountTypeE.SUPER_ADMIN,
+      // AccountTypeE.BUSINESS,
+      // AccountTypeE.SUPER_STAFF,
+      // AccountTypeE.STAFF,
+    ],
   },
   {
     name: "user_manage",

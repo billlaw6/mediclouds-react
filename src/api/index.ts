@@ -100,50 +100,50 @@ const customReqErr = (err: any) => Promise.reject(err);
 /* 自定义响应拦截器 */
 
 // 服务器返回了结果，有前面的validateStatus保证，这里接收的只会是2和3开着的状态
-const customRes = (res: AxiosResponse<any>) => res;
+const customRes = (res: AxiosResponse<any>) => res.data;
 const customResErr = (error: any) => {
   // 两种错误返回类型
   const { response } = error;
   console.log(response);
-  if (response) {
-    // 服务器返回了结果
-    // console.log('response valid');
-    switch (response.status) {
-      case 400:
-        // history.push("/login");
-        return Promise.reject(error);
-      case 401: // 当前请求用户需要验证，未登录；
-        // 跳转路由或弹出蒙层
-        // 直接修改localStorage会被redux-persist还原
-        // delete persistRoot.token;
-        // console.log(persistRoot);
-        // localStorage.setItem('persist:root', JSON.stringify(persistRoot));
-        // localStorage.setItem('persist:root', persistRoot);
-        history.push("/login");
-        return Promise.reject(error);
-      case 403: // 服务器拒绝执行，通常是token过期；
-        // 直接修改localStorage会被redux-persist还原
-        // persistRoot.token = '';
-        // console.log(persistRoot);
-        // localStorage.setItem('persist:root', JSON.stringify(persistRoot));
-        // history.push("/login");
-        return Promise.reject(error);
-      case 404: // 资源找不到；
-        // history.push("/404");
-        return Promise.reject(error);
-      default:
-        return Promise.reject(error);
-    }
-  } else {
-    if (!window.navigator.onLine) {
-      // 断网处理：可以跳转到断网页面
-      history.push("/offline");
-      return Promise.reject(error);
-    }
-    // 服务器无响应又没断网，返回报错
-    // history.push("/error");
-    return Promise.reject(error);
-  }
+  // if (response) {
+  //   // 服务器返回了结果
+  //   // console.log('response valid');
+  //   switch (response.status) {
+  //     case 400:
+  //       // history.push("/login");
+  //       return Promise.reject(error);
+  //     case 401: // 当前请求用户需要验证，未登录；
+  //       // 跳转路由或弹出蒙层
+  //       // 直接修改localStorage会被redux-persist还原
+  //       // delete persistRoot.token;
+  //       // console.log(persistRoot);
+  //       // localStorage.setItem('persist:root', JSON.stringify(persistRoot));
+  //       // localStorage.setItem('persist:root', persistRoot);
+  //       history.push("/login");
+  //       return Promise.reject(error);
+  //     case 403: // 服务器拒绝执行，通常是token过期；
+  //       // 直接修改localStorage会被redux-persist还原
+  //       // persistRoot.token = '';
+  //       // console.log(persistRoot);
+  //       // localStorage.setItem('persist:root', JSON.stringify(persistRoot));
+  //       // history.push("/login");
+  //       return Promise.reject(error);
+  //     case 404: // 资源找不到；
+  //       // history.push("/404");
+  //       return Promise.reject(error);
+  //     default:
+  //       return Promise.reject(error);
+  //   }
+  // } else {
+  //   if (!window.navigator.onLine) {
+  //     // 断网处理：可以跳转到断网页面
+  //     history.push("/offline");
+  //     return Promise.reject(error);
+  //   }
+  //   // 服务器无响应又没断网，返回报错
+  //   // history.push("/error");
+  //   return Promise.reject(error);
+  // }
 };
 
 _personalApi.interceptors.request.use(customReq, customReqErr);

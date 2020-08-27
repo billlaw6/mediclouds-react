@@ -11,16 +11,21 @@
 */
 
 import React, { FunctionComponent, useState, useEffect } from "react";
-import { Tabs, Form, Button, Input, Space } from "antd";
+import { Tabs, Form, Button, Input } from "antd";
 import Footer from "_components/Footer/Footer";
+
+import LoginBtn from "./LoginBtn";
+import useAccount from "_hooks/useAccount";
 
 import logo from "_images/logo.png";
 import wechatScan from "_images/wechat-scan.png";
 import welcome from "_assets/videos/welcome.mp4";
 
-import LoginBtn from "./LoginBtn";
-
 import "./style.less";
+import { useSelector } from "react-redux";
+import { StoreStateI } from "_types/core";
+import { UserI, AccountI, AccountTypeE } from "_types/api";
+import { useHistory } from "react-router";
 
 const { Item: FormItem } = Form;
 const { TabPane } = Tabs;
@@ -51,11 +56,21 @@ const QRCODE_URL =
   `#wechat_redirect`;
 
 const Login: FunctionComponent = () => {
+  const history = useHistory();
   const [type, setType] = useState<"personal" | "business">("personal"); // 切换登录类型
   const [loginType, setLoginType] = useState<"form" | "phone">("form"); // 切换表单登录类型
   const [loginFormData, setLoginFormData] = useState<any>({}); // 登录表单数据
+  const { formLogin, phoneLogin } = useAccount();
 
   const [hiddenScan, setHiddenScan] = useState(false);
+
+  const { user, account } = useSelector<
+    StoreStateI,
+    { user: UserI; account: AccountI & { login: boolean } }
+  >((state) => ({
+    user: state.user,
+    account: state.account,
+  }));
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -66,8 +81,6 @@ const Login: FunctionComponent = () => {
       clearTimeout(timer);
     };
   }, []);
-
-  console.log("loginFormData", loginFormData);
 
   const isPersonalType = type === "personal";
 
@@ -117,14 +130,14 @@ const Login: FunctionComponent = () => {
                     <FormItem
                       label="用户名"
                       name="username"
-                      rules={[{ required: true, message: "请输入用户名" }]}
+                      rules={[{ required: loginType === "form", message: "请输入用户名" }]}
                     >
                       <Input value={loginFormData["username"] || ""}></Input>
                     </FormItem>
                     <FormItem
                       label="密码"
                       name="password"
-                      rules={[{ required: true, message: "请输入密码" }]}
+                      rules={[{ required: loginType === "form", message: "请输入密码" }]}
                     >
                       <InputPassword value={loginFormData["password"] || ""}></InputPassword>
                     </FormItem>
@@ -133,14 +146,14 @@ const Login: FunctionComponent = () => {
                     <FormItem
                       label="手机号"
                       name="cellphoneNumber"
-                      rules={[{ required: true, message: "请输入手机号" }]}
+                      rules={[{ required: loginType === "phone", message: "请输入手机号" }]}
                     >
                       <Input value={loginFormData["username"] || ""}></Input>
                     </FormItem>
                     <FormItem
                       label="验证码"
                       name="cellPhoneAuthCode"
-                      rules={[{ required: true, message: "请输入验证码" }]}
+                      rules={[{ required: loginType === "phone", message: "请输入验证码" }]}
                     >
                       <Input
                         value={loginFormData["cellPhoneAuthCode"] || ""}
@@ -153,7 +166,20 @@ const Login: FunctionComponent = () => {
                   <Button
                     type="primary"
                     htmlType="submit"
-                    onClick={() => console.log("loginType", loginType)}
+                    onClick={() => {
+                      if (loginType === "form") {
+                        formLogin().then(
+                          () => console.log("form login successed"),
+                          (err: any) => console.error(err),
+                        );
+                      }
+                      if (loginType === "phone") {
+                        phoneLogin().then(
+                          () => console.log("phone login successed"),
+                          (err) => console.error(err),
+                        );
+                      }
+                    }}
                   >
                     登录
                   </Button>
