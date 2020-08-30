@@ -14,6 +14,8 @@ import "./Default.less";
 import { logoutUserAction } from "_actions/user";
 import SideBtns from "_components/SideBtns";
 import { UserI } from "_types/api";
+import { Switch, Route } from "react-router-dom";
+import Player from "_pages/player";
 
 const { Content } = Layout;
 
@@ -31,7 +33,11 @@ const DefalutLayout: FunctionComponent = (props) => {
         nickname={nickname}
         logout={logoutUserAction}
       ></Header>
-      <Content id="content">{children}</Content>
+      <Content id="content">
+        <Switch>
+          <Route path="/player" component={Player}></Route>
+        </Switch>
+      </Content>
       <Footer></Footer>
       <SideBtns></SideBtns>
     </Layout>

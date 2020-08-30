@@ -41,7 +41,7 @@ class UserManage extends React.Component<UserManagePropsI, UserManageStateI> {
           return true;
         } else if (
           item.cell_phone &&
-          item.cell_phone.toLowerCase().indexOf(value.toLowerCase()) >= 0
+          `${item.cell_phone}`.toLowerCase().indexOf(value.toLowerCase()) >= 0
         ) {
           return true;
         } else {
@@ -132,7 +132,7 @@ class UserManage extends React.Component<UserManagePropsI, UserManageStateI> {
         dataIndex: "cell_phone",
         key: "cell_phone",
         sorter: (a: UserI, b: UserI) => {
-          return a.cell_phone.localeCompare(b.cell_phone, "zh-CN");
+          return `${a.cell_phone}`.localeCompare(`${b.cell_phone}`, "zh-CN");
         },
       },
       {

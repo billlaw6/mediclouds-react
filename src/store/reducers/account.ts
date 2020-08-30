@@ -7,13 +7,18 @@ const DEFAULT_ACCOUNT: AccountI & { login: boolean } = {
   username: "",
   nickname: "",
   cell_phone: 0,
-  gender: 0,
+  sex: 0,
   age: 0,
   avatar: "",
   privacy_notice: 0,
   birthday: "",
   login: false,
-  user_type: AccountTypeE.STAFF,
+  role: AccountTypeE.EMPLOYEE,
+  first_name: "",
+  last_name: "",
+  sign: "",
+  address: "",
+  unit: "",
 };
 
 const accountReducer: ReducerI<AccountI & { login: boolean }, AccountActionTypes, AccountI> = (

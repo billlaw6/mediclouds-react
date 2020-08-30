@@ -153,11 +153,11 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
               <Col span={12}>
                 <Item label="性别" colon={false}>
                   <Select
-                    dropdownClassName="profile-form-gender"
+                    dropdownClassName="profile-form-sex"
                     disabled={!isEdit}
-                    value={userInfo.gender}
+                    value={userInfo.sex}
                     onChange={(value: number): void =>
-                      setUserInfo(Object.assign({}, userInfo, { gender: value }))
+                      setUserInfo(Object.assign({}, userInfo, { sex: value }))
                     }
                   >
                     <Option value={0}>保密</Option>
@@ -167,8 +167,8 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
                   <Input
                     style={{ display: "none" }}
                     type="text"
-                    name="gender"
-                    value={userInfo.gender}
+                    name="sex"
+                    value={userInfo.sex}
                     onChange={updateInputVal}
                   ></Input>
                 </Item>

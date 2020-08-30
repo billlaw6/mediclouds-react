@@ -17,11 +17,11 @@ const tokenReducer = (state = defaultToken, action: ReturnType<typeof setTokenAc
 };
 
 const DEFAULT_USER: UserI = {
-  id: -1,
+  id: "",
   username: "",
   nickname: "",
-  cell_phone: "",
-  gender: 0,
+  cell_phone: -1,
+  sex: 0,
   age: 0,
   sign: "",
   address: "",

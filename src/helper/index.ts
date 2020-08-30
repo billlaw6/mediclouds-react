@@ -59,3 +59,27 @@ export const setToken = (token: string): void =>
  * 获取token
  */
 export const getToken = (): string => window.localStorage.getItem("token") || "";
+
+interface GetSearchQueryPropsI {
+  id?: string;
+  current?: number;
+  size?: number;
+  start?: string;
+  end?: string;
+  sort?: string;
+  keyword?: string;
+}
+
+/**
+ *  获取查询条件拼接字符串
+ *
+ * @param {GetSearchQueryPropsI} props
+ */
+export const getSearchQuery = (props?: GetSearchQueryPropsI): string => {
+  if (!props) return "";
+
+  const { id = "", current = 1, size = 12, start = "", end = "", sort = "", keyword = "" } = props;
+  return `id=${id}&current=${current}&size=${size}&start=${encodeURI(start)}&end=${encodeURI(
+    end,
+  )}&sort=${sort}&keyword=${keyword}`;
+};

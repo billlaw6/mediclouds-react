@@ -1,5 +1,5 @@
 import { personalApi, publicAPi } from "./index";
-import { ApiFuncI } from "_types/api";
+import { ApiFuncI, AccountI } from "_types/api";
 
 export const wechatLogin: ApiFuncI = async (params: any) =>
   await personalApi.post(`/user/wechat-oauth2-login/`, params);
@@ -86,8 +86,18 @@ export const getUserStats = async (params?: any) => {
   return res;
 };
 
+/* 获得下属账户列表 */
+export const getAffiliatedList = async (): Promise<AccountI[]> =>
+  await publicAPi.get("/user/affiliated-list");
+
+/* 获得下属用户列表 */
+export const getCustomerList = async (): Promise<AccountI[]> =>
+  await publicAPi.get("/user/customer-list");
+
 export default {
   loginForm,
   loginPhone,
   loginWechat: wechatLogin,
+  getAffiliatedList,
+  getCustomerList,
 };

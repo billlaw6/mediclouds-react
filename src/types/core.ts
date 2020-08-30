@@ -1,5 +1,5 @@
 import { SortTypeEnum, ViewTypeEnum } from "_pages/resources/type";
-import { CollectionI, GenderT, UserI, ExamIndexI, AccountI } from "_types/api";
+import { CollectionI, SexT, UserI, ExamIndexI, AccountI } from "_types/api";
 
 // Store相关接口
 // 本地变量遵循js规范使用驼峰式全名，需要与后台数据库字段对应的变量使用下划线风格。
@@ -12,7 +12,7 @@ export declare interface LoginFormI {
 
 export declare interface ProfileFormI {
   id: number;
-  gender: number;
+  sex: number;
   birthday: Date;
   sign: string;
   address: string;
@@ -28,7 +28,7 @@ export declare interface CurrentUserI {
   cell_phone: string;
   first_name?: string;
   last_name?: string;
-  gender: number;
+  sex: number;
   birthday?: Date;
   sign: string;
   address: string;
@@ -51,7 +51,7 @@ export declare interface CurrentUserI {
 //   last_name?: string;
 //   pinyin?: string;
 //   py?: string;
-//   gender: number;
+//   sex: number;
 //   // 数组定义方法二
 //   user_permissions: Array<number>;
 // }
@@ -107,7 +107,7 @@ export declare interface ExamIndexListI {
   modality: string;
   patient_id: string;
   patient_name: string;
-  sex: GenderT;
+  sex: SexT;
   birthday: string;
   institution_name: string;
   created_at: Date;

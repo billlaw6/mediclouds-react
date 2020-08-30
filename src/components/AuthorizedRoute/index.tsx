@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, ReactNode } from "react";
 import { Route, RouteProps, Redirect } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
@@ -21,14 +21,14 @@ const AuthorizedRoute: FunctionComponent<AuthorizedRoutePropsI> = (props) => {
   const account = useSelector<StoreStateI, AccountI & { login: boolean }>((state) => state.account);
   const history = useHistory();
 
-  const { user_type } = account;
+  const { role } = account;
   const { permission = [], children, ...args } = props;
 
   if (hasPermission(AccountStatusE.DISABLED, permission)) return <Redirect to="/login"></Redirect>;
   if (hasPermission(AccountStatusE.LOGIN, permission)) {
     if (!account.login) return <Redirect to="/login"></Redirect>;
   }
-  if (permission.length && !hasPermission(user_type, permission)) {
+  if (permission.length && !hasPermission(role, permission)) {
     history.goBack();
   }
 

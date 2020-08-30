@@ -1,5 +1,6 @@
-import React, { Component, ReactElement } from "react";
-import { Router, Switch, Route } from "react-router-dom";
+import React, { Component, ReactElement, ReactNode } from "react";
+import { Switch, Route, BrowserRouter as Router } from "react-router-dom";
+import { RoutesI } from "_types/router";
 import routes from "./routes";
 import { history } from "./store/configureStore";
 
@@ -12,14 +13,44 @@ import Error from "_pages/error/Error";
 import "./App.less";
 import AuthorizedRoute from "_components/AuthorizedRoute";
 
+const getRouters = (routers: RoutesI[], parentPath = ""): ReactNode => {
+  return routers.map((item, index) => {
+    const { component, layout, name, routes, path, ...args } = item;
+    const Layout = layout;
+    const Cmp = component;
+
+    return (
+      <AuthorizedRoute
+        key={index}
+        path={`${parentPath}${path}`}
+        {...args}
+        render={(props): ReactNode => {
+          if (routes) return <>{getRouters(routes, path)}</>;
+
+          return Layout ? (
+            <Layout>
+              <Cmp {...props}></Cmp>
+            </Layout>
+          ) : (
+            <Cmp {...props}></Cmp>
+          );
+        }}
+      ></AuthorizedRoute>
+    );
+  });
+};
+
 class App extends Component {
   render(): ReactElement {
+    const routers = getRouters(routes);
+
     return (
       // {/* 原本用官方推荐的BrowserRouter，结果只变url不刷新页面
       //               https://github.com/brickspert/blog/issues/3 */}
-      <Router history={history}>
+      <Router>
         <Switch>
-          {routes.map((item, index) => {
+          {routers}
+          {/* {routes.map((item, index) => {
             // return <RouteWithSubRoutes key={index} {...item} />;
             const { component, layout, name, ...args } = item;
             const Layout = layout;
@@ -40,7 +71,7 @@ class App extends Component {
                 }}
               ></AuthorizedRoute>
             );
-          })}
+          })} */}
           <Route
             render={(): ReactElement => (
               <DefaultLayout>

@@ -96,16 +96,15 @@ const routes: RoutesI[] = [
   },
   {
     name: "manager",
-    path: "/manager",
+    path: "/manager/:name?",
     component: Manager,
     layout: ManagerLayout,
-    exact: true,
     permission: [
       // AccountStatusE.LOGIN,
       // AccountTypeE.SUPER_ADMIN,
       // AccountTypeE.BUSINESS,
-      // AccountTypeE.SUPER_STAFF,
-      // AccountTypeE.STAFF,
+      // AccountTypeE.MANAGER,
+      // AccountTypeE.EMPLOYEE,
     ],
   },
   {

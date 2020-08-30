@@ -3,8 +3,8 @@
 export enum AccountTypeE {
   SUPER_ADMIN = "super_admin", // 超级管理员
   BUSINESS = "business", // 企业用户
-  SUPER_STAFF = "super_staff", // 经理用户
-  STAFF = "staff", // 员工用户
+  MANAGER = "manager", // 经理用户
+  EMPLOYEE = "employee", // 员工用户
 }
 // 顾客账户类型
 export enum CustomerTypeE {
@@ -20,7 +20,7 @@ export enum AccountStatusE {
 }
 
 // 性别
-export type GenderT = 0 | 1 | 2;
+export type SexT = 0 | 1 | 2;
 // 是否为mpr
 export type mprFlagT = 0 | 1;
 
@@ -49,11 +49,11 @@ export interface ExamIndexI {
 
 // 用户信息
 export interface UserI {
-  id: number;
+  id: string;
   username: string;
   nickname: string;
-  cell_phone: string;
-  gender: GenderT;
+  cell_phone: number;
+  sex: SexT;
   age: number;
   sign: string;
   address: string;
@@ -71,17 +71,10 @@ export interface UserI {
 }
 
 // 账户信息
-export interface AccountI {
-  id: string;
-  username: string;
-  nickname: string;
-  cell_phone: number;
-  avatar: string;
-  age: number;
-  privacy_notice: number;
-  gender: 0 | 1;
-  birthday: string;
-  user_type: AccountTypeE;
+export interface AccountI extends UserI {
+  first_name: string;
+  last_name: string;
+  role: AccountTypeE | CustomerTypeE;
 }
 
 // 单张图片

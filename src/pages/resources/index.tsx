@@ -47,7 +47,7 @@ import {
 
 const DEFAULT_PAGE_SIZE = 12;
 
-class Home extends Component<HomePropsI, HomeStateI> {
+class Resources extends Component<HomePropsI, HomeStateI> {
   pollTimer: number | null;
 
   constructor(props: HomePropsI) {
@@ -525,4 +525,4 @@ const mapDispatchToProps: MapDispatchToPropsI = {
   setSortBy: SetViewSortByAction,
   setViewMode: setViewModeAction,
 };
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(Resources);
