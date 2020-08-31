@@ -1,5 +1,5 @@
 import Mock from "mockjs";
-import { AccountI } from "_types/api";
+import { AccountI, StatsI } from "_types/account";
 import { retry } from "redux-saga/effects";
 
 interface GenerateAccountPorpsI {
@@ -19,7 +19,7 @@ const generateAccount = (props?: GenerateAccountPorpsI): AccountI => {
 
   return Mock.mock({
     id: "@GUID",
-    username: "@CNAME",
+    username: "@WORD(5,10)",
     nickname: "@CNAME",
     first_name: "@CFIRST",
     last_name: "@CLAST",
@@ -30,6 +30,8 @@ const generateAccount = (props?: GenerateAccountPorpsI): AccountI => {
     avatar: "@IMAGE('200x200')",
     birthday: "@DATE",
     "role|1": userTypeList,
+    business_name: "@CTITLE",
+    "recommended_users|1-100": [{ id: "@GUID", nickname: "@CNAME" }],
   });
 };
 
@@ -70,5 +72,16 @@ if (process.env.NODE_ENV === "development") {
     return result;
   });
 
+  /* 创建新用户 */
   Mock.mock("/public-api/user/create", "post", () => generateAccount());
+
+  /* 获取用户统计信息 */
+  Mock.mock("/public-api/stats", "get", {
+    case: "@NATURAL",
+    customer: "@NATURAL",
+    dicom_size: "@NATURAL",
+    pdf_size: "@NATURAL",
+    image_size: "@NATURAL",
+    order: "@NATURAL",
+  });
 }

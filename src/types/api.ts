@@ -1,24 +1,4 @@
 /* ===============  根据Tower文档整理的接口相关的interface =============== */
-// 对公账户类型
-export enum AccountTypeE {
-  SUPER_ADMIN = "super_admin", // 超级管理员
-  BUSINESS = "business", // 企业用户
-  MANAGER = "manager", // 经理用户
-  EMPLOYEE = "employee", // 员工用户
-}
-// 顾客账户类型
-export enum CustomerTypeE {
-  DOCTOR = "doctor", // 医生
-  PATIENT = "patient", // 病人
-}
-
-// 账户状态
-export enum AccountStatusE {
-  LOGIN = "login", // 登录
-  LOGOUT = "logout", // 退出
-  DISABLED = "disabled", // 禁用
-}
-
 // 性别
 export type SexT = 0 | 1 | 2;
 // 是否为mpr
@@ -68,13 +48,6 @@ export interface UserI {
   last_login?: string;
   file_count?: number;
   volumn_count?: number;
-}
-
-// 账户信息
-export interface AccountI extends UserI {
-  first_name: string;
-  last_name: string;
-  role: AccountTypeE | CustomerTypeE;
 }
 
 // 单张图片

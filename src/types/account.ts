@@ -75,3 +75,13 @@ export interface CreateAccountDataI {
   email?: string;
   nickname?: string;
 }
+
+/* 统计信息 */
+export interface StatsI {
+  case: number;
+  customer: number;
+  dicom_size: number;
+  pdf_size: number;
+  image_size: number;
+  order: number;
+}

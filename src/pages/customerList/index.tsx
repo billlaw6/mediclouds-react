@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
 import React, { FunctionComponent, useState, useEffect, ReactNode } from "react";
-import { AccountI, CustomerTypeE } from "_types/api";
+import { AccountI, RoleE } from "_types/account";
 import { getCustomerList } from "_api/user";
 import { Table } from "antd";
 import { ColumnsType } from "antd/lib/table";
@@ -46,13 +46,13 @@ const CustomerList: FunctionComponent = (props) => {
       key: "role",
       dataIndex: "role",
       render: (val): ReactNode => {
-        return <span>{val === CustomerTypeE.DOCTOR ? "医生" : "患者"}</span>;
+        return <span>{val === RoleE.DOCTOR ? "医生" : "患者"}</span>;
       },
       filters: [
-        { text: "医生", value: CustomerTypeE.DOCTOR },
-        { text: "患者", value: CustomerTypeE.PATIENT },
+        { text: "医生", value: RoleE.DOCTOR },
+        { text: "患者", value: RoleE.PATIENT },
       ],
-      onFilter: (val, account): boolean => account.role === (val as CustomerTypeE),
+      onFilter: (val, account): boolean => account.role === (val as RoleE),
     },
   ];
 

@@ -37,6 +37,13 @@ const ManagerSider: FunctionComponent<ManagerSiderPropsI> = (props) => {
           创建账号
         </MenuItem>
         <MenuItem
+          key="business-account-list"
+          title="企业账户"
+          onClick={(): void => history.push("/manager/business-account-list")}
+        >
+          企业账户
+        </MenuItem>
+        <MenuItem
           key="account-list"
           title="账号列表"
           onClick={(): void => history.push("/manager/account-list")}

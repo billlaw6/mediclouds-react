@@ -1,6 +1,7 @@
 import { personalApi, publicAPi } from "./index";
-import { ApiFuncI, AccountI } from "_types/api";
+import { AccountI, StatsI } from "_types/account";
 import { CreateAccountDataI } from "_types/account";
+import { ApiFuncI } from "_types/api";
 
 export const wechatLogin: ApiFuncI = async (params: any) =>
   await personalApi.post(`/user/wechat-oauth2-login/`, params);
@@ -98,6 +99,9 @@ export const getCustomerList = async (): Promise<AccountI[]> =>
 /* 创建新账户 */
 export const createAccount = async (data: CreateAccountDataI): Promise<AccountI> =>
   await publicAPi.post("/user/create", data);
+
+/* 获取统计信息 */
+export const getStats = async (id: string): Promise<StatsI> => await publicAPi.get(`/stats`);
 
 export default {
   loginForm,

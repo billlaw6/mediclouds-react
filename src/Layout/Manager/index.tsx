@@ -15,6 +15,7 @@ import ManagerAccountList from "_pages/accountList";
 import ManagerCustomerList from "_pages/customerList";
 
 import "./style.less";
+import BusinessAccountList from "_pages/businessAccountLIst";
 
 const { Header, Footer, Content } = Layout;
 
@@ -26,6 +27,8 @@ const ManagerLayout: FunctionComponent = () => {
     switch (name) {
       case "create-account":
         return <ManagerCreateAccount></ManagerCreateAccount>;
+      case "business-account-list":
+        return <BusinessAccountList></BusinessAccountList>;
       case "account-list":
         return <ManagerAccountList></ManagerAccountList>;
       case "customer-list":

@@ -6,6 +6,7 @@ import { useHistory } from "react-router";
 
 import "./style.less";
 import { createAccount } from "_api/user";
+import { matchRules } from "_helper";
 
 const { Item: FormItem } = Form;
 
@@ -35,11 +36,13 @@ const ManagerCreateAccount: FunctionComponent = (props) => {
         员工账户
       </Radio.Button>
     );
+    const rules = [
+      { key: RoleE.MANAGER, level: 1, content: Employee },
+      { key: RoleE.BUSINESS, level: 2, content: ManagerAccount },
+      { key: RoleE.SUPER_ADMIN, level: 3, content: Business },
+    ];
 
-    if (role === RoleE.BUSINESS) return [ManagerAccount, Employee];
-    if (role === RoleE.SUPER_ADMIN) return [Business, ManagerAccount, Employee];
-
-    return Employee;
+    return matchRules(rules, role);
   };
 
   const onSubmit = (vals: any): void => {

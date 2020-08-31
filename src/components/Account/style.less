@@ -1,0 +1,24 @@
+.account {
+  &-ctl {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    font-size: 18px;
+    margin-bottom: 12px;
+
+    &-icon {
+      transition: color 200ms;
+      margin-right: 12px;
+      cursor: pointer;
+
+      &:hover {
+        transition: color 200ms;
+        color: #1890ff;
+      }
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+}
