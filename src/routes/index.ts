@@ -21,7 +21,7 @@ import OauthAffilate from "_pages/oauth/OauthAffilate";
 import HomeResource from "_pages/homeResource/HomeResource";
 import Home from "_pages/home";
 import { RoutesI } from "_types/router";
-import { AccountStatusE, AccountTypeE } from "_types/api";
+import { AccountStatusE, RoleE } from "_types/account";
 import Manager from "_pages/manager";
 import ManagerLayout from "_layout/Manager";
 
@@ -92,7 +92,7 @@ const routes: RoutesI[] = [
     path: "/dashboard",
     component: Dashboard,
     layout: FullscreenLayout,
-    permission: [AccountStatusE.LOGIN, AccountTypeE.SUPER_ADMIN],
+    permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN],
   },
   {
     name: "manager",
@@ -111,19 +111,19 @@ const routes: RoutesI[] = [
     name: "user_manage",
     path: "/users",
     component: UserManage,
-    permission: [AccountStatusE.LOGIN, AccountTypeE.SUPER_ADMIN],
+    permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN],
   },
   {
     name: "homeRes",
     path: "/home-res",
     component: HomeResource,
-    permission: [AccountStatusE.LOGIN, AccountTypeE.SUPER_ADMIN],
+    permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN],
   },
   {
     name: "mdEditor",
     path: "/mdeditor",
     component: MdEditor,
-    permission: [AccountStatusE.LOGIN, AccountTypeE.SUPER_ADMIN],
+    permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN],
     layout: FullscreenLayout,
   },
   {

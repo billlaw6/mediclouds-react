@@ -1,4 +1,5 @@
-import { ExamIndexI, UserI } from "_types/api";
+import { ExamIndexI } from "_types/api";
+import { UserI } from "_types/account";
 import {
   getExamIndexListAction,
   deleteExamIndexListAction,

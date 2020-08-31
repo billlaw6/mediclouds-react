@@ -4,14 +4,14 @@ import { FunctionComponent } from "react";
 import { Menu, Layout } from "antd";
 import { useHistory } from "react-router";
 
-import { AccountTypeE, CustomerTypeE } from "_types/api";
+import { RoleE } from "_types/account";
 import logo from "_assets/images/logo.png";
 import "./style.less";
 
 const { Sider } = Layout;
 
 interface ManagerSiderPropsI extends SiderProps {
-  type?: AccountTypeE | CustomerTypeE;
+  role?: RoleE;
   menuKey?: string;
 }
 
@@ -20,7 +20,7 @@ const { Item: MenuItem, ItemGroup: MenuItemGroup, SubMenu } = Menu;
 const ManagerSider: FunctionComponent<ManagerSiderPropsI> = (props) => {
   const history = useHistory();
 
-  const { type = AccountTypeE.EMPLOYEE, className, menuKey = "", ...siderProps } = props;
+  const { role = RoleE.EMPLOYEE, className, menuKey = "", ...siderProps } = props;
 
   console.log("menu key", menuKey);
   return (

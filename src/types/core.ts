@@ -1,5 +1,6 @@
 import { SortTypeEnum, ViewTypeEnum } from "_pages/resources/type";
-import { CollectionI, SexT, UserI, ExamIndexI, AccountI } from "_types/api";
+import { CollectionI, SexT, ExamIndexI } from "_types/api";
+import { AccountI, UserI } from "_types/account";
 
 // Store相关接口
 // 本地变量遵循js规范使用驼峰式全名，需要与后台数据库字段对应的变量使用下划线风格。

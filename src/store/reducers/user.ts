@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { UserI } from "_types/api";
+import { UserI, RoleE } from "_types/account";
 import { setTokenAction, setUserAction, updateUserAction } from "_actions/user";
 import * as types from "../action-types";
 
@@ -20,9 +20,16 @@ const DEFAULT_USER: UserI = {
   id: "",
   username: "",
   nickname: "",
-  cell_phone: -1,
+  cell_phone: "",
+  first_name: "",
+  last_name: "",
+  role: RoleE.PATIENT,
+  unionid: "",
+  recommended_users: [],
+  score: 0,
+  superior_id: "",
   sex: 0,
-  age: 0,
+  age: "",
   sign: "",
   address: "",
   unit: "",

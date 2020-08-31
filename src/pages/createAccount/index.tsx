@@ -1,10 +1,11 @@
-import React, { FunctionComponent, ReactNode } from "react";
-import { AccountTypeE, CustomerTypeE } from "_types/api";
+import React, { FunctionComponent, ReactNode, useState } from "react";
+import { RoleE } from "_types/account";
 import useAccount from "_hooks/useAccount";
-import { Form, Input, Radio, Button } from "antd";
+import { Form, Input, Radio, Button, Result } from "antd";
 import { useHistory } from "react-router";
 
 import "./style.less";
+import { createAccount } from "_api/user";
 
 const { Item: FormItem } = Form;
 
@@ -13,51 +14,73 @@ const ManagerCreateAccount: FunctionComponent = (props) => {
   const { account } = useAccount();
   const { role } = account;
 
-  // if (
-  //   role === AccountTypeE.EMPLOYEE ||
-  //   role === CustomerTypeE.PATIENT ||
-  //   role === CustomerTypeE.DOCTOR
-  // )
-  // history.goBack();
+  const [selectedRole, setSelectedRole] = useState(RoleE.EMPLOYEE);
+  const [createStatus, setCreateStatus] = useState<"none" | "successed" | "error">("none");
+
+  if (role === RoleE.EMPLOYEE || role === RoleE.PATIENT || role === RoleE.DOCTOR) history.goBack();
 
   const getRadioItem = (): ReactNode => {
-    const SuperStaff = (
-      <Radio.Button key="super-employee-account" value={AccountTypeE.MANAGER}>
+    const ManagerAccount = (
+      <Radio.Button key="super-employee-account" value={RoleE.MANAGER}>
         经理账户
       </Radio.Button>
     );
     const Business = (
-      <Radio.Button key="business-accout" value={AccountTypeE.BUSINESS}>
+      <Radio.Button key="business-accout" value={RoleE.BUSINESS}>
         企业账户
       </Radio.Button>
     );
-    const Staff = (
-      <Radio.Button key="employee-account" value={AccountTypeE.EMPLOYEE}>
+    const Employee = (
+      <Radio.Button key="employee-account" value={RoleE.EMPLOYEE}>
         员工账户
       </Radio.Button>
     );
 
-    if (role === AccountTypeE.BUSINESS) return [SuperStaff, Staff];
-    if (role === AccountTypeE.SUPER_ADMIN) return [Business, SuperStaff, Staff];
+    if (role === RoleE.BUSINESS) return [ManagerAccount, Employee];
+    if (role === RoleE.SUPER_ADMIN) return [Business, ManagerAccount, Employee];
 
-    return Staff;
+    return Employee;
   };
 
   const onSubmit = (vals: any): void => {
     /* 发送创建账户的API */
     console.log("vals", vals);
+    createAccount(vals)
+      .then((res) => {
+        console.log("create account", res);
+        setCreateStatus("successed");
+      })
+      .catch((err) => {
+        console.error(err);
+        setCreateStatus("error");
+      });
   };
+
+  if (createStatus !== "none")
+    return (
+      <Result
+        status={createStatus === "successed" ? "success" : "error"}
+        title={createStatus === "successed" ? "创建账户成功！" : "创建账户失败"}
+        extra={[
+          <Button key="goback" type="primary" onClick={(): void => setCreateStatus("none")}>
+            返回
+          </Button>,
+        ]}
+      ></Result>
+    );
 
   return (
     <div className="manager-create-account">
       <Form
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 12 }}
-        initialValues={{ username: "", password: "", accountType: AccountTypeE.EMPLOYEE }}
+        initialValues={{ username: "", password: "", role: RoleE.EMPLOYEE }}
         onFinish={onSubmit}
       >
-        <FormItem label="账户类型" name="accountType" required>
-          <Radio.Group>{getRadioItem()}</Radio.Group>
+        <FormItem label="账户类型" name="role" required>
+          <Radio.Group onChange={(e): void => setSelectedRole(e.target.value)}>
+            {getRadioItem()}
+          </Radio.Group>
         </FormItem>
         <FormItem label="用户名" name="username" required>
           <Input></Input>
@@ -65,7 +88,27 @@ const ManagerCreateAccount: FunctionComponent = (props) => {
         <FormItem label="密码" name="password" required>
           <Input></Input>
         </FormItem>
-        <FormItem label="邮件" name="email" required>
+        <FormItem label="手机号" name="cell_phone" required>
+          <Input></Input>
+        </FormItem>
+        {selectedRole === RoleE.BUSINESS ? (
+          <FormItem label="企业名称" name="business_name" required>
+            <Input></Input>
+          </FormItem>
+        ) : (
+          <>
+            <FormItem label="昵称" name="nickname">
+              <Input type="text"></Input>
+            </FormItem>
+            <FormItem label="姓" name="first_name" required>
+              <Input type="text"></Input>
+            </FormItem>
+            <FormItem label="名" name="last_name" required>
+              <Input type="text"></Input>
+            </FormItem>
+          </>
+        )}
+        <FormItem label="邮箱" name="email">
           <Input type="email"></Input>
         </FormItem>
         <FormItem>

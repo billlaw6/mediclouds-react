@@ -1,4 +1,4 @@
-import { UserI } from "_types/api";
+import { UserI } from "_types/account";
 import { ActionI } from "_types/core";
 import * as types from "../action-types";
 

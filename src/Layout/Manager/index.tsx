@@ -5,7 +5,7 @@ import ManagerSider from "_components/ManagerSider";
 
 import { useSelector } from "react-redux";
 import { StoreStateI } from "_types/core";
-import { AccountI } from "_types/api";
+import { AccountI } from "_types/account";
 
 import { UserOutlined } from "@ant-design/icons";
 import Manager from "_pages/manager";
@@ -37,7 +37,7 @@ const ManagerLayout: FunctionComponent = () => {
 
   return (
     <Layout id="managerLayout" className="manager-layout">
-      <ManagerSider collapsible type={account.role} menuKey={name}></ManagerSider>
+      <ManagerSider collapsible role={account.role} menuKey={name}></ManagerSider>
       <Layout className="manager-layout-main">
         <Header className="manager-layout-header">
           <div className="manager-layout-title">后台管理</div>

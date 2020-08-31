@@ -1,24 +1,28 @@
 import { ReducerI } from "_types/reducer";
 import { AccountActionTypes } from "_types/actions";
-import { AccountI, AccountTypeE } from "_types/api";
+import { AccountI, RoleE } from "_types/account";
 
 const DEFAULT_ACCOUNT: AccountI & { login: boolean } = {
   id: "",
   username: "",
   nickname: "",
-  cell_phone: 0,
+  cell_phone: "",
   sex: 0,
-  age: 0,
+  age: "",
   avatar: "",
-  privacy_notice: 0,
-  birthday: "",
+
   login: false,
-  role: AccountTypeE.EMPLOYEE,
+  role: RoleE.SUPER_ADMIN,
   first_name: "",
   last_name: "",
   sign: "",
-  address: "",
+  business_name: "",
+  birthday: "",
+  pay_qrcode: "",
+  register_qrcode: "",
   unit: "",
+  recommended_users: [],
+  superior_id: "",
 };
 
 const accountReducer: ReducerI<AccountI & { login: boolean }, AccountActionTypes, AccountI> = (

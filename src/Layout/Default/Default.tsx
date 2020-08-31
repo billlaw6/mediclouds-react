@@ -13,7 +13,7 @@ import "./Default.less";
 /* action */
 import { logoutUserAction } from "_actions/user";
 import SideBtns from "_components/SideBtns";
-import { UserI } from "_types/api";
+import { UserI, RoleE } from "_types/account";
 import { Switch, Route } from "react-router-dom";
 import Player from "_pages/player";
 
@@ -23,13 +23,13 @@ const DefalutLayout: FunctionComponent = (props) => {
   const { children } = props;
 
   const user = useSelector<StoreStateI, UserI>((state) => state.user);
-  const { avatar, nickname, is_superuser: isSuperuser } = user;
+  const { avatar, nickname, role } = user;
 
   return (
     <Layout id="defaultLayout">
       <Header
         avatar={avatar}
-        isSuperuser={isSuperuser}
+        isSuperuser={role === RoleE.SUPER_ADMIN}
         nickname={nickname}
         logout={logoutUserAction}
       ></Header>

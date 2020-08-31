@@ -1,4 +1,4 @@
-import { UserI } from "_types/api";
+import { UserI } from "_types/account";
 import { UpdateUserActionFuncT } from "_actions/user";
 
 export interface MapStateToPropsI {

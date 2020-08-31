@@ -3,7 +3,8 @@ import { Route, RouteProps, Redirect } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 
-import { AccountTypeE, AccountStatusE, UserI, CustomerTypeE, AccountI } from "_types/api";
+import { UserI } from "_types/account";
+import { RoleE, AccountI, AccountStatusE } from "_types/account";
 import { StoreStateI } from "_types/core";
 import { PermissionT } from "_types/router";
 
@@ -11,10 +12,8 @@ interface AuthorizedRoutePropsI extends RouteProps {
   permission?: PermissionT;
 }
 
-const hasPermission = (
-  key: AccountTypeE | CustomerTypeE | AccountStatusE,
-  permission: PermissionT,
-): boolean => !!(permission.indexOf(key) > -1);
+const hasPermission = (key: RoleE | AccountStatusE, permission: PermissionT): boolean =>
+  !!(permission.indexOf(key) > -1);
 
 const AuthorizedRoute: FunctionComponent<AuthorizedRoutePropsI> = (props) => {
   const user = useSelector<StoreStateI, UserI>((state) => state.user);

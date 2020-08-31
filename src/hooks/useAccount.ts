@@ -1,6 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import { StoreStateI } from "_types/core";
-import { UserI, AccountI } from "_types/api";
+import { UserI } from "_types/account";
+import { AccountI } from "_types/account";
 import { AccountActionTypes } from "_types/actions";
 import userApi from "_api/user";
 import { setToken } from "_helper";

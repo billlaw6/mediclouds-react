@@ -1,5 +1,6 @@
 import Mock from "mockjs";
 import { AccountI } from "_types/api";
+import { retry } from "redux-saga/effects";
 
 interface GenerateAccountPorpsI {
   isSuper?: boolean;
@@ -7,7 +8,7 @@ interface GenerateAccountPorpsI {
 }
 
 const generateAccount = (props?: GenerateAccountPorpsI): AccountI => {
-  let userTypeList = ["employee", "super_staff", "business"];
+  let userTypeList = ["employee", "manager", "business"];
   if (props) {
     const { isSuper, isCustomer } = props;
     if (isCustomer) {
@@ -68,4 +69,6 @@ if (process.env.NODE_ENV === "development") {
 
     return result;
   });
+
+  Mock.mock("/public-api/user/create", "post", () => generateAccount());
 }

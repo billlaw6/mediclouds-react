@@ -1,4 +1,4 @@
-import { UserI } from "_types/api";
+import { UserI } from "_types/account";
 
 export interface PrivacyNoticePropsI {
   onChecked: Function;

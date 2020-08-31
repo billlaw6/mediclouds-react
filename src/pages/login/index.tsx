@@ -24,7 +24,7 @@ import welcome from "_assets/videos/welcome.mp4";
 import "./style.less";
 import { useSelector } from "react-redux";
 import { StoreStateI } from "_types/core";
-import { UserI, AccountI, AccountTypeE } from "_types/api";
+import { UserI, AccountI } from "_types/account";
 import { useHistory } from "react-router";
 
 const { Item: FormItem } = Form;
