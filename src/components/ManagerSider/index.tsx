@@ -57,6 +57,13 @@ const ManagerSider: FunctionComponent<ManagerSiderPropsI> = (props) => {
         >
           我的用户
         </MenuItem>
+        <MenuItem
+          key="order-list"
+          title="订单列表"
+          onClick={(): void => history.push("/manager/order-list")}
+        >
+          订单列表
+        </MenuItem>
       </Menu>
     </Sider>
   );

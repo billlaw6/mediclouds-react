@@ -1,3 +1,4 @@
+/* eslint-disable no-unreachable */
 /* 
   - 展示账户信息
   - 更新账户信息
@@ -7,7 +8,7 @@
 
 import React, { FunctionComponent, useState, ReactNode } from "react";
 import { AccountI, RoleE, StatsI } from "_types/account";
-import { Tabs, Row, Col, Input, Descriptions } from "antd";
+import { Tabs, Row, Col, Input, Descriptions, Statistic, Card, Spin } from "antd";
 import { EditOutlined, SyncOutlined, SaveOutlined } from "@ant-design/icons";
 
 import "./style.less";
@@ -51,10 +52,21 @@ const Account: FunctionComponent<AccountPropsI> = (props) => {
   const [currentTabKey, setCurrentTabKey] = useState("info");
   const [editMode, setEditMode] = useState(false);
   const [preUpdateData, setPreUpdateData] = useState<{ [key: string]: any }>({});
-  const [stats, setStats] = useState<StatsI>();
+  const [stats, setStats] = useState<StatsI | null>(null);
 
   const getVal: GetValI = (key) => {
-    return preUpdateData[key] || props[key];
+    const res = preUpdateData[key] || props[key];
+    if (key === "sex") {
+      switch (res) {
+        case 1:
+          return "男";
+        case 2:
+          return "女";
+        default:
+          return "保密";
+      }
+    }
+    return res;
   };
   const setVal: SetValI = (key, val) => {
     const nextData = Object.assign({}, preUpdateData, { [key]: val });
@@ -70,26 +82,66 @@ const Account: FunctionComponent<AccountPropsI> = (props) => {
   const accountStats = (): ReactNode => {
     if (!stats) return null;
 
-    return [
-      <DescItem key="case" label="病例数">
-        {stats.case}
-      </DescItem>,
-      <DescItem key="customer" label="用户数">
-        {stats.customer}
-      </DescItem>,
-      <DescItem key="custodicom_sizemer" label="dicom数量">
-        {stats.dicom_size}
-      </DescItem>,
-      <DescItem key="pdf_size" label="pdf数量">
-        {stats.pdf_size}
-      </DescItem>,
-      <DescItem key="image_size" label="图片数量">
-        {stats.image_size}
-      </DescItem>,
-      <DescItem key="order" label="订单量">
-        {stats.order}
-      </DescItem>,
-    ];
+    return (
+      <>
+        <Row gutter={[16, 16]}>
+          <Col key="account" span={12}>
+            <Card>
+              <Statistic title="员工数" value={stats.account} suffix="人"></Statistic>
+            </Card>
+          </Col>
+          <Col key="customer" span={12}>
+            <Card>
+              <Statistic title="用户数" value={stats.customer} suffix="人"></Statistic>
+            </Card>
+          </Col>
+        </Row>
+        <Row gutter={[16, 16]}>
+          <Col key="case" span={12}>
+            <Card>
+              <Statistic title="病例数" value={stats.case} suffix="例"></Statistic>
+            </Card>
+          </Col>
+          <Col key="order" span={12}>
+            <Card>
+              <Statistic title="订单量" value={stats.order} suffix="个"></Statistic>
+            </Card>
+          </Col>
+        </Row>
+        <Row gutter={[16, 16]}>
+          <Col key="custodicom_sizemer" span="8">
+            <Card>
+              <Statistic
+                title="dicom磁盘空间"
+                value={stats.dicom_size}
+                precision={2}
+                suffix="MB"
+              ></Statistic>
+            </Card>
+          </Col>
+          <Col key="pdf_size" span="8">
+            <Card>
+              <Statistic
+                title="pdf磁盘空间"
+                value={stats.pdf_size}
+                precision={2}
+                suffix="MB"
+              ></Statistic>
+            </Card>
+          </Col>
+          <Col key="image_size" span="8">
+            <Card>
+              <Statistic
+                title="图片磁盘空间"
+                value={stats.image_size}
+                precision={2}
+                suffix="MB"
+              ></Statistic>
+            </Card>
+          </Col>
+        </Row>
+      </>
+    );
   };
 
   const getDescItem = (): ReactNode => {
@@ -121,6 +173,18 @@ const Account: FunctionComponent<AccountPropsI> = (props) => {
       </DescItem>,
       <DescItem key="nickname" label="昵称">
         <Input bordered={false} disabled={!editMode} value={getVal("nickname")}></Input>
+      </DescItem>,
+      <DescItem key="address" label="地址">
+        <Input bordered={false} disabled={!editMode} value={getVal("address")}></Input>
+      </DescItem>,
+      <DescItem key="sex" label="性别">
+        {getVal("sex")}
+      </DescItem>,
+      <DescItem key="age" label="年龄">
+        <Input bordered={false} disabled={!editMode} value={getVal("age")}></Input>
+      </DescItem>,
+      <DescItem key="sign" label="签名">
+        <Input bordered={false} disabled={!editMode} value={getVal("sign")}></Input>
       </DescItem>,
       <DescItem key="recommended_users" label="邀请人数">
         {recommended_users.length}
@@ -158,9 +222,27 @@ const Account: FunctionComponent<AccountPropsI> = (props) => {
         </TabPane>
         <TabPane tab="统计信息" key="stats">
           <div className="account-ctl">
-            <SyncOutlined className="account-ctl-icon" alt="刷新" />
+            <SyncOutlined
+              className="account-ctl-icon"
+              alt="刷新"
+              onClick={(): void => {
+                setStats(null);
+
+                getStats(id)
+                  .then((res) => setStats(res))
+                  .catch((err) => console.error(err));
+              }}
+            />
           </div>
-          <Descriptions>{accountStats()}</Descriptions>
+          <div className="account-stats-content">
+            {stats ? (
+              accountStats()
+            ) : (
+              <div className="account-loading">
+                <Spin></Spin>
+              </div>
+            )}
+          </div>
         </TabPane>
       </Tabs>
     </div>

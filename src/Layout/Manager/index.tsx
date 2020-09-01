@@ -16,6 +16,7 @@ import ManagerCustomerList from "_pages/customerList";
 
 import "./style.less";
 import BusinessAccountList from "_pages/businessAccountLIst";
+import OrderList from "_pages/orderList";
 
 const { Header, Footer, Content } = Layout;
 
@@ -33,6 +34,8 @@ const ManagerLayout: FunctionComponent = () => {
         return <ManagerAccountList></ManagerAccountList>;
       case "customer-list":
         return <ManagerCustomerList></ManagerCustomerList>;
+      case "order-list":
+        return <OrderList></OrderList>;
       default:
         return <Manager></Manager>;
     }
@@ -49,7 +52,7 @@ const ManagerLayout: FunctionComponent = () => {
             <span>欢迎{account.username}</span>
           </div>
         </Header>
-        <Content className="manager-content">{getContent()}</Content>
+        <Content className="manager-layout-content">{getContent()}</Content>
         <Footer>Footer</Footer>
       </Layout>
     </Layout>

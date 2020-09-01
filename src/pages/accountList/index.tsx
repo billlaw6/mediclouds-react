@@ -45,6 +45,11 @@ const colums: ColumnsType<AccountI> = [
     onFilter: (val, account): boolean => account.sex === (val as number),
   },
   {
+    title: "手机号",
+    key: "cell_phone",
+    dataIndex: "cell_phone",
+  },
+  {
     title: "账户类型",
     key: "role",
     dataIndex: "role",

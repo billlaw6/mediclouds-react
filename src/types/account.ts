@@ -78,10 +78,11 @@ export interface CreateAccountDataI {
 
 /* 统计信息 */
 export interface StatsI {
-  case: number;
-  customer: number;
-  dicom_size: number;
-  pdf_size: number;
-  image_size: number;
-  order: number;
+  case: number; // 病例数
+  customer: number; // 用户数
+  dicom_size: number; // dicom磁盘占用量
+  pdf_size: number; // pdf磁盘占用量
+  image_size: number; // 图片磁盘占用量
+  order: number; // 订单数量
+  account: number; // 下属账户数量
 }

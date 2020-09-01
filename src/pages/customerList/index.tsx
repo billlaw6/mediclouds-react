@@ -2,11 +2,19 @@
 import React, { FunctionComponent, useState, useEffect, ReactNode } from "react";
 import { AccountI, RoleE } from "_types/account";
 import { getCustomerList } from "_api/user";
-import { Table } from "antd";
+import { Table, Button, Space, Result } from "antd";
 import { ColumnsType } from "antd/lib/table";
+import CreateOrder from "_components/CreateOrder";
+import { ResultStatusType } from "antd/lib/result";
 
 const CustomerList: FunctionComponent = (props) => {
   const [customerList, setCustomerList] = useState<AccountI[]>();
+  const [createOrderId, setCreateOrderId] = useState<string | null>(null);
+  const [orderStatus, setOrderStatus] = useState<null | {
+    status: ResultStatusType;
+    text: string;
+  }>(null);
+  const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
 
   useEffect(() => {
     getCustomerList()
@@ -21,11 +29,13 @@ const CustomerList: FunctionComponent = (props) => {
       title: "账户名",
       key: "username",
       dataIndex: "username",
+      sorter: (a, b): number => a.username.localeCompare(b.username),
     },
     {
       title: "昵称",
       key: "nickname",
       dataIndex: "nickname",
+      sorter: (a, b): number => a.username.localeCompare(b.username),
     },
     {
       title: "性别",
@@ -54,11 +64,60 @@ const CustomerList: FunctionComponent = (props) => {
       ],
       onFilter: (val, account): boolean => account.role === (val as RoleE),
     },
+    {
+      title: "订单",
+      key: "id",
+      dataIndex: "id",
+      render: (val, record) => {
+        return (
+          <>
+            <Space>
+              <Button type="primary" onClick={(): void => setCreateOrderId(val)}>
+                添加订单
+              </Button>
+              {/* <Button type="ghost" onClick={(): void => setSelectedOrder(null)}>
+                查看订单
+              </Button> */}
+            </Space>
+          </>
+        );
+      },
+    },
   ];
 
   return (
     <div className="manager-customer-list">
-      <Table rowKey="id" loading={!customerList} dataSource={customerList} columns={colums}></Table>
+      <CreateOrder
+        customerId={createOrderId || ""}
+        visible={!!createOrderId}
+        onCancel={(): void => setCreateOrderId(null)}
+        onSuccessed={(): void => {
+          setCreateOrderId(null);
+          setOrderStatus({ status: "success", text: "创建订单成功！" });
+        }}
+        onFailed={(): void => {
+          setCreateOrderId(null);
+          setOrderStatus({ status: "error", text: "创建订单失败！" });
+        }}
+      ></CreateOrder>
+      {orderStatus ? (
+        <Result
+          status={orderStatus.status}
+          title={orderStatus.text}
+          extra={
+            <Button type="primary" onClick={(): void => setOrderStatus(null)}>
+              返回
+            </Button>
+          }
+        ></Result>
+      ) : (
+        <Table
+          rowKey="id"
+          loading={!customerList}
+          dataSource={customerList}
+          columns={colums}
+        ></Table>
+      )}
     </div>
   );
 };

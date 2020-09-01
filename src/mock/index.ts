@@ -32,8 +32,23 @@ const generateAccount = (props?: GenerateAccountPorpsI): AccountI => {
     "role|1": userTypeList,
     business_name: "@CTITLE",
     "recommended_users|1-100": [{ id: "@GUID", nickname: "@CNAME" }],
+    register_qrcode: "https://www.baidu.com",
+    pay_qrcode: "https://www.bing.com",
   });
 };
+
+const generateOrder = () =>
+  Mock.mock({
+    id: "@GUID",
+    order_number: "@NATURAL",
+    customer_id: "@GUID",
+    create_id: "@GUID",
+    created_at: "@DATE",
+    updated_at: "@DATE",
+    charged_at: "@DATE",
+    "flag|1": [0, 1, 2, 3, 4],
+    comment: "@CSENTENCE",
+  });
 
 if (process.env.NODE_ENV === "development") {
   Mock.setup({ timeout: "50-1000" });
@@ -77,11 +92,26 @@ if (process.env.NODE_ENV === "development") {
 
   /* 获取用户统计信息 */
   Mock.mock("/public-api/stats", "get", {
-    case: "@NATURAL",
-    customer: "@NATURAL",
-    dicom_size: "@NATURAL",
-    pdf_size: "@NATURAL",
-    image_size: "@NATURAL",
-    order: "@NATURAL",
+    case: "@NATURAL(0, 1000)",
+    customer: "@NATURAL(0, 2000)",
+    dicom_size: "@FLOAT(0, 1024000)",
+    pdf_size: "@FLOAT(0, 1024000)",
+    image_size: "@FLOAT(0, 1024000)",
+    order: "@NATURAL(0, 1500)",
+    account: "@NATURAL(0, 200)",
   });
+
+  /* 获取订单列表 */
+  Mock.mock("/public-api/order/list", "get", () => {
+    const result = [];
+
+    for (let i = 0; i < 40; i++) {
+      result.push(generateOrder());
+    }
+
+    return result;
+  });
+
+  /* 创建订单 */
+  Mock.mock("/public-api/order/create", "post", () => generateOrder());
 }
