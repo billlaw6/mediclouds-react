@@ -6,7 +6,7 @@
 
 */
 
-import React, { FunctionComponent, useState, ReactNode } from "react";
+import React, { FunctionComponent, useState, ReactNode, useEffect } from "react";
 import { AccountI, RoleE, StatsI } from "_types/account";
 import { Tabs, Row, Col, Input, Descriptions, Statistic, Card, Spin } from "antd";
 import { EditOutlined, SyncOutlined, SaveOutlined } from "@ant-design/icons";
@@ -28,86 +28,40 @@ interface SetValI {
 const { Item: DescItem } = Descriptions;
 const { TabPane } = Tabs;
 
-const AccountInfo: FunctionComponent<AccountI> = (props) => {
-  return <div>AccountInfo</div>;
-};
+export const AccountStats: FunctionComponent<{ role: RoleE; stats: StatsI | null }> = (props) => {
+  const { stats, role } = props;
 
-const EditInfo: FunctionComponent<AccountI> = (props) => {
-  return <div>EditInfo</div>;
-};
+  if (!stats) return null;
 
-const Account: FunctionComponent<AccountPropsI> = (props) => {
-  const {
-    role,
-    id,
-    business_name,
-    nickname,
-    username,
-    recommended_users,
-    first_name,
-    last_name,
-    cell_phone,
-  } = props;
-
-  const [currentTabKey, setCurrentTabKey] = useState("info");
-  const [editMode, setEditMode] = useState(false);
-  const [preUpdateData, setPreUpdateData] = useState<{ [key: string]: any }>({});
-  const [stats, setStats] = useState<StatsI | null>(null);
-
-  const getVal: GetValI = (key) => {
-    const res = preUpdateData[key] || props[key];
-    if (key === "sex") {
-      switch (res) {
-        case 1:
-          return "男";
-        case 2:
-          return "女";
-        default:
-          return "保密";
-      }
-    }
-    return res;
-  };
-  const setVal: SetValI = (key, val) => {
-    const nextData = Object.assign({}, preUpdateData, { [key]: val });
-    setPreUpdateData(nextData);
-  };
-
-  const updateAccount = (): void => {
-    //
-
-    setEditMode(false);
-  };
-
-  const accountStats = (): ReactNode => {
-    if (!stats) return null;
-
-    return (
-      <>
-        <Row gutter={[16, 16]}>
+  return (
+    <>
+      <Row gutter={[16, 16]}>
+        {role === RoleE.BUSINESS || role === RoleE.MANAGER ? (
           <Col key="account" span={12}>
             <Card>
               <Statistic title="员工数" value={stats.account} suffix="人"></Statistic>
             </Card>
           </Col>
-          <Col key="customer" span={12}>
-            <Card>
-              <Statistic title="用户数" value={stats.customer} suffix="人"></Statistic>
-            </Card>
-          </Col>
-        </Row>
-        <Row gutter={[16, 16]}>
-          <Col key="case" span={12}>
-            <Card>
-              <Statistic title="病例数" value={stats.case} suffix="例"></Statistic>
-            </Card>
-          </Col>
-          <Col key="order" span={12}>
-            <Card>
-              <Statistic title="订单量" value={stats.order} suffix="个"></Statistic>
-            </Card>
-          </Col>
-        </Row>
+        ) : null}
+        <Col key="customer" span={12}>
+          <Card>
+            <Statistic title="用户数" value={stats.customer} suffix="人"></Statistic>
+          </Card>
+        </Col>
+      </Row>
+      <Row gutter={[16, 16]}>
+        <Col key="case" span={12}>
+          <Card>
+            <Statistic title="病例数" value={stats.case} suffix="例"></Statistic>
+          </Card>
+        </Col>
+        <Col key="order" span={12}>
+          <Card>
+            <Statistic title="订单量" value={stats.order} suffix="个"></Statistic>
+          </Card>
+        </Col>
+      </Row>
+      {role === RoleE.BUSINESS ? (
         <Row gutter={[16, 16]}>
           <Col key="custodicom_sizemer" span="8">
             <Card>
@@ -140,8 +94,42 @@ const Account: FunctionComponent<AccountPropsI> = (props) => {
             </Card>
           </Col>
         </Row>
-      </>
-    );
+      ) : null}
+    </>
+  );
+};
+
+const Account: FunctionComponent<AccountPropsI> = (props) => {
+  const { role, id, business_name, username, recommended_users, cell_phone } = props;
+
+  const [currentTabKey, setCurrentTabKey] = useState("info");
+  const [editMode, setEditMode] = useState(false);
+  const [preUpdateData, setPreUpdateData] = useState<{ [key: string]: any }>({});
+  const [stats, setStats] = useState<StatsI | null>(null);
+
+  const getVal: GetValI = (key) => {
+    const res = preUpdateData[key] || props[key];
+    if (key === "sex") {
+      switch (res) {
+        case 1:
+          return "男";
+        case 2:
+          return "女";
+        default:
+          return "保密";
+      }
+    }
+    return res;
+  };
+  const setVal: SetValI = (key, val) => {
+    const nextData = Object.assign({}, preUpdateData, { [key]: val });
+    setPreUpdateData(nextData);
+  };
+
+  const updateAccount = (): void => {
+    //
+
+    setEditMode(false);
   };
 
   const getDescItem = (): ReactNode => {
@@ -236,7 +224,7 @@ const Account: FunctionComponent<AccountPropsI> = (props) => {
           </div>
           <div className="account-stats-content">
             {stats ? (
-              accountStats()
+              <AccountStats stats={stats} role={role}></AccountStats>
             ) : (
               <div className="account-loading">
                 <Spin></Spin>

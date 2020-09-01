@@ -1,11 +1,11 @@
 import React, { FunctionComponent, ReactNode } from "react";
-import { Layout, Avatar, Space } from "antd";
+import { Layout, Avatar, Space, Dropdown, Menu } from "antd";
 
 import ManagerSider from "_components/ManagerSider";
 
 import { useSelector } from "react-redux";
 import { StoreStateI } from "_types/core";
-import { AccountI } from "_types/account";
+import { AccountI, RoleE } from "_types/account";
 
 import { UserOutlined } from "@ant-design/icons";
 import Manager from "_pages/manager";
@@ -23,6 +23,8 @@ const { Header, Footer, Content } = Layout;
 const ManagerLayout: FunctionComponent = () => {
   const account = useSelector<StoreStateI, AccountI>((state) => state.account);
   const { name } = useParams();
+
+  const { role, first_name, last_name, business_name } = account;
 
   const getContent = (): ReactNode => {
     switch (name) {
@@ -48,8 +50,23 @@ const ManagerLayout: FunctionComponent = () => {
         <Header className="manager-layout-header">
           <div className="manager-layout-title">后台管理</div>
           <div className="manager-layout-avatar">
-            <Avatar src={account.avatar} icon={<UserOutlined></UserOutlined>}></Avatar>
-            <span>欢迎{account.username}</span>
+            <Dropdown
+              overlay={
+                <Menu>
+                  <Menu.Item key="">1</Menu.Item>
+                  <Menu.Item key="">2</Menu.Item>
+                  <Menu.Item key="">3</Menu.Item>
+                </Menu>
+              }
+            >
+              <Avatar
+                shape="square"
+                src={account.avatar}
+                icon={<UserOutlined></UserOutlined>}
+                style={{ marginRight: "12px" }}
+              ></Avatar>
+            </Dropdown>
+            <span>欢迎{role === RoleE.BUSINESS ? business_name : `${first_name}${last_name}`}</span>
           </div>
         </Header>
         <Content className="manager-layout-content">{getContent()}</Content>
