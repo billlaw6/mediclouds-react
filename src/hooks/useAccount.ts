@@ -1,11 +1,12 @@
 import { useSelector, useDispatch } from "react-redux";
 import { StoreStateI } from "_types/core";
-import { UserI } from "_types/account";
+import { UserI, UpdateAccountDataI } from "_types/account";
 import { AccountI } from "_types/account";
 import { AccountActionTypes } from "_types/actions";
 import userApi from "_api/user";
 import { setToken } from "_helper";
 import { useHistory } from "react-router";
+import moment from "antd/node_modules/moment";
 
 export default () => {
   const history = useHistory();
@@ -56,5 +57,19 @@ export default () => {
     }
   };
 
-  return { wechatLogin, formLogin, phoneLogin, user, account };
+  /* 更新账户信息 */
+  const updateAccount = async (data: UpdateAccountDataI, id = account.id): Promise<void> => {
+    if (data.birthday) {
+      data.birthday = moment(data.birthday).format("YYYY-MM-DD");
+    }
+    console.log("data", data);
+    try {
+      const updateRes = await userApi.updateAccount(id, data);
+      dispatch({ type: AccountActionTypes.UPDATE_INFO, payload: updateRes });
+    } catch (error) {
+      throw new Error(error);
+    }
+  };
+
+  return { wechatLogin, formLogin, phoneLogin, updateAccount, user, account };
 };

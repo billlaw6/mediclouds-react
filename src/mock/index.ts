@@ -7,7 +7,7 @@ interface GenerateAccountPorpsI {
   isCustomer?: boolean;
 }
 
-const generateAccount = (props?: GenerateAccountPorpsI): AccountI => {
+export const generateAccount = (props?: GenerateAccountPorpsI): AccountI => {
   let userTypeList = ["employee", "manager", "business"];
   if (props) {
     const { isSuper, isCustomer } = props;
@@ -24,6 +24,7 @@ const generateAccount = (props?: GenerateAccountPorpsI): AccountI => {
     first_name: "@CFIRST",
     last_name: "@CLAST",
     cell_phone: "@NATURAL(13500000000,18900000000)",
+    certificate: [],
     age: "@NATURAL(0, 100)",
     sex: "@NATURAL(0, 1)",
     privacy_notice: "@NATURAL(0, 10)",
@@ -114,4 +115,7 @@ if (process.env.NODE_ENV === "development") {
 
   /* 创建订单 */
   Mock.mock("/public-api/order/create", "post", () => generateOrder());
+
+  /* 更新账户信息 */
+  Mock.mock(/\/public-api\/user\/update\/*/, "post", () => generateAccount());
 }

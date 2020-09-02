@@ -26,6 +26,7 @@ const DEFAULT_USER: UserI = {
   role: RoleE.PATIENT,
   unionid: "",
   recommended_users: [],
+  certificate: [],
   score: 0,
   superior_id: "",
   sex: 0,

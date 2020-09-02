@@ -1,3 +1,5 @@
+import { Moment } from "moment";
+
 // 账户状态
 export enum AccountStatusE {
   LOGIN = "login", // 登录
@@ -37,6 +39,7 @@ export interface AccountI extends AccountBaseI {
   last_name: string; // 名
   nickname: string; // 昵称
   business_name: string; // 企业用户名
+  certificate: string[]; // 资质证书图片地址列表
   age: string; // 年龄
   birthday: string; // 生日
   unit: string; // 单位
@@ -59,12 +62,13 @@ export interface UserI extends AccountBaseI {
   unionid: string; // 微信生成的unionid
   sex: 0 | 1 | 2;
   sign: string;
+  certificate: string[]; // 资质证书图片地址列表
   recommended_users: RecommendedUserI[];
   score: number; // 积分
   privacy_notice: number; // 隐私政策版本 0：没有同意过
 }
 
-/* 创建用户Data */
+/* 创建账户Data */
 export interface CreateAccountDataI {
   username: string;
   password: string;
@@ -74,6 +78,23 @@ export interface CreateAccountDataI {
   business_name?: string;
   email?: string;
   nickname?: string;
+}
+
+/* 更新账户Data */
+export interface UpdateAccountDataI {
+  username?: string;
+  password?: string;
+  cell_phone?: string;
+  avatar?: File;
+  first_name?: string;
+  last_name?: string;
+  business_name?: string;
+  email?: string;
+  nickname?: string;
+  certificate?: File[];
+  superior_id?: string;
+  role?: RoleE;
+  birthday?: string | Moment;
 }
 
 /* 统计信息 */

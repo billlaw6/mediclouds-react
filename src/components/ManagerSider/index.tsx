@@ -20,7 +20,7 @@ const { Item: MenuItem, ItemGroup: MenuItemGroup, SubMenu } = Menu;
 const ManagerSider: FunctionComponent<ManagerSiderPropsI> = (props) => {
   const history = useHistory();
 
-  const { role = RoleE.EMPLOYEE, className, menuKey = "", ...siderProps } = props;
+  const { role = RoleE.EMPLOYEE, className, menuKey = "dashboard", ...siderProps } = props;
 
   console.log("menu key", menuKey);
   return (
@@ -29,6 +29,9 @@ const ManagerSider: FunctionComponent<ManagerSiderPropsI> = (props) => {
         <img src={logo}></img>
       </div>
       <Menu theme="dark" mode="inline" selectedKeys={[menuKey]}>
+        <MenuItem key="dashboard" title="统计" onClick={(): void => history.push("/manager")}>
+          统计
+        </MenuItem>
         <MenuItem
           key="create-account"
           title="创建账号"

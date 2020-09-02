@@ -17,6 +17,8 @@ import ManagerCustomerList from "_pages/customerList";
 import "./style.less";
 import BusinessAccountList from "_pages/businessAccountLIst";
 import OrderList from "_pages/orderList";
+import Account from "_pages/account";
+import { Link } from "react-router-dom";
 
 const { Header, Footer, Content } = Layout;
 
@@ -28,6 +30,8 @@ const ManagerLayout: FunctionComponent = () => {
 
   const getContent = (): ReactNode => {
     switch (name) {
+      case "account-settings":
+        return <Account></Account>;
       case "create-account":
         return <ManagerCreateAccount></ManagerCreateAccount>;
       case "business-account-list":
@@ -53,9 +57,9 @@ const ManagerLayout: FunctionComponent = () => {
             <Dropdown
               overlay={
                 <Menu>
-                  <Menu.Item key="">1</Menu.Item>
-                  <Menu.Item key="">2</Menu.Item>
-                  <Menu.Item key="">3</Menu.Item>
+                  <Menu.Item key="account">
+                    <Link to="/manager/account-settings">账户设置</Link>
+                  </Menu.Item>
                 </Menu>
               }
             >

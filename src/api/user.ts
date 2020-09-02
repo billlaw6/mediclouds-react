@@ -1,5 +1,5 @@
 import { personalApi, publicAPi } from "./index";
-import { AccountI, StatsI } from "_types/account";
+import { AccountI, StatsI, UpdateAccountDataI } from "_types/account";
 import { CreateAccountDataI } from "_types/account";
 import { ApiFuncI } from "_types/api";
 
@@ -103,6 +103,10 @@ export const createAccount = async (data: CreateAccountDataI): Promise<AccountI>
 /* 获取统计信息 */
 export const getStats = async (id: string): Promise<StatsI> => await publicAPi.get(`/stats`);
 
+/* 更新账户信息 */
+export const updateAccount = async (id: string, data: UpdateAccountDataI): Promise<AccountI> =>
+  await publicAPi.post(`/user/update/${id}`, data);
+
 export default {
   loginForm,
   loginPhone,
@@ -110,4 +114,5 @@ export default {
   getAffiliatedList,
   getCustomerList,
   createAccount,
+  updateAccount,
 };
