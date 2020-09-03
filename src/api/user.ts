@@ -89,19 +89,19 @@ export const getUserStats = async (params?: any) => {
 };
 
 /* 获得下属账户列表 */
-export const getAffiliatedList = async (): Promise<AccountI[]> =>
-  await publicAPi.get("/user/affiliated-list");
+export const getAffiliatedList = async (id: string): Promise<AccountI[]> =>
+  await publicAPi.get(`/user/affiliated-list/${id}`);
 
 /* 获得下属用户列表 */
-export const getCustomerList = async (): Promise<AccountI[]> =>
-  await publicAPi.get("/user/customer-list");
+export const getCustomerList = async (id: string): Promise<AccountI[]> =>
+  await publicAPi.get(`/user/customer-list/${id}`);
 
 /* 创建新账户 */
 export const createAccount = async (data: CreateAccountDataI): Promise<AccountI> =>
   await publicAPi.post("/user/create", data);
 
 /* 获取统计信息 */
-export const getStats = async (id: string): Promise<StatsI> => await publicAPi.get(`/stats`);
+export const getStats = async (id: string): Promise<StatsI> => await publicAPi.get(`/stats/${id}`);
 
 /* 更新账户信息 */
 export const updateAccount = async (id: string, data: UpdateAccountDataI): Promise<AccountI> =>

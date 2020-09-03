@@ -7,6 +7,7 @@ import { getOrderList } from "_api/order";
 import Modal from "antd/lib/modal/Modal";
 import OrderInfo from "_components/OrderInfo";
 import OrderStatus from "_components/OrderStatus";
+import { CloseCircleOutlined } from "@ant-design/icons";
 
 import "./style.less";
 
@@ -82,6 +83,9 @@ const OrderList: FunctionComponent = () => {
         visible={!!currentOrder}
         onCancel={(): void => setCurrentOrder(undefined)}
         footer={null}
+        // closeIcon={<CloseCircleOutlined />}
+        maskClosable={false}
+        keyboard={false}
       >
         <OrderInfo info={currentOrder}></OrderInfo>
       </Modal>

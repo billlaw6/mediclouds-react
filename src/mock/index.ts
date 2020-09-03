@@ -70,7 +70,7 @@ if (process.env.NODE_ENV === "development") {
   });
 
   /* 获取下属账户信息 */
-  Mock.mock("/public-api/user/affiliated-list", "get", () => {
+  Mock.mock(/\/public-api\/user\/affiliated-list\/*/, "get", () => {
     const result = [];
 
     for (let i = 0; i < 50; i++) {
@@ -81,7 +81,7 @@ if (process.env.NODE_ENV === "development") {
   });
 
   /* 获取下属用户信息 */
-  Mock.mock("/public-api/user/customer-list", "get", () => {
+  Mock.mock(/\/public-api\/user\/customer-list\/*/, "get", () => {
     const result = [];
 
     for (let i = 0; i < 20; i++) {
@@ -95,7 +95,7 @@ if (process.env.NODE_ENV === "development") {
   Mock.mock("/public-api/user/create", "post", () => generateAccount());
 
   /* 获取用户统计信息 */
-  Mock.mock("/public-api/stats", "get", {
+  Mock.mock(/\/public-api\/stats\/*/, "get", {
     case: "@NATURAL(0, 1000)",
     customer: "@NATURAL(0, 2000)",
     dicom_size: "@FLOAT(0, 1024000)",
@@ -106,7 +106,7 @@ if (process.env.NODE_ENV === "development") {
   });
 
   /* 获取订单列表 */
-  Mock.mock("/public-api/order/list", "get", () => {
+  Mock.mock(/\/public-api\/order\/list\/*/, "get", () => {
     const result = [];
 
     for (let i = 0; i < 40; i++) {

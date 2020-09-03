@@ -5,8 +5,10 @@ import { ColumnsType } from "antd/lib/table";
 import { AccountI, RoleE } from "_types/account";
 import { getAffiliatedList } from "_api/user";
 
-import "./style.less";
 import Account from "_components/Account";
+import useAccount from "_hooks/useAccount";
+
+import "./style.less";
 
 const columns: ColumnsType<AccountI> = [
   {
@@ -24,6 +26,7 @@ const columns: ColumnsType<AccountI> = [
 ];
 
 const BusinessAccountList: FunctionComponent = () => {
+  const { account } = useAccount();
   const [accounts, setAccouts] = useState<AccountI[]>();
   const [selected, setSelected] = useState<string[]>([]);
   const [currentAccount, setCurrentAccount] = useState<AccountI | null>(null);
@@ -33,7 +36,7 @@ const BusinessAccountList: FunctionComponent = () => {
   const onSelectChange = (selectedRowKeys: Key[]): void => setSelected(selectedRowKeys as string[]);
 
   useEffect(() => {
-    getAffiliatedList()
+    getAffiliatedList(account.id)
       .then((res) => setAccouts(res.filter((item) => item.role === RoleE.BUSINESS)))
       .catch((err) => console.error(err));
   }, []);
