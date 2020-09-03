@@ -13,6 +13,7 @@ import { EditOutlined, SyncOutlined, SaveOutlined } from "@ant-design/icons";
 
 import "./style.less";
 import { getStats } from "_api/user";
+import AccountList from "_components/AccountList";
 
 interface AccountPropsI extends AccountI {
   [key: string]: any;
@@ -232,6 +233,11 @@ const Account: FunctionComponent<AccountPropsI> = (props) => {
             )}
           </div>
         </TabPane>
+        {role === RoleE.MANAGER ? (
+          <TabPane tab="员工" key="employeeList">
+            <AccountList id={id} viewable={false}></AccountList>
+          </TabPane>
+        ) : null}
       </Tabs>
     </div>
   );

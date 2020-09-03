@@ -24,9 +24,11 @@ import "./style.less";
 
 interface AccountListPropsI {
   id?: string; // 指定账户的ID 数据源为此ID的下属账户 没有的话就是当前账户
+  viewable?: boolean; // 是否能查看下属账户的详细信息（弹出Modal)
 }
 
 const AccountList: FunctionComponent<AccountListPropsI> = (props) => {
+  const { viewable = true } = props;
   const { account } = useAccount();
   const [list, setList] = useState<AccountI[]>(); // 用户列表
   const [currentAccount, setCurrentAccount] = useState<AccountI>(); // 当前选择的账户
@@ -120,11 +122,14 @@ const AccountList: FunctionComponent<AccountListPropsI> = (props) => {
       <Table
         loading={!list}
         rowKey="id"
+        rowClassName={viewable ? "account-list-row" : ""}
         dataSource={list}
         columns={columns}
         rowSelection={{ selectedRowKeys: selected, onChange: onSelectChange }}
         onRow={(record) => ({
-          onClick: (): void => setCurrentAccount(record),
+          onClick: (): void => {
+            viewable && setCurrentAccount(record);
+          },
         })}
       ></Table>
       {currentAccount ? (
