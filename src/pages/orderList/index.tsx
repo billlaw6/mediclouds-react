@@ -4,6 +4,11 @@ import { OrderI } from "_types/order";
 import { Table } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import { getOrderList } from "_api/order";
+import Modal from "antd/lib/modal/Modal";
+import OrderInfo from "_components/OrderInfo";
+import OrderStatus from "_components/OrderStatus";
+
+import "./style.less";
 
 const columns: ColumnsType<OrderI> = [
   {
@@ -35,27 +40,7 @@ const columns: ColumnsType<OrderI> = [
     key: "flag",
     dataIndex: "flag",
     render: (val): ReactNode => {
-      let text = "";
-
-      switch (val) {
-        case 0:
-          text = "未缴费";
-          break;
-        case 1:
-          text = "已缴费";
-          break;
-        case 2:
-          text = "已消费";
-          break;
-        case 3:
-          text = "已作废";
-          break;
-        case 4:
-          text = "已退款";
-          break;
-      }
-
-      return <span>{text}</span>;
+      return <OrderStatus status={val}></OrderStatus>;
     },
     filters: [
       { text: "未缴费", value: 0 },
@@ -70,6 +55,7 @@ const columns: ColumnsType<OrderI> = [
 
 const OrderList: FunctionComponent = () => {
   const [orderList, setOrderList] = useState<OrderI[]>();
+  const [currentOrder, setCurrentOrder] = useState<OrderI>();
 
   useEffect(() => {
     getOrderList("")
@@ -77,7 +63,30 @@ const OrderList: FunctionComponent = () => {
       .catch((err) => console.error(err));
   }, []);
 
-  return <Table loading={!orderList} dataSource={orderList} columns={columns}></Table>;
+  return (
+    <>
+      <Table
+        loading={!orderList}
+        dataSource={orderList}
+        columns={columns}
+        rowKey="id"
+        rowClassName="order-list-row"
+        onRow={(record) => ({
+          onClick(): void {
+            setCurrentOrder(record);
+          },
+        })}
+      ></Table>
+      <Modal
+        width={1000}
+        visible={!!currentOrder}
+        onCancel={(): void => setCurrentOrder(undefined)}
+        footer={null}
+      >
+        <OrderInfo info={currentOrder}></OrderInfo>
+      </Modal>
+    </>
+  );
 };
 
 export default OrderList;

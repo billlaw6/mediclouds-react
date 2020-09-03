@@ -138,7 +138,15 @@ const Account: FunctionComponent = () => {
         </TabPane>
         {role === RoleE.BUSINESS ? (
           <TabPane key="cert" tab="企业资质">
-            {certificate.length ? <Upload>更新企业资质</Upload> : <Upload>上传企业资质</Upload>}
+            {certificate.length ? (
+              <Upload>
+                <Button>更新企业资质</Button>
+              </Upload>
+            ) : (
+              <Upload>
+                <Button>上传企业资质</Button>
+              </Upload>
+            )}
           </TabPane>
         ) : null}
       </Tabs>

@@ -4,7 +4,10 @@ export interface OrderI {
   order_number: string; // 订单号
   order_type: string; // 订单类型
   customer_id: string; // 用户ID
-  create_id: string; // 创建者账户ID
+  customer_first_name: string; // 用户真实姓 first_name
+  customer_last_name: string; // 用户真实名 last_name
+  creator_id: string; // 创建者账户ID
+  creator_username: string; // 创建者的账户名
   created_at: string; // 创建时间
   updated_at: string; // 更新时间
   charged_at: string; // 付费时间
