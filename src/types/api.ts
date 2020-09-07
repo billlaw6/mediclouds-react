@@ -1,3 +1,22 @@
+// 手机登录Data
+export interface LoginPhoneDataI {
+  cell_phone: string;
+  auth_code: string;
+  captcha: string;
+}
+
+// 获取短信验证码Data
+export interface SendSmsDataI {
+  cell_phone: string;
+  captcha: string;
+}
+
+// 验证码图片的返回值结构
+export interface CaptchaI {
+  code: string; // 验证码的MD5值
+  image: string; // 验证码图片的base64编码字符串
+}
+
 // 查询参数
 export interface GetSearchQueryPropsI {
   id?: string;

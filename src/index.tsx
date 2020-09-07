@@ -25,7 +25,7 @@ import moment from "moment";
 import "moment/locale/zh-cn";
 
 /* mock */
-import "./mock";
+// import "./mock";
 
 import "core-js/stable";
 import "regenerator-runtime/runtime";

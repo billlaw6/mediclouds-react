@@ -1,7 +1,13 @@
 import { personalApi, publicAPi } from "./index";
 import { AccountI, StatsI, UpdateAccountDataI } from "_types/account";
 import { CreateAccountDataI } from "_types/account";
-import { ApiFuncI, GetSearchQueryPropsI } from "_types/api";
+import {
+  ApiFuncI,
+  GetSearchQueryPropsI,
+  CaptchaI,
+  LoginPhoneDataI,
+  SendSmsDataI,
+} from "_types/api";
 
 export const wechatLogin: ApiFuncI = async (params: any) =>
   await personalApi.post(`/user/wechat-oauth2-login/`, params);
@@ -14,7 +20,8 @@ export const loginUser = async (params: any) => {
 /* 用户表单登录 */
 export const loginForm: ApiFuncI = async () => await publicAPi.post("/user/login-form");
 /* 用户手机号登录 */
-export const loginPhone: ApiFuncI = async () => await publicAPi.post("/user/login-phone");
+export const loginPhone: ApiFuncI = async (data: LoginPhoneDataI) =>
+  await publicAPi.post("/user/login-phone", data);
 
 /* 获取用户列表 */
 export const getUserList: ApiFuncI = async () => await personalApi.get(`/user/list/`);
@@ -117,6 +124,13 @@ export const getStats = async (id: string): Promise<StatsI> => await publicAPi.g
 export const updateAccount = async (id: string, data: UpdateAccountDataI): Promise<AccountI> =>
   await publicAPi.post(`/user/update/${id}`, data);
 
+/* 获取captcha验证码 */
+export const getCaptcha = async (): Promise<CaptchaI> => await publicAPi.get("/captcha/");
+
+/* 获取短信验证码 */
+export const getSmsCode = async (data: SendSmsDataI): Promise<CaptchaI> =>
+  await publicAPi.post("/send-sms/", data);
+
 export default {
   loginForm,
   loginPhone,
@@ -125,4 +139,5 @@ export default {
   getCustomerList,
   createAccount,
   updateAccount,
+  getCaptcha,
 };

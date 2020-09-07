@@ -7,6 +7,7 @@ import userApi from "_api/user";
 import { setToken } from "_helper";
 import { useHistory } from "react-router";
 import moment from "antd/node_modules/moment";
+import { LoginPhoneDataI } from "_types/api";
 
 export default () => {
   const history = useHistory();
@@ -43,9 +44,9 @@ export default () => {
   };
 
   /* 手机号登录 */
-  const phoneLogin = async (): Promise<void> => {
+  const phoneLogin = async (data: LoginPhoneDataI): Promise<void> => {
     try {
-      const loginRes = await userApi.loginPhone();
+      const loginRes = await userApi.loginPhone(data);
       const { token, accountInfo } = loginRes;
       if (token) {
         setToken(token);
