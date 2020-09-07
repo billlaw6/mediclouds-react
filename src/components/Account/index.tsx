@@ -10,11 +10,10 @@ import React, { FunctionComponent, useState, ReactNode, useEffect } from "react"
 import { AccountI, RoleE, StatsI } from "_types/account";
 import { Tabs, Row, Col, Input, Descriptions, Statistic, Card, Spin } from "antd";
 import { EditOutlined, SyncOutlined, SaveOutlined } from "@ant-design/icons";
-
-import "./style.less";
 import { getStats } from "_api/user";
 import AccountList from "_components/AccountList";
 
+import "./style.less";
 interface AccountPropsI extends AccountI {
   [key: string]: any;
 }
@@ -37,7 +36,7 @@ export const AccountStats: FunctionComponent<{ role: RoleE; stats: StatsI | null
   return (
     <>
       <Row gutter={[16, 16]}>
-        {role === RoleE.BUSINESS || role === RoleE.MANAGER ? (
+        {role === RoleE.BUSINESS || role === RoleE.MANAGER || role === RoleE.SUPER_ADMIN ? (
           <Col key="account" span={12}>
             <Card>
               <Statistic title="员工数" value={stats.account} suffix="人"></Statistic>
@@ -62,7 +61,7 @@ export const AccountStats: FunctionComponent<{ role: RoleE; stats: StatsI | null
           </Card>
         </Col>
       </Row>
-      {role === RoleE.BUSINESS ? (
+      {role === RoleE.SUPER_ADMIN ? (
         <Row gutter={[16, 16]}>
           <Col key="custodicom_sizemer" span="8">
             <Card>
@@ -233,10 +232,20 @@ const Account: FunctionComponent<AccountPropsI> = (props) => {
             )}
           </div>
         </TabPane>
-        {role === RoleE.MANAGER ? (
+        {role === RoleE.SUPER_ADMIN || role === RoleE.BUSINESS ? (
           <TabPane tab="员工" key="employeeList">
             <AccountList id={id} viewable={false}></AccountList>
           </TabPane>
+        ) : null}
+        {role === RoleE.SUPER_ADMIN ? (
+          <>
+            <TabPane tab="用户" key="customerList">
+              用户列表
+            </TabPane>
+            <TabPane tab="订单" key="orderList">
+              订单列表
+            </TabPane>
+          </>
         ) : null}
       </Tabs>
     </div>

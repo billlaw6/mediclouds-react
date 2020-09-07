@@ -29,7 +29,7 @@ const _ACCOUNT: AccountI =
       };
 const DEFAULT_ACCOUNT: AccountI & { login: boolean } = Object.assign({}, _ACCOUNT, {
   login: false,
-  role: RoleE.MANAGER,
+  role: RoleE.SUPER_ADMIN,
 });
 
 console.log(DEFAULT_ACCOUNT);

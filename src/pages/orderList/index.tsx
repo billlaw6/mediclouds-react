@@ -6,10 +6,18 @@ import { ColumnsType } from "antd/lib/table";
 import { getOrderList } from "_api/order";
 import Modal from "antd/lib/modal/Modal";
 import OrderInfo from "_components/OrderInfo";
-import OrderStatus from "_components/OrderStatus";
-import { CloseCircleOutlined } from "@ant-design/icons";
+// import OrderStatus from "_components/OrderStatus";
+import {
+  CloseCircleOutlined,
+  ExclamationCircleOutlined,
+  IssuesCloseOutlined,
+  CheckCircleOutlined,
+  MinusCircleOutlined,
+} from "@ant-design/icons";
 
 import "./style.less";
+import Nail from "_components/Nail";
+import OrderStatus from "_components/OrderStatus";
 
 const columns: ColumnsType<OrderI> = [
   {

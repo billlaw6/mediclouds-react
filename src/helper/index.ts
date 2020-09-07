@@ -1,5 +1,6 @@
 import { personalApi } from "_axios";
 import { ReactNode } from "react";
+import { isArray } from "util";
 
 export const isIE = (): boolean => navigator.userAgent.indexOf("MSIE") > -1;
 
@@ -85,18 +86,28 @@ export const getSearchQuery = (props?: GetSearchQueryPropsI): string => {
   )}&sort=${sort}&keyword=${keyword}`;
 };
 
-interface MathRuleI {
-  key: string;
+export interface MatchRuleI {
+  key: string | string[];
   level: number;
   content: ReactNode | string;
 }
-interface MathRuleResI {
+
+export interface MatchSwitchRuleI<T = any> {
+  key: string;
+  content: T;
+}
+
+interface MatchRuleResI {
   key: string;
   content: (ReactNode | string)[];
 }
 
-interface MathRuleFunI {
-  (rules: MathRuleI[], key?: string): MathRuleResI[] | (ReactNode | string);
+interface MatchRuleFunI {
+  (rules: MatchRuleI[], key?: string): MatchRuleResI[] | (ReactNode | string);
+}
+
+interface MatchSwitchRulFunI {
+  <T = any>(rules: MatchSwitchRuleI<T>[], key?: string): T | undefined;
 }
 
 /**
@@ -118,16 +129,34 @@ interface MathRuleFunI {
  * 如果有指定key， 则输出此key的content
  */
 
-export const matchRules: MathRuleFunI = (rules, key) => {
+export const matchRules: MatchRuleFunI = (rules, key) => {
   const _rules = rules.sort((a, b) => a.level - b.level);
-  const res: MathRuleResI[] = [];
+  const res: MatchRuleResI[] = [];
   const contentArr: (ReactNode | string)[] = [];
 
   _rules.forEach((item) => {
     contentArr.push(item.content);
-    res.push({ key: item.key, content: contentArr });
+    if (isArray(item.key)) {
+      item.key.forEach((keyItem) => res.push({ key: keyItem, content: [...contentArr] }));
+    } else {
+      res.push({ key: item.key, content: [...contentArr] });
+    }
   });
 
   if (key) return res.filter((item) => item.key === key)[0].content;
+
   return res;
+};
+/**
+ * 依据规则匹配相应内容 返回相匹配的内容
+ *
+ * @param {*} rules
+ * @param {*} key
+ * @returns
+ */
+export const matchSwitchRules: MatchSwitchRulFunI = (rules, key) => {
+  const res = rules.filter((item) => item.key === key)[0];
+
+  if (!res) return;
+  return res.content;
 };

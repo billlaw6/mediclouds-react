@@ -19,6 +19,7 @@ import BusinessAccountList from "_pages/businessAccountLIst";
 import OrderList from "_pages/orderList";
 import Account from "_pages/account";
 import { Link } from "react-router-dom";
+import AccountRole from "_components/AccountRole";
 
 const { Header, Footer, Content } = Layout;
 
@@ -70,7 +71,12 @@ const ManagerLayout: FunctionComponent = () => {
                 style={{ marginRight: "12px" }}
               ></Avatar>
             </Dropdown>
-            <span>欢迎{role === RoleE.BUSINESS ? business_name : `${first_name}${last_name}`}</span>
+            <Space align="baseline">
+              <span>
+                欢迎{role === RoleE.BUSINESS ? business_name : `${first_name}${last_name}`}
+              </span>
+              <AccountRole role={role}></AccountRole>
+            </Space>
           </div>
         </Header>
         <Content className="manager-layout-content">{getContent()}</Content>

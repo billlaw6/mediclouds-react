@@ -12,7 +12,7 @@
 */
 
 import React, { FunctionComponent, useRef, useState, useEffect, ReactNode } from "react";
-import { Table, Modal } from "antd";
+import { Table, Modal, Button, Input } from "antd";
 import useAccount from "_hooks/useAccount";
 import { AccountI, RoleE } from "_types/account";
 import { getAffiliatedList } from "_api/user";
@@ -21,6 +21,8 @@ import { Key } from "antd/es/table/interface";
 import Account from "_components/Account";
 
 import "./style.less";
+import AccountRole from "_components/AccountRole";
+import ListControlBar from "_components/ListControlBar";
 
 interface AccountListPropsI {
   id?: string; // 指定账户的ID 数据源为此ID的下属账户 没有的话就是当前账户
@@ -33,6 +35,7 @@ const AccountList: FunctionComponent<AccountListPropsI> = (props) => {
   const [list, setList] = useState<AccountI[]>(); // 用户列表
   const [currentAccount, setCurrentAccount] = useState<AccountI>(); // 当前选择的账户
   const [selected, setSelected] = useState<string[]>(); // 批量选择的账户id
+  const [selectMode, setSelectMode] = useState(false); // 切换选择模式
 
   const id = useRef<string>(props.id || account.id);
   /**
@@ -107,7 +110,7 @@ const AccountList: FunctionComponent<AccountListPropsI> = (props) => {
       key: "role",
       dataIndex: "role",
       render: (val): ReactNode => {
-        return <span>{val === RoleE.MANAGER ? "经理账户" : "员工账户"}</span>;
+        return <AccountRole role={val}></AccountRole>;
       },
       filters: [
         { text: "经理账户", value: RoleE.MANAGER },
@@ -118,7 +121,7 @@ const AccountList: FunctionComponent<AccountListPropsI> = (props) => {
   ];
   return (
     <div className="account-list">
-      <div className="account-list-ctl"></div>
+      <ListControlBar selectedList={selected}></ListControlBar>
       <Table
         loading={!list}
         rowKey="id"

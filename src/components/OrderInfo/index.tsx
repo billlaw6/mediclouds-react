@@ -1,14 +1,13 @@
 import React, { FunctionComponent } from "react";
+import { useHistory } from "react-router";
 import { OrderI } from "_types/order";
 import { Descriptions, Input, Form, Button, Space, Tabs, Popconfirm } from "antd";
 import { Store } from "antd/lib/form/interface";
 
 import OrderStatus from "_components/OrderStatus";
-import { useHistory } from "react-router";
-
-import "./style.less";
 import { WarningOutlined } from "@ant-design/icons";
 
+import "./style.less";
 interface OrderInfoPropsI {
   info?: OrderI;
   onChange?: (status: number, info: OrderI) => void;
