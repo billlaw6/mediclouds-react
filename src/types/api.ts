@@ -1,3 +1,15 @@
+// 查询参数
+export interface GetSearchQueryPropsI {
+  id?: string;
+  current?: number;
+  size?: number;
+  start?: string;
+  ascend?: 0 | 1;
+  end?: string;
+  sort?: string;
+  keyword?: string;
+}
+
 /* ===============  根据Tower文档整理的接口相关的interface =============== */
 // 性别
 export type SexT = 0 | 1 | 2;

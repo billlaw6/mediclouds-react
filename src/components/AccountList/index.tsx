@@ -35,7 +35,7 @@ const AccountList: FunctionComponent<AccountListPropsI> = (props) => {
   const [list, setList] = useState<AccountI[]>(); // 用户列表
   const [currentAccount, setCurrentAccount] = useState<AccountI>(); // 当前选择的账户
   const [selected, setSelected] = useState<string[]>(); // 批量选择的账户id
-  const [selectMode, setSelectMode] = useState(false); // 切换选择模式
+  // const [selectMode, setSelectMode] = useState(false); // 切换选择模式
 
   const id = useRef<string>(props.id || account.id);
   /**
@@ -104,6 +104,7 @@ const AccountList: FunctionComponent<AccountListPropsI> = (props) => {
       title: "手机号",
       key: "cell_phone",
       dataIndex: "cell_phone",
+      sorter: (a, b): number => parseInt(a.cell_phone, 10) - parseInt(b.cell_phone, 10),
     },
     {
       title: "账户类型",
@@ -121,7 +122,10 @@ const AccountList: FunctionComponent<AccountListPropsI> = (props) => {
   ];
   return (
     <div className="account-list">
-      <ListControlBar selectedList={selected}></ListControlBar>
+      <ListControlBar
+        selectedList={selected}
+        searchPlaceholder="搜索账户名、手机号"
+      ></ListControlBar>
       <Table
         loading={!list}
         rowKey="id"

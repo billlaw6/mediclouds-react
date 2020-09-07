@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name */
-import React, { FunctionComponent, ReactNode, useRef, useEffect, useState } from "react";
+import React, { FunctionComponent, ReactNode, useRef, useEffect, useState, Key } from "react";
 import Table, { ColumnsType } from "antd/lib/table";
 import { AccountI, RoleE } from "_types/account";
 import { Space, Button, Result } from "antd";
@@ -7,6 +7,7 @@ import useAccount from "_hooks/useAccount";
 import { getCustomerList } from "_api/user";
 import CreateOrder from "_components/CreateOrder";
 import { ResultStatusType } from "antd/lib/result";
+import ListControlBar from "_components/ListControlBar";
 
 interface CustomerListPropsI {
   id?: string;
@@ -21,6 +22,9 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
     status: ResultStatusType;
     text: string;
   }>(null);
+  const [selected, setSelected] = useState<string[]>([]);
+
+  const onSelectChange = (selectedRowKeys: Key[]): void => setSelected(selectedRowKeys as string[]);
 
   const colums: ColumnsType<AccountI> = [
     {
@@ -61,6 +65,18 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
         { text: "患者", value: RoleE.PATIENT },
       ],
       onFilter: (val, account): boolean => account.role === (val as RoleE),
+    },
+    {
+      title: "注册日期",
+      key: "date_joined",
+      dataIndex: "date_joined",
+      sorter: (a, b): number => Date.parse(a.date_joined) - Date.parse(b.date_joined),
+    },
+    {
+      title: "最后登录",
+      key: "last_login",
+      dataIndex: "last_login",
+      sorter: (a, b): number => Date.parse(a.last_login) - Date.parse(b.last_login),
     },
     {
       title: "订单",
@@ -123,7 +139,20 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
           }
         ></Result>
       ) : (
-        <Table rowKey="id" loading={!list} dataSource={list} columns={colums}></Table>
+        <>
+          <ListControlBar
+            searchPlaceholder="搜索昵称、手机号"
+            selectedList={selected}
+            showDatePicker
+          ></ListControlBar>
+          <Table
+            rowKey="id"
+            loading={!list}
+            dataSource={list}
+            columns={colums}
+            rowSelection={{ selectedRowKeys: selected, onChange: onSelectChange }}
+          ></Table>
+        </>
       )}
     </div>
   );

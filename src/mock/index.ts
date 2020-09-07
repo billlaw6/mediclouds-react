@@ -35,6 +35,8 @@ export const generateAccount = (props?: GenerateAccountPorpsI): AccountI => {
     "recommended_users|1-100": [{ id: "@GUID", nickname: "@CNAME" }],
     register_qrcode: "https://www.baidu.com",
     pay_qrcode: "https://www.bing.com",
+    date_joined: "@DATE",
+    last_login: "@DATE",
   });
 };
 

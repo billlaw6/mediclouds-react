@@ -25,6 +25,8 @@ export interface AccountBaseI {
   role: RoleE; // 用户角色
   superior_id: string; // 上级账户
   cell_phone: string; // 手机号
+  date_joined: string; // 注册日期
+  last_login: string; // 最后登录日期
 }
 
 /* 邀请的用户基本信息 */

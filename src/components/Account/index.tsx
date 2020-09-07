@@ -6,14 +6,16 @@
 
 */
 
-import React, { FunctionComponent, useState, ReactNode, useEffect } from "react";
+import React, { FunctionComponent, useState, ReactNode } from "react";
 import { AccountI, RoleE, StatsI } from "_types/account";
-import { Tabs, Row, Col, Input, Descriptions, Statistic, Card, Spin } from "antd";
+import { Tabs, Input, Descriptions, Spin } from "antd";
 import { EditOutlined, SyncOutlined, SaveOutlined } from "@ant-design/icons";
 import { getStats } from "_api/user";
 import AccountList from "_components/AccountList";
+import AccountStats from "./AccountStats";
 
 import "./style.less";
+
 interface AccountPropsI extends AccountI {
   [key: string]: any;
 }
@@ -27,77 +29,6 @@ interface SetValI {
 
 const { Item: DescItem } = Descriptions;
 const { TabPane } = Tabs;
-
-export const AccountStats: FunctionComponent<{ role: RoleE; stats: StatsI | null }> = (props) => {
-  const { stats, role } = props;
-
-  if (!stats) return null;
-
-  return (
-    <>
-      <Row gutter={[16, 16]}>
-        {role === RoleE.BUSINESS || role === RoleE.MANAGER || role === RoleE.SUPER_ADMIN ? (
-          <Col key="account" span={12}>
-            <Card>
-              <Statistic title="员工数" value={stats.account} suffix="人"></Statistic>
-            </Card>
-          </Col>
-        ) : null}
-        <Col key="customer" span={12}>
-          <Card>
-            <Statistic title="用户数" value={stats.customer} suffix="人"></Statistic>
-          </Card>
-        </Col>
-      </Row>
-      <Row gutter={[16, 16]}>
-        <Col key="case" span={12}>
-          <Card>
-            <Statistic title="病例数" value={stats.case} suffix="例"></Statistic>
-          </Card>
-        </Col>
-        <Col key="order" span={12}>
-          <Card>
-            <Statistic title="订单量" value={stats.order} suffix="个"></Statistic>
-          </Card>
-        </Col>
-      </Row>
-      {role === RoleE.SUPER_ADMIN ? (
-        <Row gutter={[16, 16]}>
-          <Col key="custodicom_sizemer" span="8">
-            <Card>
-              <Statistic
-                title="dicom磁盘空间"
-                value={stats.dicom_size}
-                precision={2}
-                suffix="MB"
-              ></Statistic>
-            </Card>
-          </Col>
-          <Col key="pdf_size" span="8">
-            <Card>
-              <Statistic
-                title="pdf磁盘空间"
-                value={stats.pdf_size}
-                precision={2}
-                suffix="MB"
-              ></Statistic>
-            </Card>
-          </Col>
-          <Col key="image_size" span="8">
-            <Card>
-              <Statistic
-                title="图片磁盘空间"
-                value={stats.image_size}
-                precision={2}
-                suffix="MB"
-              ></Statistic>
-            </Card>
-          </Col>
-        </Row>
-      ) : null}
-    </>
-  );
-};
 
 const Account: FunctionComponent<AccountPropsI> = (props) => {
   const { role, id, business_name, username, recommended_users, cell_phone } = props;

@@ -13,7 +13,7 @@ const AccountRole: FunctionComponent<AccountRolePropsI> = (props) => {
       rules={[
         { key: RoleE.SUPER_ADMIN, content: { text: "超级管理员", color: "red" } },
         { key: RoleE.BUSINESS, content: { text: "企业", color: "orange" } },
-        { key: RoleE.MANAGER, content: { text: "经理", color: "yellow" } },
+        { key: RoleE.MANAGER, content: { text: "经理", color: "geekblue" } },
         { key: RoleE.EMPLOYEE, content: { text: "员工", color: "green" } },
         { key: RoleE.PATIENT, content: { text: "患者", color: "blue" } },
         { key: RoleE.DOCTOR, content: { text: "医生", color: "purple" } },

@@ -13,8 +13,6 @@ const { TabPane } = Tabs;
 const Account: FunctionComponent = () => {
   const { account, updateAccount } = useAccount();
 
-  console.log(">> account", account);
-
   const {
     avatar,
     first_name,
@@ -35,11 +33,6 @@ const Account: FunctionComponent = () => {
 
   return (
     <div className="account">
-      {!certificate.length && role === RoleE.BUSINESS ? (
-        <Alert type="warning" message="您的企业资质未上传或未通过审核，部分功能受限。">
-          <WarningOutlined />
-        </Alert>
-      ) : null}
       <Tabs className="account-tabs" activeKey={currentTab} onChange={(val) => setCurrentTab(val)}>
         <TabPane key="info" tab="账户信息">
           <Form

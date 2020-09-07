@@ -1,6 +1,7 @@
 import { personalApi } from "_axios";
 import { ReactNode } from "react";
 import { isArray } from "util";
+import { GetSearchQueryPropsI } from "_types/api";
 
 export const isIE = (): boolean => navigator.userAgent.indexOf("MSIE") > -1;
 
@@ -62,16 +63,6 @@ export const setToken = (token: string): void =>
  */
 export const getToken = (): string => window.localStorage.getItem("token") || "";
 
-interface GetSearchQueryPropsI {
-  id?: string;
-  current?: number;
-  size?: number;
-  start?: string;
-  end?: string;
-  sort?: string;
-  keyword?: string;
-}
-
 /**
  *  获取查询条件拼接字符串
  *
@@ -80,10 +71,19 @@ interface GetSearchQueryPropsI {
 export const getSearchQuery = (props?: GetSearchQueryPropsI): string => {
   if (!props) return "";
 
-  const { id = "", current = 1, size = 12, start = "", end = "", sort = "", keyword = "" } = props;
+  const {
+    id = "",
+    current = 1,
+    size = 12,
+    start = "",
+    end = "",
+    sort = "",
+    keyword = "",
+    ascend = "",
+  } = props;
   return `id=${id}&current=${current}&size=${size}&start=${encodeURI(start)}&end=${encodeURI(
     end,
-  )}&sort=${sort}&keyword=${keyword}`;
+  )}&sort=${sort}&keyword=${keyword}&ascend=${ascend}`;
 };
 
 export interface MatchRuleI {

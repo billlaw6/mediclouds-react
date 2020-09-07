@@ -1,11 +1,12 @@
 import React, { FunctionComponent } from "react";
-import { Input, Button, Popconfirm, Row, Col, Space } from "antd";
+import { Input, Button, Popconfirm, Row, Col, Space, DatePicker } from "antd";
 
 import "./style.less";
 
 interface ListControlBarPropsI {
   searchPlaceholder?: string;
   selectedList?: string[]; // 当前所选
+  showDatePicker?: boolean; // 显示日期选择器
   onSearch?: (val: string) => void; // 搜索回调
   onDel?: (ids: string[]) => void; // 删除回调
   onDelCancel?: Function; // 删除取消回调
@@ -17,6 +18,7 @@ const ListControlBar: FunctionComponent<ListControlBarPropsI> = (props) => {
   const {
     searchPlaceholder = "搜索",
     onSearch,
+    showDatePicker = false,
     onDel,
     onDelCancel,
     selectedList,
@@ -26,13 +28,18 @@ const ListControlBar: FunctionComponent<ListControlBarPropsI> = (props) => {
 
   return (
     <div className="list-control-bar">
-      <Row justify="space-between">
-        <Col span="12">
+      <Row justify="space-between" gutter={12}>
+        <Col span="6">
           <Input.Search
             placeholder={searchPlaceholder}
             onSearch={(val): void => onSearch && onSearch(val)}
           ></Input.Search>
         </Col>
+        {showDatePicker ? (
+          <Col span="12">
+            <DatePicker.RangePicker></DatePicker.RangePicker>
+          </Col>
+        ) : null}
         <Col span="6" className="list-control-bar-btns">
           <Space>
             <Popconfirm

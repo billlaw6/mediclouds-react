@@ -1,7 +1,7 @@
 import { personalApi, publicAPi } from "./index";
 import { AccountI, StatsI, UpdateAccountDataI } from "_types/account";
 import { CreateAccountDataI } from "_types/account";
-import { ApiFuncI } from "_types/api";
+import { ApiFuncI, GetSearchQueryPropsI } from "_types/api";
 
 export const wechatLogin: ApiFuncI = async (params: any) =>
   await personalApi.post(`/user/wechat-oauth2-login/`, params);
@@ -89,12 +89,22 @@ export const getUserStats = async (params?: any) => {
 };
 
 /* 获得下属账户列表 */
-export const getAffiliatedList = async (id: string): Promise<AccountI[]> =>
-  await publicAPi.get(`/user/affiliated-list/${id}`);
+export const getAffiliatedList = async (
+  id: string,
+  searchQuery?: GetSearchQueryPropsI,
+): Promise<AccountI[]> =>
+  await publicAPi.get(`/user/affiliated-list/${id}`, {
+    params: searchQuery,
+  });
 
 /* 获得下属用户列表 */
-export const getCustomerList = async (id: string): Promise<AccountI[]> =>
-  await publicAPi.get(`/user/customer-list/${id}`);
+export const getCustomerList = async (
+  id: string,
+  searchQuery?: GetSearchQueryPropsI,
+): Promise<AccountI[]> =>
+  await publicAPi.get(`/user/customer-list/${id}`, {
+    params: searchQuery,
+  });
 
 /* 创建新账户 */
 export const createAccount = async (data: CreateAccountDataI): Promise<AccountI> =>

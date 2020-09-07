@@ -37,6 +37,8 @@ const DEFAULT_USER: UserI = {
   avatar: "",
   privacy_notice: 0,
   birthday: "",
+  date_joined: "",
+  last_login: "",
 };
 
 const userReducer = (

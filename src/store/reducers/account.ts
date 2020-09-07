@@ -26,6 +26,8 @@ const _ACCOUNT: AccountI =
         unit: "",
         recommended_users: [],
         superior_id: "",
+        date_joined: "",
+        last_login: "",
       };
 const DEFAULT_ACCOUNT: AccountI & { login: boolean } = Object.assign({}, _ACCOUNT, {
   login: false,
