@@ -37,7 +37,6 @@ class Stats extends React.Component<MapStateToPropsI, StatsStateI> {
 
   getOption(): any {
     const { totalCount, dailyCount } = this.state;
-    // console.log(dailyCount);
     return {
       title: {
         text: "近14天注册用户统计(总用户： " + totalCount + "）",
@@ -107,7 +106,6 @@ class Stats extends React.Component<MapStateToPropsI, StatsStateI> {
             dailyCount.forEach((item) => {
               yValue.push(item.rc);
             });
-            // console.log(yValue);
             return yValue;
           })(),
           color: "#0780cf",

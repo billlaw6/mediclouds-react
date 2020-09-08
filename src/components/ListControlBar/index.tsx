@@ -1,7 +1,8 @@
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, ReactNode } from "react";
 import { Input, Button, Popconfirm, Row, Col, Space, DatePicker } from "antd";
 
 import "./style.less";
+import { isUndefined } from "util";
 
 interface ListControlBarPropsI {
   searchPlaceholder?: string;
@@ -12,6 +13,7 @@ interface ListControlBarPropsI {
   onDelCancel?: Function; // 删除取消回调
   onDisable?: (ids: string[]) => void; // 停用回调
   onDisableCancel?: Function; // 停用取消回调
+  customerBtns?: ReactNode; // 自定义按钮区域
 }
 
 const ListControlBar: FunctionComponent<ListControlBarPropsI> = (props) => {
@@ -24,6 +26,7 @@ const ListControlBar: FunctionComponent<ListControlBarPropsI> = (props) => {
     selectedList,
     onDisable,
     onDisableCancel,
+    customerBtns,
   } = props;
 
   return (
@@ -41,27 +44,31 @@ const ListControlBar: FunctionComponent<ListControlBarPropsI> = (props) => {
           </Col>
         ) : null}
         <Col span="6" className="list-control-bar-btns">
-          <Space>
-            <Popconfirm
-              title="确定删除？"
-              onConfirm={(): void => onDel && selectedList && onDel(selectedList)}
-              onCancel={(): void => onDelCancel && onDelCancel()}
-              okType="danger"
-            >
-              <Button danger type="primary" disabled={!selectedList || !selectedList.length}>
-                删除
-              </Button>
-            </Popconfirm>
-            <Popconfirm
-              title="确定停用？"
-              onConfirm={(): void => onDisable && selectedList && onDisable(selectedList)}
-              onCancel={(): void => onDisableCancel && onDisableCancel()}
-            >
-              <Button type="ghost" disabled={!selectedList || !selectedList.length}>
-                停用
-              </Button>
-            </Popconfirm>
-          </Space>
+          {isUndefined(customerBtns) ? (
+            <Space>
+              <Popconfirm
+                title="确定删除？"
+                onConfirm={(): void => onDel && selectedList && onDel(selectedList)}
+                onCancel={(): void => onDelCancel && onDelCancel()}
+                okType="danger"
+              >
+                <Button danger type="primary" disabled={!selectedList || !selectedList.length}>
+                  删除
+                </Button>
+              </Popconfirm>
+              <Popconfirm
+                title="确定停用？"
+                onConfirm={(): void => onDisable && selectedList && onDisable(selectedList)}
+                onCancel={(): void => onDisableCancel && onDisableCancel()}
+              >
+                <Button type="ghost" disabled={!selectedList || !selectedList.length}>
+                  停用
+                </Button>
+              </Popconfirm>
+            </Space>
+          ) : (
+            customerBtns
+          )}
         </Col>
       </Row>
     </div>

@@ -5,13 +5,18 @@ import AccountListCmp from "_components/AccountList";
 import useAccount from "_hooks/useAccount";
 
 import "./style.less";
+import { RoleE } from "_types/account";
 
 const AccountList: FunctionComponent = () => {
   const { account } = useAccount();
 
   return (
     <div className="manager-account-list">
-      <AccountListCmp id={account.id}></AccountListCmp>
+      <AccountListCmp
+        id={account.id}
+        filterRole={[RoleE.BUSINESS]}
+        filterCol={["business_name"]}
+      ></AccountListCmp>
     </div>
   );
 };

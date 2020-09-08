@@ -74,7 +74,6 @@ const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
         ? uploadData[key] === queryVale
         : gallery[key] === queryVale;
 
-    console.log("uploadData[key]", uploadData[key]);
     return isUndefined(uploadData[key]) ? gallery[key] : uploadData[key];
   };
 
@@ -96,7 +95,6 @@ const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
       });
     }
 
-    console.log("nextUoloadData", nextUoloadData);
     setUploadData(nextUoloadData);
   };
 

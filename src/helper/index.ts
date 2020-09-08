@@ -88,7 +88,7 @@ export const getSearchQuery = (props?: GetSearchQueryPropsI): string => {
 
 export interface MatchRuleI {
   key: string | string[];
-  level: number;
+  level: number; // 级别 升序
   content: ReactNode | string;
 }
 
@@ -99,7 +99,7 @@ export interface MatchSwitchRuleI<T = any> {
 
 interface MatchRuleResI {
   key: string;
-  content: (ReactNode | string)[];
+  content: (ReactNode | string)[] | { order: number; value: ReactNode | string }[];
 }
 
 interface MatchRuleFunI {

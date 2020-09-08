@@ -12,7 +12,7 @@
 */
 
 import React, { FunctionComponent, useRef, useState, useEffect, ReactNode } from "react";
-import { Table, Modal, Button, Input } from "antd";
+import { Table, Modal } from "antd";
 import useAccount from "_hooks/useAccount";
 import { AccountI, RoleE } from "_types/account";
 import { getAffiliatedList } from "_api/user";
@@ -23,14 +23,18 @@ import Account from "_components/Account";
 import "./style.less";
 import AccountRole from "_components/AccountRole";
 import ListControlBar from "_components/ListControlBar";
+import { ColumnType } from "antd/lib/table";
 
 interface AccountListPropsI {
   id?: string; // 指定账户的ID 数据源为此ID的下属账户 没有的话就是当前账户
   viewable?: boolean; // 是否能查看下属账户的详细信息（弹出Modal)
+  filterRole?: RoleE[]; // 过滤显示的角色类型 填入的被过滤
+  filterCol?: string[]; // 过滤显示的列 填入列id 填入的被过滤
+  searchPlaceholder?: string; // 搜索框的placeholder
 }
 
 const AccountList: FunctionComponent<AccountListPropsI> = (props) => {
-  const { viewable = true } = props;
+  const { viewable = true, filterRole, filterCol, searchPlaceholder } = props;
   const { account } = useAccount();
   const [list, setList] = useState<AccountI[]>(); // 用户列表
   const [currentAccount, setCurrentAccount] = useState<AccountI>(); // 当前选择的账户
@@ -46,7 +50,13 @@ const AccountList: FunctionComponent<AccountListPropsI> = (props) => {
   const init = async (): Promise<void> => {
     if (!id.current) return;
 
-    const listRes = await getAffiliatedList(id.current);
+    let listRes = await getAffiliatedList(id.current);
+    if (filterRole)
+      listRes = listRes.filter((item) => {
+        const { role } = item;
+        return filterRole.indexOf(role) < 0;
+      });
+
     setList(listRes);
   };
 
@@ -64,12 +74,18 @@ const AccountList: FunctionComponent<AccountListPropsI> = (props) => {
       .catch((err) => console.error(err));
   }, []);
 
-  const columns: ColumnsType<AccountI> = [
+  let columns: ColumnsType<AccountI> = [
     {
       title: "账户名",
       key: "username",
       dataIndex: "username",
       sorter: (a, b): number => a.username.localeCompare(b.username),
+    },
+    {
+      title: "企业名称",
+      key: "business_name",
+      dataIndex: "business_name",
+      sorter: (a, b): number => `${a.business_name}`.localeCompare(`${b.business_name}`),
     },
     {
       title: "姓名",
@@ -120,11 +136,18 @@ const AccountList: FunctionComponent<AccountListPropsI> = (props) => {
       onFilter: (val, account): boolean => account.role === (val as RoleE),
     },
   ];
+
+  if (filterCol)
+    columns = columns.filter((item) => {
+      const { dataIndex } = item as ColumnType<AccountI>;
+      return filterCol.indexOf(dataIndex as string) < 0;
+    });
+
   return (
     <div className="account-list">
       <ListControlBar
         selectedList={selected}
-        searchPlaceholder="搜索账户名、手机号"
+        searchPlaceholder={searchPlaceholder || "搜索账户名、手机号"}
       ></ListControlBar>
       <Table
         loading={!list}

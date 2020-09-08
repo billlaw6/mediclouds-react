@@ -52,6 +52,8 @@ const generateOrder = () =>
     created_at: "@DATE",
     updated_at: "@DATE",
     charged_at: "@DATE",
+    expire_date: "@DATE",
+    uploaded_resources: "@NATURAL(0, 1000)",
     "flag|1": [0, 1, 2, 3, 4],
     comment: "@CSENTENCE",
   });

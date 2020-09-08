@@ -9,6 +9,14 @@ import logo from "_assets/images/logo.png";
 import { MatchRuleI, matchRules } from "_helper";
 
 import "./style.less";
+import {
+  AreaChartOutlined,
+  TeamOutlined,
+  UserAddOutlined,
+  BankOutlined,
+  UserOutlined,
+  AccountBookOutlined,
+} from "@ant-design/icons";
 
 const { Sider } = Layout;
 
@@ -26,7 +34,12 @@ const ManagerSider: FunctionComponent<ManagerSiderPropsI> = (props) => {
 
   const getMenuItem = (): ReactNode => {
     const Statistics = (
-      <MenuItem key="dashboard" title="统计" onClick={(): void => history.push("/manager")}>
+      <MenuItem
+        key="dashboard"
+        title="统计"
+        icon={<AreaChartOutlined />}
+        onClick={(): void => history.push("/manager")}
+      >
         统计
       </MenuItem>
     );
@@ -35,6 +48,7 @@ const ManagerSider: FunctionComponent<ManagerSiderPropsI> = (props) => {
       <MenuItem
         key="create-account"
         title="创建账号"
+        icon={<UserAddOutlined />}
         onClick={(): void => history.push("/manager/create-account")}
       >
         创建账号
@@ -45,6 +59,7 @@ const ManagerSider: FunctionComponent<ManagerSiderPropsI> = (props) => {
       <MenuItem
         key="business-account-list"
         title="企业账户"
+        icon={<BankOutlined />}
         onClick={(): void => history.push("/manager/business-account-list")}
       >
         企业账户
@@ -55,6 +70,7 @@ const ManagerSider: FunctionComponent<ManagerSiderPropsI> = (props) => {
       <MenuItem
         key="account-list"
         title="账号列表"
+        icon={<TeamOutlined />}
         onClick={(): void => history.push("/manager/account-list")}
       >
         账号列表
@@ -65,6 +81,7 @@ const ManagerSider: FunctionComponent<ManagerSiderPropsI> = (props) => {
       <MenuItem
         key="customer-list"
         title="我的用户"
+        icon={<UserOutlined />}
         onClick={(): void => history.push("/manager/customer-list")}
       >
         我的用户
@@ -75,6 +92,7 @@ const ManagerSider: FunctionComponent<ManagerSiderPropsI> = (props) => {
       <MenuItem
         key="order-list"
         title="订单列表"
+        icon={<AccountBookOutlined />}
         onClick={(): void => history.push("/manager/order-list")}
       >
         订单列表
@@ -83,7 +101,7 @@ const ManagerSider: FunctionComponent<ManagerSiderPropsI> = (props) => {
 
     const rules: MatchRuleI[] = [
       { key: RoleE.EMPLOYEE, level: 1, content: [Statistics, CustomerList, OrderList] },
-      { key: [RoleE.MANAGER, RoleE.BUSINESS], level: 2, content: [AccountList, CreateAccount] },
+      { key: [RoleE.MANAGER, RoleE.BUSINESS], level: 2, content: [CreateAccount, AccountList] },
       { key: RoleE.SUPER_ADMIN, level: 3, content: [BusinessAccount] },
     ];
 

@@ -47,10 +47,8 @@ const ManagerCreateAccount: FunctionComponent = (props) => {
 
   const onSubmit = (vals: any): void => {
     /* 发送创建账户的API */
-    console.log("vals", vals);
     createAccount(vals)
       .then((res) => {
-        console.log("create account", res);
         setCreateStatus("successed");
       })
       .catch((err) => {

@@ -11,6 +11,8 @@ export interface OrderI {
   created_at: string; // 创建时间
   updated_at: string; // 更新时间
   charged_at: string; // 付费时间
+  expire_date: string; // 过期时间
+  uploaded_resources: number; // 此订单含有资源数量
   flag: 0 | 1 | 2 | 3 | 4; // 订单状态  0: 未缴费 1: 已缴费 2:已消费 3:已作废 4:已退款
   comment: string; // 订单备注
 }

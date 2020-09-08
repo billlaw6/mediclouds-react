@@ -90,7 +90,7 @@ const ManagerLayout: FunctionComponent = () => {
           </Alert>
         ) : null}
         <Content className="manager-layout-content">{getContent()}</Content>
-        <Footer>
+        {/* <Footer>
           <span>北京医影云医疗技术有限公司</span>
           <CopyrightCircleOutlined />
           <span>2020</span>
@@ -106,7 +106,7 @@ const ManagerLayout: FunctionComponent = () => {
           <a href="http://beian.miit.gov.cn" target="_blank" rel="noopener noreferrer">
             京ICP备19054124号-1
           </a>
-        </Footer>
+        </Footer> */}
       </Layout>
     </Layout>
   );

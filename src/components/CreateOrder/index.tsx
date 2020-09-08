@@ -47,7 +47,6 @@ const CreateOrder: FunctionComponent<CreateOrderPropsI> = (props) => {
         setConfirmLoading(true);
         createOrder({ customer_id: customerId, order_type: selectType.key, comment })
           .then((res) => {
-            console.log("create order successed!", res);
             onSuccessed && onSuccessed(res);
           })
           .catch((err) => {

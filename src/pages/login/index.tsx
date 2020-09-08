@@ -102,11 +102,9 @@ const CellPhoneCode: FunctionComponent<CellPhoneCodePropsI> = (props) => {
           <span
             style={{ cursor: "pointer" }}
             onClick={(): void => {
-              console.log("cell_phone, captcha", cell_phone, captcha, countdown);
               if (countdown >= 0 || !cell_phone || !captcha) return;
               getSmsCode({ cell_phone, captcha })
                 .then((res) => {
-                  console.log("get sms code", res);
                   setCountdown(60);
                 })
                 .catch((err) => console.error(err));
@@ -126,6 +124,7 @@ const Captcha: FunctionComponent<CaptchaPropsI> = (props) => {
 
   return (
     <FormItem
+      className="login-captcha"
       label="验证码"
       name="captcha"
       required
@@ -148,9 +147,8 @@ const Captcha: FunctionComponent<CaptchaPropsI> = (props) => {
         addonAfter={
           captcha ? (
             <img
-              className="login-captcha"
+              className="login-captcha-img"
               onClick={(): void => onRefreshCaptcha && onRefreshCaptcha()}
-              style={{ height: "32px", boxSizing: "border-box" }}
               src={captcha.image}
               alt="点击更新验证码"
             ></img>
