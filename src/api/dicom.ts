@@ -158,3 +158,22 @@ export const delPublicImages = async (id: string[]): Promise<any> => {
     throw new Error(error);
   }
 };
+
+/**
+ * 上传DICOM
+ *
+ * @param {FormData} data
+ * @param {(progressEvent: ProgressEvent) => void} [onUploadProgress]
+ * @returns {Promise<void>}
+ */
+export const uploadDicom = async (
+  data: FormData,
+  onUploadProgress?: (progressEvent: ProgressEvent) => void,
+): Promise<void> => {
+  await personalApi.post("/dicom/upload/", data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+    onUploadProgress,
+  });
+};

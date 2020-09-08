@@ -10,13 +10,14 @@ import { UploadStatusI } from "./type";
 import FileProgress from "_components/FileProgress/FileProgress";
 
 import { Link } from "react-router-dom";
-import { FileProgressStatusEnum } from "_components/FileProgress/type";
+import {} from "_components/FileProgress/type";
 
 import "./Upload.less";
 import { useDispatch } from "react-redux";
-import { checkDicomTotalCount } from "_api/dicom";
+import { checkDicomTotalCount, uploadDicom } from "_api/dicom";
 import wechatQrcode from "_images/wechat-qrcode.jpg";
 import { InboxOutlined, ArrowLeftOutlined } from "@ant-design/icons";
+import { UploaderStatusE } from "_types/api";
 
 const Upload: FunctionComponent = () => {
   const dispatch = useDispatch();
@@ -33,7 +34,7 @@ const Upload: FunctionComponent = () => {
     const { id, status } = item;
     const nextupLoadList = uploadList.map((sub) => {
       if (sub.id === id) {
-        if (status === FileProgressStatusEnum.FAIL) {
+        if (status === UploaderStatusE.FAIL) {
           item.progress = sub.progress;
         }
 
@@ -48,34 +49,47 @@ const Upload: FunctionComponent = () => {
 
   const upload = async (formData: FormData, progressInfo: UploadStatusI): Promise<void> => {
     const { id } = progressInfo;
-    const URL = `${config.personalBaseUrl}/dicom/upload/`;
+
     try {
-      const res = await axios.post(URL, formData, {
-        // .post(`${axios.defaults.baseURL}dicom/upload/`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        onUploadProgress: function (progressEvent: any) {
-          // console.log("progressEvent: ", progressEvent);
-          const { loaded, total } = progressEvent;
-          updateCurrentLoad(
-            Object.assign({}, progressInfo, {
-              progress: (loaded / total) * 100,
-            }),
-          );
-          if (loaded === total && globaltotal <= 0) {
-            // if (loaded === total && total > 0) {
-            setTotal(progressInfo.count);
-            setShowTip(true);
-          }
-        },
+      await uploadDicom(formData, (progressEvent: ProgressEvent) => {
+        const { loaded, total } = progressEvent;
+        updateCurrentLoad(
+          Object.assign({}, progressInfo, {
+            progress: (loaded / total) * 100,
+          }),
+        );
+        if (loaded === total && globaltotal <= 0) {
+          // if (loaded === total && total > 0) {
+          setTotal(progressInfo.count);
+          setShowTip(true);
+        }
       });
+      // const res = await axios.post(URL, formData, {
+      //   // .post(`${axios.defaults.baseURL}dicom/upload/`, formData, {
+      //   headers: {
+      //     "Content-Type": "multipart/form-data",
+      //   },
+      //   onUploadProgress: function (progressEvent: any) {
+      //     // console.log("progressEvent: ", progressEvent);
+      //     const { loaded, total } = progressEvent;
+      //     updateCurrentLoad(
+      //       Object.assign({}, progressInfo, {
+      //         progress: (loaded / total) * 100,
+      //       }),
+      //     );
+      //     if (loaded === total && globaltotal <= 0) {
+      //       // if (loaded === total && total > 0) {
+      //       setTotal(progressInfo.count);
+      //       setShowTip(true);
+      //     }
+      //   },
+      // });
 
       dispatch({ type: type.GET_EXAM_INDEX_LIST });
       updateCurrentLoad(
         Object.assign({}, progressInfo, {
           progress: 100,
-          status: FileProgressStatusEnum.SUCCESS,
+          status: UploaderStatusE.SUCCESS,
         }),
       );
 
@@ -83,7 +97,7 @@ const Upload: FunctionComponent = () => {
     } catch (error) {
       updateCurrentLoad(
         Object.assign({}, progressInfo, {
-          status: FileProgressStatusEnum.FAIL,
+          status: UploaderStatusE.FAIL,
         }),
       );
       setReupdateMap(reupdateMap.set(id, formData));
@@ -99,7 +113,7 @@ const Upload: FunctionComponent = () => {
     const currentLoadStatus = {
       ...targetLoad,
       progress: 0,
-      status: FileProgressStatusEnum.PENDING,
+      status: UploaderStatusE.UPLOADING,
     };
     updateCurrentLoad(currentLoadStatus);
     upload(currentFormData, currentLoadStatus);
@@ -112,7 +126,7 @@ const Upload: FunctionComponent = () => {
           id: `${uploadList.length}`,
           count: files.length,
           progress: 0,
-          status: FileProgressStatusEnum.PENDING,
+          status: UploaderStatusE.UPLOADING,
         };
 
         const nextUploadList = [...uploadList, progressInfo];

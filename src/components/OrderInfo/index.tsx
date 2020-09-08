@@ -8,6 +8,7 @@ import OrderStatus from "_components/OrderStatus";
 import { WarningOutlined } from "@ant-design/icons";
 
 import "./style.less";
+import Uploader from "_components/Uploader";
 interface OrderInfoPropsI {
   info?: OrderI;
   onChange?: (status: number, info: OrderI) => void;
@@ -89,7 +90,7 @@ const OrderInfo: FunctionComponent<OrderInfoPropsI> = (props) => {
           </Form>
         </TabPane>
         <TabPane disabled={flag !== 1} key="uploader" tab="上传检查资料">
-          {flag !== 1 ? null : <div>upload</div>}
+          {flag !== 1 ? null : <Uploader directory={true}></Uploader>}
         </TabPane>
       </Tabs>
     </div>

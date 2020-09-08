@@ -1,10 +1,10 @@
-import { FileProgressStatusEnum } from "_components/FileProgress/type";
+import { UploaderStatusE } from "_types/api";
 
 export interface UploadStatusI {
   id: string;
   count: number;
   progress: number;
-  status: FileProgressStatusEnum;
+  status: UploaderStatusE;
   filePath?: string;
   failText?: string;
 }

@@ -5,16 +5,13 @@ import config from "_config";
 import axios from "axios";
 
 import { UploadStatusI } from "./type";
-
 import FileProgress from "_components/FileProgress/FileProgress";
 
-import { Link } from "react-router-dom";
-import { FileProgressStatusEnum } from "_components/FileProgress/type";
-
 import { useDispatch } from "react-redux";
+import { InboxOutlined } from "@ant-design/icons";
+import { UploaderStatusE } from "_types/api";
 
 import "./MobileUpload.less";
-import { InboxOutlined } from "@ant-design/icons";
 
 const MobileUpload: FunctionComponent = () => {
   const dispatch = useDispatch();
@@ -28,7 +25,7 @@ const MobileUpload: FunctionComponent = () => {
     const { id, status } = item;
     const nextupLoadList = uploadList.map((sub) => {
       if (sub.id === id) {
-        if (status === FileProgressStatusEnum.FAIL) {
+        if (status === UploaderStatusE.FAIL) {
           item.progress = sub.progress;
         }
 
@@ -64,7 +61,7 @@ const MobileUpload: FunctionComponent = () => {
       updateCurrentLoad(
         Object.assign({}, progressInfo, {
           progress: 100,
-          status: FileProgressStatusEnum.SUCCESS,
+          status: UploaderStatusE.SUCCESS,
         }),
       );
 
@@ -72,7 +69,7 @@ const MobileUpload: FunctionComponent = () => {
     } catch (error) {
       updateCurrentLoad(
         Object.assign({}, progressInfo, {
-          status: FileProgressStatusEnum.FAIL,
+          status: UploaderStatusE.FAIL,
         }),
       );
       setReupdateMap(reupdateMap.set(id, formData));
@@ -88,7 +85,7 @@ const MobileUpload: FunctionComponent = () => {
     const currentLoadStatus = {
       ...targetLoad,
       progress: 0,
-      status: FileProgressStatusEnum.PENDING,
+      status: UploaderStatusE.UPLOADING,
     };
     updateCurrentLoad(currentLoadStatus);
     upload(currentFormData, currentLoadStatus);
@@ -101,7 +98,7 @@ const MobileUpload: FunctionComponent = () => {
           id: `${uploadList.length}`,
           count: files.length,
           progress: 0,
-          status: FileProgressStatusEnum.PENDING,
+          status: UploaderStatusE.UPLOADING,
         };
 
         const nextUploadList = [...uploadList, progressInfo];

@@ -1,3 +1,22 @@
+// 上传状态
+export enum UploaderStatusE {
+  SUCCESS = "success", // 上传成功
+  FAIL = "fail", // 上传失败
+  UPLOADING = "uploading", // 正在上传
+  PRELOAD = "preload", // 准备上传
+}
+
+// 单次上传的信息
+export interface UploaderCellI {
+  id: number; // 单次上传的ID
+  count: number; // 文件个数
+  progress: number; // 进度
+  status: UploaderStatusE; // 上传状态
+  files: File[]; // 上传的文件列表
+  filePath?: string; // 文件的本地路径
+  failText?: string; // 文件描述&文件名
+}
+
 // 手机登录Data
 export interface LoginPhoneDataI {
   cell_phone: string;

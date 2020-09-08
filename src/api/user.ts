@@ -12,8 +12,8 @@ import {
 export const wechatLogin: ApiFuncI = async (params: any) =>
   await personalApi.post(`/user/wechat-oauth2-login/`, params);
 
-export const loginUser = async (params: any) => {
-  const res = await personalApi.post(`/auth/login/`, params);
+export const loginUser = async (params: any): Promise<{ key: string }> => {
+  const res = (await personalApi.post(`/auth/login/`, params)) as { key: string };
   return res;
 };
 

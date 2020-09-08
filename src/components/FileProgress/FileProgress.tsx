@@ -1,10 +1,11 @@
 import React, { FunctionComponent, ReactElement } from "react";
 import { Progress } from "antd";
 
-import { FileProgressPropsI, FileProgressStatusEnum } from "./type";
-
-import "./FileProgress.less";
 import { Link } from "react-router-dom";
+import { UploaderStatusE } from "_types/api";
+
+import { FileProgressPropsI } from "./type";
+import "./FileProgress.less";
 
 const FileProgress: FunctionComponent<FileProgressPropsI> = (props) => {
   const {
@@ -25,7 +26,7 @@ const FileProgress: FunctionComponent<FileProgressPropsI> = (props) => {
     status: "normal" | "active" | "success" | "exception" | undefined;
   } => {
     switch (status) {
-      case FileProgressStatusEnum.SUCCESS:
+      case UploaderStatusE.SUCCESS:
         return {
           resText: successText,
           color: "#52C41A",
@@ -36,7 +37,7 @@ const FileProgress: FunctionComponent<FileProgressPropsI> = (props) => {
           ),
           status: "normal",
         };
-      case FileProgressStatusEnum.FAIL:
+      case UploaderStatusE.FAIL:
         return {
           resText: failText,
           color: "#FF7633",

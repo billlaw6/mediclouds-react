@@ -1,122 +1,80 @@
-import React, { ReactElement } from "react";
+import React, { FunctionComponent } from "react";
 import { Form, Input, Button, Checkbox } from "antd";
-import { connect } from "react-redux";
-import { StoreStateI } from "_types/core";
-import {
-  setTokenAction,
-  setUserAction,
-  SetTokenActionFuncI,
-  SetUserActionFuncT,
-} from "_actions/user";
+import { useDispatch } from "react-redux";
+import { setTokenAction, setUserAction } from "_actions/user";
 import { loginUser, getUserInfo } from "_api/user";
-import { history } from "../../store/configureStore";
+
 import "./Login.less";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import { useHistory } from "react-router";
 
-class LoginForm extends React.Component<MapDispatchToPropsI> {
-  handleSubmit = (values: any): void => {
-    const { setTokenAction } = this.props;
-    // e.preventDefault();
+const LoginForm: FunctionComponent = () => {
+  const dispatch = useDispatch();
+  const history = useHistory();
 
-    setTokenAction("");
+  const handleSubmit = (values: any): void => {
+    dispatch(setTokenAction(""));
     loginUser(values)
       .then((res) => {
         console.log(res);
-        setTokenAction(res.data.key);
-        history.replace("/");
+        dispatch(setTokenAction(res.key));
+        history.replace("/resources");
       })
       .catch((err) => {
         console.log(err);
       });
-
-    // console.log(e);
-    // this.props.form.validateFields((err: any, values: any) => {
-    //   if (!err) {
-    //     console.log("Received values of form: ", values);
-    //     setTokenAction("");
-    //     loginUser(values)
-    //       .then((res) => {
-    //         console.log(res);
-    //         setTokenAction(res.data.key);
-    //         // history.replace("/");
-    //       })
-    //       .catch((err) => {
-    //         console.log(err);
-    //       });
-    //   }
-    // });
   };
 
-  fetchUserInfo = (): void => {
-    const { setUserAction } = this.props;
+  const fetchUserInfo = (): void => {
     getUserInfo()
       .then((res) => {
         console.log(res.data);
-        setUserAction(res.data);
+        dispatch(setUserAction(res.data));
       })
       .catch((err) => {
         console.log(err);
       });
   };
 
-  render(): ReactElement {
-    // const { getFieldDecorator } = this.props.form;
-    return (
-      <div className="login">
-        <div className="login-form">
-          <Form onFinish={this.handleSubmit} className="login-form">
-            <Form.Item
-              name="username"
-              rules={[{ required: true, message: "Please input your username!" }]}
-            >
-              <Input
-                prefix={<UserOutlined style={{ color: "rgba(0,0,0,.25)" }}></UserOutlined>}
-                placeholder="Username"
-              />
-            </Form.Item>
-            <Form.Item
-              name="password"
-              rules={[{ required: true, message: "Please input your Password!" }]}
-            >
-              <Input
-                prefix={<LockOutlined style={{ color: "rgba(0,0,0,.25)" }}></LockOutlined>}
-                type="password"
-                placeholder="Password"
-              />
-            </Form.Item>
-            <Form.Item initialValue={true} valuePropName="checked" name="remember">
-              <Checkbox>Remember me</Checkbox>
-              <a className="login-form-forgot" href="">
-                Forgot password
-              </a>
-              <Button type="primary" htmlType="submit" className="login-form-button">
-                Log in
-              </Button>
-            </Form.Item>
-          </Form>
-        </div>
-        <div>
-          <Button onClick={this.fetchUserInfo}>UserInfo</Button>
-        </div>
+  return (
+    <div className="login">
+      <div className="login-form">
+        <Form onFinish={handleSubmit} className="login-form">
+          <Form.Item
+            name="username"
+            rules={[{ required: true, message: "Please input your username!" }]}
+          >
+            <Input
+              prefix={<UserOutlined style={{ color: "rgba(0,0,0,.25)" }}></UserOutlined>}
+              placeholder="Username"
+            />
+          </Form.Item>
+          <Form.Item
+            name="password"
+            rules={[{ required: true, message: "Please input your Password!" }]}
+          >
+            <Input
+              prefix={<LockOutlined style={{ color: "rgba(0,0,0,.25)" }}></LockOutlined>}
+              type="password"
+              placeholder="Password"
+            />
+          </Form.Item>
+          <Form.Item initialValue={true} valuePropName="checked" name="remember">
+            <Checkbox>Remember me</Checkbox>
+            <a className="login-form-forgot" href="">
+              Forgot password
+            </a>
+            <Button type="primary" htmlType="submit" className="login-form-button">
+              Log in
+            </Button>
+          </Form.Item>
+        </Form>
       </div>
-    );
-  }
-}
-
-const mapStateToProps = (state: StoreStateI) => {
-  return {
-    user: state.user,
-  };
+      <div>
+        <Button onClick={fetchUserInfo}>UserInfo</Button>
+      </div>
+    </div>
+  );
 };
 
-interface MapDispatchToPropsI {
-  setTokenAction: SetTokenActionFuncI;
-  setUserAction: SetUserActionFuncT;
-}
-
-const mapDispatchToProps = {
-  setTokenAction: setTokenAction,
-  setUserAction: setUserAction,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);
+export default LoginForm;
