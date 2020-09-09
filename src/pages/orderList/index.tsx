@@ -1,5 +1,13 @@
 /* eslint-disable react/display-name */
-import React, { FunctionComponent, useState, ReactNode, useEffect, Key } from "react";
+import React, {
+  FunctionComponent,
+  useState,
+  ReactNode,
+  useEffect,
+  Key,
+  useCallback,
+  useRef,
+} from "react";
 import { OrderI } from "_types/order";
 import { Table } from "antd";
 import { ColumnsType } from "antd/lib/table";
@@ -11,6 +19,7 @@ import OrderStatus from "_components/OrderStatus";
 import ListControlBar from "_components/ListControlBar";
 
 import "./style.less";
+import useAccount from "_hooks/useAccount";
 
 const columns: ColumnsType<OrderI> = [
   {
@@ -84,15 +93,35 @@ const columns: ColumnsType<OrderI> = [
 ];
 
 const OrderList: FunctionComponent = () => {
+  const { account } = useAccount();
+  const id = useRef<string>(account.id);
+
   const [orderList, setOrderList] = useState<OrderI[]>();
   const [currentOrder, setCurrentOrder] = useState<OrderI>();
   const [selected, setSelected] = useState<string[]>();
+  const [pagination, setPagination] = useState({ pageSize: 10, current: 1 }); // 选择的页码
+  const [searchVal, setSearchVal] = useState(""); // 搜索的内容
+  const [dateRange, setDateRange] = useState<string[]>(); // 日期范围
 
-  useEffect(() => {
-    getOrderList("")
+  const fetchData = useCallback((): void => {
+    if (!id.current) return;
+
+    const { current, pageSize } = pagination;
+    let searchQuery = { keyword: searchVal, current, size: pageSize };
+    if (dateRange)
+      searchQuery = Object.assign({}, searchQuery, {
+        start: dateRange[0],
+        end: dateRange[1],
+      });
+
+    getOrderList(id.current, searchQuery)
       .then((res) => setOrderList(res))
       .catch((err) => console.error(err));
-  }, []);
+  }, [dateRange, pagination, searchVal]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData, pagination, searchVal]);
 
   /**
    * 批量选择
@@ -102,12 +131,36 @@ const OrderList: FunctionComponent = () => {
    */
   const onSelectChange = (selectedRowKeys: Key[]): void => setSelected(selectedRowKeys as string[]);
 
+  /**
+   *  更新页码触发
+   *
+   * @param {number} current
+   * @param {number} [pageSize=10]
+   */
+  const onChangePagination = (current: number, pageSize = 10): void => {
+    setPagination({ current, pageSize });
+  };
+
+  /**
+   * 搜索时触发
+   *
+   * @param {string} val
+   */
+  const onSearch = (val: string): void => {
+    setSearchVal(val);
+  };
+
+  const onDateChange = (dateStrings: string[]): void => setDateRange(dateStrings);
+
   return (
     <>
       <ListControlBar
         selectedList={selected}
         searchPlaceholder="搜索订单号、用户名"
         customerBtns={null}
+        showDatePicker
+        onSearch={onSearch}
+        onDateChage={onDateChange}
       ></ListControlBar>
       <Table
         loading={!orderList}
@@ -121,6 +174,13 @@ const OrderList: FunctionComponent = () => {
             setCurrentOrder(record);
           },
         })}
+        pagination={{
+          defaultPageSize: 10,
+          defaultCurrent: 1,
+          ...pagination,
+          onChange: onChangePagination,
+          onShowSizeChange: onChangePagination,
+        }}
       ></Table>
       <Modal
         width={1000}

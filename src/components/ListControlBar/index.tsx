@@ -1,14 +1,15 @@
 import React, { FunctionComponent, ReactNode } from "react";
 import { Input, Button, Popconfirm, Row, Col, Space, DatePicker } from "antd";
+import { isUndefined } from "util";
 
 import "./style.less";
-import { isUndefined } from "util";
 
 interface ListControlBarPropsI {
   searchPlaceholder?: string;
   selectedList?: string[]; // 当前所选
   showDatePicker?: boolean; // 显示日期选择器
   onSearch?: (val: string) => void; // 搜索回调
+  onDateChage?: (dateStrings: string[]) => void; // 日期范围变更回调
   onDel?: (ids: string[]) => void; // 删除回调
   onDelCancel?: Function; // 删除取消回调
   onDisable?: (ids: string[]) => void; // 停用回调
@@ -20,6 +21,7 @@ const ListControlBar: FunctionComponent<ListControlBarPropsI> = (props) => {
   const {
     searchPlaceholder = "搜索",
     onSearch,
+    onDateChage,
     showDatePicker = false,
     onDel,
     onDelCancel,
@@ -40,7 +42,11 @@ const ListControlBar: FunctionComponent<ListControlBarPropsI> = (props) => {
         </Col>
         {showDatePicker ? (
           <Col span="12">
-            <DatePicker.RangePicker></DatePicker.RangePicker>
+            <DatePicker.RangePicker
+              onChange={(dates, dateStrings) => {
+                onDateChage && onDateChage(dateStrings);
+              }}
+            ></DatePicker.RangePicker>
           </Col>
         ) : null}
         <Col span="6" className="list-control-bar-btns">

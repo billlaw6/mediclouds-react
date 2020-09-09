@@ -39,13 +39,13 @@ export interface CaptchaI {
 // 查询参数
 export interface GetSearchQueryPropsI {
   id?: string;
-  current?: number;
-  size?: number;
-  start?: string;
-  ascend?: 0 | 1;
-  end?: string;
-  sort?: string;
-  keyword?: string;
+  current?: number; // 当前页码
+  size?: number; // 每页数量
+  start?: string; // 开始时间
+  end?: string; // 结束时间
+  ascend?: 0 | 1; // 正序逆序
+  sort?: string; // 排序规则
+  keyword?: string; // 检查关键字
 }
 
 /* ===============  根据Tower文档整理的接口相关的interface =============== */

@@ -136,16 +136,21 @@ const Uploader: FunctionComponent<UploaderPropsI> = (props) => {
         {...getRootProps({ className: "uploader-inner" })}
         onMouseOver={(): void => {
           /* HACK: Typescript not support webkitdirectory attribute */
+          if (!directory) return;
           const $input = document.querySelector(".uploader-input");
           if ($input && !$input.getAttribute("webkitdirectory")) {
             $input.setAttribute("webkitdirectory", "true");
           }
         }}
       >
-        <input className="uploader-input" {...getInputProps({ name: "file", multiple: true })} />
+        <input
+          className="uploader-input"
+          {...getInputProps({ name: "file", multiple: true, accept })}
+        />
         <Space align="center" direction="vertical">
           <UploadOutlined className="uploader-iconfont" />
-          <p>上传资源</p>
+          <p>拖拽文件、文件夹到此处上传</p>
+          <p>暂不支持压缩文件</p>
         </Space>
       </div>
       {onChange ? null : <div className="uploader-list">{getList()}</div>}

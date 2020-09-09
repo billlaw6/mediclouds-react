@@ -1,5 +1,13 @@
 /* eslint-disable react/display-name */
-import React, { FunctionComponent, ReactNode, useRef, useEffect, useState, Key } from "react";
+import React, {
+  FunctionComponent,
+  ReactNode,
+  useRef,
+  useEffect,
+  useState,
+  Key,
+  useCallback,
+} from "react";
 import Table, { ColumnsType } from "antd/lib/table";
 import { AccountI, RoleE } from "_types/account";
 import { Space, Button, Result } from "antd";
@@ -23,6 +31,9 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
     text: string;
   }>(null);
   const [selected, setSelected] = useState<string[]>([]);
+  const [pagination, setPagination] = useState({ pageSize: 10, current: 1 }); // 选择的页码
+  const [searchVal, setSearchVal] = useState(""); // 搜索的内容
+  const [dateRange, setDateRange] = useState<string[]>();
 
   const onSelectChange = (selectedRowKeys: Key[]): void => setSelected(selectedRowKeys as string[]);
 
@@ -99,19 +110,47 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
     },
   ];
 
-  const init = async (): Promise<void> => {
+  const fetchList = useCallback((): void => {
     if (!id.current) return;
 
-    getCustomerList(id.current)
+    const { current, pageSize } = pagination;
+    let searchQuery = { keyword: searchVal, current, size: pageSize };
+    if (dateRange)
+      searchQuery = Object.assign({}, searchQuery, {
+        start: dateRange[0],
+        end: dateRange[1],
+      });
+    getCustomerList(id.current, searchQuery)
       .then((res) => setList(res))
       .catch((err) => console.error(err));
+  }, [dateRange, pagination, searchVal]);
+
+  /**
+   *  更新页码触发
+   *
+   * @param {number} current
+   * @param {number} [pageSize=10]
+   */
+  const onChangePagination = (current: number, pageSize = 10): void => {
+    setPagination({ current, pageSize });
   };
 
+  /**
+   * 搜索时触发
+   *
+   * @param {string} val
+   */
+  const onSearch = (val: string): void => {
+    setSearchVal(val);
+  };
+
+  const onDateChange = (dateStrings: string[]): void => setDateRange(dateStrings);
+
   useEffect(() => {
-    init()
-      .then((): void => console.log("get current list successed!"))
-      .catch((err) => console.error(err));
-  }, []);
+    if (list) setList(undefined);
+
+    fetchList();
+  }, [fetchList, pagination, searchVal]);
 
   return (
     <div className="customer-list">
@@ -144,6 +183,8 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
             searchPlaceholder="搜索昵称、手机号"
             selectedList={selected}
             showDatePicker
+            onSearch={onSearch}
+            onDateChage={onDateChange}
           ></ListControlBar>
           <Table
             rowKey="id"
@@ -151,6 +192,13 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
             dataSource={list}
             columns={colums}
             rowSelection={{ selectedRowKeys: selected, onChange: onSelectChange }}
+            pagination={{
+              defaultPageSize: 10,
+              defaultCurrent: 1,
+              ...pagination,
+              onChange: onChangePagination,
+              onShowSizeChange: onChangePagination,
+            }}
           ></Table>
         </>
       )}

@@ -11,7 +11,14 @@
 
 */
 
-import React, { FunctionComponent, useRef, useState, useEffect, ReactNode } from "react";
+import React, {
+  FunctionComponent,
+  useRef,
+  useState,
+  useEffect,
+  ReactNode,
+  useCallback,
+} from "react";
 import { Table, Modal } from "antd";
 import useAccount from "_hooks/useAccount";
 import { AccountI, RoleE } from "_types/account";
@@ -19,11 +26,11 @@ import { getAffiliatedList } from "_api/user";
 import { ColumnsType } from "antd/es/table";
 import { Key } from "antd/es/table/interface";
 import Account from "_components/Account";
-
-import "./style.less";
 import AccountRole from "_components/AccountRole";
 import ListControlBar from "_components/ListControlBar";
 import { ColumnType } from "antd/lib/table";
+
+import "./style.less";
 
 interface AccountListPropsI {
   id?: string; // 指定账户的ID 数据源为此ID的下属账户 没有的话就是当前账户
@@ -39,26 +46,34 @@ const AccountList: FunctionComponent<AccountListPropsI> = (props) => {
   const [list, setList] = useState<AccountI[]>(); // 用户列表
   const [currentAccount, setCurrentAccount] = useState<AccountI>(); // 当前选择的账户
   const [selected, setSelected] = useState<string[]>(); // 批量选择的账户id
+  const [pagination, setPagination] = useState({ pageSize: 10, current: 1 }); // 选择的页码
+  const [searchVal, setSearchVal] = useState(""); // 搜索的内容
   // const [selectMode, setSelectMode] = useState(false); // 切换选择模式
 
   const id = useRef<string>(props.id || account.id);
+
   /**
-   * 初始化
+   * 拉取数据
    *
    * @returns {Promise<void>}
    */
-  const init = async (): Promise<void> => {
+  const fetchData = useCallback((): void => {
     if (!id.current) return;
 
-    let listRes = await getAffiliatedList(id.current);
-    if (filterRole)
-      listRes = listRes.filter((item) => {
-        const { role } = item;
-        return filterRole.indexOf(role) < 0;
-      });
+    const { current, pageSize } = pagination;
 
-    setList(listRes);
-  };
+    getAffiliatedList(id.current, { keyword: searchVal, current, size: pageSize })
+      .then((list) => {
+        if (filterRole)
+          list = list.filter((item) => {
+            const { role } = item;
+            return filterRole.indexOf(role) < 0;
+          });
+
+        setList(list);
+      })
+      .catch((err) => console.error(err));
+  }, [filterRole, pagination, searchVal]);
 
   /**
    * 批量选择
@@ -68,11 +83,32 @@ const AccountList: FunctionComponent<AccountListPropsI> = (props) => {
    */
   const onSelectChange = (selectedRowKeys: Key[]): void => setSelected(selectedRowKeys as string[]);
 
+  /**
+   *  更新页码触发
+   *
+   * @param {number} current
+   * @param {number} [pageSize=10]
+   */
+  const onChangePagination = (current: number, pageSize = 10): void => {
+    setPagination({ current, pageSize });
+  };
+
+  /**
+   * 搜索时触发
+   *
+   * @param {string} val
+   */
+  const onSearch = (val: string): void => {
+    setSearchVal(val);
+  };
+
   useEffect(() => {
-    init()
-      .then(() => console.log("get list successed"))
-      .catch((err) => console.error(err));
-  }, []);
+    if (list) setList(undefined);
+
+    fetchData();
+  }, [fetchData, pagination, searchVal]);
+
+  console.log("list", list);
 
   let columns: ColumnsType<AccountI> = [
     {
@@ -148,6 +184,7 @@ const AccountList: FunctionComponent<AccountListPropsI> = (props) => {
       <ListControlBar
         selectedList={selected}
         searchPlaceholder={searchPlaceholder || "搜索账户名、手机号"}
+        onSearch={onSearch}
       ></ListControlBar>
       <Table
         loading={!list}
@@ -161,6 +198,13 @@ const AccountList: FunctionComponent<AccountListPropsI> = (props) => {
             viewable && setCurrentAccount(record);
           },
         })}
+        pagination={{
+          defaultPageSize: 10,
+          defaultCurrent: 1,
+          ...pagination,
+          onChange: onChangePagination,
+          onShowSizeChange: onChangePagination,
+        }}
       ></Table>
       {currentAccount ? (
         <Modal
