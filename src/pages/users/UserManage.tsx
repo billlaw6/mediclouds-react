@@ -35,7 +35,7 @@ class UserManage extends React.Component<UserManagePropsI, UserManageStateI> {
     const { userList } = this.state;
     const { value } = e.target;
     if (value) {
-      const searchResult = userList.filter((item: UserI) => {
+      const searchResult = userList.filter((item) => {
         // console.log(item.nickname.toLowerCase().indexOf(value.toLowerCase()));
         if (item.nickname && item.nickname.toLowerCase().indexOf(value.toLowerCase()) >= 0) {
           return true;

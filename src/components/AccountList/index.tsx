@@ -108,8 +108,6 @@ const AccountList: FunctionComponent<AccountListPropsI> = (props) => {
     fetchData();
   }, [fetchData, pagination, searchVal]);
 
-  console.log("list", list);
-
   let columns: ColumnsType<AccountI> = [
     {
       title: "账户名",

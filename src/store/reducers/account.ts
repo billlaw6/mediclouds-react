@@ -1,6 +1,6 @@
 import { ReducerI } from "_types/reducer";
 import { AccountActionTypes } from "_types/actions";
-import { AccountI, RoleE } from "_types/account";
+import { AccountI, RoleE, UserI } from "_types/account";
 import { generateAccount } from "../../mock";
 
 const _ACCOUNT: AccountI =
@@ -15,7 +15,7 @@ const _ACCOUNT: AccountI =
         age: "",
         avatar: "",
         certificate: [],
-        role: RoleE.SUPER_ADMIN,
+        role: RoleE.EMPLOYEE,
         first_name: "",
         last_name: "",
         sign: "",

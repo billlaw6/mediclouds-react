@@ -39,13 +39,14 @@ const routes: RoutesI[] = [
     name: "resources",
     path: "/resources",
     component: Resources,
-    permission: [AccountStatusE.LOGIN],
+    layout: DefaultLayout,
+    // permission: [AccountStatusE.LOGIN],
   },
-  {
-    name: "login_form",
-    path: "/login_form",
-    component: LoginForm,
-  },
+  // {
+  //   name: "login_form",
+  //   path: "/login_form",
+  //   component: LoginForm,
+  // },
   {
     name: "login",
     path: "/login",
@@ -63,7 +64,8 @@ const routes: RoutesI[] = [
     name: "upload",
     path: "/upload",
     component: Upload,
-    permission: [AccountStatusE.LOGIN],
+    layout: DefaultLayout,
+    // permission: [AccountStatusE.LOGIN],
   },
   {
     name: "oauth",
@@ -79,12 +81,14 @@ const routes: RoutesI[] = [
     name: "profile",
     path: "/profile",
     component: Profile,
+    layout: DefaultLayout,
     permission: [AccountStatusE.LOGIN],
   },
   {
     name: "feedback",
     path: "/feedback",
     component: Feedback,
+    layout: DefaultLayout,
     permission: [AccountStatusE.LOGIN],
   },
   {
@@ -117,6 +121,7 @@ const routes: RoutesI[] = [
     name: "homeRes",
     path: "/home-res",
     component: HomeResource,
+    layout: DefaultLayout,
     permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN],
   },
   {

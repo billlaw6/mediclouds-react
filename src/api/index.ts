@@ -3,6 +3,7 @@ import qs from "qs";
 import { history } from "../store/configureStore";
 import { store } from "../index";
 import config from "_config";
+import { getToken } from "_helper";
 
 // let store = configureStore();
 let requestName: string; // 每次发起请求都会携带这个参数，用于标识这次请求，如果值相等，则取消重复请求
@@ -52,20 +53,19 @@ const customReq = (config: AxiosRequestConfig) => {
   // 如果没有 requestName 就默认添加一个 不同的时间戳
   config.headers["X-Requested-With"] = "XMLHttpRequest";
   const regex = /.*csrftoken=([^;.]*).*$/; // 用于从cookies中匹配csrftoken值
-  config.headers["X-CSRFToken"] =
-    document.cookie.match(regex) === null ? null : document.cookie.match(regex)![1];
+  if (document.cookie) {
+    config.headers["X-CSRFToken"] =
+      document.cookie.match(regex) === null ? null : document.cookie.match(regex)![1];
+  }
   // localStorage在这里有点不及时
   // const persistRoot = JSON.parse(localStorage.getItem("persist:root")!);
   // if (persistRoot.token && persistRoot.token.length > 2) {
   //   console.log("Token " + JSON.parse(persistRoot.token));
   //   config.headers.Authorization = "Token " + JSON.parse(persistRoot.token);
   // }
-  const token = store.getState().token;
-  console.log("token", token);
-  if (token) {
-    console.log("Token " + token);
-    config.headers.Authorization = "Token " + token;
-  }
+  // const token = store.getState().token;
+  const token = getToken();
+  if (token) config.headers.Authorization = token;
 
   if (config.method === "post") {
     // console.log(config.data);

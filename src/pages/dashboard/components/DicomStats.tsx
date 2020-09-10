@@ -2,12 +2,12 @@ import React from "react";
 import { connect } from "react-redux";
 
 import { StoreStateI } from "_types/core";
-import { UserI } from "_types/account";
+import { CustomerI } from "_types/account";
 import ReactEcharts from "echarts-for-react";
 import { getDicomFileStats } from "_api/dicom";
 
 interface MapStateToPropsI {
-  user: UserI;
+  user: CustomerI;
 }
 
 interface StatsStateI {

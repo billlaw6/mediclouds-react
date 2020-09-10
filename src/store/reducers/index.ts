@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import { History } from "history";
 import { connectRouter } from "connected-react-router";
-import { tokenReducer, userReducer } from "./user";
+import user from "./user";
 import account from "./account";
 import { examIndexListReducer } from "./dicom";
 import dicomSettings from "./dicomSettings";
@@ -10,8 +10,8 @@ import dicomSettings from "./dicomSettings";
 const createRootReducer = (history: History) =>
   combineReducers({
     router: connectRouter(history),
-    token: tokenReducer,
-    user: userReducer,
+    // token: tokenReducer,
+    user,
     examIndexList: examIndexListReducer,
     dicomSettings,
     account,

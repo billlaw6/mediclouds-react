@@ -52,8 +52,8 @@ export interface AccountI extends AccountBaseI {
   recommended_users: RecommendedUserI[]; // 邀请人列表
 }
 
-/* 用户 */
-export interface UserI extends AccountBaseI {
+/* 顾客 */
+export interface CustomerI extends AccountBaseI {
   first_name: string;
   last_name: string;
   nickname: string;
@@ -69,6 +69,9 @@ export interface UserI extends AccountBaseI {
   score: number; // 积分
   privacy_notice: number; // 隐私政策版本 0：没有同意过
 }
+
+/* 用户 包含 账户和顾客 用于全局的路由、权限判断 */
+export interface UserI extends CustomerI, AccountI {}
 
 /* 创建账户Data */
 export interface CreateAccountDataI {

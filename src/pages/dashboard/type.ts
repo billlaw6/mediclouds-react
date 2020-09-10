@@ -1,8 +1,8 @@
-import { UserI } from "_types/api";
+import { CustomerI } from "_types/account";
 import { RouteComponentProps } from "react-router";
 
 export interface MapStateToPropsI {
-  user: UserI;
+  user: CustomerI;
 }
 
 export type DashboardPropsI = MapStateToPropsI & RouteComponentProps;

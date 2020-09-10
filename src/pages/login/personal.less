@@ -1,0 +1,74 @@
+.login-personal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &-qrcode {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin-bottom: 34px;
+    [alt="wechat-scan"] {
+      width: 235px;
+      position: absolute;
+      top: 50%;
+      transform: translate(120px, -50%);
+      right: 0;
+      z-index: 1;
+      transition: transform 400ms, opacity 400ms;
+      opacity: 1;
+    }
+
+    & + span {
+      color: #bfbfbf;
+    }
+
+    &.hidden {
+      #wechatQrcode {
+        transform: translate(0, -50%);
+        transition: transform 400ms;
+      }
+
+      [alt="wechat-scan"] {
+        transform: translate(0, -50%);
+        opacity: 0;
+        transition: all 400ms;
+      }
+    }
+  }
+  &-tip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .iconfont {
+      margin-right: 14px;
+      color: #07af12;
+      font-size: 24px;
+    }
+  }
+
+  #wechatQrcode {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translate(-120px, -50%);
+    border: none;
+    z-index: 2;
+    transition: transform 400ms;
+  }
+
+  &-form {
+  }
+
+  &-switch {
+    cursor: pointer;
+    margin-top: 20px;
+    transition: color 200ms;
+
+    &:hover {
+      color: #85a5ff;
+      transition: color 200ms;
+    }
+  }
+}

@@ -6,7 +6,7 @@ export enum AccountActionTypes {
   LOGIN_FORM = "login_form", // 表单登录
   LOGIN_PHONE = "login_phone", // 手机号登录
   LOGOUT = "logout", // 注销
-  UPDATE_INFO = "update_user_info", // 更新账户信息
+  UPDATE_INFO = "update_info", // 更新账户信息
   GET_CUSTOMERS = "get_customers", // 获取当前用户下的顾客
   GET_AFFILIATEDS = "get_affiliateds", // 获取下属用户
   GET_BILLING = "get_billing", // 获取账单

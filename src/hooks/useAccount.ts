@@ -1,10 +1,10 @@
 import { useSelector, useDispatch } from "react-redux";
 import { StoreStateI } from "_types/core";
-import { UserI, UpdateAccountDataI } from "_types/account";
+import { CustomerI, UpdateAccountDataI } from "_types/account";
 import { AccountI } from "_types/account";
 import { AccountActionTypes } from "_types/actions";
-import userApi from "_api/user";
-import { setToken } from "_helper";
+import userApi, { loginUser, devFormLogin } from "_api/user";
+import { setToken, clearToken } from "_helper";
 import { useHistory } from "react-router";
 import moment from "antd/node_modules/moment";
 import { LoginPhoneDataI } from "_types/api";
@@ -12,8 +12,47 @@ import { LoginPhoneDataI } from "_types/api";
 export default () => {
   const history = useHistory();
   const dispatch = useDispatch();
-  const user = useSelector<StoreStateI, UserI>((state) => state.user);
+  const user = useSelector<StoreStateI, CustomerI>((state) => state.user);
   const account = useSelector<StoreStateI, AccountI & { login: boolean }>((state) => state.account);
+
+  /* 开发表单登录 */
+  const _devFormLogin = async ({
+    username,
+    password,
+  }: {
+    username: string;
+    password: string;
+  }): Promise<void> => {
+    try {
+      clearToken();
+
+      const loginRes = await devFormLogin({ username, password });
+      const { key } = loginRes;
+
+      setToken(key);
+      console.log("loginRes", loginRes);
+      dispatch({ type: AccountActionTypes.LOGIN_FORM, payload: {} });
+
+      history.replace("/resources");
+    } catch (error) {
+      throw new Error(error);
+    }
+  };
+  // /* 顾客表单登录 */
+  // const customerFormLogin = async ({
+  //   username,
+  //   password,
+  // }: {
+  //   username: string;
+  //   password: string;
+  // }) => {
+  //   try {
+  //     const loginRes = await loginUser({ username, password });
+  //     // const { token, userInfo } = loginRes;
+  //   } catch (error) {
+  //     throw new Error(error);
+  //   }
+  // };
 
   /* 微信二维码登录 */
   const wechatLogin = async (params: any): Promise<void> => {
@@ -72,5 +111,13 @@ export default () => {
     }
   };
 
-  return { wechatLogin, formLogin, phoneLogin, updateAccount, user, account };
+  return {
+    wechatLogin,
+    formLogin,
+    phoneLogin,
+    updateAccount,
+    user,
+    account,
+    devFormLogin: _devFormLogin,
+  };
 };

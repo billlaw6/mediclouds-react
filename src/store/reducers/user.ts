@@ -1,22 +1,9 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { UserI, RoleE } from "_types/account";
-import { setTokenAction, setUserAction, updateUserAction } from "_actions/user";
-import * as types from "../action-types";
+import { CustomerI, RoleE } from "_types/account";
+import { ReducerI } from "_types/reducer";
+import { AccountActionTypes } from "_types/actions";
 
-const defaultToken = "";
-
-const tokenReducer = (state = defaultToken, action: ReturnType<typeof setTokenAction>): string => {
-  switch (action.type) {
-    case types.SET_TOKEN: {
-      return action.payload;
-    }
-    default: {
-      return state;
-    }
-  }
-};
-
-const DEFAULT_USER: UserI = {
+const DEFAULT_USER: CustomerI & { login: boolean } = {
   id: "",
   username: "",
   nickname: "",
@@ -39,19 +26,18 @@ const DEFAULT_USER: UserI = {
   birthday: "",
   date_joined: "",
   last_login: "",
+  login: false,
 };
 
-const userReducer = (
+const userReducer: ReducerI<CustomerI & { login: boolean }, AccountActionTypes, CustomerI> = (
   state = DEFAULT_USER,
-  action: ReturnType<typeof setUserAction> | ReturnType<typeof updateUserAction>,
-): UserI => {
-  switch (action.type) {
-    case types.SET_USER: {
-      console.log("action payload: ", action.payload as FormData);
-      return {
-        ...DEFAULT_USER,
-        ...action.payload,
-      };
+  action,
+) => {
+  const { type, payload } = action;
+
+  switch (type) {
+    case AccountActionTypes.LOGIN_WECHAT: {
+      return Object.assign({}, payload, { login: true });
     }
     default: {
       return state;
@@ -59,4 +45,4 @@ const userReducer = (
   }
 };
 
-export { tokenReducer, userReducer };
+export default userReducer;

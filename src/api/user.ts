@@ -12,6 +12,18 @@ import {
 export const wechatLogin: ApiFuncI = async (params: any) =>
   await personalApi.post(`/user/wechat-oauth2-login/`, params);
 
+/* 顾客表单登录 */
+export const customerLoginForm: ApiFuncI = async () => personalApi.post("/user/login-form");
+
+/* 开发表单登录 */
+export const devFormLogin: ApiFuncI = async ({
+  username,
+  password,
+}: {
+  username: string;
+  password: string;
+}) => await personalApi.post("/auth/login/", { username, password, remember: true });
+
 export const loginUser = async (params: any): Promise<{ key: string }> => {
   const res = (await personalApi.post(`/auth/login/`, params)) as { key: string };
   return res;
@@ -46,7 +58,7 @@ export const getUserInfo = async () => {
   return res;
 };
 
-// export const updateUserInfo = async (params: UserFormI): Promise<UserI> => {
+// export const updateUserInfo = async (params: UserFormI): Promise<CustomerI> => {
 export const updateUserInfo = async (params: any) => {
   const res = await personalApi.post(`/user/update/`, params);
   return res;

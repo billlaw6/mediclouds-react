@@ -10,7 +10,7 @@ import { StoreStateI } from "_types/core";
 /* action */
 import { logoutUserAction } from "_actions/user";
 import SideBtns from "_components/SideBtns";
-import { UserI, RoleE } from "_types/account";
+import { CustomerI, RoleE } from "_types/account";
 
 /* style */
 import "./Default.less";
@@ -20,7 +20,7 @@ const { Content } = Layout;
 const DefalutLayout: FunctionComponent = (props) => {
   const { children } = props;
 
-  const user = useSelector<StoreStateI, UserI>((state) => state.user);
+  const user = useSelector<StoreStateI, CustomerI>((state) => state.user);
   const { avatar, nickname, role } = user;
 
   return (

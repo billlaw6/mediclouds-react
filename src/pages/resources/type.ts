@@ -1,5 +1,5 @@
 import { ExamIndexI } from "_types/api";
-import { UserI } from "_types/account";
+import { CustomerI } from "_types/account";
 import {
   getExamIndexListAction,
   deleteExamIndexListAction,
@@ -11,7 +11,7 @@ import { ReactElement } from "react";
 
 export interface MapStateToPropsI {
   examIndexList: ExamIndexI[];
-  user: UserI;
+  user: CustomerI;
   dicomSettings: {
     sortBy: SortTypeEnum;
     viewMode: ViewTypeEnum;

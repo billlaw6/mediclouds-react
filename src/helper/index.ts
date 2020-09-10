@@ -52,11 +52,20 @@ export const getQueryString = (): any => {
 export default getQueryString;
 
 /**
+ * 清除token
+ */
+export const clearToken = (): void => {
+  window.localStorage.removeItem("token");
+};
+
+/**
  * 设置token
  * @param {string} token
  */
-export const setToken = (token: string): void =>
+export const setToken = (token: string): void => {
+  if (!token) return;
   window.localStorage.setItem("token", `Token ${token}`);
+};
 
 /**
  * 获取token

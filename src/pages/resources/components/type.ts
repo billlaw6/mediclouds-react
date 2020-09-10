@@ -1,6 +1,6 @@
-import { UserI } from "_types/account";
+import { CustomerI } from "_types/account";
 
 export interface PrivacyNoticePropsI {
   onChecked: Function;
-  user: UserI;
+  user: CustomerI;
 }
