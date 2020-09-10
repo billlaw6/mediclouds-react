@@ -7,6 +7,7 @@ import { HeaderPropsI } from "./type";
 
 import "./Header.less";
 import { Link } from "react-router-dom";
+import { UserOutlined } from "@ant-design/icons";
 
 const { Item: MenuItem, ItemGroup: MenuItemGroup, Divider } = Menu;
 const { Header: AntdHeader } = Layout;
@@ -68,7 +69,7 @@ const Header: FunctionComponent<HeaderPropsI> = (props): ReactElement => {
           {avatar ? (
             <Avatar size="default" src={avatar}></Avatar>
           ) : (
-            <Avatar size="default" icon="user"></Avatar>
+            <Avatar size="default" icon={<UserOutlined />}></Avatar>
           )}
         </Dropdown>
       </div>

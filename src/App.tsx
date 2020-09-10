@@ -9,9 +9,9 @@ import DefaultLayout from "_layout/Default/Default";
 
 /* pages */
 import Error from "_pages/error/Error";
+import AuthorizedRoute from "_components/AuthorizedRoute";
 
 import "./App.less";
-import AuthorizedRoute from "_components/AuthorizedRoute";
 
 const getRouters = (routers: RoutesI[], parentPath = ""): ReactNode => {
   return routers.map((item, index) => {
@@ -73,11 +73,14 @@ class App extends Component {
             );
           })} */}
           <Route
-            render={(): ReactElement => (
-              <DefaultLayout>
-                <Error></Error>
-              </DefaultLayout>
-            )}
+            render={(): ReactElement => {
+              console.log("not found");
+              return (
+                <DefaultLayout>
+                  <Error></Error>
+                </DefaultLayout>
+              );
+            }}
           ></Route>
         </Switch>
       </Router>

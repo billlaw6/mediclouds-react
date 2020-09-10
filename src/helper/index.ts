@@ -160,3 +160,22 @@ export const matchSwitchRules: MatchSwitchRulFunI = (rules, key) => {
   if (!res) return;
   return res.content;
 };
+
+/**
+ * 转换 图片文件 到 base64
+ *
+ * @param {File} image
+ * @returns {Promise<string>}
+ */
+export const ImageFileToBase64 = (image: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e): void => {
+      if (e.target) resolve(e.target.result as string);
+      else reject("not found target");
+    };
+    reader.onerror = (err): void => reject(err);
+
+    reader.readAsDataURL(image);
+  });
+};

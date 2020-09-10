@@ -34,16 +34,11 @@ const DEFAULT_ACCOUNT: AccountI & { login: boolean } = Object.assign({}, _ACCOUN
   role: RoleE.SUPER_ADMIN,
 });
 
-console.log(DEFAULT_ACCOUNT);
-
 const accountReducer: ReducerI<AccountI & { login: boolean }, AccountActionTypes, AccountI> = (
   state = DEFAULT_ACCOUNT,
   action,
 ) => {
   const { type, payload } = action;
-
-  console.log("type", type);
-  console.log("payload", payload);
 
   switch (type) {
     case AccountActionTypes.LOGIN_FORM:

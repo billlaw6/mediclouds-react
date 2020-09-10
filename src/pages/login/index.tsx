@@ -10,10 +10,8 @@
 
 */
 
-import React, { FunctionComponent, useState, useEffect, useCallback } from "react";
-import { Tabs, Form, Button, Input, Spin } from "antd";
-import md5 from "blueimp-md5";
-import Footer from "_components/Footer/Footer";
+import React, { FunctionComponent, useState, useEffect } from "react";
+import { Tabs, Form, Button, Input } from "antd";
 
 import LoginBtn from "./LoginBtn";
 import useAccount from "_hooks/useAccount";
@@ -26,10 +24,9 @@ import { useSelector } from "react-redux";
 import { StoreStateI } from "_types/core";
 import { UserI, AccountI } from "_types/account";
 import { useHistory } from "react-router";
-import { getCaptcha, getSmsCode } from "_api/user";
-import { CaptchaI, LoginPhoneDataI } from "_types/api";
-import { LoadingOutlined } from "@ant-design/icons";
-import { FormItemProps } from "antd/lib/form";
+import { LoginPhoneDataI } from "_types/api";
+import CellPhoneCode from "./CellPhoneCode";
+import Captcha from "./Captcha";
 
 import "./style.less";
 
@@ -61,113 +58,12 @@ const QRCODE_URL =
   `response_type=code&` +
   `#wechat_redirect`;
 
-let timer = -1;
-
-interface CaptchaPropsI extends FormItemProps {
-  captcha?: CaptchaI | null;
-  onRefreshCaptcha?: Function;
-  onChecked?: (val: string) => void;
-}
-
-interface CellPhoneCodePropsI extends FormItemProps {
-  loginType: "form" | "phone";
-  captcha?: string;
-  cell_phone?: string;
-}
-
-const CellPhoneCode: FunctionComponent<CellPhoneCodePropsI> = (props) => {
-  const { loginType, captcha, cell_phone, ...others } = props;
-  const [countdown, setCountdown] = useState(-1);
-
-  useEffect(() => {
-    if (countdown < 0 && timer) {
-      return window.clearTimeout(timer);
-    }
-
-    const _tempCountdown = countdown;
-    timer = window.setTimeout(() => {
-      setCountdown(_tempCountdown - 1);
-    }, 1000);
-  }, [countdown]);
-
-  return (
-    <FormItem
-      label="手机验证码"
-      name="auth_code"
-      rules={[{ required: loginType === "phone", message: "请输入验证码" }]}
-      {...others}
-    >
-      <Input
-        addonAfter={
-          <span
-            style={{ cursor: "pointer" }}
-            onClick={(): void => {
-              if (countdown >= 0 || !cell_phone || !captcha) return;
-              getSmsCode({ cell_phone, captcha })
-                .then((res) => {
-                  setCountdown(60);
-                })
-                .catch((err) => console.error(err));
-            }}
-          >
-            {countdown < 0 ? "获取手机验证码" : `（${countdown}s）后再次获取`}
-          </span>
-        }
-      ></Input>
-    </FormItem>
-  );
-};
-
-const Captcha: FunctionComponent<CaptchaPropsI> = (props) => {
-  const { captcha, onRefreshCaptcha, onChecked, ...otherProps } = props;
-  const [checked, setChecked] = useState<-1 | 0 | 1>(0);
-
-  return (
-    <FormItem
-      className="login-captcha"
-      label="验证码"
-      name="captcha"
-      required
-      hasFeedback={checked !== 0}
-      help={checked === -1 ? "验证码错误" : ""}
-      validateStatus={checked === -1 ? "error" : checked === 1 ? "success" : ""}
-      {...otherProps}
-    >
-      <Input
-        placeholder="点击图片更新"
-        onInput={(e): void => {
-          if (!captcha) return;
-
-          const { value } = e.currentTarget;
-          const isChecked = md5(value) === captcha.code;
-          setChecked(isChecked ? 1 : -1);
-
-          isChecked && onChecked && onChecked(value);
-        }}
-        addonAfter={
-          captcha ? (
-            <img
-              className="login-captcha-img"
-              onClick={(): void => onRefreshCaptcha && onRefreshCaptcha()}
-              src={captcha.image}
-              alt="点击更新验证码"
-            ></img>
-          ) : (
-            <Spin indicator={<LoadingOutlined />}></Spin>
-          )
-        }
-      ></Input>
-    </FormItem>
-  );
-};
-
 const Login: FunctionComponent = () => {
   const history = useHistory();
   const [type, setType] = useState<"personal" | "business">("personal"); // 切换登录类型
   const [loginType, setLoginType] = useState<"form" | "phone">("form"); // 切换表单登录类型
   const [loginFormData, setLoginFormData] = useState<any>({}); // 登录表单数据
-  const [captcha, setCaptch] = useState<CaptchaI | null>(null);
-  const [captchaVal, setCaptchaVal] = useState<string>(); // 验证码的md5检查状态
+  const [captchaVal, setCaptchaVal] = useState<string>(); // 验证码
 
   const { formLogin, phoneLogin } = useAccount();
 
@@ -181,15 +77,6 @@ const Login: FunctionComponent = () => {
     account: state.account,
   }));
 
-  const fetchCaptcha = (): void => {
-    setCaptchaVal("");
-    if (captcha) setCaptch(null);
-
-    getCaptcha()
-      .then((res) => setCaptch(res))
-      .catch((err) => console.error(err));
-  };
-
   useEffect(() => {
     const timer = setTimeout(() => {
       setHiddenScan(true);
@@ -199,12 +86,6 @@ const Login: FunctionComponent = () => {
       clearTimeout(timer);
     };
   }, []);
-
-  useEffect(() => {
-    if (type === "business") {
-      fetchCaptcha();
-    }
-  }, [type, loginType]);
 
   const isPersonalType = type === "personal";
 
@@ -243,7 +124,7 @@ const Login: FunctionComponent = () => {
                 name="form-login"
                 labelCol={{ span: 6 }}
                 onFinish={(vals): void => {
-                  if (!captcha || !captchaVal) return;
+                  if (!captchaVal) return;
 
                   const { cell_phone, auth_code, captcha: _captcha } = vals as LoginPhoneDataI;
 
@@ -284,11 +165,9 @@ const Login: FunctionComponent = () => {
                     >
                       <InputPassword value={loginFormData["password"] || ""}></InputPassword>
                     </FormItem>
-                    <Captcha
-                      captcha={captcha}
-                      onRefreshCaptcha={fetchCaptcha}
-                      onChecked={(val): void => setCaptchaVal(val)}
-                    ></Captcha>
+                    {loginType === "form" ? (
+                      <Captcha onChecked={(val): void => setCaptchaVal(val)}></Captcha>
+                    ) : null}
                   </TabPane>
                   <TabPane key="phone" tab="手机号登录">
                     <FormItem
@@ -303,11 +182,9 @@ const Login: FunctionComponent = () => {
                       loginType={loginType}
                       cell_phone={loginFormData["cell_phone"] || ""}
                     ></CellPhoneCode>
-                    <Captcha
-                      captcha={captcha}
-                      onRefreshCaptcha={fetchCaptcha}
-                      onChecked={(val): void => setCaptchaVal(val)}
-                    ></Captcha>
+                    {loginType === "phone" ? (
+                      <Captcha onChecked={(val): void => setCaptchaVal(val)}></Captcha>
+                    ) : null}
                   </TabPane>
                 </Tabs>
                 <FormItem>
@@ -322,7 +199,6 @@ const Login: FunctionComponent = () => {
           <LoginBtn onClick={(val): void => setType(val)} type={type}></LoginBtn>
         </div>
       </div>
-      <Footer></Footer>
     </>
   );
 };

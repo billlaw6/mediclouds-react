@@ -31,6 +31,8 @@ const ListControlBar: FunctionComponent<ListControlBarPropsI> = (props) => {
     customerBtns,
   } = props;
 
+  const disabled = !selectedList || !selectedList.length;
+
   return (
     <div className="list-control-bar">
       <Row justify="space-between" gutter={12}>
@@ -57,8 +59,9 @@ const ListControlBar: FunctionComponent<ListControlBarPropsI> = (props) => {
                 onConfirm={(): void => onDel && selectedList && onDel(selectedList)}
                 onCancel={(): void => onDelCancel && onDelCancel()}
                 okType="danger"
+                disabled={disabled}
               >
-                <Button danger type="primary" disabled={!selectedList || !selectedList.length}>
+                <Button danger type="primary" disabled={disabled}>
                   删除
                 </Button>
               </Popconfirm>
@@ -66,8 +69,9 @@ const ListControlBar: FunctionComponent<ListControlBarPropsI> = (props) => {
                 title="确定停用？"
                 onConfirm={(): void => onDisable && selectedList && onDisable(selectedList)}
                 onCancel={(): void => onDisableCancel && onDisableCancel()}
+                disabled={disabled}
               >
-                <Button type="ghost" disabled={!selectedList || !selectedList.length}>
+                <Button type="ghost" disabled={disabled}>
                   停用
                 </Button>
               </Popconfirm>

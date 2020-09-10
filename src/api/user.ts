@@ -18,10 +18,10 @@ export const loginUser = async (params: any): Promise<{ key: string }> => {
 };
 
 /* 用户表单登录 */
-export const loginForm: ApiFuncI = async () => await publicAPi.post("/user/login-form");
+export const loginForm: ApiFuncI = async () => await publicAPi.post("/user/login-form/");
 /* 用户手机号登录 */
 export const loginPhone: ApiFuncI = async (data: LoginPhoneDataI) =>
-  await publicAPi.post("/user/login-phone", data);
+  await publicAPi.post("/user/login-phone/", data);
 
 /* 获取用户列表 */
 export const getUserList: ApiFuncI = async () => await personalApi.get(`/user/list/`);
@@ -115,7 +115,7 @@ export const getCustomerList = async (
 
 /* 创建新账户 */
 export const createAccount = async (data: CreateAccountDataI): Promise<AccountI> =>
-  await publicAPi.post("/user/create", data);
+  await publicAPi.post("/user/create/", data);
 
 /* 获取统计信息 */
 export const getStats = async (id: string): Promise<StatsI> => await publicAPi.get(`/stats/${id}`);
