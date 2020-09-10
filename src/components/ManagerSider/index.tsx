@@ -16,6 +16,9 @@ import {
   BankOutlined,
   UserOutlined,
   AccountBookOutlined,
+  PictureOutlined,
+  AuditOutlined,
+  InboxOutlined,
 } from "@ant-design/icons";
 
 const { Sider } = Layout;
@@ -99,10 +102,43 @@ const ManagerSider: FunctionComponent<ManagerSiderPropsI> = (props) => {
       </MenuItem>
     );
 
+    const HomeRes = (
+      <MenuItem
+        key="home-res"
+        title="小程序首页图"
+        icon={<PictureOutlined />}
+        onClick={(): void => history.push("/manager/home-res")}
+      >
+        小程序首页图
+      </MenuItem>
+    );
+
+    const MdEditor = (
+      <MenuItem
+        key="mdeditor"
+        title="用户协议编辑"
+        icon={<AuditOutlined />}
+        onClick={(): void => history.push("/manager/mdeditor")}
+      >
+        用户协议编辑
+      </MenuItem>
+    );
+
+    const Gallery = (
+      <MenuItem
+        key="gallery"
+        title="公共图集"
+        icon={<InboxOutlined />}
+        onClick={(): void => history.push("/manager/gallery")}
+      >
+        公共图集
+      </MenuItem>
+    );
+
     const rules: MatchRuleI[] = [
       { key: RoleE.EMPLOYEE, level: 1, content: [Statistics, CustomerList, OrderList] },
       { key: [RoleE.MANAGER, RoleE.BUSINESS], level: 2, content: [CreateAccount, AccountList] },
-      { key: RoleE.SUPER_ADMIN, level: 3, content: [BusinessAccount] },
+      { key: RoleE.SUPER_ADMIN, level: 3, content: [BusinessAccount, HomeRes, MdEditor, Gallery] },
     ];
 
     return matchRules(rules, role);

@@ -21,6 +21,9 @@ import { Link } from "react-router-dom";
 import AccountRole from "_components/AccountRole";
 
 import "./style.less";
+import HomeResource from "_pages/homeResource/HomeResource";
+import MdEditor from "_pages/mdEditor/MdEditor";
+import Gallery from "_pages/gallery/Gallery";
 
 const { Header, Footer, Content } = Layout;
 
@@ -32,6 +35,8 @@ const ManagerLayout: FunctionComponent = () => {
 
   const getContent = (): ReactNode => {
     switch (name) {
+      case "gallery":
+        return <Gallery></Gallery>;
       case "account-settings":
         return <Account></Account>;
       case "create-account":
@@ -44,6 +49,10 @@ const ManagerLayout: FunctionComponent = () => {
         return <ManagerCustomerList></ManagerCustomerList>;
       case "order-list":
         return <OrderList></OrderList>;
+      case "mdeditor":
+        return <MdEditor></MdEditor>;
+      case "home-res":
+        return <HomeResource></HomeResource>;
       default:
         return <Manager></Manager>;
     }
