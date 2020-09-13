@@ -1,37 +1,63 @@
 import { ReducerI } from "_types/reducer";
 import { AccountActionTypes } from "_types/actions";
 import { AccountI, RoleE, UserI } from "_types/account";
-import { generateAccount } from "../../mock";
+// import { generateAccount } from "../../mock";
 
-const _ACCOUNT: AccountI =
-  process.env.NODE_ENV === "development"
-    ? generateAccount()
-    : {
-        id: "",
-        username: "",
-        nickname: "",
-        cell_phone: "",
-        sex: 0,
-        age: "",
-        avatar: "",
-        certificate: [],
-        role: RoleE.EMPLOYEE,
-        first_name: "",
-        last_name: "",
-        sign: "",
-        business_name: "",
-        birthday: "",
-        pay_qrcode: "",
-        register_qrcode: "",
-        unit: "",
-        recommended_users: [],
-        superior_id: "",
-        date_joined: "",
-        last_login: "",
-      };
+// const _ACCOUNT: AccountI =
+//   process.env.NODE_ENV === "development"
+//     ? generateAccount()
+//     : {
+//         id: "",
+//         username: "",
+//         nickname: "",
+//         cell_phone: "",
+//         sex: 0,
+//         age: "",
+//         avatar: "",
+//         certificate: [],
+//         role: RoleE.EMPLOYEE,
+//         first_name: "",
+//         last_name: "",
+//         sign: "",
+//         business_name: "",
+//         birthday: "",
+//         pay_qrcode: "",
+//         register_qrcode: "",
+//         unit: "",
+//         recommended_users: [],
+//         superior_id: "",
+//         date_joined: "",
+//         last_login: "",
+//       };
+
+const _ACCOUNT: AccountI = {
+  id: "",
+  username: "",
+  nickname: "",
+  cell_phone: "",
+  sex: 0,
+  age: "",
+  avatar: "",
+  certificate: [],
+  role: RoleE.EMPLOYEE,
+  first_name: "",
+  last_name: "",
+  sign: "",
+  business_name: "",
+  birthday: "",
+  pay_qrcode: "",
+  register_qrcode: "",
+  unit: "",
+  recommended_users: [],
+  superior_id: "",
+  date_joined: "",
+  last_login: "",
+  is_active: 0,
+};
+
 const DEFAULT_ACCOUNT: AccountI & { login: boolean } = Object.assign({}, _ACCOUNT, {
   login: false,
-  role: RoleE.SUPER_ADMIN,
+  role: RoleE.EMPLOYEE,
 });
 
 const accountReducer: ReducerI<AccountI & { login: boolean }, AccountActionTypes, AccountI> = (

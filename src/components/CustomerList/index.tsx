@@ -12,7 +12,7 @@ import Table, { ColumnsType } from "antd/lib/table";
 import { AccountI, RoleE } from "_types/account";
 import { Space, Button, Result } from "antd";
 import useAccount from "_hooks/useAccount";
-import { getCustomerList } from "_api/user";
+import { delAccount, getCustomerList } from "_api/user";
 import CreateOrder from "_components/CreateOrder";
 import { ResultStatusType } from "antd/lib/result";
 import ListControlBar from "_components/ListControlBar";
@@ -24,7 +24,7 @@ interface CustomerListPropsI {
 const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
   const { account } = useAccount();
   const id = useRef<string>(props.id || account.id);
-  const [list, setList] = useState<AccountI[]>();
+  const [list, setList] = useState<{ total: number; arr: AccountI[] }>();
   const [createOrderId, setCreateOrderId] = useState<string | null>(null);
   const [orderStatus, setOrderStatus] = useState<null | {
     status: ResultStatusType;
@@ -121,7 +121,7 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
         end: dateRange[1],
       });
     getCustomerList(id.current, searchQuery)
-      .then((res) => setList(res))
+      .then((res) => setList({ total: res.count, arr: res.results }))
       .catch((err) => console.error(err));
   }, [dateRange, pagination, searchVal]);
 
@@ -155,7 +155,7 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
   return (
     <div className="customer-list">
       <CreateOrder
-        customerId={createOrderId || ""}
+        ownerId={createOrderId || ""}
         visible={!!createOrderId}
         onCancel={(): void => setCreateOrderId(null)}
         onSuccessed={(): void => {
@@ -185,17 +185,23 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
             showDatePicker
             onSearch={onSearch}
             onDateChage={onDateChange}
+            onDel={(ids): void => {
+              delAccount(ids)
+                .then((res) => console.log("del customer success", res))
+                .catch((err) => console.error(err));
+            }}
           ></ListControlBar>
           <Table
             rowKey="id"
             loading={!list}
-            dataSource={list}
+            dataSource={list ? list.arr : []}
             columns={colums}
             rowSelection={{ selectedRowKeys: selected, onChange: onSelectChange }}
             pagination={{
               defaultPageSize: 10,
               defaultCurrent: 1,
               ...pagination,
+              total: list ? list.total : 0,
               onChange: onChangePagination,
               onShowSizeChange: onChangePagination,
             }}

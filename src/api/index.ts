@@ -4,6 +4,7 @@ import { history } from "../store/configureStore";
 import { store } from "../index";
 import config from "_config";
 import { getToken } from "_helper";
+import { resolve } from "path";
 
 // let store = configureStore();
 let requestName: string; // 每次发起请求都会携带这个参数，用于标识这次请求，如果值相等，则取消重复请求
@@ -57,15 +58,6 @@ const customReq = (config: AxiosRequestConfig) => {
     config.headers["X-CSRFToken"] =
       document.cookie.match(regex) === null ? null : document.cookie.match(regex)![1];
   }
-  // localStorage在这里有点不及时
-  // const persistRoot = JSON.parse(localStorage.getItem("persist:root")!);
-  // if (persistRoot.token && persistRoot.token.length > 2) {
-  //   console.log("Token " + JSON.parse(persistRoot.token));
-  //   config.headers.Authorization = "Token " + JSON.parse(persistRoot.token);
-  // }
-  // const token = store.getState().token;
-  const token = getToken();
-  if (token) config.headers.Authorization = token;
 
   if (config.method === "post") {
     // console.log(config.data);
@@ -100,11 +92,18 @@ const customReqErr = (err: any) => Promise.reject(err);
 /* 自定义响应拦截器 */
 
 // 服务器返回了结果，有前面的validateStatus保证，这里接收的只会是2和3开着的状态
-const customRes = (res: AxiosResponse<any>) => res.data;
+const customRes = <P = any>(res: AxiosResponse<P>) => res.data;
 const customResErr = (error: any) => {
   // 两种错误返回类型
   const { response } = error;
-  console.log(response);
+  const { status } = response;
+
+  console.log("res err", error);
+  console.log("res err", response);
+  // switch(status) {
+  //   case 401:
+  //     window.location.
+  // }
   // if (response) {
   //   // 服务器返回了结果
   //   // console.log('response valid');
@@ -151,6 +150,25 @@ _publicApi.interceptors.request.use(customReq, customReqErr);
 
 _personalApi.interceptors.response.use(customRes, customResErr);
 _publicApi.interceptors.response.use(customRes, customResErr);
+
+export const publicReq = async (config: AxiosRequestConfig, useToken = true): Promise<any> => {
+  if (useToken) {
+    const token = getToken();
+    if (token) config.headers = Object.assign({}, config.headers, { Authorization: token });
+  }
+
+  return await _publicApi(config);
+};
+
+export const personaReq = async (config: AxiosRequestConfig, useToken = true): Promise<any> => {
+  if (useToken) {
+    const token = getToken();
+    if (token) config.headers = Object.assign({}, config.headers, { Authorization: token });
+  }
+
+  const res = await _personalApi(config);
+  return res;
+};
 
 export const personalApi = _personalApi;
 export const publicAPi = _publicApi;

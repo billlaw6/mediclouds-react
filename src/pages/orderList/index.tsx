@@ -21,77 +21,6 @@ import ListControlBar from "_components/ListControlBar";
 import "./style.less";
 import useAccount from "_hooks/useAccount";
 
-const columns: ColumnsType<OrderI> = [
-  {
-    title: "订单号",
-    key: "order_number",
-    dataIndex: "order_number",
-    sorter: (a, b): number => parseInt(a.order_number, 10) - parseInt(b.order_number, 10),
-  },
-  {
-    title: "用户id",
-    key: "customer_id",
-    dataIndex: "customer_id",
-    sorter: (a, b): number => a.customer_id.localeCompare(b.customer_id),
-  },
-  {
-    title: "用户名",
-    key: "customer_first_name",
-    dataIndex: "customer_first_name",
-    render: (_val, recode): ReactNode => (
-      <span>{`${recode.customer_first_name}${recode.customer_last_name}`}</span>
-    ),
-    sorter: (a, b): number =>
-      `${a.customer_first_name}${a.customer_last_name}`.localeCompare(
-        `${b.customer_first_name}${b.customer_last_name}`,
-      ),
-  },
-  {
-    title: "创建时间",
-    key: "created_at",
-    dataIndex: "created_at",
-    sorter: (a, b): number => Date.parse(a.created_at) - Date.parse(b.created_at),
-  },
-  {
-    title: "修改时间",
-    key: "updated_at",
-    dataIndex: "updated_at",
-    sorter: (a, b): number => Date.parse(a.updated_at) - Date.parse(b.updated_at),
-  },
-  {
-    title: "过期时间",
-    key: "expire_date",
-    dataIndex: "expire_date",
-    sorter: (a, b): number => Date.parse(a.expire_date) - Date.parse(b.expire_date),
-    render: (val): ReactNode => {
-      return val;
-      // return <span>{Date.now() - Date.parse(val) >= 0 ? "已过期" : val}</span>;
-    },
-  },
-  {
-    title: "资源数量",
-    key: "uploaded_resources",
-    dataIndex: "uploaded_resources",
-    sorter: (a, b): number => a.uploaded_resources - b.uploaded_resources,
-  },
-  {
-    title: "订单状态",
-    key: "flag",
-    dataIndex: "flag",
-    render: (val): ReactNode => {
-      return <OrderStatus status={val}></OrderStatus>;
-    },
-    filters: [
-      { text: "未缴费", value: 0 },
-      { text: "已缴费", value: 1 },
-      { text: "已消费", value: 2 },
-      { text: "已作废", value: 3 },
-      { text: "已退款", value: 4 },
-    ],
-    onFilter: (val, account): boolean => account.flag === val,
-  },
-];
-
 const OrderList: FunctionComponent = () => {
   const { account } = useAccount();
   const id = useRef<string>(account.id);
@@ -102,6 +31,72 @@ const OrderList: FunctionComponent = () => {
   const [pagination, setPagination] = useState({ pageSize: 10, current: 1 }); // 选择的页码
   const [searchVal, setSearchVal] = useState(""); // 搜索的内容
   const [dateRange, setDateRange] = useState<string[]>(); // 日期范围
+
+  const columns: ColumnsType<OrderI> = [
+    {
+      title: "订单号",
+      key: "order_number",
+      dataIndex: "order_number",
+      sorter: (a, b): number => parseInt(a.order_number, 10) - parseInt(b.order_number, 10),
+    },
+    {
+      title: "关联id",
+      key: "owner_id",
+      dataIndex: "owner_id",
+      sorter: (a, b): number => a.owner_id.localeCompare(b.owner_id),
+    },
+    {
+      title: "用户名",
+      key: "owner_username",
+      dataIndex: "owner_username",
+      render: (_val, recode): ReactNode => <span>{recode.owner_username}</span>,
+      sorter: (a, b): number => `${a.owner_username}`.localeCompare(`${b.owner_username}`),
+    },
+    {
+      title: "创建时间",
+      key: "created_at",
+      dataIndex: "created_at",
+      sorter: (a, b): number => Date.parse(a.created_at) - Date.parse(b.created_at),
+    },
+    {
+      title: "修改时间",
+      key: "updated_at",
+      dataIndex: "updated_at",
+      sorter: (a, b): number => Date.parse(a.updated_at) - Date.parse(b.updated_at),
+    },
+    {
+      title: "过期时间",
+      key: "expire_date",
+      dataIndex: "expire_date",
+      sorter: (a, b): number => Date.parse(a.expire_date) - Date.parse(b.expire_date),
+      render: (val): ReactNode => {
+        return val;
+        // return <span>{Date.now() - Date.parse(val) >= 0 ? "已过期" : val}</span>;
+      },
+    },
+    {
+      title: "资源数量",
+      key: "uploaded_resources",
+      dataIndex: "uploaded_resources",
+      sorter: (a, b): number => a.uploaded_resources - b.uploaded_resources,
+    },
+    {
+      title: "订单状态",
+      key: "flag",
+      dataIndex: "flag",
+      render: (val): ReactNode => {
+        return <OrderStatus status={val}></OrderStatus>;
+      },
+      filters: [
+        { text: "未缴费", value: 0 },
+        { text: "已缴费", value: 1 },
+        { text: "已消费", value: 2 },
+        { text: "已作废", value: 3 },
+        { text: "已退款", value: 4 },
+      ],
+      onFilter: (val, account): boolean => account.flag === val,
+    },
+  ];
 
   const fetchData = useCallback((): void => {
     if (!id.current) return;
@@ -115,7 +110,7 @@ const OrderList: FunctionComponent = () => {
       });
 
     getOrderList(id.current, searchQuery)
-      .then((res) => setOrderList(res))
+      .then((res) => setOrderList(res.results))
       .catch((err) => console.error(err));
   }, [dateRange, pagination, searchVal]);
 

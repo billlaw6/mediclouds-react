@@ -27,6 +27,7 @@ const DEFAULT_USER: CustomerI & { login: boolean } = {
   date_joined: "",
   last_login: "",
   login: false,
+  is_active: 0,
 };
 
 const userReducer: ReducerI<CustomerI & { login: boolean }, AccountActionTypes, CustomerI> = (

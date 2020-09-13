@@ -84,13 +84,15 @@ const Business: FunctionComponent = () => {
             >
               <Input value={loginFormData["username"] || ""}></Input>
             </FormItem>
-            <CellPhoneCode
-              captcha={captchaVal}
-              loginType={loginType}
-              cell_phone={loginFormData["cell_phone"] || ""}
-            ></CellPhoneCode>
             {loginType === "phone" ? (
               <Captcha onChecked={(val): void => setCaptchaVal(val)}></Captcha>
+            ) : null}
+            {captchaVal ? (
+              <CellPhoneCode
+                captcha={captchaVal}
+                loginType={loginType}
+                cell_phone={loginFormData["cell_phone"] || ""}
+              ></CellPhoneCode>
             ) : null}
           </TabPane>
         </Tabs>

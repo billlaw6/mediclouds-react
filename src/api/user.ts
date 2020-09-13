@@ -1,4 +1,4 @@
-import { personalApi, publicAPi } from "./index";
+import { personalApi, publicAPi, publicReq } from "./index";
 import { AccountFormLoginDataI, AccountI, StatsI, UpdateAccountDataI } from "_types/account";
 import { CreateAccountDataI } from "_types/account";
 import {
@@ -8,6 +8,7 @@ import {
   PhoneLoginDataI,
   SendSmsDataI,
   FormLoginDataI,
+  SearchQueryResI,
 } from "_types/api";
 import { clearToken } from "_helper";
 
@@ -33,10 +34,25 @@ export const loginUser = async (params: any): Promise<{ key: string }> => {
 
 /* 用户表单登录 */
 export const loginForm: ApiFuncI = async (data: FormLoginDataI) =>
-  await publicAPi.post("/user/login-form/", data);
+  await publicReq(
+    {
+      method: "POST",
+      url: "/user/login-form/",
+      data,
+    },
+    false,
+  );
+
 /* 用户手机号登录 */
 export const loginPhone: ApiFuncI = async (data: PhoneLoginDataI) =>
-  await publicAPi.post("/user/login-phone/", data);
+  await publicReq(
+    {
+      method: "POST",
+      url: "/user/login-phone/",
+      data,
+    },
+    false,
+  );
 
 /* 获取用户列表 */
 export const getUserList: ApiFuncI = async () => await personalApi.get(`/user/list/`);
@@ -114,8 +130,10 @@ export const getUserStats = async (params?: any) => {
 export const getAffiliatedList = async (
   id: string,
   searchQuery?: GetSearchQueryPropsI,
-): Promise<AccountI[]> =>
-  await publicAPi.get(`/user/affiliated-list/${id}`, {
+): Promise<SearchQueryResI<AccountI>> =>
+  await publicReq({
+    method: "GET",
+    url: `/user/affiliated-list/${id}/`,
     params: searchQuery,
   });
 
@@ -123,43 +141,88 @@ export const getAffiliatedList = async (
 export const getCustomerList = async (
   id: string,
   searchQuery?: GetSearchQueryPropsI,
-): Promise<AccountI[]> =>
-  await publicAPi.get(`/user/customer-list/${id}`, {
+): Promise<SearchQueryResI<AccountI>> =>
+  await publicReq({
+    method: "GET",
+    url: `/user/customer-list/${id}/`,
     params: searchQuery,
   });
 
 /* 创建新账户 */
 export const createAccount = async (data: CreateAccountDataI): Promise<AccountI> =>
-  await publicAPi.post("/user/create/", data);
+  await publicReq({
+    method: "POST",
+    url: "/user/create/",
+    data,
+  });
 
 /* 获取统计信息 */
-export const getStats = async (id: string): Promise<StatsI> => await publicAPi.get(`/stats/${id}`);
+export const getStats = async (id: string): Promise<StatsI> =>
+  await publicReq({
+    method: "GET",
+    url: `/stats/${id}`,
+  });
 
 /* 更新账户信息 */
 export const updateAccount = async (id: string, data: UpdateAccountDataI): Promise<AccountI> =>
-  await publicAPi.post(`/user/update/${id}`, data);
+  await publicReq({
+    method: "POST",
+    url: `/user/update/${id}`,
+    data,
+  });
 
 /* 获取captcha验证码 */
-export const getCaptcha = async (): Promise<CaptchaI> => {
-  clearToken();
-
-  return await publicAPi.get("/captcha/");
-};
+export const getCaptcha = async (): Promise<CaptchaI> =>
+  await publicReq(
+    {
+      method: "GET",
+      url: "/captcha/",
+    },
+    false,
+  );
 
 /* 删除账户 */
 export const delAccount = async (id: string[]): Promise<string[]> =>
-  await publicAPi.post("/user/del/", { id });
+  await publicReq({
+    method: "POST",
+    url: "/user/del/",
+    data: { id },
+  });
 
 /* 获取账单 */
-export const getBilling = async (): Promise<any> => await publicAPi.get("/user/billing/");
+export const getBilling = async (): Promise<any> =>
+  await publicReq({
+    method: "GET",
+    url: "/user/billing/",
+  });
 
 /* 获取账户信息 */
 export const getAccountInfo = async (id: string): Promise<AccountI> =>
-  await publicAPi.get(`/user/info/${id}`);
+  await publicReq({
+    method: "GET",
+    url: `/user/info/${id}`,
+  });
 
 /* 获取短信验证码 */
 export const getSmsCode = async (data: SendSmsDataI): Promise<CaptchaI> =>
-  await publicAPi.post("/send-sms/", data);
+  await publicReq(
+    {
+      method: "POST",
+      url: "/send-sms/",
+      data,
+    },
+    false,
+  );
+
+/* 退出登录状态 */
+export const logout = async (): Promise<void> =>
+  await publicReq(
+    {
+      method: "POST",
+      url: "/user/logout/",
+    },
+    false,
+  );
 
 export default {
   loginForm,
@@ -171,4 +234,6 @@ export default {
   updateAccount,
   getCaptcha,
   getSmsCode,
+  getStats,
+  logout,
 };

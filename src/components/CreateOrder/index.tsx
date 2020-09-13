@@ -1,11 +1,11 @@
-import React, { FunctionComponent, ReactElement, useState } from "react";
+import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { Modal, Dropdown, Menu, Button, Input, Form } from "antd";
 import { ModalProps } from "antd/lib/modal";
-import { createOrder } from "_api/order";
-import { OrderI } from "_types/order";
+import { createOrder, getOrderTypes } from "_api/order";
+import { OrderI, OrderTypesE } from "_types/order";
 
 interface CreateOrderPropsI extends ModalProps {
-  customerId: string;
+  ownerId: string;
   onSuccessed?: (order: OrderI) => void;
   onFailed?: () => void;
 }
@@ -20,32 +20,63 @@ const ORDER_TYPE = [
 ];
 
 const CreateOrder: FunctionComponent<CreateOrderPropsI> = (props) => {
-  const { onSuccessed, onFailed, customerId, ...others } = props;
+  const { onSuccessed, onFailed, ownerId, ...others } = props;
 
-  const [selectType, setSelectType] = useState(ORDER_TYPE[0]);
+  const [orderTypes, setOrderTypes] = useState<{ key: OrderTypesE; value: string }[]>([
+    { key: OrderTypesE.DATA_STORAGE, value: "存储" },
+    { key: OrderTypesE.CD_RECORD, value: "刻录光盘" },
+    { key: OrderTypesE.EMR_COPY, value: "病案复印" },
+  ]);
+  const [selectType, setSelectType] = useState<OrderTypesE>(OrderTypesE.DATA_STORAGE);
   const [comment, setComment] = useState("");
   const [confirmLoading, setConfirmLoading] = useState(false);
 
   const CreateOrderMenu = (): ReactElement => (
     <Menu
-      selectedKeys={[selectType.key]}
+      selectedKeys={[selectType || ""]}
       onClick={({ key }): void => {
-        const nextSelectType = ORDER_TYPE.find((item) => item.key === key);
-        nextSelectType && setSelectType(nextSelectType);
+        const nextSelectType = orderTypes.find((item) => item.key === key);
+        nextSelectType && setSelectType(nextSelectType.key);
       }}
     >
-      {ORDER_TYPE.map((item) => (
+      {orderTypes.map((item) => (
         <MenuItem key={item.key}>{item.value}</MenuItem>
       ))}
     </Menu>
   );
+
+  // useEffect(() => {
+  //   getOrderTypes().then(
+  //     (res) => {
+  //       const orderTypes: { key: OrderTypesE; value: string }[] = [];
+  //       res.forEach((item) => {
+  //         switch (item) {
+  //           case OrderTypesE.DATA_STORAGE:
+  //             orderTypes.push({ key: item, value: "储存" });
+  //             break;
+  //           case OrderTypesE.CD_RECORD:
+  //             orderTypes.push({ key: item, value: "刻录光盘" });
+  //             break;
+  //           case OrderTypesE.EMR_COPY:
+  //             orderTypes.push({ key: item, value: "病案复印" });
+  //             break;
+  //           default:
+  //             break;
+  //         }
+  //       });
+
+  //       setOrderTypes(orderTypes);
+  //     },
+  //     (err) => console.error(err),
+  //   );
+  // }, []);
 
   return (
     <Modal
       {...others}
       onOk={(): void => {
         setConfirmLoading(true);
-        createOrder({ customer_id: customerId, order_type: selectType.key, comment })
+        createOrder({ owner_id: ownerId, order_type: selectType || "", comment })
           .then((res) => {
             onSuccessed && onSuccessed(res);
           })
@@ -60,7 +91,7 @@ const CreateOrder: FunctionComponent<CreateOrderPropsI> = (props) => {
       <Form labelCol={{ span: 4 }}>
         <FormItem label="订单类型" name="order_type">
           <Dropdown trigger={["click"]} overlay={CreateOrderMenu}>
-            <Button>{selectType.value}</Button>
+            <Button>{selectType}</Button>
           </Dropdown>
         </FormItem>
         <FormItem label="备注" name="comment">

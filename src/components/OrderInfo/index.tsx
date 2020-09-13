@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
 import { useHistory } from "react-router";
-import { OrderI } from "_types/order";
+import { OrderI, UpdateOrderDataI } from "_types/order";
 import { Descriptions, Input, Form, Button, Space, Tabs, Popconfirm } from "antd";
 import { Store } from "antd/lib/form/interface";
 
@@ -9,6 +9,8 @@ import { WarningOutlined } from "@ant-design/icons";
 
 import "./style.less";
 import Uploader from "_components/Uploader";
+import { RoleE } from "_types/account";
+import { updateOrder } from "_api/order";
 interface OrderInfoPropsI {
   info?: OrderI;
   onChange?: (status: number, info: OrderI) => void;
@@ -29,25 +31,31 @@ const OrderInfo: FunctionComponent<OrderInfoPropsI> = (props) => {
     flag,
     order_number,
     creator_id,
-    customer_id,
+    owner_id,
     created_at,
     charged_at,
     updated_at,
-    customer_first_name,
-    customer_last_name,
+    first_name,
+    last_name,
+    owner_role,
+    business_name,
     creator_username,
     comment,
   } = info;
 
-  const updateOrder = (vals: Store) => {
+  const onFinish = (vals: Store): void => {
     console.log("vals", vals);
+    updateOrder(order_number, vals).then(
+      (res) => console.log("update order", res),
+      (err) => console.error(err),
+    );
   };
 
   return (
     <div className="order-info">
       <Tabs>
         <TabPane key="info" tab="订单信息">
-          <Form initialValues={{ comment }} onFinish={updateOrder}>
+          <Form initialValues={{ comment }} onFinish={onFinish}>
             <Descriptions className="order-info-content" bordered={true}>
               <DescItem label="订单号">{order_number}</DescItem>
               <DescItem label="创建时间">{created_at}</DescItem>
@@ -55,8 +63,12 @@ const OrderInfo: FunctionComponent<OrderInfoPropsI> = (props) => {
               <DescItem label="订单状态">
                 <OrderStatus status={flag}></OrderStatus>
               </DescItem>
-              <DescItem label="关联用户id">{customer_id}</DescItem>
-              <DescItem label="关联用户姓名">{`${customer_first_name}${customer_last_name}`}</DescItem>
+              <DescItem label="关联id">{owner_id}</DescItem>
+              {owner_role === RoleE.BUSINESS ? (
+                <DescItem label="企业用户名">{business_name}</DescItem>
+              ) : (
+                <DescItem label="关联用户姓名">{`${first_name}${last_name}`}</DescItem>
+              )}
               <DescItem label="备注">
                 <FormItem className="order-info-form-item" name="comment">
                   <Input.TextArea></Input.TextArea>
@@ -69,7 +81,12 @@ const OrderInfo: FunctionComponent<OrderInfoPropsI> = (props) => {
                 <FormItem className="order-info-form-item">
                   <Popconfirm
                     title="确认作废订单吗？此操作不可逆"
-                    onConfirm={() => console.log("destory order")}
+                    onConfirm={(): void => {
+                      updateOrder(order_number, { flag: 3 }).then(
+                        (res) => console.log("update flag: ", res),
+                        (err) => console.error(err),
+                      );
+                    }}
                     okText="作废"
                     cancelText="取消"
                     okType="danger"

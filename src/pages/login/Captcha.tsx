@@ -47,7 +47,7 @@ const Captcha: FunctionComponent<CaptchaPropsI> = (props) => {
           if (!captcha) return;
 
           const { value } = e.currentTarget;
-          const isChecked = md5(value) === captcha.code;
+          const isChecked = md5(value.toLowerCase()) === captcha.code;
           setChecked(isChecked ? 1 : -1);
 
           isChecked && onChecked && onChecked(value);

@@ -22,7 +22,7 @@ import React, {
 import { Table, Modal } from "antd";
 import useAccount from "_hooks/useAccount";
 import { AccountI, RoleE } from "_types/account";
-import { getAffiliatedList } from "_api/user";
+import { delAccount, getAffiliatedList } from "_api/user";
 import { ColumnsType } from "antd/es/table";
 import { Key } from "antd/es/table/interface";
 import Account from "_components/Account";
@@ -43,7 +43,7 @@ interface AccountListPropsI {
 const AccountList: FunctionComponent<AccountListPropsI> = (props) => {
   const { viewable = true, filterRole, filterCol, searchPlaceholder } = props;
   const { account } = useAccount();
-  const [list, setList] = useState<AccountI[]>(); // 用户列表
+  const [list, setList] = useState<{ total: number; arr: AccountI[] }>(); // 用户列表
   const [currentAccount, setCurrentAccount] = useState<AccountI>(); // 当前选择的账户
   const [selected, setSelected] = useState<string[]>(); // 批量选择的账户id
   const [pagination, setPagination] = useState({ pageSize: 10, current: 1 }); // 选择的页码
@@ -63,14 +63,16 @@ const AccountList: FunctionComponent<AccountListPropsI> = (props) => {
     const { current, pageSize } = pagination;
 
     getAffiliatedList(id.current, { keyword: searchVal, current, size: pageSize })
-      .then((list) => {
+      .then((res) => {
+        let { results: list } = res;
+
         if (filterRole)
           list = list.filter((item) => {
             const { role } = item;
             return filterRole.indexOf(role) < 0;
           });
 
-        setList(list);
+        setList({ total: res.count, arr: list });
       })
       .catch((err) => console.error(err));
   }, [filterRole, pagination, searchVal]);
@@ -183,12 +185,17 @@ const AccountList: FunctionComponent<AccountListPropsI> = (props) => {
         selectedList={selected}
         searchPlaceholder={searchPlaceholder || "搜索账户名、手机号"}
         onSearch={onSearch}
+        onDel={(ids): void => {
+          delAccount(ids)
+            .then((res) => console.log("del account success", res))
+            .catch((err) => console.error(err));
+        }}
       ></ListControlBar>
       <Table
         loading={!list}
         rowKey="id"
         rowClassName={viewable ? "account-list-row" : ""}
-        dataSource={list}
+        dataSource={list ? list.arr : []}
         columns={columns}
         rowSelection={{ selectedRowKeys: selected, onChange: onSelectChange }}
         onRow={(record) => ({
@@ -200,6 +207,7 @@ const AccountList: FunctionComponent<AccountListPropsI> = (props) => {
           defaultPageSize: 10,
           defaultCurrent: 1,
           ...pagination,
+          total: list ? list.total : 0,
           onChange: onChangePagination,
           onShowSizeChange: onChangePagination,
         }}

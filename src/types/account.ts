@@ -27,6 +27,7 @@ export interface AccountBaseI {
   cell_phone: string; // 手机号
   date_joined: string; // 注册日期
   last_login: string; // 最后登录日期
+  is_active: 0 | 1; // 账户状态 0: 失效 1: 有效
 }
 
 /* 邀请的用户基本信息 */

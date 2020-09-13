@@ -138,7 +138,7 @@ const ManagerSider: FunctionComponent<ManagerSiderPropsI> = (props) => {
     const rules: MatchRuleI[] = [
       { key: RoleE.EMPLOYEE, level: 1, content: [Statistics, CustomerList, OrderList] },
       { key: [RoleE.MANAGER, RoleE.BUSINESS], level: 2, content: [CreateAccount, AccountList] },
-      { key: RoleE.SUPER_ADMIN, level: 3, content: [BusinessAccount, HomeRes, MdEditor, Gallery] },
+      { key: RoleE.SUPER_ADMIN, level: 3, content: [BusinessAccount, HomeRes, MdEditor, Gallery] }, // TODO: 企业用户下没有【账户列表】
     ];
 
     return matchRules(rules, role);

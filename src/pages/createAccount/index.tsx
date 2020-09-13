@@ -73,7 +73,7 @@ const ManagerCreateAccount: FunctionComponent = (props) => {
   return (
     <div className="manager-create-account">
       <Form
-        labelCol={{ span: 4 }}
+        labelCol={{ span: selectedRole === RoleE.BUSINESS ? 8 : 4 }}
         wrapperCol={{ span: 12 }}
         initialValues={{ username: "", password: "", role: RoleE.EMPLOYEE }}
         onFinish={onSubmit}
@@ -93,9 +93,14 @@ const ManagerCreateAccount: FunctionComponent = (props) => {
           <Input></Input>
         </FormItem>
         {selectedRole === RoleE.BUSINESS ? (
-          <FormItem label="企业名称" name="business_name" required>
-            <Input></Input>
-          </FormItem>
+          <>
+            <FormItem label="企业名称" name="business_name" required>
+              <Input></Input>
+            </FormItem>
+            <FormItem label="企业社会信用代码" name="license_no" required>
+              <Input></Input>
+            </FormItem>
+          </>
         ) : (
           <>
             <FormItem label="昵称" name="nickname">

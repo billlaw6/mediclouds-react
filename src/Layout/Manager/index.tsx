@@ -17,17 +17,19 @@ import ManagerCustomerList from "_pages/customerList";
 import BusinessAccountList from "_pages/businessAccountLIst";
 import OrderList from "_pages/orderList";
 import Account from "_pages/account";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import AccountRole from "_components/AccountRole";
 import HomeResource from "_pages/homeResource/HomeResource";
 import MdEditor from "_pages/mdEditor/MdEditor";
 import Gallery from "_pages/gallery/Gallery";
 
 import "./style.less";
+import { logout } from "_api/user";
 
 const { Header, Footer, Content } = Layout;
 
 const ManagerLayout: FunctionComponent = () => {
+  const history = useHistory();
   const account = useSelector<StoreStateI, AccountI>((state) => state.account);
   const { name } = useParams();
 
@@ -72,6 +74,17 @@ const ManagerLayout: FunctionComponent = () => {
                 <Menu>
                   <Menu.Item key="account">
                     <Link to="/manager/account-settings">账户设置</Link>
+                  </Menu.Item>
+                  <Menu.Item
+                    key="logout"
+                    onClick={(): void => {
+                      logout()
+                        .then(() => console.log("logout success"))
+                        .catch((err) => console.error(err))
+                        .finally(() => history.replace("/login"));
+                    }}
+                  >
+                    <span>登出</span>
                   </Menu.Item>
                 </Menu>
               }

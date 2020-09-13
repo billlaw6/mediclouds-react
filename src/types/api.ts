@@ -55,6 +55,12 @@ export interface GetSearchQueryPropsI {
   keyword?: string; // 检查关键字
 }
 
+// 查询返回结构
+export interface SearchQueryResI<T> {
+  count: number; // 总条数
+  results: T[]; // 返回结果的列表
+}
+
 /* ===============  根据Tower文档整理的接口相关的interface =============== */
 // 性别
 export type SexT = 0 | 1 | 2;
