@@ -18,7 +18,14 @@ export interface UploaderCellI {
 }
 
 // 手机登录Data
-export interface LoginPhoneDataI {
+export interface FormLoginDataI {
+  username: string;
+  password: string;
+  captcha: string;
+}
+
+// 手机登录Data
+export interface PhoneLoginDataI {
   cell_phone: string;
   auth_code: string;
   captcha: string;

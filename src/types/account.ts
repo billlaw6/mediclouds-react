@@ -112,3 +112,10 @@ export interface StatsI {
   order: number; // 订单数量
   account: number; // 下属账户数量
 }
+
+/* 账户表单的登录Data */
+export interface AccountFormLoginDataI {
+  username: string;
+  password: string;
+  captcha: string;
+}

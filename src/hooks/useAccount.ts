@@ -7,7 +7,7 @@ import userApi, { loginUser, devFormLogin } from "_api/user";
 import { setToken, clearToken } from "_helper";
 import { useHistory } from "react-router";
 import moment from "antd/node_modules/moment";
-import { LoginPhoneDataI } from "_types/api";
+import { FormLoginDataI, PhoneLoginDataI } from "_types/api";
 
 export default () => {
   const history = useHistory();
@@ -58,23 +58,23 @@ export default () => {
   const wechatLogin = async (params: any): Promise<void> => {
     try {
       const loginRes = await userApi.loginWechat(params);
-      const { token, userInfo } = loginRes;
+      const { token, user_info } = loginRes;
       setToken(token);
-      dispatch({ type: AccountActionTypes.LOGIN_WECHAT, payload: userInfo });
+      dispatch({ type: AccountActionTypes.LOGIN_WECHAT, payload: user_info });
     } catch (error) {
       throw new Error(error);
     }
   };
 
   /* 表单登录 */
-  const formLogin = async (): Promise<void> => {
+  const formLogin = async (data: FormLoginDataI): Promise<void> => {
     try {
-      const loginRes = await userApi.loginForm();
-      const { token, accountInfo } = loginRes;
+      const loginRes = await userApi.loginForm(data);
+      const { token, user_info } = loginRes;
 
       if (token) {
         setToken(token);
-        dispatch({ type: AccountActionTypes.LOGIN_FORM, payload: accountInfo });
+        dispatch({ type: AccountActionTypes.LOGIN_FORM, payload: user_info });
         history.replace("/manager");
       }
     } catch (error) {
@@ -83,13 +83,13 @@ export default () => {
   };
 
   /* 手机号登录 */
-  const phoneLogin = async (data: LoginPhoneDataI): Promise<void> => {
+  const phoneLogin = async (data: PhoneLoginDataI): Promise<void> => {
     try {
       const loginRes = await userApi.loginPhone(data);
-      const { token, accountInfo } = loginRes;
+      const { token, user_info } = loginRes;
       if (token) {
         setToken(token);
-        dispatch({ type: AccountActionTypes.LOGIN_PHONE, payload: accountInfo });
+        dispatch({ type: AccountActionTypes.LOGIN_PHONE, payload: user_info });
         history.replace("/manager");
       }
     } catch (error) {

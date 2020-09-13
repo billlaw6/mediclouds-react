@@ -121,7 +121,7 @@ const Uploader: FunctionComponent<UploaderPropsI> = (props) => {
 
   useEffect(() => {
     const preloadList = uploadList.filter((item) => item.status === UploaderStatusE.PRELOAD);
-    console.log("uploadList", uploadList);
+
     if (preloadList.length) {
       // 如果有未上传的 执行上传
       preloadList.forEach((item) => upload(item));

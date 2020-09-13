@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useState } from "react";
 import { Tabs, Input, Button, Form } from "antd";
-import { LoginPhoneDataI } from "_types/api";
+import { FormLoginDataI, PhoneLoginDataI } from "_types/api";
 import useAccount from "_hooks/useAccount";
 
 import Captcha from "./Captcha";
@@ -27,15 +27,21 @@ const Business: FunctionComponent = () => {
         onFinish={(vals): void => {
           if (!captchaVal) return;
 
-          const { cell_phone, auth_code, captcha: _captcha } = vals as LoginPhoneDataI;
-
           if (loginType === "form") {
-            formLogin().then(
+            const { username, password, captcha: _captcha } = vals as FormLoginDataI;
+
+            formLogin({
+              username,
+              password,
+              captcha: _captcha,
+            }).then(
               () => console.log("form login successed"),
               (err: any) => console.error(err),
             );
           }
           if (loginType === "phone") {
+            const { cell_phone, auth_code, captcha: _captcha } = vals as PhoneLoginDataI;
+
             phoneLogin({ cell_phone, auth_code, captcha: _captcha }).then(
               () => console.log("phone login successed"),
               (err) => console.error(err),

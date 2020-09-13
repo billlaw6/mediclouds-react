@@ -19,11 +19,11 @@ import OrderList from "_pages/orderList";
 import Account from "_pages/account";
 import { Link } from "react-router-dom";
 import AccountRole from "_components/AccountRole";
-
-import "./style.less";
 import HomeResource from "_pages/homeResource/HomeResource";
 import MdEditor from "_pages/mdEditor/MdEditor";
 import Gallery from "_pages/gallery/Gallery";
+
+import "./style.less";
 
 const { Header, Footer, Content } = Layout;
 
@@ -57,6 +57,8 @@ const ManagerLayout: FunctionComponent = () => {
         return <Manager></Manager>;
     }
   };
+
+  console.log("account", account);
 
   return (
     <Layout id="managerLayout" className="manager-layout">

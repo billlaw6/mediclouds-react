@@ -1,13 +1,15 @@
 import { personalApi, publicAPi } from "./index";
-import { AccountI, StatsI, UpdateAccountDataI } from "_types/account";
+import { AccountFormLoginDataI, AccountI, StatsI, UpdateAccountDataI } from "_types/account";
 import { CreateAccountDataI } from "_types/account";
 import {
   ApiFuncI,
   GetSearchQueryPropsI,
   CaptchaI,
-  LoginPhoneDataI,
+  PhoneLoginDataI,
   SendSmsDataI,
+  FormLoginDataI,
 } from "_types/api";
+import { clearToken } from "_helper";
 
 export const wechatLogin: ApiFuncI = async (params: any) =>
   await personalApi.post(`/user/wechat-oauth2-login/`, params);
@@ -30,9 +32,10 @@ export const loginUser = async (params: any): Promise<{ key: string }> => {
 };
 
 /* 用户表单登录 */
-export const loginForm: ApiFuncI = async () => await publicAPi.post("/user/login-form/");
+export const loginForm: ApiFuncI = async (data: FormLoginDataI) =>
+  await publicAPi.post("/user/login-form/", data);
 /* 用户手机号登录 */
-export const loginPhone: ApiFuncI = async (data: LoginPhoneDataI) =>
+export const loginPhone: ApiFuncI = async (data: PhoneLoginDataI) =>
   await publicAPi.post("/user/login-phone/", data);
 
 /* 获取用户列表 */
@@ -137,7 +140,22 @@ export const updateAccount = async (id: string, data: UpdateAccountDataI): Promi
   await publicAPi.post(`/user/update/${id}`, data);
 
 /* 获取captcha验证码 */
-export const getCaptcha = async (): Promise<CaptchaI> => await publicAPi.get("/captcha/");
+export const getCaptcha = async (): Promise<CaptchaI> => {
+  clearToken();
+
+  return await publicAPi.get("/captcha/");
+};
+
+/* 删除账户 */
+export const delAccount = async (id: string[]): Promise<string[]> =>
+  await publicAPi.post("/user/del/", { id });
+
+/* 获取账单 */
+export const getBilling = async (): Promise<any> => await publicAPi.get("/user/billing/");
+
+/* 获取账户信息 */
+export const getAccountInfo = async (id: string): Promise<AccountI> =>
+  await publicAPi.get(`/user/info/${id}`);
 
 /* 获取短信验证码 */
 export const getSmsCode = async (data: SendSmsDataI): Promise<CaptchaI> =>
@@ -152,4 +170,5 @@ export default {
   createAccount,
   updateAccount,
   getCaptcha,
+  getSmsCode,
 };

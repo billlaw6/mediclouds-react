@@ -18,3 +18,6 @@ export const uploadResources = async (
     onUploadProgress,
   });
 };
+
+/* 获取dicom资源列表 */
+export const getDicomList = () => publicAPi.get("/resources/dicom-list");
