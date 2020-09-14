@@ -22,16 +22,16 @@ import AccountRole from "_components/AccountRole";
 import HomeResource from "_pages/homeResource/HomeResource";
 import MdEditor from "_pages/mdEditor/MdEditor";
 import Gallery from "_pages/gallery/Gallery";
+import useAccount from "_hooks/useAccount";
 
 import "./style.less";
-import { logout } from "_api/user";
 
 const { Header, Footer, Content } = Layout;
 
 const ManagerLayout: FunctionComponent = () => {
   const history = useHistory();
-  const account = useSelector<StoreStateI, AccountI>((state) => state.account);
-  const { name } = useParams();
+  const { account, logout } = useAccount();
+  const { name } = useParams<{ name: string }>();
 
   const { role, first_name, last_name, business_name, certificate } = account;
 
@@ -79,9 +79,8 @@ const ManagerLayout: FunctionComponent = () => {
                     key="logout"
                     onClick={(): void => {
                       logout()
-                        .then(() => console.log("logout success"))
-                        .catch((err) => console.error(err))
-                        .finally(() => history.replace("/login"));
+                        .then((): void => console.log("logout successed"))
+                        .catch((err) => console.log(err));
                     }}
                   >
                     <span>登出</span>

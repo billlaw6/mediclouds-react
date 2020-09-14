@@ -100,6 +100,15 @@ const customResErr = (error: any) => {
 
   console.log("res err", error);
   console.log("res err", response);
+
+  switch (status) {
+    case 401:
+      window.location.replace(`${window.location.origin}/login`);
+      break;
+    default:
+      throw new Error(error);
+  }
+
   // switch(status) {
   //   case 401:
   //     window.location.

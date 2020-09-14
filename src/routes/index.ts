@@ -104,11 +104,11 @@ const routes: RoutesI[] = [
     component: Manager,
     layout: ManagerLayout,
     permission: [
-      // AccountStatusE.LOGIN,
-      // AccountTypeE.SUPER_ADMIN,
-      // AccountTypeE.BUSINESS,
-      // AccountTypeE.MANAGER,
-      // AccountTypeE.EMPLOYEE,
+      AccountStatusE.LOGIN,
+      RoleE.SUPER_ADMIN,
+      RoleE.BUSINESS,
+      RoleE.MANAGER,
+      RoleE.EMPLOYEE,
     ],
   },
   {

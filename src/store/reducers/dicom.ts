@@ -9,10 +9,14 @@ const examIndexListReducer = (
   action: ReturnType<typeof setExamIndexListAction>,
 ): ExamIndexI[] => {
   if (!action) return state;
-  switch (action.type) {
+
+  const { type, payload } = action;
+
+  switch (type) {
     // 全部CASE必须返回STATE类型的数据，以替换原来的STATE。actions文件中已经指定了payload的类型。
     case types.SET_EXAM_INDEX_LIST:
-      return action.payload;
+      if (payload) return payload;
+      else return state;
     default: {
       return state;
     }

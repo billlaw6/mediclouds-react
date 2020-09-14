@@ -4,14 +4,13 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 // import { AppContainer } from "react-hot-loader";
 import { ConnectedRouter } from "connected-react-router";
-import configureStore, { history } from "./store/configureStore";
+import configureStore from "./store/configureStore";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { IntlProvider } from "react-intl";
 import zh_CN from "./locales/zh_CN";
 import en_US from "./locales/en_US";
-import { persistStore } from "redux-persist";
-import { PersistGate } from "redux-persist/es/integration/react";
+import { PersistGate } from "redux-persist/integration/react";
 import wechatQrcode from "_images/wechat-qrcode.jpg";
 
 /* 
@@ -69,25 +68,25 @@ const MobileHome: FunctionComponent = () => (
 
 const ignoreArr: string[] = [];
 // const ignoreArr = ["affiliate", "player"];
-const { pathname } = history.location;
+const { pathname } = window.location;
 const showMobilePage = ignoreArr.every((item) => pathname.indexOf(item) < 0);
 
 ReactDOM.render(
   IS_MOBILE && showMobilePage ? (
     <MobileHome />
   ) : (
-    <Provider store={store}>
+    <Provider store={store.store}>
       {/* place ConnectedRouter under Provider */}
-      <ConnectedRouter history={history}>
-        {/* your usual react-router v4/v5 routing */}
-        <IntlProvider locale="zh" messages={messages["zh"]}>
-          {/* <PersistGate loading={<Loading />} persistor={persistor}> */}
+      {/* <ConnectedRouter history={history}> */}
+      {/* your usual react-router v4/v5 routing */}
+      <IntlProvider locale="zh" messages={messages["zh"]}>
+        <PersistGate loading={null} persistor={store.persistor}>
           <ConfigProvider locale={locale}>
             <App />
           </ConfigProvider>
-          {/* </PersistGate> */}
-        </IntlProvider>
-      </ConnectedRouter>
+        </PersistGate>
+      </IntlProvider>
+      {/* </ConnectedRouter> */}
     </Provider>
   ),
   document.getElementById("root"),

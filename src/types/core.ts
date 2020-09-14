@@ -1,6 +1,7 @@
 import { SortTypeEnum, ViewTypeEnum } from "_pages/resources/type";
 import { CollectionI, SexT, ExamIndexI } from "_types/api";
 import { AccountI, CustomerI } from "_types/account";
+import { Action, AnyAction, Reducer } from "redux";
 
 // Store相关接口
 // 本地变量遵循js规范使用驼峰式全名，需要与后台数据库字段对应的变量使用下划线风格。
@@ -165,7 +166,7 @@ export declare interface Document {
   msExitFullscreen: () => void;
 }
 
-export declare interface ActionI<T, K> {
+export interface ActionI<T, P> extends AnyAction {
   type: T;
-  payload: K;
+  payload?: P;
 }

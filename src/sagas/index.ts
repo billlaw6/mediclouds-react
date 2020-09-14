@@ -50,16 +50,16 @@ function* getExamIndexEffect(action: ReturnType<typeof getExamIndexListAction>) 
   }
 }
 
-function* deleteExamIndexEffect(action: ReturnType<typeof deleteExamIndexListAction>) {
-  try {
-    const res = yield call(deleteExamIndex, action.payload);
-    // 删除操作后用默认条件再获取一次结果，页面中暂未设定查询条件
-    const defaultExamIndexSearchForm = {};
-    yield put({ type: types.GET_EXAM_INDEX_LIST, payload: defaultExamIndexSearchForm });
-  } catch (error) {
-    console.log(error.response);
-  }
-}
+// function* deleteExamIndexEffect(action: ReturnType<typeof deleteExamIndexListAction>) {
+//   try {
+//     const res = yield call(deleteExamIndex, action.payload);
+//     // 删除操作后用默认条件再获取一次结果，页面中暂未设定查询条件
+//     const defaultExamIndexSearchForm = {};
+//     yield put({ type: types.GET_EXAM_INDEX_LIST, payload: defaultExamIndexSearchForm });
+//   } catch (error) {
+//     console.log(error.response);
+//   }
+// }
 
 // function* formLoginE(action: ReturnType<typeof submitLoginFormAction>) {
 //   try {
@@ -101,7 +101,7 @@ function* rootSaga() {
   yield takeEvery(types.UPDATE_USER, updateUserEffect);
   yield takeEvery(types.LOGOUT_USER, logoutUserEffect);
   yield takeEvery(types.GET_EXAM_INDEX_LIST, getExamIndexEffect);
-  yield takeEvery(types.DELETE_EXAM_INDEX_LIST, deleteExamIndexEffect);
+  // yield takeEvery(types.DELETE_EXAM_INDEX_LIST, deleteExamIndexEffect);
 }
 
 export default rootSaga;

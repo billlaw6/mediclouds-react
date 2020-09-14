@@ -1,36 +1,14 @@
 import { ReducerI } from "_types/reducer";
 import { AccountActionTypes } from "_types/actions";
 import { AccountI, RoleE, UserI } from "_types/account";
-// import { generateAccount } from "../../mock";
+import { Reducer } from "redux";
+import { ActionI } from "_types/core";
 
-// const _ACCOUNT: AccountI =
-//   process.env.NODE_ENV === "development"
-//     ? generateAccount()
-//     : {
-//         id: "",
-//         username: "",
-//         nickname: "",
-//         cell_phone: "",
-//         sex: 0,
-//         age: "",
-//         avatar: "",
-//         certificate: [],
-//         role: RoleE.EMPLOYEE,
-//         first_name: "",
-//         last_name: "",
-//         sign: "",
-//         business_name: "",
-//         birthday: "",
-//         pay_qrcode: "",
-//         register_qrcode: "",
-//         unit: "",
-//         recommended_users: [],
-//         superior_id: "",
-//         date_joined: "",
-//         last_login: "",
-//       };
+interface AccountStateI extends AccountI {
+  login: boolean;
+}
 
-const _ACCOUNT: AccountI = {
+const DEFAULT_ACCOUNT: AccountStateI = {
   id: "",
   username: "",
   nickname: "",
@@ -53,14 +31,10 @@ const _ACCOUNT: AccountI = {
   date_joined: "",
   last_login: "",
   is_active: 0,
+  login: false,
 };
 
-const DEFAULT_ACCOUNT: AccountI & { login: boolean } = Object.assign({}, _ACCOUNT, {
-  login: false,
-  role: RoleE.EMPLOYEE,
-});
-
-const accountReducer: ReducerI<AccountI & { login: boolean }, AccountActionTypes, AccountI> = (
+const accountReducer: Reducer<AccountStateI, ActionI<AccountActionTypes, AccountI>> = (
   state = DEFAULT_ACCOUNT,
   action,
 ) => {
@@ -69,7 +43,7 @@ const accountReducer: ReducerI<AccountI & { login: boolean }, AccountActionTypes
   switch (type) {
     case AccountActionTypes.LOGIN_FORM:
     case AccountActionTypes.LOGIN_PHONE:
-      return { login: true, ...payload };
+      return Object.assign({}, state, payload, { login: true });
 
     case AccountActionTypes.UPDATE_INFO:
       return Object.assign({}, state, payload);

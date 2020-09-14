@@ -3,11 +3,12 @@ import { StoreStateI } from "_types/core";
 import { CustomerI, UpdateAccountDataI } from "_types/account";
 import { AccountI } from "_types/account";
 import { AccountActionTypes } from "_types/actions";
-import userApi, { loginUser, devFormLogin } from "_api/user";
+import userApi, { loginUser, devFormLogin, logout } from "_api/user";
 import { setToken, clearToken } from "_helper";
 import { useHistory } from "react-router";
 import moment from "antd/node_modules/moment";
 import { FormLoginDataI, PhoneLoginDataI } from "_types/api";
+import { store } from "../index";
 
 export default () => {
   const history = useHistory();
@@ -30,7 +31,6 @@ export default () => {
       const { key } = loginRes;
 
       setToken(key);
-      console.log("loginRes", loginRes);
       dispatch({ type: AccountActionTypes.LOGIN_FORM, payload: {} });
 
       history.replace("/resources");
@@ -102,10 +102,21 @@ export default () => {
     if (data.birthday) {
       data.birthday = moment(data.birthday).format("YYYY-MM-DD");
     }
-    console.log("data", data);
+
     try {
       const updateRes = await userApi.updateAccount(id, data);
       dispatch({ type: AccountActionTypes.UPDATE_INFO, payload: updateRes });
+    } catch (error) {
+      throw new Error(error);
+    }
+  };
+
+  const logout = async (): Promise<void> => {
+    try {
+      await userApi.logout();
+      clearToken();
+      await store.persistor.purge();
+      history.push("/");
     } catch (error) {
       throw new Error(error);
     }
@@ -119,5 +130,6 @@ export default () => {
     user,
     account,
     devFormLogin: _devFormLogin,
+    logout,
   };
 };

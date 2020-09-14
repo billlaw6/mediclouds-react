@@ -44,9 +44,8 @@ export const setViewModeAction: SetViewModeActionFuncI = (mode) => ({
 });
 
 // 改变dicom list 排序
-export type SetViewSortByActionT = ActionI<string, SortTypeEnum>;
 export interface SetViewSortByActionFuncI {
-  (mode: SortTypeEnum): SetViewSortByActionT;
+  (mode: SortTypeEnum): ActionI<string, SortTypeEnum>;
 }
 export const SetViewSortByAction: SetViewSortByActionFuncI = (sortBy) => ({
   type: types.SET_VIEW_SORY_BY,

@@ -1,9 +1,14 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { CustomerI, RoleE } from "_types/account";
-import { ReducerI } from "_types/reducer";
 import { AccountActionTypes } from "_types/actions";
+import { Reducer } from "redux";
+import { ActionI } from "_types/core";
 
-const DEFAULT_USER: CustomerI & { login: boolean } = {
+interface CustomerStateI extends CustomerI {
+  login: boolean;
+}
+
+const DEFAULT_USER: CustomerStateI = {
   id: "",
   username: "",
   nickname: "",
@@ -30,7 +35,7 @@ const DEFAULT_USER: CustomerI & { login: boolean } = {
   is_active: 0,
 };
 
-const userReducer: ReducerI<CustomerI & { login: boolean }, AccountActionTypes, CustomerI> = (
+const userReducer: Reducer<CustomerStateI, ActionI<AccountActionTypes, CustomerI>> = (
   state = DEFAULT_USER,
   action,
 ) => {

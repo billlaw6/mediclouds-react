@@ -1,9 +1,23 @@
 import { personalApi } from "_axios";
 import { ReactNode } from "react";
-import { isArray } from "util";
 import { GetSearchQueryPropsI } from "_types/api";
+import CryptoJS from "crypto-js";
 
+export const isArray = (arr: any): boolean => Array.isArray(arr);
 export const isIE = (): boolean => navigator.userAgent.indexOf("MSIE") > -1;
+
+/* 加密 */
+export const encrypt = (val: any, secret = "FreMaNgo_&_Mediclouds"): string => {
+  return CryptoJS.AES.encrypt(JSON.stringify(val), secret).toString();
+};
+
+/* 解密 */
+export const decrypt = (str: string, secret = "FreMaNgo_&_Mediclouds"): any => {
+  const bytes = CryptoJS.AES.decrypt(str, secret);
+  const decrypted = bytes.toString(CryptoJS.enc.Utf8);
+  const res = JSON.parse(decrypted);
+  return res;
+};
 
 /**
  * @description 检查dicom解析进度并返回剩余解析量
@@ -64,13 +78,17 @@ export const clearToken = (): void => {
  */
 export const setToken = (token: string): void => {
   if (!token) return;
-  window.localStorage.setItem("token", `Token ${token}`);
+  window.localStorage.setItem("token", encrypt(`Token ${token}`, "FreMaNgo_^_T"));
 };
 
 /**
  * 获取token
  */
-export const getToken = (): string => window.localStorage.getItem("token") || "";
+export const getToken = (): string => {
+  const tokenStr = window.localStorage.getItem("token") || "";
+  if (!tokenStr) return "";
+  return decrypt(tokenStr, "FreMaNgo_^_T");
+};
 
 /**
  *  获取查询条件拼接字符串
@@ -146,9 +164,11 @@ export const matchRules: MatchRuleFunI = (rules, key) => {
   _rules.forEach((item) => {
     contentArr.push(item.content);
     if (isArray(item.key)) {
-      item.key.forEach((keyItem) => res.push({ key: keyItem, content: [...contentArr] }));
+      (item.key as string[]).forEach((keyItem) =>
+        res.push({ key: keyItem, content: [...contentArr] }),
+      );
     } else {
-      res.push({ key: item.key, content: [...contentArr] });
+      res.push({ key: item.key as string, content: [...contentArr] });
     }
   });
 
