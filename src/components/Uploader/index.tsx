@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState, useEffect, useCallback, ReactNode } from "react";
-import { Upload, Space } from "antd";
+import { Space } from "antd";
 import { useDropzone } from "react-dropzone";
 import { UploadOutlined } from "@ant-design/icons";
 
@@ -10,6 +10,7 @@ import FileProgress from "_components/FileProgress/FileProgress";
 import "./style.less";
 
 interface UploaderPropsI {
+  customerId?: string;
   directory?: boolean;
   accept?: string;
   onChange?: (fileProgressCmp: ReactNode) => void; // 当上传列表改变时触发
@@ -29,7 +30,7 @@ const createUploadCell = (id: number, fileList: File[]): UploaderCellI => {
 };
 
 const Uploader: FunctionComponent<UploaderPropsI> = (props) => {
-  const { directory, accept, onChange } = props;
+  const { directory, accept, onChange, customerId } = props;
   const [uploadList, setUploadList] = useState<UploaderCellI[]>([]); // 上传队列
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -85,39 +86,36 @@ const Uploader: FunctionComponent<UploaderPropsI> = (props) => {
    *
    * @param {UploaderCellI} cell
    */
-  const upload = useCallback(
-    (cell: UploaderCellI): void => {
-      const { files, id } = cell;
-      const formData = new FormData();
+  const upload = useCallback((cell: UploaderCellI): void => {
+    const { files, id } = cell;
+    const formData = new FormData();
 
-      files.forEach((file) => {
-        formData.append("file", file);
+    files.forEach((file) => {
+      formData.append("file", file);
+    });
+
+    updateCell(id, { status: UploaderStatusE.UPLOADING });
+
+    uploadResources(customerId || "", formData, (progressEvent: ProgressEvent) => {
+      const { total, loaded } = progressEvent;
+
+      updateCell(id, {
+        progress: (loaded / total) * 100,
       });
-
-      updateCell(id, { status: UploaderStatusE.UPLOADING });
-
-      uploadResources(formData, (progressEvent: ProgressEvent) => {
-        const { total, loaded } = progressEvent;
-
+    })
+      .then(() => {
         updateCell(id, {
-          progress: (loaded / total) * 100,
+          progress: 100,
+          status: UploaderStatusE.SUCCESS,
         });
       })
-        .then(() => {
-          updateCell(id, {
-            progress: 100,
-            status: UploaderStatusE.SUCCESS,
-          });
-        })
-        .catch((err) => {
-          console.error(err);
-          updateCell(id, {
-            status: UploaderStatusE.FAIL,
-          });
+      .catch((err) => {
+        console.error(err);
+        updateCell(id, {
+          status: UploaderStatusE.FAIL,
         });
-    },
-    [updateCell],
-  );
+      });
+  }, []);
 
   useEffect(() => {
     const preloadList = uploadList.filter((item) => item.status === UploaderStatusE.PRELOAD);

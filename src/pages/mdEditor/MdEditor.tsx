@@ -27,7 +27,11 @@ const MdEditor: FunctionComponent = () => {
 
   const parseMd = (err: string | undefined, res: string): void => {
     if (err) throw new Error(err);
-    if ($preview.current && $preview.current.contentDocument) {
+    if (
+      $preview.current &&
+      $preview.current.contentDocument &&
+      $preview.current.contentDocument.body
+    ) {
       const parseBody = domParser.parseFromString(res, "text/html").body;
       $preview.current.contentDocument.body.innerHTML = parseBody.innerHTML;
     }
@@ -36,8 +40,8 @@ const MdEditor: FunctionComponent = () => {
   useEffect(() => {
     getPrivacyNotice()
       .then((res) => {
-        setCurrent(res.data);
-        marked(res.data.content, parseMd);
+        setCurrent(res);
+        marked(res.content, parseMd);
       })
       .catch((err) => console.error(err));
   }, []);

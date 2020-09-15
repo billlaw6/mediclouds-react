@@ -19,7 +19,6 @@ const EditPanel: FunctionComponent<EditPanelPropsI> = (props) => {
   const { show, type } = status;
   const [preData, setPreData] = useState<HomeResI>({});
 
-  console.log("data", data);
   const isEdit = type === "edit";
 
   const getVal = (key: string): any => {

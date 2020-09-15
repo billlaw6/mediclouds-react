@@ -8,13 +8,17 @@ import { publicReq } from "_axios";
  * @returns {Promise<void>}
  */
 export const uploadResources = async (
+  id: string,
   data: FormData,
   onUploadProgress?: (progressEvent: ProgressEvent) => void,
 ): Promise<void> => {
   await publicReq({
     method: "POST",
     url: "/resources/upload/",
-    data,
+    data: {
+      user_id: id,
+      resource: data,
+    },
     headers: {
       "Content-Type": "multipart/form-data",
     },

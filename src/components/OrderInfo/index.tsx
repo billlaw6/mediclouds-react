@@ -146,7 +146,7 @@ const OrderInfo: FunctionComponent<OrderInfoPropsI> = (props) => {
           </Form>
         </TabPane>
         <TabPane disabled={flag !== 1} key="uploader" tab="上传检查资料">
-          {flag !== 1 ? null : <Uploader directory={true}></Uploader>}
+          {flag !== 1 ? null : <Uploader directory={true} customerId={owner_id}></Uploader>}
         </TabPane>
       </Tabs>
     </div>

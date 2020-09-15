@@ -1,13 +1,14 @@
 /* eslint-disable react/display-name */
 /* eslint-disable @typescript-eslint/camelcase */
-import React, { FunctionComponent, useEffect, useState, ReactElement } from "react";
+import React, { FunctionComponent, useEffect, useState, ReactElement, useCallback } from "react";
 import { Table, Button, Popconfirm } from "antd";
 
-import "./HomeResource.less";
 import EditPanel from "./EditPanel/EditPanel";
 import { HomeResI } from "./type";
 import { delHomeResList, getHomeResList } from "_api/manager";
 import { cancel } from "redux-saga/effects";
+
+import "./HomeResource.less";
 
 const columns = [
   { key: "id", title: "id", dataIndex: "id" },
@@ -39,8 +40,10 @@ const HomeResource: FunctionComponent = () => {
   });
   const [checked, setChecked] = useState<string[]>([]);
 
-  const handleRes = (data: HomeResI[]) => {
-    return data.map((item) => {
+  const handleRes = () => {
+    if (!res) return;
+
+    return [...res].map((item) => {
       return Object.assign({}, item, {
         edit: (
           <Button
@@ -54,12 +57,6 @@ const HomeResource: FunctionComponent = () => {
         ),
       });
     });
-  };
-
-  const init = async () => {
-    // 先拉取homeres数据
-    const _resListRes = await getHomeResList();
-    setRes(_resListRes.data);
   };
 
   const del = () => {
@@ -77,13 +74,9 @@ const HomeResource: FunctionComponent = () => {
   };
 
   useEffect(() => {
-    init()
-      .then(() => {
-        console.log("===> successed <===");
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    getHomeResList()
+      .then((res) => setRes(res))
+      .catch((err) => console.log(err));
   }, []);
 
   return (
@@ -114,11 +107,17 @@ const HomeResource: FunctionComponent = () => {
         status={editStatus}
         onCancel={() => setEditStatus(Object.assign({}, editStatus, { show: false }))}
         onOk={() => {
-          init()
-            .then(() => {
+          getHomeResList()
+            .then((res) => {
+              setRes(res);
               setEditStatus(Object.assign({}, editStatus, { show: false }));
             })
-            .then((err) => console.error(err));
+            .catch((err) => console.log(err));
+          // init()
+          //   .then(() => {
+          //
+          //   })
+          //   .then((err) => console.error(err));
         }}
       ></EditPanel>
       <Table
@@ -130,7 +129,7 @@ const HomeResource: FunctionComponent = () => {
         }}
         rowKey="id"
         className="home-res-table"
-        dataSource={handleRes(res)}
+        dataSource={handleRes()}
         columns={columns}
       ></Table>
     </div>
