@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import React, { FunctionComponent, useState, useEffect } from "react";
 import { Modal, Button, Checkbox } from "antd";
-import { getPrivacyNotice, agreePrivacyNotice } from "_api/user";
-
-import "./PrivacyNotice.less";
-import { PrivacyNoticePropsI } from "./type";
-import { setUserAction } from "_actions/user";
 import { useDispatch } from "react-redux";
+import { getPrivacyNotice, agreePrivacyNotice } from "_api/user";
+import { setUserAction } from "_actions/user";
+
+import { PrivacyNoticePropsI } from "./type";
+import "./PrivacyNotice.less";
 
 const PrivacyNotice: FunctionComponent<PrivacyNoticePropsI> = (props) => {
   const { user, onChecked } = props;
@@ -24,7 +24,7 @@ const PrivacyNotice: FunctionComponent<PrivacyNoticePropsI> = (props) => {
   useEffect(() => {
     getPrivacyNotice()
       .then((result) => {
-        const { id, content } = result.data;
+        const { id, content } = result;
         if (id) setPrivacyNotice(id);
         // 在useEffect外才能看见结果
         // console.log(privacyNotice);

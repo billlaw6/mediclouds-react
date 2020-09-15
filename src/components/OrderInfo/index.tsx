@@ -1,7 +1,7 @@
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useState } from "react";
 import { useHistory } from "react-router";
 import { OrderI, UpdateOrderDataI } from "_types/order";
-import { Descriptions, Input, Form, Button, Space, Tabs, Popconfirm } from "antd";
+import { Descriptions, Input, Form, Button, Space, Tabs, Popconfirm, Menu, Select } from "antd";
 import { Store } from "antd/lib/form/interface";
 
 import OrderStatus from "_components/OrderStatus";
@@ -11,6 +11,7 @@ import "./style.less";
 import Uploader from "_components/Uploader";
 import { RoleE } from "_types/account";
 import { updateOrder } from "_api/order";
+import UserStats from "_pages/dashboard/components/UserStats";
 interface OrderInfoPropsI {
   info?: OrderI;
   onChange?: (status: number, info: OrderI) => void;
@@ -23,6 +24,7 @@ const { TabPane } = Tabs;
 const OrderInfo: FunctionComponent<OrderInfoPropsI> = (props) => {
   const history = useHistory();
   const { info, onChange } = props;
+  const [preData, setPreData] = useState<{ flag: 0 | 1 | 2 | 3 | 4; comment: string }>();
 
   if (!info) return null;
 
@@ -51,17 +53,38 @@ const OrderInfo: FunctionComponent<OrderInfoPropsI> = (props) => {
     );
   };
 
+  console.log("flag", flag);
+
   return (
     <div className="order-info">
       <Tabs>
         <TabPane key="info" tab="订单信息">
-          <Form initialValues={{ comment }} onFinish={onFinish}>
+          <Form
+            initialValues={{ comment, flag }}
+            onValuesChange={(val): void => setPreData(Object.assign({}, preData, val))}
+          >
             <Descriptions className="order-info-content" bordered={true}>
               <DescItem label="订单号">{order_number}</DescItem>
               <DescItem label="创建时间">{created_at}</DescItem>
               <DescItem label="创建者">{creator_username}</DescItem>
               <DescItem label="订单状态">
-                <OrderStatus status={flag}></OrderStatus>
+                <FormItem name="flag">
+                  {flag > 2 ? (
+                    <OrderStatus status={flag}></OrderStatus>
+                  ) : (
+                    <Select>
+                      <Select.Option value={0} disabled={flag > 0}>
+                        <OrderStatus status={0}></OrderStatus>
+                      </Select.Option>
+                      <Select.Option value={1} disabled={flag > 1}>
+                        <OrderStatus status={1}></OrderStatus>
+                      </Select.Option>
+                      <Select.Option value={2} disabled={flag > 2}>
+                        <OrderStatus status={2}></OrderStatus>
+                      </Select.Option>
+                    </Select>
+                  )}
+                </FormItem>
               </DescItem>
               <DescItem label="关联id">{owner_id}</DescItem>
               {owner_role === RoleE.BUSINESS ? (
@@ -98,9 +121,25 @@ const OrderInfo: FunctionComponent<OrderInfoPropsI> = (props) => {
                   </Popconfirm>
                 </FormItem>
                 <FormItem className="order-info-form-item">
-                  <Button type="primary" htmlType="submit">
-                    更新订单信息
-                  </Button>
+                  <Popconfirm
+                    title="确认更新订单吗？此操作不可逆"
+                    disabled={!preData}
+                    onConfirm={(): void => {
+                      if (!preData) return;
+
+                      updateOrder(order_number, preData)
+                        .then(() => console.log("successed"))
+                        .catch((err) => console.error(err));
+                    }}
+                    okText="更新"
+                    cancelText="取消"
+                    okType="primary"
+                    icon={<WarningOutlined />}
+                  >
+                    <Button type="primary" htmlType="submit">
+                      更新订单信息
+                    </Button>
+                  </Popconfirm>
                 </FormItem>
               </Space>
             </div>

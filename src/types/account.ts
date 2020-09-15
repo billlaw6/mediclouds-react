@@ -88,6 +88,7 @@ export interface CreateAccountDataI {
 
 /* 更新账户Data */
 export interface UpdateAccountDataI {
+  [key: string]: any;
   username?: string;
   password?: string;
   cell_phone?: string;

@@ -2,7 +2,6 @@ import React, { Component, ReactElement, ReactNode } from "react";
 import { Switch, Route, BrowserRouter as Router } from "react-router-dom";
 import { RoutesI } from "_types/router";
 import routes from "./routes";
-import { history } from "./store/configureStore";
 
 import DefaultLayout from "_layout/Default/Default";
 // import RouteWithSubRoutes from "_components/RouteWithSubRoutes";

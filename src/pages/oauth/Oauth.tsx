@@ -5,11 +5,11 @@ import { connect } from "react-redux";
 import { StoreStateI } from "_types/core";
 import { setTokenAction, setUserAction } from "_actions/user";
 import { wechatLogin } from "_api/user";
-import { history } from "../../store/configureStore";
+import { withRouter } from "react-router";
 
 class Oauth extends React.Component<any, any> {
   componentDidMount() {
-    const { setToken, setUser } = this.props;
+    const { setToken, setUser, history } = this.props;
     const query = this.props.router.location.search.substr(1);
     // console.log(query);
     const obj = qs.parse(query);
@@ -49,11 +49,11 @@ class Oauth extends React.Component<any, any> {
 
 const mapStateToProps = (state: StoreStateI) => {
   return {
-    router: state.router,
+    // router: state.router,
   };
 };
 const mapDispatchToProps = {
   setToken: setTokenAction,
   setUser: setUserAction,
 };
-export default connect(mapStateToProps, mapDispatchToProps)(Oauth);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Oauth));

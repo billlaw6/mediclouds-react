@@ -3,7 +3,7 @@ import { StoreStateI } from "_types/core";
 import { CustomerI, UpdateAccountDataI } from "_types/account";
 import { AccountI } from "_types/account";
 import { AccountActionTypes } from "_types/actions";
-import userApi, { loginUser, devFormLogin, logout } from "_api/user";
+import userApi from "_api/user";
 import { setToken, clearToken } from "_helper";
 import { useHistory } from "react-router";
 import moment from "antd/node_modules/moment";
@@ -16,28 +16,29 @@ export default () => {
   const user = useSelector<StoreStateI, CustomerI>((state) => state.user);
   const account = useSelector<StoreStateI, AccountI & { login: boolean }>((state) => state.account);
 
-  /* 开发表单登录 */
-  const _devFormLogin = async ({
-    username,
-    password,
-  }: {
-    username: string;
-    password: string;
-  }): Promise<void> => {
-    try {
-      clearToken();
+  // /* 开发表单登录 */
+  // const _devFormLogin = async ({
+  //   username,
+  //   password,
+  // }: {
+  //   username: string;
+  //   password: string;
+  // }): Promise<void> => {
+  //   try {
+  //     clearToken();
 
-      const loginRes = await devFormLogin({ username, password });
-      const { key } = loginRes;
+  //     const loginRes = await devFormLogin({ username, password });
+  //     console.log("dev form login", loginRes);
+  //     const { key } = loginRes;
 
-      setToken(key);
-      dispatch({ type: AccountActionTypes.LOGIN_FORM, payload: {} });
+  //     // setToken(key);
+  //     // dispatch({ type: AccountActionTypes.LOGIN_FORM, payload: {} });
 
-      history.replace("/resources");
-    } catch (error) {
-      throw new Error(error);
-    }
-  };
+  //     // history.replace("/resources");
+  //   } catch (error) {
+  //     throw new Error(error);
+  //   }
+  // };
   // /* 顾客表单登录 */
   // const customerFormLogin = async ({
   //   username,
@@ -104,7 +105,12 @@ export default () => {
     }
 
     try {
-      const updateRes = await userApi.updateAccount(id, data);
+      const formData = new FormData();
+      for (const key in data) {
+        formData.append(key, data[key]);
+      }
+
+      const updateRes = await userApi.updateAccount(id, formData);
       dispatch({ type: AccountActionTypes.UPDATE_INFO, payload: updateRes });
     } catch (error) {
       throw new Error(error);
@@ -129,7 +135,7 @@ export default () => {
     updateAccount,
     user,
     account,
-    devFormLogin: _devFormLogin,
+    // devFormLogin: _devFormLogin,
     logout,
   };
 };

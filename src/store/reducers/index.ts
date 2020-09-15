@@ -3,7 +3,8 @@ import { combineReducers } from "redux";
 // import { connectRouter } from "connected-react-router";
 import user from "./user";
 import account from "./account";
-import { examIndexListReducer } from "./dicom";
+// import { examIndexListReducer } from "./dicom";
+import resources from "./resources";
 import dicomSettings from "./dicomSettings";
 
 // 每个reducer必须都返回state类型的数据！
@@ -25,7 +26,8 @@ export default combineReducers({
   // router: connectRouter(history),
   // token: tokenReducer,
   user,
-  examIndexList: examIndexListReducer,
+  // examIndexList: examIndexListReducer,
+  resources,
   dicomSettings,
   account,
 });

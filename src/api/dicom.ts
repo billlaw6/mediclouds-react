@@ -1,63 +1,84 @@
-import { personalApi } from ".";
+import { personalReq } from ".";
 import { GalleryI, GalleryStatsI } from "_types/api";
+import { ExamIndexListI } from "_types/core";
 
-export const getExamIndex = async (params: any) => {
-  const res = await personalApi.get(`/dicom/exam-index/`, { params: params });
+export const getExamIndex = async (params?: any): Promise<ExamIndexListI[]> => {
+  const res = await personalReq({
+    method: "GET",
+    url: "/dicom/exam-index/",
+    params,
+  });
+
+  console.log("get exam", res);
+
   return res;
 };
 
-export const deleteExamIndex = async (params: string[]) => {
-  const res = await personalApi.post(`/dicom/exam-index/del/`, { id: params });
-  return res;
-};
+export const deleteExamIndex = async (data: string[]) =>
+  await personalReq({ method: "POST", url: "/dicom/exam-index/del/", data });
 
-export const getExamIndexDetail = async (params: any) => {
-  const res = await personalApi.get(`/dicom/exam-index/${params.id}/`, { params: params });
-  return res;
-};
+export const getExamIndexDetail = async (params: any) =>
+  await personalReq({
+    method: "GET",
+    url: `/dicom/exam-index/${params.id}/`,
+    params,
+  });
 
 export const getDicomSeries = async (id: string) =>
-  await personalApi.get(`/dicom/exam-index/${id}/`);
+  await personalReq({
+    method: "GET",
+    url: `/dicom/exam-index/${id}/`,
+  });
 
-export const getDicomSeriesDetail = async (params: any) => {
-  const res = await personalApi.get(`/dicom/dicom-series/${params.id}/`);
-  return res;
-};
+export const getDicomSeriesDetail = async (params: any) =>
+  await personalReq({
+    method: "GET",
+    url: `dicom/dicom-series/${params.id}/`,
+  });
 
-export const getDicomSeriesMprDetail = async (params: { id: string }) => {
-  const res = await personalApi.get(`/dicom/dicom-series/mpr/${params.id}/`);
-  return res;
-};
+export const getDicomSeriesMprDetail = async (params: { id: string }) =>
+  await personalReq({
+    method: "GET",
+    url: `dicom/dicom-series/mpr/${params.id}/`,
+  });
 
-export const getDicomPicture = async (params: any) => {
-  const res = await personalApi.get(`/dicom/dicom-picture/`, { params: params });
-  return res;
-};
+export const getDicomPicture = async (params: any) =>
+  await personalReq({
+    method: "GET",
+    url: "/dicom/dicom-picture/",
+    params,
+  });
 
-export const getDicomPictureDetail = async (params: any) => {
-  const res = await personalApi.get(`/dicom/dicom-picture/${params.id}/`, { params: params });
-  return res;
-};
+export const getDicomPictureDetail = async (params: any) =>
+  await personalReq({
+    method: "GET",
+    url: `/dicom/dicom-picture/${params.id}/`,
+    params,
+  });
 
-export const searchDicomInfo = async (params: any) => {
-  const res = await personalApi.get(`/dicom/search/`, { params: params });
-  return res;
-};
+export const searchDicomInfo = async (params: any) =>
+  await personalReq({
+    method: "GET",
+    url: "/dicom/search/",
+    params,
+  });
 
-export const uploadDicomFile = async (params: any) => {
-  const res = await personalApi.post(`/dicom/upload/`, params);
-  return res;
-};
+export const uploadDicomFile = async (data: any) =>
+  await personalReq({
+    method: "POST",
+    url: "/dicom/upload/",
+    data,
+  });
 
-export const searchDicomFile = async (params: any) => {
-  const res = await personalApi.get(`/dicom/dicom-file/`, { params: params });
-  return res;
-};
+export const searchDicomFile = async (params: any) =>
+  await personalReq({
+    method: "GET",
+    url: "/dicom/dicom-file/",
+    params,
+  });
 
-export const getDicomFileStats = async (params?: any) => {
-  const res = await personalApi.get(`/dicom/dicom-stats/`, { params: params });
-  return res;
-};
+export const getDicomFileStats = async (params?: any) =>
+  await personalReq({ method: "GET", url: "/dicom/dicom-stats/", params });
 
 /**
  * @description 检查dicom解析进度并返回剩余解析量
@@ -65,8 +86,9 @@ export const getDicomFileStats = async (params?: any) => {
  */
 export const checkDicomParseProgress = async (): Promise<number> => {
   try {
-    const res = await personalApi.get("/dicom/parse-progress/");
-    return res.data.parsing as number;
+    return (await personalReq({ method: "GET", url: "/dicom/parse-progress/" })).parsing as number;
+    // const res = await personalApi.get("/dicom/parse-progress/");
+    // return res.data.parsing as number;
   } catch (error) {
     throw new Error(error);
   }
@@ -78,8 +100,14 @@ export const checkDicomParseProgress = async (): Promise<number> => {
  */
 export const checkDicomTotalCount = async (): Promise<number> => {
   try {
-    const res = await personalApi.get("/dicom/parse-progress/");
-    return res.data.total as number;
+    return (
+      await personalReq({
+        method: "GET",
+        url: "/dicom/parse-progress/",
+      })
+    ).total as number;
+    // const res = await personalApi.get("/dicom/parse-progress/");
+    // return res.data.total as number;
   } catch (error) {
     throw new Error(error);
   }
@@ -92,8 +120,12 @@ export const checkDicomTotalCount = async (): Promise<number> => {
  */
 export const getPublicImageStats = async (): Promise<GalleryStatsI[]> => {
   try {
-    const res = await personalApi.get("/dicom/public-image/stats/");
-    return res.data;
+    return personalReq({
+      method: "GET",
+      url: "dicom/public-image/stats",
+    });
+    // const res = await personalApi.get("/dicom/public-image/stats/");
+    // return res.data;
   } catch (error) {
     throw new Error(error);
   }
@@ -104,8 +136,9 @@ export const getPublicImageStats = async (): Promise<GalleryStatsI[]> => {
  */
 export const getPublicImages = async (): Promise<GalleryI[]> => {
   try {
-    const res = await personalApi.get("/dicom/public-image/manage/");
-    return res.data;
+    return await personalReq({ method: "GET", url: "/dicom/public-image/manage/" });
+    // const res = await personalApi.get("/dicom/public-image/manage/");
+    // return res.data;
   } catch (error) {
     throw new Error(error);
   }
@@ -117,7 +150,10 @@ export const getPublicImages = async (): Promise<GalleryI[]> => {
  */
 export const uploadPublicImage = async (data: FormData): Promise<GalleryI> => {
   try {
-    return await personalApi.post("/dicom/public-image/upload/", data, {
+    return await personalReq({
+      method: "POST",
+      url: `/dicom/public-image/upload/`,
+      data,
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -134,7 +170,10 @@ export const uploadPublicImage = async (data: FormData): Promise<GalleryI> => {
  */
 export const updatePublicImage = async (id: string, data: FormData): Promise<GalleryI> => {
   try {
-    return await personalApi.post(`/dicom/public-image/${id}/`, data, {
+    return await personalReq({
+      method: "POST",
+      url: `dicom/public-image/${id}/`,
+      data,
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -151,8 +190,12 @@ export const updatePublicImage = async (id: string, data: FormData): Promise<Gal
  */
 export const delPublicImages = async (id: string[]): Promise<any> => {
   try {
-    return await personalApi.post(`/dicom/public-image/del/`, {
-      id,
+    return await personalReq({
+      method: "POST",
+      url: "/dicom/public-image/del/",
+      data: {
+        id,
+      },
     });
   } catch (error) {
     throw new Error(error);
@@ -170,7 +213,10 @@ export const uploadDicom = async (
   data: FormData,
   onUploadProgress?: (progressEvent: ProgressEvent) => void,
 ): Promise<void> => {
-  await personalApi.post("/dicom/upload/", data, {
+  await personalReq({
+    method: "POST",
+    url: "/dicom/upload/",
+    data,
     headers: {
       "Content-Type": "multipart/form-data",
     },

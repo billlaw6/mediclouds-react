@@ -24,6 +24,7 @@ import { RoutesI } from "_types/router";
 import { AccountStatusE, RoleE } from "_types/account";
 import Manager from "_pages/manager";
 import ManagerLayout from "_layout/Manager";
+import AccountRole from "_components/AccountRole";
 
 const IS_MOBILE = /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent);
 
@@ -40,7 +41,7 @@ const routes: RoutesI[] = [
     path: "/resources",
     component: Resources,
     layout: DefaultLayout,
-    // permission: [AccountStatusE.LOGIN],
+    permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN, RoleE.EMPLOYEE, RoleE.DOCTOR],
   },
   // {
   //   name: "login_form",

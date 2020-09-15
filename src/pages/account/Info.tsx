@@ -35,10 +35,10 @@ const Info: FunctionComponent<InfoPropsI> = (props) => {
         </FormItem>
       ) : (
         <>
-          <FormItem className="account-item" label="姓" name="firstName">
+          <FormItem className="account-item" label="姓" name="first_name">
             <Input></Input>
           </FormItem>
-          <FormItem className="account-item" label="名" name="lastName">
+          <FormItem className="account-item" label="名" name="last_name">
             <Input></Input>
           </FormItem>
           <FormItem className="account-item" label="昵称" name="nickname">

@@ -43,7 +43,7 @@ class OauthAffiliate extends React.Component<any, { registered: boolean }> {
 
 const mapStateToProps = (state: StoreStateI) => {
   return {
-    router: state.router,
+    // router: state.router,
   };
 };
 

@@ -38,6 +38,7 @@ function* logoutUserEffect(action: ReturnType<typeof logoutUserAction>) {
 }
 
 function* getExamIndexEffect(action: ReturnType<typeof getExamIndexListAction>) {
+  console.log("> saga", action);
   try {
     console.log(action.payload);
     const res = yield call(getExamIndex, action.payload);

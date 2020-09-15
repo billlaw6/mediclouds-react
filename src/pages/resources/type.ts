@@ -8,6 +8,7 @@ import {
 } from "_actions/dicom";
 import { RouteComponentProps } from "react-router";
 import { ReactElement } from "react";
+import { getExamList } from "_actions/resources";
 
 export interface MapStateToPropsI {
   examIndexList: ExamIndexI[];
@@ -18,14 +19,14 @@ export interface MapStateToPropsI {
   };
 }
 export interface MapDispatchToPropsI {
-  getList: typeof getExamIndexListAction;
+  getList: typeof getExamList;
   delList: typeof deleteExamIndexListAction;
   setSortBy: typeof SetViewSortByAction;
   setViewMode: typeof setViewModeAction;
 }
 
-export type HomePropsI = MapStateToPropsI & MapDispatchToPropsI & RouteComponentProps;
-export interface HomeStateI {
+export type ResourcesPropsI = MapStateToPropsI & MapDispatchToPropsI & RouteComponentProps;
+export interface ResourcesStateI {
   viewType: ViewTypeEnum; // 视图模式
   sortType: SortTypeEnum; // 排序规则
   isSelectable: boolean; // 是否是可选择的

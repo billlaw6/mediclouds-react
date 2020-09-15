@@ -43,7 +43,6 @@ const Avatar: FunctionComponent<AvatarPropI> = (props) => {
             const { file } = preAvatar;
             if (!file) return;
 
-            setPreAvatar({});
             onFinish({ avatar: file });
           }}
         >

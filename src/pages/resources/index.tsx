@@ -8,8 +8,8 @@ import { StoreStateI } from "_types/core";
 
 import {
   MapStateToPropsI,
-  HomePropsI,
-  HomeStateI,
+  ResourcesPropsI,
+  ResourcesStateI,
   ViewTypeEnum,
   SortTypeEnum,
   MapDispatchToPropsI,
@@ -31,10 +31,9 @@ import PrivacyNotice from "./components/PrivacyNotice";
 // import { checkDicomParseProgress } from "_helper";
 import Notify from "_components/Notify";
 import { personalApi } from "_axios";
-import { checkDicomParseProgress } from "_api/dicom";
+import { checkDicomParseProgress, getExamIndex } from "_api/dicom";
 import Empty from "./components/Empty/Empty";
 
-import "./Home.less";
 import { isUndefined, isNull } from "util";
 import {
   CloudUploadOutlined,
@@ -45,12 +44,15 @@ import {
   AppstoreOutlined,
 } from "@ant-design/icons";
 
+import "./resources.less";
+import { getExamList } from "_actions/resources";
+
 const DEFAULT_PAGE_SIZE = 12;
 
-class Resources extends Component<HomePropsI, HomeStateI> {
+class Resources extends Component<ResourcesPropsI, ResourcesStateI> {
   pollTimer: number | null;
 
-  constructor(props: HomePropsI) {
+  constructor(props: ResourcesPropsI) {
     super(props);
 
     this.state = {
@@ -70,11 +72,11 @@ class Resources extends Component<HomePropsI, HomeStateI> {
   }
 
   componentDidMount(): void {
-    const { getList } = this.props;
     checkDicomParseProgress()
       .then((res) => this.setState({ parsing: res, showNotify: !!res, poll: !!res }))
       .catch((err) => console.error(err));
-    getList && getList({ dtRange: [new Date(), new Date()], keyword: "" });
+
+    this.fetchExamList();
   }
 
   componentDidUpdate(): void {
@@ -83,11 +85,17 @@ class Resources extends Component<HomePropsI, HomeStateI> {
     }
   }
 
-  poll = (): void => {
+  fetchExamList = (): void => {
     const { getList } = this.props;
 
+    getExamIndex()
+      .then((res) => getList && getList(res))
+      .catch((err) => console.error(err));
+  };
+
+  poll = (): void => {
     this.pollTimer = window.setInterval(() => {
-      getList && getList({ dtRange: [new Date(), new Date()], keyword: "" });
+      this.fetchExamList();
       checkDicomParseProgress()
         .then((res) => {
           this.setState({ parsing: res, poll: !!res });
@@ -240,7 +248,7 @@ class Resources extends Component<HomePropsI, HomeStateI> {
   /**
    * 点击某个dicom 切换到播放器
    *
-   * @memberof Home
+   * @memberof Resources
    */
   onClickItem = (id: string): void => {
     const { history, examIndexList } = this.props;
@@ -274,7 +282,7 @@ class Resources extends Component<HomePropsI, HomeStateI> {
   };
 
   controller = (): ReactElement => {
-    const { examIndexList, dicomSettings } = this.props;
+    const { examIndexList = [], dicomSettings } = this.props;
     const { isSelectable } = this.state;
     return (
       <div id="controller" className={`controller`}>
@@ -383,7 +391,7 @@ class Resources extends Component<HomePropsI, HomeStateI> {
   /**
    * 返回列表排序的内容部分
    *
-   * @memberof Home
+   * @memberof Resources
    */
   dropdownContent = (): ReactElement => {
     const { dicomSettings, setSortBy } = this.props;
@@ -391,7 +399,7 @@ class Resources extends Component<HomePropsI, HomeStateI> {
 
     return (
       <Menu
-        className="home-dicom-sort"
+        className="resources-dicom-sort"
         onClick={(data): void => {
           // this.setState({ sortType: data.key as SortTypeEnum });
           setSortBy(data.key as SortTypeEnum);
@@ -410,7 +418,7 @@ class Resources extends Component<HomePropsI, HomeStateI> {
   /**
    * 当确认隐私后 如果没有影响列表 跳转到upload界面
    *
-   * @memberof Home
+   * @memberof Resources
    */
   onChecked = (): void => {
     // const { examIndexList } = this.props;
@@ -425,14 +433,13 @@ class Resources extends Component<HomePropsI, HomeStateI> {
    * @param {string} id dicom id
    * @param {string} value 更新的desc
    *
-   * @memberof Home
+   * @memberof Resources
    */
   updateDesc = (id: string, value: string): void => {
     personalApi
       .post(`/dicom/exam-index/${id}/`, { desc: value })
       .then(() => {
-        const { getList } = this.props;
-        getList && getList({ dtRange: [new Date(), new Date()], keyword: "" });
+        this.fetchExamList();
       })
       .catch((err) => console.error(err));
   };
@@ -440,7 +447,7 @@ class Resources extends Component<HomePropsI, HomeStateI> {
   /**
    * 删除所选dicom
    *
-   * @memberof Home
+   * @memberof Resources
    */
   delDicom = async (): Promise<void> => {
     const { selections } = this.state;
@@ -452,7 +459,7 @@ class Resources extends Component<HomePropsI, HomeStateI> {
   /**
    * 排序列表
    *
-   * @memberof Home
+   * @memberof Resources
    */
   sortList = (list: ExamIndexI[]): ExamIndexI[] => {
     // const { sortType } = this.state;
@@ -476,14 +483,16 @@ class Resources extends Component<HomePropsI, HomeStateI> {
   };
 
   render(): ReactElement {
-    const { examIndexList, user, getList, dicomSettings } = this.props;
+    const { examIndexList = [], user, getList, dicomSettings } = this.props;
     const { redirectUpload, showNotify, parsing } = this.state;
     const { viewMode } = dicomSettings;
+
+    console.log("examIndexList", examIndexList);
 
     // if (redirectUpload) return <Redirect to="/upload" />;
     // else
     return (
-      <section className="home">
+      <section className="resources">
         {showNotify ? (
           <Notify
             mode={parsing ? "parsing" : "successed"}
@@ -508,19 +517,20 @@ class Resources extends Component<HomePropsI, HomeStateI> {
         ) : (
           <Empty></Empty>
         )}
-        <PrivacyNotice user={user} onChecked={this.onChecked}></PrivacyNotice>
+        {/* <PrivacyNotice user={user} onChecked={this.onChecked}></PrivacyNotice> */}
       </section>
     );
   }
 }
 
 const mapStateToProps = (state: StoreStateI): MapStateToPropsI => ({
-  examIndexList: state.examIndexList,
+  examIndexList: state.resources.dicom,
   user: state.user,
   dicomSettings: state.dicomSettings,
 });
 const mapDispatchToProps: MapDispatchToPropsI = {
-  getList: getExamIndexListAction,
+  // getList: getExamIndexListAction,
+  getList: getExamList,
   delList: deleteExamIndexListAction,
   setSortBy: SetViewSortByAction,
   setViewMode: setViewModeAction,

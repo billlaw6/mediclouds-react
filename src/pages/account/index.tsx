@@ -40,8 +40,8 @@ const Account: FunctionComponent = () => {
             <ChangePassword account={account} onFinish={_update} />
           ) : null}
         </TabPane>
-        <TabPane key="cellPhone" tab="手机号">
-          {currentTab === "cellPhone" ? (
+        <TabPane key="cell_phone" tab="手机号">
+          {currentTab === "cell_phone" ? (
             <ChangeCellPhone account={account} onFinish={_update} />
           ) : null}
         </TabPane>

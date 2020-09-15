@@ -1,6 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import qs from "qs";
-import { history } from "../store/configureStore";
 import { store } from "../index";
 import config from "_config";
 import { getToken } from "_helper";
@@ -92,7 +91,7 @@ const customReqErr = (err: any) => Promise.reject(err);
 /* 自定义响应拦截器 */
 
 // 服务器返回了结果，有前面的validateStatus保证，这里接收的只会是2和3开着的状态
-const customRes = <P = any>(res: AxiosResponse<P>) => res.data;
+const customRes = <P = any>(res: AxiosResponse<P>): P => res.data;
 const customResErr = (error: any) => {
   // 两种错误返回类型
   const { response } = error;
@@ -169,7 +168,7 @@ export const publicReq = async (config: AxiosRequestConfig, useToken = true): Pr
   return await _publicApi(config);
 };
 
-export const personaReq = async (config: AxiosRequestConfig, useToken = true): Promise<any> => {
+export const personalReq = async (config: AxiosRequestConfig, useToken = true): Promise<any> => {
   if (useToken) {
     const token = getToken();
     if (token) config.headers = Object.assign({}, config.headers, { Authorization: token });

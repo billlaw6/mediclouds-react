@@ -1,13 +1,5 @@
 import React, { FunctionComponent, useState, useEffect } from "react";
 import wechatScan from "_images/wechat-scan.png";
-// import { Form, Input, Button } from "antd";
-
-// import Captcha from "./Captcha";
-// import useAccount from "_hooks/useAccount";
-// import LoginBtn from "./LoginBtn";
-
-// const { Password: InputPassword } = Input;
-// const { Item: FormItem } = Form;
 
 import "./personal.less";
 
@@ -37,9 +29,6 @@ const QRCODE_URL =
 
 const Personal: FunctionComponent = () => {
   const [hiddenScan, setHiddenScan] = useState(false);
-  // const [loginType, setLoginType] = useState<"qrcode" | "form">("qrcode");
-  // const [captcha, stCaptcha] = useState("");
-  // const { devFormLogin } = useAccount();
 
   useEffect(() => {
     const timer = setTimeout(() => {

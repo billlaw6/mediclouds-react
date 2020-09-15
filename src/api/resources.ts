@@ -1,4 +1,4 @@
-import { publicAPi } from "_axios";
+import { publicReq } from "_axios";
 
 /**
  * 上传资源
@@ -11,7 +11,10 @@ export const uploadResources = async (
   data: FormData,
   onUploadProgress?: (progressEvent: ProgressEvent) => void,
 ): Promise<void> => {
-  await publicAPi.post("/resources/upload/", data, {
+  await publicReq({
+    method: "POST",
+    url: "/resources/upload/",
+    data,
     headers: {
       "Content-Type": "multipart/form-data",
     },
@@ -20,4 +23,8 @@ export const uploadResources = async (
 };
 
 /* 获取dicom资源列表 */
-export const getDicomList = () => publicAPi.get("/resources/dicom-list");
+export const getDicomList = async (id: string) =>
+  await publicReq({
+    method: "GET",
+    url: "/resources/dicom-list/",
+  });
