@@ -1,4 +1,4 @@
-import { personalApi } from "_axios";
+import { personalReq } from "_axios";
 import { ReactNode } from "react";
 import { GetSearchQueryPropsI } from "_types/api";
 import CryptoJS from "crypto-js";
@@ -25,8 +25,12 @@ export const decrypt = (str: string, secret = "FreMaNgo_&_Mediclouds"): any => {
  */
 export const checkDicomParseProgress = async (): Promise<number> => {
   try {
-    const res = await personalApi.get("/dicom/parse-progress/");
-    return res.data.parsing as number;
+    const res = await personalReq({
+      method: "GET",
+      url: "/dicom/parse-progress/",
+    });
+
+    return res.parsing as number;
   } catch (error) {
     throw new Error(error);
   }
@@ -38,8 +42,11 @@ export const checkDicomParseProgress = async (): Promise<number> => {
  */
 export const checkDicomTotalCount = async (): Promise<number> => {
   try {
-    const res = await personalApi.get("/dicom/parse-progress/");
-    return res.data.total as number;
+    const res = await personalReq({
+      method: "GET",
+      url: "/dicom/parse-progress/",
+    });
+    return res.total as number;
   } catch (error) {
     throw new Error(error);
   }

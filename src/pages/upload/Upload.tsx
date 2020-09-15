@@ -161,7 +161,7 @@ const Upload: FunctionComponent = () => {
     <section className="upload">
       <div className="upload-header">
         <h1>上传影像</h1>
-        <Link className="upload-back" to="/">
+        <Link className="upload-back" to="/resources">
           <ArrowLeftOutlined className="iconfont"></ArrowLeftOutlined>
           <span>返回</span>
         </Link>

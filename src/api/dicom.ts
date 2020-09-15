@@ -87,8 +87,6 @@ export const getDicomFileStats = async (params?: any) =>
 export const checkDicomParseProgress = async (): Promise<number> => {
   try {
     return (await personalReq({ method: "GET", url: "/dicom/parse-progress/" })).parsing as number;
-    // const res = await personalApi.get("/dicom/parse-progress/");
-    // return res.data.parsing as number;
   } catch (error) {
     throw new Error(error);
   }
@@ -106,8 +104,6 @@ export const checkDicomTotalCount = async (): Promise<number> => {
         url: "/dicom/parse-progress/",
       })
     ).total as number;
-    // const res = await personalApi.get("/dicom/parse-progress/");
-    // return res.data.total as number;
   } catch (error) {
     throw new Error(error);
   }
@@ -124,8 +120,6 @@ export const getPublicImageStats = async (): Promise<GalleryStatsI[]> => {
       method: "GET",
       url: "dicom/public-image/stats",
     });
-    // const res = await personalApi.get("/dicom/public-image/stats/");
-    // return res.data;
   } catch (error) {
     throw new Error(error);
   }
@@ -137,8 +131,6 @@ export const getPublicImageStats = async (): Promise<GalleryStatsI[]> => {
 export const getPublicImages = async (): Promise<GalleryI[]> => {
   try {
     return await personalReq({ method: "GET", url: "/dicom/public-image/manage/" });
-    // const res = await personalApi.get("/dicom/public-image/manage/");
-    // return res.data;
   } catch (error) {
     throw new Error(error);
   }

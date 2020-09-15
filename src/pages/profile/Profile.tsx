@@ -94,7 +94,7 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
     <section className="profile">
       <div className="profile-header">
         <h1>个人信息</h1>
-        <Link className="profile-back" to="/">
+        <Link className="profile-back" to="/resources">
           <ArrowLeftOutlined className="iconfont"></ArrowLeftOutlined>
           <span>返回</span>
         </Link>

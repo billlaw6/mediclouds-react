@@ -1010,7 +1010,12 @@ const Player: FunctionComponent<{ id: string }> = (props) => {
           className="player-header-shortcut-btn iconfont iconic_help"
           onClick={(): void => setShowShortcut(true)}
         ></i>
-        <LinkButton className="player-header-back" to="/" icon={<ArrowLeftOutlined />} type="light">
+        <LinkButton
+          className="player-header-back"
+          to="/resources"
+          icon={<ArrowLeftOutlined />}
+          type="light"
+        >
           返回
         </LinkButton>
       </div>

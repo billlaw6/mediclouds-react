@@ -30,7 +30,7 @@ import PrivacyNotice from "./components/PrivacyNotice";
 
 // import { checkDicomParseProgress } from "_helper";
 import Notify from "_components/Notify";
-import { personalApi } from "_axios";
+import { personalReq } from "_axios";
 import { checkDicomParseProgress, getExamIndex } from "_api/dicom";
 import Empty from "./components/Empty/Empty";
 
@@ -436,8 +436,11 @@ class Resources extends Component<ResourcesPropsI, ResourcesStateI> {
    * @memberof Resources
    */
   updateDesc = (id: string, value: string): void => {
-    personalApi
-      .post(`/dicom/exam-index/${id}/`, { desc: value })
+    personalReq({
+      method: "POST",
+      url: `/dicom/exam-index/${id}/`,
+      data: { desc: value },
+    })
       .then(() => {
         this.fetchExamList();
       })

@@ -14,13 +14,16 @@ import { CustomerI, RoleE } from "_types/account";
 
 /* style */
 import "./Default.less";
+import useAccount from "_hooks/useAccount";
 
 const { Content } = Layout;
 
 const DefalutLayout: FunctionComponent = (props) => {
   const { children } = props;
 
-  const user = useSelector<StoreStateI, CustomerI>((state) => state.user);
+  // const user = useSelector<StoreStateI, CustomerI>((state) => state.user);
+  const { user } = useAccount();
+
   const { avatar, nickname, role } = user;
 
   return (

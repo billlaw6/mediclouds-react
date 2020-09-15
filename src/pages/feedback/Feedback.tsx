@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { Radio, Input, message } from "antd";
 
 import { FeedbackTypeI } from "_types/api";
-import { personalApi } from "_axios";
+import { personalReq } from "_axios";
 
 import "./Feedback.less";
 import { ArrowLeftOutlined } from "@ant-design/icons";
@@ -20,8 +20,11 @@ const Feedback: FunctionComponent = () => {
     if (currentType) {
       if (!value) message.warning("详细描述不能为空");
       else
-        personalApi
-          .post("/user/feedback/", { type_id: currentType.code, content: value })
+        personalReq({
+          method: "POST",
+          url: "/user/feedback/",
+          data: { type_id: currentType.code, content: value },
+        })
           .then((_res) => {
             setCurrentType(feedbackTypes[0]);
             setValue("");
@@ -34,8 +37,10 @@ const Feedback: FunctionComponent = () => {
   };
 
   useEffect(() => {
-    personalApi
-      .get("/user/feedback-type/")
+    personalReq({
+      method: "GET",
+      url: "/user/feedback-type/",
+    })
       .then((res) => {
         const types = (res.data as FeedbackTypeI[]).sort(
           (a, b) => parseInt(a.code, 10) - parseInt(b.code, 10),
@@ -50,7 +55,7 @@ const Feedback: FunctionComponent = () => {
     <div className="feedback">
       <div className="feedback-header">
         <h1>意见反馈</h1>
-        <Link className="feedback-back" to="/">
+        <Link className="feedback-back" to="/resources">
           <ArrowLeftOutlined className="iconfont"></ArrowLeftOutlined>
           <span>返回</span>
         </Link>
