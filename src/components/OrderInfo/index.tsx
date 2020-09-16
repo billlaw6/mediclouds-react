@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useState } from "react";
 import { useHistory } from "react-router";
-import { OrderI, UpdateOrderDataI } from "_types/order";
+import { OrderI } from "_types/order";
 import { Descriptions, Input, Form, Button, Space, Tabs, Popconfirm, Menu, Select } from "antd";
 import { Store } from "antd/lib/form/interface";
 
@@ -11,7 +11,6 @@ import "./style.less";
 import Uploader from "_components/Uploader";
 import { RoleE } from "_types/account";
 import { updateOrder } from "_api/order";
-import UserStats from "_pages/dashboard/components/UserStats";
 interface OrderInfoPropsI {
   info?: OrderI;
   onChange?: (status: number, info: OrderI) => void;
@@ -22,7 +21,6 @@ const { Item: FormItem } = Form;
 const { TabPane } = Tabs;
 
 const OrderInfo: FunctionComponent<OrderInfoPropsI> = (props) => {
-  const history = useHistory();
   const { info, onChange } = props;
   const [preData, setPreData] = useState<{ flag: 0 | 1 | 2 | 3 | 4; comment: string }>();
 
@@ -146,7 +144,13 @@ const OrderInfo: FunctionComponent<OrderInfoPropsI> = (props) => {
           </Form>
         </TabPane>
         <TabPane disabled={flag !== 1} key="uploader" tab="上传检查资料">
-          {flag !== 1 ? null : <Uploader directory={true} customerId={owner_id}></Uploader>}
+          {flag !== 1 ? null : (
+            <Uploader
+              directory={true}
+              customerId={owner_id}
+              orderNumber={`${order_number}`}
+            ></Uploader>
+          )}
         </TabPane>
       </Tabs>
     </div>

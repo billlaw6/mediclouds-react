@@ -14,4 +14,5 @@ export enum AccountActionTypes {
   CREATE = "create_user", // 创建用户
   GENERATE_QRCODE_REGISTRY = "generate_rqcode_registry", // 生成注册二维码
   GENERATE_QRCODE_PAY = "generate_rqcode_pay", // 生成付款二维码
+  REGISTER = "register",
 }

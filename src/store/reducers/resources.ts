@@ -12,8 +12,6 @@ const resources: Reducer<ResourcesStateI, ActionI<ResourcesActionE, any>> = (
 ) => {
   const { type, payload } = actions;
 
-  console.log("action", actions);
-
   switch (type) {
     case ResourcesActionE.GET_EXAM_LIST: {
       if (payload) return Object.assign({}, state, { dicom: payload });

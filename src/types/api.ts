@@ -1,3 +1,10 @@
+// 推荐注册Data
+export interface RegisterDataI {
+  cell_phone: string;
+  auth_code: string;
+  recommender_id: string;
+}
+
 // 上传状态
 export enum UploaderStatusE {
   SUCCESS = "success", // 上传成功
@@ -34,7 +41,7 @@ export interface PhoneLoginDataI {
 // 获取短信验证码Data
 export interface SendSmsDataI {
   cell_phone: string;
-  captcha: string;
+  captcha?: string;
 }
 
 // 验证码图片的返回值结构
@@ -279,6 +286,6 @@ export interface PatientExamI {
 /* ===============  根据Tower文档整理的接口相关的interface END =============== */
 
 // Api请求接口
-export interface ApiFuncI {
-  <T = any>(...args: any): Promise<T>;
+export interface ApiFuncI<T = any> {
+  (...args: any): Promise<T>;
 }

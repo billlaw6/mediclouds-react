@@ -6,9 +6,7 @@ import { useHistory } from "react-router";
 
 import { RoleE } from "_types/account";
 import logo from "_assets/images/logo.png";
-import { MatchRuleI, matchRules } from "_helper";
 
-import "./style.less";
 import {
   AreaChartOutlined,
   TeamOutlined,
@@ -19,7 +17,12 @@ import {
   PictureOutlined,
   AuditOutlined,
   InboxOutlined,
+  QrcodeOutlined,
+  SettingOutlined,
 } from "@ant-design/icons";
+import { Link } from "react-router-dom";
+
+import "./style.less";
 
 const { Sider } = Layout;
 
@@ -36,6 +39,16 @@ const ManagerSider: FunctionComponent<ManagerSiderPropsI> = (props) => {
   const { role = RoleE.EMPLOYEE, className, menuKey = "dashboard", ...siderProps } = props;
 
   const getMenuItem = (): ReactNode => {
+    const AllUsers = (
+      <MenuItem
+        key="all-users"
+        title="账号列表"
+        icon={<TeamOutlined />}
+        onClick={(): void => history.push("/manager/all-users")}
+      >
+        账号列表
+      </MenuItem>
+    );
     const Statistics = (
       <MenuItem
         key="dashboard"
@@ -72,22 +85,22 @@ const ManagerSider: FunctionComponent<ManagerSiderPropsI> = (props) => {
     const AccountList = (
       <MenuItem
         key="account-list"
-        title="账号列表"
+        title="我的下属"
         icon={<TeamOutlined />}
         onClick={(): void => history.push("/manager/account-list")}
       >
-        账号列表
+        我的下属
       </MenuItem>
     );
 
     const CustomerList = (
       <MenuItem
         key="customer-list"
-        title="我的用户"
+        title="我的顾客"
         icon={<UserOutlined />}
         onClick={(): void => history.push("/manager/customer-list")}
       >
-        我的用户
+        我的顾客
       </MenuItem>
     );
 
@@ -135,13 +148,31 @@ const ManagerSider: FunctionComponent<ManagerSiderPropsI> = (props) => {
       </MenuItem>
     );
 
-    const rules: MatchRuleI[] = [
-      { key: RoleE.EMPLOYEE, level: 1, content: [Statistics, CustomerList, OrderList] },
-      { key: [RoleE.MANAGER, RoleE.BUSINESS], level: 2, content: [CreateAccount, AccountList] },
-      { key: RoleE.SUPER_ADMIN, level: 3, content: [BusinessAccount, HomeRes, MdEditor, Gallery] }, // TODO: 企业用户下没有【账户列表】
-    ];
+    const MyQrcode = (
+      <MenuItem
+        key="qrcode"
+        title="我的二维码"
+        icon={<QrcodeOutlined />}
+        onClick={(): void => history.push("/manager/qrcode")}
+      >
+        我的二维码
+      </MenuItem>
+    );
 
-    return matchRules(rules, role);
+    switch (role) {
+      case RoleE.EMPLOYEE: {
+        return [Statistics, CustomerList, OrderList, MyQrcode];
+      }
+      case RoleE.BUSINESS:
+      case RoleE.MANAGER: {
+        return [Statistics, CustomerList, AccountList, OrderList, CreateAccount, MyQrcode];
+      }
+      case RoleE.SUPER_ADMIN: {
+        return [Statistics, CreateAccount, AllUsers, BusinessAccount, HomeRes, MdEditor, Gallery];
+      }
+      default:
+        return [];
+    }
   };
 
   return (
@@ -151,6 +182,9 @@ const ManagerSider: FunctionComponent<ManagerSiderPropsI> = (props) => {
       </div>
       <Menu theme="dark" mode="inline" selectedKeys={[menuKey]}>
         {getMenuItem()}
+        <MenuItem key="account" icon={<SettingOutlined />}>
+          <Link to="/manager/account-settings">账户设置</Link>
+        </MenuItem>
       </Menu>
     </Sider>
   );

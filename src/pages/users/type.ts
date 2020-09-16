@@ -1,4 +1,4 @@
-import { UserI } from "_types/api";
+import { GetSearchQueryPropsI, UserI } from "_types/api";
 import { RouteComponentProps } from "react-router";
 
 export interface MapStateToPropsI {
@@ -10,4 +10,6 @@ export interface UserManageStateI {
   userList: UserI[];
   searchResult: UserI[];
   selectedRowKeys: string[];
+  userTotal: number;
+  searchQuery: GetSearchQueryPropsI;
 }

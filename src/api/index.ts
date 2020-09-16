@@ -99,7 +99,7 @@ const customResErr = (error: any) => {
 
   switch (status) {
     case 401:
-      window.location.replace(`${window.location.origin}/login`);
+      // window.location.replace(`${window.location.origin}/login`);
       break;
     default:
       throw new Error(error);
@@ -159,7 +159,6 @@ _publicApi.interceptors.response.use(customRes, customResErr);
 export const publicReq = async (config: AxiosRequestConfig, useToken = true): Promise<any> => {
   if (useToken) {
     const token = getToken();
-    console.log("token", token);
     if (token) config.headers = Object.assign({}, config.headers, { Authorization: token });
   }
 

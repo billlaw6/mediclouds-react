@@ -66,7 +66,7 @@ const MobileHome: FunctionComponent = () => (
   </div>
 );
 
-const ignoreArr: string[] = [];
+const ignoreArr: string[] = ["register"];
 // const ignoreArr = ["affiliate", "player"];
 const { pathname } = window.location;
 const showMobilePage = ignoreArr.every((item) => pathname.indexOf(item) < 0);

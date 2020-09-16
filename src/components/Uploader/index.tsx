@@ -11,6 +11,7 @@ import "./style.less";
 
 interface UploaderPropsI {
   customerId?: string;
+  orderNumber?: string;
   directory?: boolean;
   accept?: string;
   onChange?: (fileProgressCmp: ReactNode) => void; // 当上传列表改变时触发
@@ -30,7 +31,7 @@ const createUploadCell = (id: number, fileList: File[]): UploaderCellI => {
 };
 
 const Uploader: FunctionComponent<UploaderPropsI> = (props) => {
-  const { directory, accept, onChange, customerId } = props;
+  const { directory, accept, onChange, customerId, orderNumber } = props;
   const [uploadList, setUploadList] = useState<UploaderCellI[]>([]); // 上传队列
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -81,6 +82,9 @@ const Uploader: FunctionComponent<UploaderPropsI> = (props) => {
     });
   }, [updateCell, uploadList]);
 
+  console.log("getList", getList());
+  console.log("onChange", onChange);
+
   /**
    * 上传
    *
@@ -94,9 +98,12 @@ const Uploader: FunctionComponent<UploaderPropsI> = (props) => {
       formData.append("file", file);
     });
 
+    formData.append("customer_id", customerId || "");
+    formData.append("order_number", orderNumber || "");
+
     updateCell(id, { status: UploaderStatusE.UPLOADING });
 
-    uploadResources(customerId || "", formData, (progressEvent: ProgressEvent) => {
+    uploadResources(formData, (progressEvent: ProgressEvent) => {
       const { total, loaded } = progressEvent;
 
       updateCell(id, {

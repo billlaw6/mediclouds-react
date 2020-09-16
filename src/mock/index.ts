@@ -74,7 +74,7 @@ if (process.env.NODE_ENV === "development") {
   });
 
   /* 获取下属账户信息 */
-  Mock.mock(/\/public-api\/user\/affiliated-list\/*/, "get", () => {
+  Mock.mock(/\/public-api\/user\/account-list\/*/, "get", () => {
     const result = [];
 
     for (let i = 0; i < 50; i++) {

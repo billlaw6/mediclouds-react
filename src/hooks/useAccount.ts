@@ -7,7 +7,7 @@ import userApi from "_api/user";
 import { setToken, clearToken } from "_helper";
 import { useHistory } from "react-router";
 import moment from "antd/node_modules/moment";
-import { FormLoginDataI, PhoneLoginDataI } from "_types/api";
+import { FormLoginDataI, PhoneLoginDataI, RegisterDataI, UserI } from "_types/api";
 import { store } from "../index";
 
 export default () => {
@@ -117,14 +117,30 @@ export default () => {
     }
   };
 
+  /* 退出登录 */
   const logout = async (): Promise<void> => {
     try {
       await userApi.logout();
       clearToken();
       await store.persistor.purge();
-      history.push("/");
+      history.push("/login");
     } catch (error) {
       throw new Error(error);
+    }
+  };
+
+  /* 注册 */
+  const register = async (data: RegisterDataI): Promise<void> => {
+    try {
+      const res = await userApi.register(data);
+      const { token, user_info } = res;
+      if (token) {
+        setToken(token);
+        dispatch({ type: AccountActionTypes.REGISTER, payload: user_info });
+        history.replace("/manager");
+      }
+    } catch (err) {
+      throw new Error(err);
     }
   };
 
@@ -137,5 +153,6 @@ export default () => {
     account,
     // devFormLogin: _devFormLogin,
     logout,
+    register,
   };
 };

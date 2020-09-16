@@ -4,7 +4,7 @@ import { FormLoginDataI, PhoneLoginDataI } from "_types/api";
 import useAccount from "_hooks/useAccount";
 
 import Captcha from "./Captcha";
-import CellPhoneCode from "./CellPhoneCode";
+import SmsCode from "_components/SmsCode";
 
 const { TabPane } = Tabs;
 const { Item: FormItem } = Form;
@@ -88,11 +88,11 @@ const Business: FunctionComponent = () => {
               <Captcha onChecked={(val): void => setCaptchaVal(val)}></Captcha>
             ) : null}
             {captchaVal ? (
-              <CellPhoneCode
+              <SmsCode
                 captcha={captchaVal}
                 loginType={loginType}
                 cell_phone={loginFormData["cell_phone"] || ""}
-              ></CellPhoneCode>
+              ></SmsCode>
             ) : null}
           </TabPane>
         </Tabs>

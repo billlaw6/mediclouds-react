@@ -95,17 +95,17 @@ class Resources extends Component<ResourcesPropsI, ResourcesStateI> {
 
   poll = (): void => {
     this.pollTimer = window.setInterval(() => {
-      this.fetchExamList();
       checkDicomParseProgress()
         .then((res) => {
           this.setState({ parsing: res, poll: !!res });
           if (res <= 0) {
+            this.fetchExamList();
             this.pollTimer && window.clearInterval(this.pollTimer);
             this.pollTimer = null;
           }
         })
         .catch((err) => console.error(err));
-    }, 1000);
+    }, 5000);
   };
 
   list = (): ReactElement | undefined => {

@@ -24,7 +24,7 @@ const Info: FunctionComponent<InfoPropsI> = (props) => {
         firstName: first_name,
         lastName: last_name,
         sex,
-        birthday: moment(birthday),
+        birthday: moment(birthday || "1900-01-01"),
         sign,
       }}
       onFinish={onFinish}

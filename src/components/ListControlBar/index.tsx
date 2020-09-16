@@ -14,6 +14,8 @@ interface ListControlBarPropsI {
   onDelCancel?: Function; // 删除取消回调
   onDisable?: (ids: string[]) => void; // 停用回调
   onDisableCancel?: Function; // 停用取消回调
+  onEnable?: (ids: string[]) => void; // 启用回调
+  onEnableCancel?: Function; // 启用取消回调
   customerBtns?: ReactNode; // 自定义按钮区域
 }
 
@@ -28,6 +30,8 @@ const ListControlBar: FunctionComponent<ListControlBarPropsI> = (props) => {
     selectedList,
     onDisable,
     onDisableCancel,
+    onEnable,
+    onEnableCancel,
     customerBtns,
   } = props;
 
@@ -73,6 +77,16 @@ const ListControlBar: FunctionComponent<ListControlBarPropsI> = (props) => {
               >
                 <Button type="ghost" disabled={disabled}>
                   停用
+                </Button>
+              </Popconfirm>
+              <Popconfirm
+                title="确定启用？"
+                onConfirm={(): void => onEnable && selectedList && onEnable(selectedList)}
+                onCancel={(): void => onEnableCancel && onEnableCancel()}
+                disabled={disabled}
+              >
+                <Button type="primary" disabled={disabled}>
+                  启用
                 </Button>
               </Popconfirm>
             </Space>

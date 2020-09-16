@@ -4,8 +4,8 @@ import { Store } from "antd/lib/form/interface";
 import Form from "antd/lib/form/Form";
 import FormItem from "antd/lib/form/FormItem";
 import { Input, Button } from "antd";
-import CellPhoneCode from "_pages/login/CellPhoneCode";
 import Captcha from "_pages/login/Captcha";
+import SmsCode from "_components/SmsCode";
 
 interface ChangeCellPhonePropsI {
   account: AccountI;
@@ -25,7 +25,7 @@ const ChangeCellPhone: FunctionComponent<ChangeCellPhonePropsI> = (props) => {
       <FormItem className="account-item" label="新手机号" name="cell_phone">
         <Input onInput={(e): void => setCellPhone(e.currentTarget.value)}></Input>
       </FormItem>
-      <CellPhoneCode
+      <SmsCode
         cell_phone={cellPhone}
         captcha={captcha}
         className="account-item"

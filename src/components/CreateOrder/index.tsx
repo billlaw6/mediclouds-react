@@ -34,6 +34,7 @@ const CreateOrder: FunctionComponent<CreateOrderPropsI> = (props) => {
   const CreateOrderMenu = (): ReactElement => (
     <Menu
       selectedKeys={[selectType || ""]}
+      defaultValue={[selectType]}
       onClick={({ key }): void => {
         const nextSelectType = orderTypes.find((item) => item.key === key);
         nextSelectType && setSelectType(nextSelectType.key);
@@ -92,6 +93,7 @@ const CreateOrder: FunctionComponent<CreateOrderPropsI> = (props) => {
         <FormItem label="订单类型" name="order_type">
           <Dropdown trigger={["click"]} overlay={CreateOrderMenu}>
             <Button>{selectType}</Button>
+            {/* <Button>{orderTypes.find((item) => item.key === selectType)}</Button> */}
           </Dropdown>
         </FormItem>
         <FormItem label="备注" name="comment">

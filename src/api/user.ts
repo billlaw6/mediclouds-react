@@ -9,6 +9,8 @@ import {
   SendSmsDataI,
   FormLoginDataI,
   SearchQueryResI,
+  UserI,
+  RegisterDataI,
 } from "_types/api";
 
 export const wechatLogin: ApiFuncI = async (params: any) =>
@@ -22,7 +24,7 @@ export const loginForm: ApiFuncI = async (data: FormLoginDataI) =>
   await publicReq(
     {
       method: "POST",
-      url: "/user/login-form/",
+      url: "/login-form/",
       data,
     },
     false,
@@ -33,24 +35,24 @@ export const loginPhone: ApiFuncI = async (data: PhoneLoginDataI) =>
   await publicReq(
     {
       method: "POST",
-      url: "/user/login-phone/",
+      url: "/login-phone/",
       data,
     },
     false,
   );
 
 /* 获取用户列表 */
-export const getUserList: ApiFuncI = async () =>
-  await personalReq({ method: "GET", url: "/user/list/" });
+export const getUserList: ApiFuncI = async (searchQuery?: GetSearchQueryPropsI) =>
+  await personalReq({ method: "GET", url: "/user/list/", params: searchQuery });
 
-export const deleteUsers = async (data: any) =>
-  await personalReq({ method: "POST", url: "/user/delete/", data });
+export const deleteUsers = async (id: string[]) =>
+  await personalReq({ method: "POST", url: "/user/delete/", data: { id } });
 
-export const deactivateUsers = async (data: any) =>
-  await personalReq({ method: "POST", url: "/user/deactivate/", data });
+export const deactivateUsers = async (id: string[]) =>
+  await personalReq({ method: "POST", url: "/user/deactivate/", data: { id } });
 
-export const activateUsers = async (data: any) =>
-  await personalReq({ method: "POST", url: "/user/activate/", data });
+export const activateUsers = async (id: string[]) =>
+  await personalReq({ method: "POST", url: "/user/activate/", data: { id } });
 
 export const getUserInfo = async () =>
   await personalReq({ method: "GET", url: "/user/user-info/" });
@@ -96,7 +98,7 @@ export const getAffiliatedList = async (
 ): Promise<SearchQueryResI<AccountI>> =>
   await publicReq({
     method: "GET",
-    url: `/user/affiliated-list/${id}/`,
+    url: `/user/account-list/${id}/`,
     params: searchQuery,
   });
 
@@ -182,10 +184,57 @@ export const logout = async (): Promise<void> =>
   await publicReq(
     {
       method: "POST",
-      url: "/user/logout/",
+      url: "/logout/",
     },
     false,
   );
+
+/* 用户注册 */
+export const register: ApiFuncI<{ token: string; user_info: UserI }> = async (
+  data: RegisterDataI,
+) =>
+  await publicReq({
+    method: "POST",
+    url: "/register/",
+    data,
+  });
+
+/* 获取全部账户、用户 */
+export const getAllUser: ApiFuncI = async () =>
+  await publicReq({
+    method: "GET",
+    url: "/user/all/",
+  });
+
+/* 批量删除账户、用户 */
+export const delUser: ApiFuncI = async (id: string[]) =>
+  await publicReq({
+    method: "POST",
+    url: "/user/del/",
+    data: {
+      id,
+    },
+  });
+
+/* 批量禁用账户、用户 */
+export const disableUser: ApiFuncI = async (id: string[]) =>
+  await publicReq({
+    method: "POST",
+    url: "/user/disable/",
+    data: {
+      id,
+    },
+  });
+
+/* 批量启用账户、用户 */
+export const enableUser: ApiFuncI = async (id: string[]) =>
+  await publicReq({
+    method: "POST",
+    url: "/user/active/",
+    data: {
+      id,
+    },
+  });
 
 export default {
   loginForm,
@@ -199,4 +248,9 @@ export default {
   getSmsCode,
   getStats,
   logout,
+  register,
+  getAllUser,
+  delUser,
+  disableUser,
+  enableUser,
 };

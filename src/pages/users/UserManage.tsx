@@ -1,7 +1,7 @@
 import React, { ReactElement } from "react";
-import { Table, Button, Form, Input } from "antd";
+import { Table, Button, Form, Input, DatePicker } from "antd";
 import moment, { Moment } from "moment";
-import { UserI } from "_types/api";
+import { GetSearchQueryPropsI, SearchQueryResI, UserI } from "_types/api";
 import { getUserList, deactivateUsers, activateUsers, deleteUsers } from "_api/user";
 import { UserManagePropsI, UserManageStateI } from "_pages/users/type";
 import "./UserManage.less";
@@ -16,15 +16,16 @@ class UserManage extends React.Component<UserManagePropsI, UserManageStateI> {
       userList: [],
       searchResult: [],
       selectedRowKeys: [],
+      userTotal: 0,
+      searchQuery: { ascend: 1, sort: "date_joined" }, // sort key: nickname, cell_phone, is_active, date_joined
     };
   }
 
-  fetchUserList = (): void => {
-    getUserList()
+  fetchUserList = (searchQuery?: GetSearchQueryPropsI): void => {
+    getUserList(searchQuery)
       .then((res: any) => {
-        // console.log(res);
-        this.setState({ userList: res.data });
-        this.setState({ searchResult: res.data });
+        console.log("user list", res);
+        this.setState({ userList: res.results, searchResult: res.results, userTotal: res.count });
       })
       .catch((err: any) => {
         console.error(err);
@@ -55,7 +56,9 @@ class UserManage extends React.Component<UserManagePropsI, UserManageStateI> {
   };
 
   componentDidMount(): void {
-    this.fetchUserList();
+    const { searchQuery } = this.state;
+
+    this.fetchUserList(searchQuery);
   }
 
   // getTableRowKey = (record: UserI): string => {
@@ -68,7 +71,7 @@ class UserManage extends React.Component<UserManagePropsI, UserManageStateI> {
       deactivateUsers(selectedRowKeys)
         .then((res: any) => {
           // console.log(res);
-          this.fetchUserList();
+          this.fetchUserList(this.state.searchQuery);
         })
         .catch((err: any) => {
           console.error(err);
@@ -82,7 +85,7 @@ class UserManage extends React.Component<UserManagePropsI, UserManageStateI> {
       activateUsers(selectedRowKeys)
         .then((res: any) => {
           // console.log(res);
-          this.fetchUserList();
+          this.fetchUserList(this.state.searchQuery);
         })
         .catch((err: any) => {
           console.error(err);
@@ -96,7 +99,7 @@ class UserManage extends React.Component<UserManagePropsI, UserManageStateI> {
       deleteUsers(selectedRowKeys)
         .then((res: any) => {
           // console.log(res);
-          this.fetchUserList();
+          this.fetchUserList(this.state.searchQuery);
         })
         .catch((err: any) => {
           console.error(err);
@@ -106,7 +109,7 @@ class UserManage extends React.Component<UserManagePropsI, UserManageStateI> {
 
   render(): ReactElement {
     const { user } = this.props;
-    const { selectedRowKeys, searchResult } = this.state;
+    const { selectedRowKeys, searchResult, userTotal } = this.state;
     const rowSelection = {
       selectedRowKeys,
       onChange: (selectedRowKeys: any, selectedRows: UserI[]) => {
@@ -239,14 +242,44 @@ class UserManage extends React.Component<UserManagePropsI, UserManageStateI> {
           <h2>用户管理</h2>
         </div>
         <div className="search-box">
-          <Form layout="inline">
-            <Form.Item label="检索词">
-              <Input
-                prefix={<KeyOutlined style={{ color: "rgba(0,0,0, .25)" }}></KeyOutlined>}
-                type="text"
-                placeholder="手机号 | 昵称"
-                onChange={this.searchUser}
-              />
+          <Form
+            layout="inline"
+            onFieldsChange={(val): void => {
+              if (!val[0]) return;
+              const { name, value } = val[0];
+
+              let searchQuery = Object.assign({}, this.state.searchQuery);
+
+              if (name.toString() === "dateRange") {
+                const start = value ? value[0].format("YYYY-MM-DD HH:ss:mm") : "";
+                const end = value ? value[1].format("YYYY-MM-DD HH:ss:mm") : "";
+
+                searchQuery = Object.assign(searchQuery, { start, end });
+              }
+
+              if (name.toString() === "keyword") {
+                searchQuery = Object.assign(searchQuery, { keyword: value });
+              }
+
+              this.setState({ searchQuery });
+            }}
+            onFinish={(vals: { dateRange: Moment[] | null; keyword: string }): void => {
+              const { searchQuery } = this.state;
+
+              console.log("searchQuery", searchQuery);
+              this.fetchUserList(searchQuery);
+            }}
+          >
+            <Form.Item label="检索词" name="keyword">
+              <Input placeholder="手机号 | 昵称" />
+            </Form.Item>
+            <Form.Item label="选择时间范围" name="dateRange">
+              <DatePicker.RangePicker></DatePicker.RangePicker>
+            </Form.Item>
+            <Form.Item>
+              <Button htmlType="submit" type="primary">
+                搜索
+              </Button>
             </Form.Item>
           </Form>
         </div>
@@ -260,6 +293,19 @@ class UserManage extends React.Component<UserManagePropsI, UserManageStateI> {
             className="user-manage-table"
             columns={columns}
             dataSource={searchResult}
+            pagination={{
+              total: userTotal,
+              onChange: (page) => {
+                const nextSearchQuery = Object.assign({}, this.state.searchQuery, {
+                  current: page,
+                });
+                this.setState({
+                  searchQuery: nextSearchQuery,
+                });
+
+                this.fetchUserList(nextSearchQuery);
+              },
+            }}
             onRow={(record) => {
               return {
                 onClick: (): void => {

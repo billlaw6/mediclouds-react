@@ -1,13 +1,10 @@
 import React, { FunctionComponent, ReactNode } from "react";
-import { Layout, Avatar, Space, Dropdown, Menu, Alert } from "antd";
+import { Layout, Space, Alert } from "antd";
 
 import ManagerSider from "_components/ManagerSider";
+import { RoleE } from "_types/account";
 
-import { useSelector } from "react-redux";
-import { StoreStateI } from "_types/core";
-import { AccountI, RoleE } from "_types/account";
-
-import { UserOutlined, WarningOutlined, CopyrightCircleOutlined } from "@ant-design/icons";
+import { WarningOutlined } from "@ant-design/icons";
 import Manager from "_pages/manager";
 import { useParams } from "react-router";
 import ManagerCreateAccount from "_pages/createAccount";
@@ -17,19 +14,20 @@ import ManagerCustomerList from "_pages/customerList";
 import BusinessAccountList from "_pages/businessAccountLIst";
 import OrderList from "_pages/orderList";
 import Account from "_pages/account";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import AccountRole from "_components/AccountRole";
 import HomeResource from "_pages/homeResource/HomeResource";
 import MdEditor from "_pages/mdEditor/MdEditor";
 import Gallery from "_pages/gallery/Gallery";
 import useAccount from "_hooks/useAccount";
+import Qrcode from "_pages/qrcode";
+import UserList from "_pages/userList";
 
 import "./style.less";
 
-const { Header, Footer, Content } = Layout;
+const { Header, Content } = Layout;
 
 const ManagerLayout: FunctionComponent = () => {
-  const history = useHistory();
   const { account, logout } = useAccount();
   const { name } = useParams<{ name: string }>();
 
@@ -37,6 +35,10 @@ const ManagerLayout: FunctionComponent = () => {
 
   const getContent = (): ReactNode => {
     switch (name) {
+      case "all-users":
+        return <UserList></UserList>;
+      case "qrcode":
+        return <Qrcode></Qrcode>;
       case "gallery":
         return <Gallery></Gallery>;
       case "account-settings":
@@ -69,37 +71,21 @@ const ManagerLayout: FunctionComponent = () => {
         <Header className="manager-layout-header">
           <div className="manager-layout-title">后台管理</div>
           <div className="manager-layout-avatar">
-            <Dropdown
-              overlay={
-                <Menu>
-                  <Menu.Item key="account">
-                    <Link to="/manager/account-settings">账户设置</Link>
-                  </Menu.Item>
-                  <Menu.Item
-                    key="logout"
-                    onClick={(): void => {
-                      logout()
-                        .then((): void => console.log("logout successed"))
-                        .catch((err) => console.log(err));
-                    }}
-                  >
-                    <span>登出</span>
-                  </Menu.Item>
-                </Menu>
-              }
-            >
-              <Avatar
-                shape="square"
-                src={account.avatar}
-                icon={<UserOutlined></UserOutlined>}
-                style={{ marginRight: "12px" }}
-              ></Avatar>
-            </Dropdown>
             <Space align="baseline">
               <span>
                 欢迎{role === RoleE.BUSINESS ? business_name : `${first_name}${last_name}`}
               </span>
               <AccountRole role={role}></AccountRole>
+              <span
+                className="manager-layout-logout"
+                onClick={(): void => {
+                  logout()
+                    .then((): void => console.log("logout successed"))
+                    .catch((err) => console.log(err));
+                }}
+              >
+                退出登录
+              </span>
             </Space>
           </div>
         </Header>

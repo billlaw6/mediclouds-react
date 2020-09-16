@@ -12,7 +12,7 @@ interface CellPhoneCodePropsI extends FormItemProps {
 
 let timer = -1;
 
-const CellPhoneCode: FunctionComponent<CellPhoneCodePropsI> = (props) => {
+const SmsCode: FunctionComponent<CellPhoneCodePropsI> = (props) => {
   const { loginType, captcha, cell_phone, className, ...others } = props;
   const [countdown, setCountdown] = useState(-1);
 
@@ -40,7 +40,7 @@ const CellPhoneCode: FunctionComponent<CellPhoneCodePropsI> = (props) => {
           <span
             style={{ cursor: "pointer" }}
             onClick={(): void => {
-              if (countdown >= 0 || !cell_phone || !captcha) return;
+              if (countdown >= 0 || !cell_phone) return;
               getSmsCode({ cell_phone, captcha })
                 .then((res) => {
                   setCountdown(60);
@@ -56,4 +56,4 @@ const CellPhoneCode: FunctionComponent<CellPhoneCodePropsI> = (props) => {
   );
 };
 
-export default CellPhoneCode;
+export default SmsCode;
