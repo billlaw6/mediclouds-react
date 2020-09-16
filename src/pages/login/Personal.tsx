@@ -1,7 +1,14 @@
 import React, { FunctionComponent, useState, useEffect } from "react";
+import { Button, Form, Input } from "antd";
+import SmsCode from "_components/SmsCode";
+
 import wechatScan from "_images/wechat-scan.png";
 
 import "./personal.less";
+import useAccount from "_hooks/useAccount";
+import Captcha from "./Captcha";
+
+const { Item: FormItem } = Form;
 
 const APPID = "wxed42db352deaa115";
 const WECHAT_URL = "https://open.weixin.qq.com/connect/qrconnect";
@@ -28,7 +35,11 @@ const QRCODE_URL =
   `#wechat_redirect`;
 
 const Personal: FunctionComponent = () => {
+  const { phoneLogin } = useAccount();
   const [hiddenScan, setHiddenScan] = useState(false);
+  const [loginType, setLoginType] = useState<"form" | "qrcode">("qrcode");
+  const [loginFormData, setLoginFormData] = useState<any>({});
+  const [captchaVal, setCaptchaVal] = useState<string>("");
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -40,22 +51,65 @@ const Personal: FunctionComponent = () => {
     };
   }, []);
 
+  const onFinish = () => {
+    if (!captchaVal) return;
+
+    phoneLogin(loginFormData, "/resources").then(
+      () => console.log("phone login successed"),
+      (err: any) => console.error(err),
+    );
+  };
+
   return (
     <div className="login-personal">
-      <div className={`login-personal-qrcode ${hiddenScan ? "hidden" : ""}`}>
-        <iframe
-          id="wechatQrcode"
-          title="WeChatLogin"
-          src={QRCODE_URL}
-          scrolling="no"
-          width="200px"
-          height="200px"
-        />
-        <img src={wechatScan} alt="wechat-scan" />
-      </div>
-      <span className="login-personal-tip">
-        <i className="iconfont iconic_WeChat"></i>
-        <span>打开微信，扫一扫登录</span>
+      {loginType === "form" ? (
+        <div className="login-personal-form">
+          <Form
+            onValuesChange={(vals) => {
+              setLoginFormData(Object.assign({}, loginFormData, vals));
+            }}
+            onFinish={onFinish}
+          >
+            <FormItem
+              label="手机号"
+              name="cell_phone"
+              rules={[{ required: true, message: "请输入手机号" }]}
+            >
+              <Input value={loginFormData["cell_phone"] || ""}></Input>
+            </FormItem>
+            <SmsCode loginType="phone" cell_phone={loginFormData["cell_phone"] || ""}></SmsCode>
+            <Captcha onChecked={(val): void => setCaptchaVal(val)}></Captcha>
+            <FormItem>
+              <Button type="primary" htmlType="submit">
+                登录
+              </Button>
+            </FormItem>
+          </Form>
+        </div>
+      ) : (
+        <>
+          <div className={`login-personal-qrcode ${hiddenScan ? "hidden" : ""}`}>
+            <iframe
+              id="wechatQrcode"
+              title="WeChatLogin"
+              src={QRCODE_URL}
+              scrolling="no"
+              width="200px"
+              height="200px"
+            />
+            <img src={wechatScan} alt="wechat-scan" />
+          </div>
+          <span className="login-personal-tip">
+            <i className="iconfont iconic_WeChat"></i>
+            <span>打开微信，扫一扫登录</span>
+          </span>
+        </>
+      )}
+      <span
+        className="login-personal-switch"
+        onClick={(): void => setLoginType(loginType === "form" ? "qrcode" : "form")}
+      >
+        {loginType === "form" ? "微信扫码登录" : "手机号登录"}
       </span>
     </div>
   );

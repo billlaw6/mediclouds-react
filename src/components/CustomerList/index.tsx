@@ -190,6 +190,7 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
                 .then((res) => console.log("del customer success", res))
                 .catch((err) => console.error(err));
             }}
+            customerBtns={null}
           ></ListControlBar>
           <Table
             rowKey="id"

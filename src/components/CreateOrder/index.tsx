@@ -27,17 +27,20 @@ const CreateOrder: FunctionComponent<CreateOrderPropsI> = (props) => {
     { key: OrderTypesE.CD_RECORD, value: "刻录光盘" },
     { key: OrderTypesE.EMR_COPY, value: "病案复印" },
   ]);
-  const [selectType, setSelectType] = useState<OrderTypesE>(OrderTypesE.DATA_STORAGE);
+  const [select, setSelect] = useState<{ key: OrderTypesE; value: any }>({
+    key: OrderTypesE.DATA_STORAGE,
+    value: "存储",
+  });
   const [comment, setComment] = useState("");
   const [confirmLoading, setConfirmLoading] = useState(false);
 
   const CreateOrderMenu = (): ReactElement => (
     <Menu
-      selectedKeys={[selectType || ""]}
-      defaultValue={[selectType]}
+      selectedKeys={[select.key || ""]}
+      defaultValue={[select.value]}
       onClick={({ key }): void => {
-        const nextSelectType = orderTypes.find((item) => item.key === key);
-        nextSelectType && setSelectType(nextSelectType.key);
+        const nextSelect = orderTypes.find((item) => item.key === key);
+        nextSelect && setSelect(nextSelect);
       }}
     >
       {orderTypes.map((item) => (
@@ -77,7 +80,7 @@ const CreateOrder: FunctionComponent<CreateOrderPropsI> = (props) => {
       {...others}
       onOk={(): void => {
         setConfirmLoading(true);
-        createOrder({ owner_id: ownerId, order_type: selectType || "", comment })
+        createOrder({ owner_id: ownerId, order_type: select.key || "", comment })
           .then((res) => {
             onSuccessed && onSuccessed(res);
           })
@@ -92,8 +95,7 @@ const CreateOrder: FunctionComponent<CreateOrderPropsI> = (props) => {
       <Form labelCol={{ span: 4 }}>
         <FormItem label="订单类型" name="order_type">
           <Dropdown trigger={["click"]} overlay={CreateOrderMenu}>
-            <Button>{selectType}</Button>
-            {/* <Button>{orderTypes.find((item) => item.key === selectType)}</Button> */}
+            <Button>{select.value}</Button>
           </Dropdown>
         </FormItem>
         <FormItem label="备注" name="comment">

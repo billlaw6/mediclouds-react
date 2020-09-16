@@ -22,7 +22,7 @@ import React, {
 import { Table, Modal } from "antd";
 import useAccount from "_hooks/useAccount";
 import { AccountI, RoleE } from "_types/account";
-import { delAccount, getAffiliatedList } from "_api/user";
+import { delAccount, disableUser, enableUser, getAffiliatedList } from "_api/user";
 import { ColumnsType } from "antd/es/table";
 import { Key } from "antd/es/table/interface";
 import Account from "_components/Account";
@@ -31,6 +31,7 @@ import ListControlBar from "_components/ListControlBar";
 import { ColumnType } from "antd/lib/table";
 
 import "./style.less";
+import { error } from "console";
 
 interface AccountListPropsI {
   id?: string; // 指定账户的ID 数据源为此ID的下属账户 没有的话就是当前账户
@@ -187,7 +188,19 @@ const AccountList: FunctionComponent<AccountListPropsI> = (props) => {
         onSearch={onSearch}
         onDel={(ids): void => {
           delAccount(ids)
-            .then((res) => console.log("del account success", res))
+            .then((res) => {
+              fetchData();
+            })
+            .catch((err) => console.error(err));
+        }}
+        onDisable={(ids): void => {
+          disableUser(ids)
+            .then(() => fetchData())
+            .catch((err) => console.error(err));
+        }}
+        onEnable={(ids): void => {
+          enableUser(ids)
+            .then(() => fetchData())
             .catch((err) => console.error(err));
         }}
       ></ListControlBar>

@@ -186,7 +186,12 @@ const OrderList: FunctionComponent = () => {
         maskClosable={false}
         keyboard={false}
       >
-        <OrderInfo info={currentOrder}></OrderInfo>
+        <OrderInfo
+          info={currentOrder}
+          onChange={(): void => {
+            fetchData();
+          }}
+        ></OrderInfo>
       </Modal>
     </>
   );

@@ -193,11 +193,14 @@ export const logout = async (): Promise<void> =>
 export const register: ApiFuncI<{ token: string; user_info: UserI }> = async (
   data: RegisterDataI,
 ) =>
-  await publicReq({
-    method: "POST",
-    url: "/register/",
-    data,
-  });
+  await publicReq(
+    {
+      method: "POST",
+      url: "/register/",
+      data,
+    },
+    false,
+  );
 
 /* 获取全部账户、用户 */
 export const getAllUser: ApiFuncI = async () =>

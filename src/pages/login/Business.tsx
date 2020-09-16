@@ -82,7 +82,7 @@ const Business: FunctionComponent = () => {
               name="cell_phone"
               rules={[{ required: loginType === "phone", message: "请输入手机号" }]}
             >
-              <Input value={loginFormData["username"] || ""}></Input>
+              <Input value={loginFormData["cell_phone"] || ""}></Input>
             </FormItem>
             {loginType === "phone" ? (
               <Captcha onChecked={(val): void => setCaptchaVal(val)}></Captcha>

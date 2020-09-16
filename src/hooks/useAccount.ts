@@ -84,14 +84,14 @@ export default () => {
   };
 
   /* 手机号登录 */
-  const phoneLogin = async (data: PhoneLoginDataI): Promise<void> => {
+  const phoneLogin = async (data: PhoneLoginDataI, url = "/manager"): Promise<void> => {
     try {
       const loginRes = await userApi.loginPhone(data);
       const { token, user_info } = loginRes;
       if (token) {
         setToken(token);
         dispatch({ type: AccountActionTypes.LOGIN_PHONE, payload: user_info });
-        history.replace("/manager");
+        history.replace(url);
       }
     } catch (error) {
       throw new Error(error);
@@ -137,7 +137,7 @@ export default () => {
       if (token) {
         setToken(token);
         dispatch({ type: AccountActionTypes.REGISTER, payload: user_info });
-        history.replace("/manager");
+        history.replace("/");
       }
     } catch (err) {
       throw new Error(err);

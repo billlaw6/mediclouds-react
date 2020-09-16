@@ -1,5 +1,4 @@
 import React, { FunctionComponent, useState } from "react";
-import { useHistory } from "react-router";
 import { OrderI } from "_types/order";
 import { Descriptions, Input, Form, Button, Space, Tabs, Popconfirm, Menu, Select } from "antd";
 import { Store } from "antd/lib/form/interface";
@@ -7,13 +6,15 @@ import { Store } from "antd/lib/form/interface";
 import OrderStatus from "_components/OrderStatus";
 import { WarningOutlined } from "@ant-design/icons";
 
-import "./style.less";
 import Uploader from "_components/Uploader";
 import { RoleE } from "_types/account";
 import { updateOrder } from "_api/order";
+
+import "./style.less";
+
 interface OrderInfoPropsI {
   info?: OrderI;
-  onChange?: (status: number, info: OrderI) => void;
+  onChange?: (info: OrderI) => void;
 }
 
 const { Item: DescItem } = Descriptions;
@@ -88,7 +89,7 @@ const OrderInfo: FunctionComponent<OrderInfoPropsI> = (props) => {
               {owner_role === RoleE.BUSINESS ? (
                 <DescItem label="企业用户名">{business_name}</DescItem>
               ) : (
-                <DescItem label="关联用户姓名">{`${first_name}${last_name}`}</DescItem>
+                <DescItem label="关联用户姓名">{`${first_name || ""}${last_name || ""}`}</DescItem>
               )}
               <DescItem label="备注">
                 <FormItem className="order-info-form-item" name="comment">
@@ -126,7 +127,7 @@ const OrderInfo: FunctionComponent<OrderInfoPropsI> = (props) => {
                       if (!preData) return;
 
                       updateOrder(order_number, preData)
-                        .then(() => console.log("successed"))
+                        .then((res) => onChange && onChange(res))
                         .catch((err) => console.error(err));
                     }}
                     okText="更新"

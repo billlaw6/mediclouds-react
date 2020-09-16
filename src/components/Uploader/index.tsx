@@ -82,47 +82,48 @@ const Uploader: FunctionComponent<UploaderPropsI> = (props) => {
     });
   }, [updateCell, uploadList]);
 
-  console.log("getList", getList());
-  console.log("onChange", onChange);
-
   /**
    * 上传
    *
    * @param {UploaderCellI} cell
    */
-  const upload = useCallback((cell: UploaderCellI): void => {
-    const { files, id } = cell;
-    const formData = new FormData();
+  const upload = useCallback(
+    (cell: UploaderCellI): void => {
+      const { files, id } = cell;
+      const formData = new FormData();
 
-    files.forEach((file) => {
-      formData.append("file", file);
-    });
-
-    formData.append("customer_id", customerId || "");
-    formData.append("order_number", orderNumber || "");
-
-    updateCell(id, { status: UploaderStatusE.UPLOADING });
-
-    uploadResources(formData, (progressEvent: ProgressEvent) => {
-      const { total, loaded } = progressEvent;
-
-      updateCell(id, {
-        progress: (loaded / total) * 100,
+      files.forEach((file) => {
+        formData.append("file", file);
       });
-    })
-      .then(() => {
+
+      formData.append("customer_id", customerId || "");
+      formData.append("order_number", orderNumber || "");
+
+      updateCell(id, { status: UploaderStatusE.UPLOADING });
+
+      uploadResources(formData, (progressEvent: ProgressEvent) => {
+        const { total, loaded } = progressEvent;
+
         updateCell(id, {
-          progress: 100,
-          status: UploaderStatusE.SUCCESS,
+          progress: (loaded / total) * 100,
+          status: UploaderStatusE.UPLOADING,
         });
       })
-      .catch((err) => {
-        console.error(err);
-        updateCell(id, {
-          status: UploaderStatusE.FAIL,
+        .then(() => {
+          updateCell(id, {
+            progress: 100,
+            status: UploaderStatusE.SUCCESS,
+          });
+        })
+        .catch((err) => {
+          console.error(err);
+          updateCell(id, {
+            status: UploaderStatusE.FAIL,
+          });
         });
-      });
-  }, []);
+    },
+    [customerId, orderNumber, updateCell],
+  );
 
   useEffect(() => {
     const preloadList = uploadList.filter((item) => item.status === UploaderStatusE.PRELOAD);
@@ -134,6 +135,9 @@ const Uploader: FunctionComponent<UploaderPropsI> = (props) => {
 
     onChange && onChange(uploadList.length ? getList() : null);
   }, [getList, onChange, upload, uploadList]);
+
+  const list = getList();
+  console.log("getList", list);
 
   return (
     <div className="uploader">
@@ -158,7 +162,7 @@ const Uploader: FunctionComponent<UploaderPropsI> = (props) => {
           <p>暂不支持压缩文件</p>
         </Space>
       </div>
-      {onChange ? null : <div className="uploader-list">{getList()}</div>}
+      {onChange ? null : <div className="uploader-list">{list}</div>}
     </div>
   );
 };
