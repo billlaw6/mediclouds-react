@@ -20,6 +20,7 @@ import ListControlBar from "_components/ListControlBar";
 
 import "./style.less";
 import useAccount from "_hooks/useAccount";
+import moment from "antd/node_modules/moment";
 
 const OrderList: FunctionComponent = () => {
   const { account } = useAccount();
@@ -40,9 +41,9 @@ const OrderList: FunctionComponent = () => {
       sorter: (a, b): number => parseInt(a.order_number, 10) - parseInt(b.order_number, 10),
     },
     {
-      title: "关联id",
-      key: "owner_id",
-      dataIndex: "owner_id",
+      title: "创建者",
+      key: "creator_username",
+      dataIndex: "creator_username",
       sorter: (a, b): number => a.owner_id.localeCompare(b.owner_id),
     },
     {
@@ -56,23 +57,22 @@ const OrderList: FunctionComponent = () => {
       title: "创建时间",
       key: "created_at",
       dataIndex: "created_at",
+      render: (val) => <span>{moment(val).format("YYYY-MM-DD hh:mm:ss")}</span>,
       sorter: (a, b): number => Date.parse(a.created_at) - Date.parse(b.created_at),
     },
-    {
-      title: "修改时间",
-      key: "updated_at",
-      dataIndex: "updated_at",
-      sorter: (a, b): number => Date.parse(a.updated_at) - Date.parse(b.updated_at),
-    },
+    // {
+    //   title: "修改时间",
+    //   key: "updated_at",
+    //   dataIndex: "updated_at",
+    //   render: (val) => <span>{moment(val).format("YYYY-MM-DD hh:mm:ss")}</span>,
+    //   sorter: (a, b): number => Date.parse(a.updated_at) - Date.parse(b.updated_at),
+    // },
     {
       title: "过期时间",
       key: "expire_date",
       dataIndex: "expire_date",
       sorter: (a, b): number => Date.parse(a.expire_date) - Date.parse(b.expire_date),
-      render: (val): ReactNode => {
-        return val;
-        // return <span>{Date.now() - Date.parse(val) >= 0 ? "已过期" : val}</span>;
-      },
+      render: (val) => <span>{moment(val).format("YYYY-MM-DD hh:mm:ss")}</span>,
     },
     {
       title: "资源数量",

@@ -55,6 +55,7 @@ class Resources extends Component<ResourcesPropsI, ResourcesStateI> {
   constructor(props: ResourcesPropsI) {
     super(props);
 
+    console.log("this.props", props);
     this.state = {
       viewType: ViewTypeEnum.GRID,
       sortType: SortTypeEnum.TIME,

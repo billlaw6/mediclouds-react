@@ -139,36 +139,38 @@ const Account: FunctionComponent<AccountPropsI> = (props) => {
             <Descriptions bordered>{getDescItem()}</Descriptions>
           </div>
         </TabPane>
-        <TabPane tab="统计信息" key="stats">
-          <div className="account-ctl">
-            <SyncOutlined
-              className="account-ctl-icon"
-              alt="刷新"
-              onClick={(): void => {
-                setStats(null);
+        {role === RoleE.PATIENT || role === RoleE.DOCTOR ? null : (
+          <TabPane tab="统计信息" key="stats">
+            <div className="account-ctl">
+              <SyncOutlined
+                className="account-ctl-icon"
+                alt="刷新"
+                onClick={(): void => {
+                  setStats(null);
 
-                getStats(id)
-                  .then((res) => setStats(res))
-                  .catch((err) => console.error(err));
-              }}
-            />
-          </div>
-          <div className="account-stats-content">
-            {stats ? (
-              <AccountStats stats={stats} role={role}></AccountStats>
-            ) : (
-              <div className="account-loading">
-                <Spin></Spin>
-              </div>
-            )}
-          </div>
-        </TabPane>
-        {role === RoleE.SUPER_ADMIN || role === RoleE.BUSINESS ? (
+                  getStats(id)
+                    .then((res) => setStats(res))
+                    .catch((err) => console.error(err));
+                }}
+              />
+            </div>
+            <div className="account-stats-content">
+              {stats ? (
+                <AccountStats stats={stats} role={role}></AccountStats>
+              ) : (
+                <div className="account-loading">
+                  <Spin></Spin>
+                </div>
+              )}
+            </div>
+          </TabPane>
+        )}
+        {role === RoleE.BUSINESS ? (
           <TabPane tab="员工" key="employeeList">
             <AccountList id={id} viewable={false}></AccountList>
           </TabPane>
         ) : null}
-        {role === RoleE.SUPER_ADMIN ? (
+        {/* {role === RoleE.SUPER_ADMIN ? (
           <>
             <TabPane tab="用户" key="customerList">
               用户列表
@@ -177,7 +179,7 @@ const Account: FunctionComponent<AccountPropsI> = (props) => {
               订单列表
             </TabPane>
           </>
-        ) : null}
+        ) : null} */}
       </Tabs>
     </div>
   );

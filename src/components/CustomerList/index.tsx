@@ -16,6 +16,8 @@ import { delAccount, getCustomerList } from "_api/user";
 import CreateOrder from "_components/CreateOrder";
 import { ResultStatusType } from "antd/lib/result";
 import ListControlBar from "_components/ListControlBar";
+import moment from "antd/node_modules/moment";
+import AccountStatus from "_components/AccountStatus";
 
 interface CustomerListPropsI {
   id?: string;
@@ -65,7 +67,7 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
       onFilter: (val, account): boolean => account.sex === (val as number),
     },
     {
-      title: "用户类型",
+      title: "顾客类型",
       key: "role",
       dataIndex: "role",
       render: (val): ReactNode => {
@@ -81,28 +83,44 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
       title: "注册日期",
       key: "date_joined",
       dataIndex: "date_joined",
+      render: (val) => <span>{moment(val).format("YYYY-MM-DD hh:mm:ss")}</span>,
       sorter: (a, b): number => Date.parse(a.date_joined) - Date.parse(b.date_joined),
     },
     {
       title: "最后登录",
       key: "last_login",
       dataIndex: "last_login",
+      render: (val) => {
+        if (!val) return null;
+        return <span>{moment(val).format("YYYY-MM-DD hh:mm:ss")}</span>;
+      },
       sorter: (a, b): number => Date.parse(a.last_login) - Date.parse(b.last_login),
+    },
+    {
+      title: "状态",
+      key: "is_active",
+      dataIndex: "is_active",
+      render: (val) => <AccountStatus status={val}></AccountStatus>,
     },
     {
       title: "订单",
       key: "id",
       dataIndex: "id",
       render: (val, record) => {
+        const { is_active } = record;
+
         return (
           <>
             <Space>
-              <Button type="primary" onClick={(): void => setCreateOrderId(val)}>
+              <Button
+                disabled={!is_active}
+                type="primary"
+                onClick={(): void => {
+                  is_active && setCreateOrderId(val);
+                }}
+              >
                 添加订单
               </Button>
-              {/* <Button type="ghost" onClick={(): void => setSelectedOrder(null)}>
-                查看订单
-              </Button> */}
             </Space>
           </>
         );
@@ -123,7 +141,7 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
     getCustomerList(id.current, searchQuery)
       .then((res) => setList({ total: res.count, arr: res.results }))
       .catch((err) => console.error(err));
-  }, [dateRange, pagination, searchVal]);
+  }, [dateRange, pagination.current, pagination.pageSize, searchVal]);
 
   /**
    *  更新页码触发
@@ -142,6 +160,7 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
    */
   const onSearch = (val: string): void => {
     setSearchVal(val);
+    setPagination(Object.assign({}, pagination, { current: 1 }));
   };
 
   const onDateChange = (dateStrings: string[]): void => setDateRange(dateStrings);
@@ -150,7 +169,7 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
     if (list) setList(undefined);
 
     fetchList();
-  }, [fetchList, pagination, searchVal]);
+  }, [fetchList, pagination.current, pagination.pageSize, searchVal]);
 
   return (
     <div className="customer-list">

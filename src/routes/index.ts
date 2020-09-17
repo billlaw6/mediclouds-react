@@ -60,14 +60,14 @@ const routes: RoutesI[] = [
     path: "/player",
     component: Player,
     layout: IS_MOBILE ? FullscreenLayout : DefaultLayout,
-    permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN, RoleE.EMPLOYEE, RoleE.DOCTOR],
+    permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN, RoleE.PATIENT, RoleE.DOCTOR],
   },
   {
     name: "upload",
     path: "/upload",
     component: Upload,
     layout: DefaultLayout,
-    permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN, RoleE.EMPLOYEE, RoleE.DOCTOR],
+    permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN, RoleE.PATIENT, RoleE.DOCTOR],
   },
   {
     name: "oauth",
@@ -84,14 +84,14 @@ const routes: RoutesI[] = [
     path: "/profile",
     component: Profile,
     layout: DefaultLayout,
-    permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN, RoleE.EMPLOYEE, RoleE.DOCTOR],
+    permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN, RoleE.PATIENT, RoleE.DOCTOR],
   },
   {
     name: "feedback",
     path: "/feedback",
     component: Feedback,
     layout: DefaultLayout,
-    permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN, RoleE.EMPLOYEE, RoleE.DOCTOR],
+    permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN, RoleE.PATIENT, RoleE.DOCTOR],
   },
   {
     name: "dashboard",

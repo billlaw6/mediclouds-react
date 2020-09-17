@@ -29,9 +29,9 @@ import Account from "_components/Account";
 import AccountRole from "_components/AccountRole";
 import ListControlBar from "_components/ListControlBar";
 import { ColumnType } from "antd/lib/table";
+import Nail from "_components/Nail";
 
 import "./style.less";
-import { error } from "console";
 
 interface AccountListPropsI {
   id?: string; // 指定账户的ID 数据源为此ID的下属账户 没有的话就是当前账户
@@ -76,7 +76,7 @@ const AccountList: FunctionComponent<AccountListPropsI> = (props) => {
         setList({ total: res.count, arr: list });
       })
       .catch((err) => console.error(err));
-  }, [filterRole, pagination, searchVal]);
+  }, [filterRole, pagination.pageSize, pagination.current, searchVal]);
 
   /**
    * 批量选择
@@ -103,13 +103,14 @@ const AccountList: FunctionComponent<AccountListPropsI> = (props) => {
    */
   const onSearch = (val: string): void => {
     setSearchVal(val);
+    setPagination(Object.assign({}, pagination, { current: 1 }));
   };
 
   useEffect(() => {
     if (list) setList(undefined);
 
     fetchData();
-  }, [fetchData, pagination, searchVal]);
+  }, [fetchData, pagination.pageSize, pagination.current, searchVal]);
 
   let columns: ColumnsType<AccountI> = [
     {
@@ -171,6 +172,32 @@ const AccountList: FunctionComponent<AccountListPropsI> = (props) => {
         { text: "员工账户", value: RoleE.EMPLOYEE },
       ],
       onFilter: (val, account): boolean => account.role === (val as RoleE),
+    },
+    {
+      title: "激活状态",
+      key: "is_active",
+      dataIndex: "is_active",
+      render: (val) => (
+        <Nail
+          target={`${val}`}
+          rules={[
+            {
+              key: "1",
+              content: {
+                text: "激活",
+                color: "green",
+              },
+            },
+            {
+              key: "0",
+              content: {
+                text: "禁用",
+                color: "red",
+              },
+            },
+          ]}
+        ></Nail>
+      ),
     },
   ];
 

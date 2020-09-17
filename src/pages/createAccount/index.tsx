@@ -4,9 +4,9 @@ import useAccount from "_hooks/useAccount";
 import { Form, Input, Radio, Button, Result } from "antd";
 import { useHistory } from "react-router";
 
-import "./style.less";
 import { createAccount } from "_api/user";
-import { matchRules, MatchRuleI } from "_helper";
+
+import "./style.less";
 
 const { Item: FormItem } = Form;
 
@@ -15,7 +15,9 @@ const ManagerCreateAccount: FunctionComponent = (props) => {
   const { account } = useAccount();
   const { role } = account;
 
-  const [selectedRole, setSelectedRole] = useState(RoleE.EMPLOYEE);
+  const [selectedRole, setSelectedRole] = useState(
+    role === RoleE.SUPER_ADMIN ? RoleE.BUSINESS : RoleE.EMPLOYEE,
+  );
   const [createStatus, setCreateStatus] = useState<"none" | "successed" | "error">("none");
 
   if (role === RoleE.EMPLOYEE || role === RoleE.PATIENT || role === RoleE.DOCTOR) history.goBack();
@@ -36,13 +38,20 @@ const ManagerCreateAccount: FunctionComponent = (props) => {
         员工账户
       </Radio.Button>
     );
-    const rules: MatchRuleI[] = [
-      { key: RoleE.MANAGER, level: 1, content: Employee },
-      { key: RoleE.BUSINESS, level: 2, content: ManagerAccount },
-      { key: RoleE.SUPER_ADMIN, level: 3, content: Business },
-    ];
 
-    return matchRules(rules, role);
+    switch (role) {
+      case RoleE.SUPER_ADMIN: {
+        return [Business];
+      }
+      case RoleE.BUSINESS: {
+        return [ManagerAccount, Employee];
+      }
+      case RoleE.MANAGER: {
+        return [Employee];
+      }
+      default:
+        return [];
+    }
   };
 
   const onSubmit = (vals: any): void => {
@@ -73,9 +82,13 @@ const ManagerCreateAccount: FunctionComponent = (props) => {
   return (
     <div className="manager-create-account">
       <Form
-        labelCol={{ span: selectedRole === RoleE.BUSINESS ? 8 : 4 }}
+        labelCol={{ span: 4 }}
         wrapperCol={{ span: 12 }}
-        initialValues={{ username: "", password: "", role: RoleE.EMPLOYEE }}
+        initialValues={{
+          username: "",
+          password: "",
+          role: selectedRole,
+        }}
         onFinish={onSubmit}
       >
         <FormItem label="账户类型" name="role" required>

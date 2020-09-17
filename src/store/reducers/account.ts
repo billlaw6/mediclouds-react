@@ -41,6 +41,7 @@ const accountReducer: Reducer<AccountStateI, ActionI<AccountActionTypes, Account
   const { type, payload } = action;
 
   switch (type) {
+    case AccountActionTypes.REGISTER:
     case AccountActionTypes.LOGIN_FORM:
     case AccountActionTypes.LOGIN_PHONE:
       return Object.assign({}, state, payload, { login: true });

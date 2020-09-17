@@ -42,7 +42,7 @@ const Feedback: FunctionComponent = () => {
       url: "/user/feedback-type/",
     })
       .then((res) => {
-        const types = (res.data as FeedbackTypeI[]).sort(
+        const types = (res as FeedbackTypeI[]).sort(
           (a, b) => parseInt(a.code, 10) - parseInt(b.code, 10),
         );
         setFeedbackTypes(types);

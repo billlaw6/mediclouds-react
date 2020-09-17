@@ -134,10 +134,12 @@ export default () => {
     try {
       const res = await userApi.register(data);
       const { token, user_info } = res;
+      alert(res.token);
+
       if (token) {
         setToken(token);
         dispatch({ type: AccountActionTypes.REGISTER, payload: user_info });
-        history.replace("/");
+        history.replace("/resources");
       }
     } catch (err) {
       throw new Error(err);

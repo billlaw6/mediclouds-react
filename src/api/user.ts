@@ -203,10 +203,11 @@ export const register: ApiFuncI<{ token: string; user_info: UserI }> = async (
   );
 
 /* 获取全部账户、用户 */
-export const getAllUser: ApiFuncI = async () =>
+export const getAllUser: ApiFuncI = async (searchQuery?: GetSearchQueryPropsI) =>
   await publicReq({
     method: "GET",
     url: "/user/all/",
+    params: searchQuery,
   });
 
 /* 批量删除账户、用户 */
