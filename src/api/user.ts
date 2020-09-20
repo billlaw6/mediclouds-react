@@ -14,7 +14,7 @@ import {
 } from "_types/api";
 
 export const wechatLogin: ApiFuncI = async (data: any) =>
-  await personalReq({ method: "POST", url: "/user/wechat-oauth2-login/" }, data);
+  await personalReq({ method: "POST", url: "/user/wechat-oauth2-login/", data });
 
 export const loginUser = async (data: any): Promise<{ key: string }> =>
   await personalReq({ method: "POST", data });
