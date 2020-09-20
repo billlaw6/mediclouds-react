@@ -1,11 +1,11 @@
 import React, { FunctionComponent } from "react";
 import QrcodeGenerator from "qrcode.react";
 import useAccount from "_hooks/useAccount";
+import { RoleE } from "_types/account";
 
 import config from "_config";
 
 import "./style.less";
-import { RoleE } from "_types/account";
 
 const Qrcode: FunctionComponent = () => {
   const { account } = useAccount();
@@ -24,10 +24,10 @@ const Qrcode: FunctionComponent = () => {
           ></QrcodeGenerator>
         </div>
       </div>
-      <div className="qrcode-pay">
+      {/* <div className="qrcode-pay">
         <h2 className="qrcode-title">付款二维码</h2>
         <div className="qrcode-content"></div>
-      </div>
+      </div> */}
     </div>
   );
 };

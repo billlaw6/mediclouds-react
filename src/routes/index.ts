@@ -78,11 +78,11 @@ const routes: RoutesI[] = [
     path: "/oauth",
     component: Oauth,
   },
-  {
-    name: "oauthAffiliate",
-    path: "/oauth-affiliate",
-    component: OauthAffilate,
-  },
+  // {
+  //   name: "oauthAffiliate",
+  //   path: "/oauth-affiliate",
+  //   component: OauthAffilate,
+  // },
   {
     name: "profile",
     path: "/profile",
@@ -97,13 +97,13 @@ const routes: RoutesI[] = [
     layout: DefaultLayout,
     permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN, RoleE.PATIENT, RoleE.DOCTOR],
   },
-  {
-    name: "dashboard",
-    path: "/dashboard",
-    component: Dashboard,
-    layout: FullscreenLayout,
-    permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN],
-  },
+  // {
+  //   name: "dashboard",
+  //   path: "/dashboard",
+  //   component: Dashboard,
+  //   layout: FullscreenLayout,
+  //   permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN],
+  // },
   {
     name: "manager",
     path: "/manager/:name?",
