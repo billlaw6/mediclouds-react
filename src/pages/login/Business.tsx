@@ -25,7 +25,7 @@ const Business: FunctionComponent = () => {
         name="form-login"
         labelCol={{ span: 6 }}
         onFinish={(vals): void => {
-          if (!captchaVal) return;
+          // if (!captchaVal) return;
 
           if (loginType === "form") {
             const { username, password, captcha: _captcha } = vals as FormLoginDataI;
@@ -72,9 +72,9 @@ const Business: FunctionComponent = () => {
             >
               <InputPassword value={loginFormData["password"] || ""}></InputPassword>
             </FormItem>
-            {loginType === "form" ? (
+            {/* {loginType === "form" ? (
               <Captcha onChecked={(val): void => setCaptchaVal(val)}></Captcha>
-            ) : null}
+            ) : null} */}
           </TabPane>
           <TabPane key="phone" tab="手机号登录">
             <FormItem
@@ -84,16 +84,16 @@ const Business: FunctionComponent = () => {
             >
               <Input value={loginFormData["cell_phone"] || ""}></Input>
             </FormItem>
-            {loginType === "phone" ? (
+            {/* {loginType === "phone" ? (
               <Captcha onChecked={(val): void => setCaptchaVal(val)}></Captcha>
-            ) : null}
-            {captchaVal ? (
-              <SmsCode
-                captcha={captchaVal}
-                loginType={loginType}
-                cell_phone={loginFormData["cell_phone"] || ""}
-              ></SmsCode>
-            ) : null}
+            ) : null} */}
+            {/* {captchaVal ? ( */}
+            <SmsCode
+              // captcha={captchaVal}
+              loginType={loginType}
+              cell_phone={loginFormData["cell_phone"] || ""}
+            ></SmsCode>
+            {/* ) : null} */}
           </TabPane>
         </Tabs>
         <FormItem>

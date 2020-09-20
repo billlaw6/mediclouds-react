@@ -23,13 +23,11 @@ import LinkButton from "_components/LinkButton/LinkButton";
 import ListDesc from "./components/ListDesc";
 import PrivacyNotice from "./components/PrivacyNotice";
 
-// import { checkDicomParseProgress } from "_helper";
+import { isNull } from "_helper";
 import Notify from "_components/Notify";
 import { personalReq } from "_axios";
 import { checkDicomParseProgress, getExamIndex } from "_api/dicom";
 import Empty from "./components/Empty/Empty";
-
-import { isUndefined, isNull } from "util";
 import {
   CloudUploadOutlined,
   ArrowLeftOutlined,
@@ -38,9 +36,10 @@ import {
   MenuOutlined,
   AppstoreOutlined,
 } from "@ant-design/icons";
+import { getExamList } from "_actions/resources";
 
 import "./resources.less";
-import { getExamList } from "_actions/resources";
+import { getImgList, getPdfList } from "_api/resources";
 
 const DEFAULT_PAGE_SIZE = 12;
 
@@ -61,6 +60,8 @@ class Resources extends Component<ResourcesPropsI, ResourcesStateI> {
       showNotify: false,
       poll: false,
       pageSize: DEFAULT_PAGE_SIZE,
+      pdfList: [],
+      imgList: [],
     };
 
     this.pollTimer = null;
@@ -72,6 +73,9 @@ class Resources extends Component<ResourcesPropsI, ResourcesStateI> {
       .catch((err) => console.error(err));
 
     this.fetchExamList();
+
+    // this.fetchImgList();
+    // this.fetchPdfList();
   }
 
   componentDidUpdate(): void {
@@ -85,6 +89,22 @@ class Resources extends Component<ResourcesPropsI, ResourcesStateI> {
 
     getExamIndex()
       .then((res) => getList && getList(res))
+      .catch((err) => console.error(err));
+  };
+
+  fetchImgList = (): void => {
+    const { user, account } = this.props;
+
+    getImgList(user.id || account.id)
+      .then((res) => console.log("img list", res))
+      .catch((err) => console.error(err));
+  };
+
+  fetchPdfList = (): void => {
+    const { user, account } = this.props;
+
+    getPdfList(user.id || account.id)
+      .then((res) => console.log("pdf list ", res))
       .catch((err) => console.error(err));
   };
 
@@ -522,10 +542,10 @@ class Resources extends Component<ResourcesPropsI, ResourcesStateI> {
 const mapStateToProps = (state: StoreStateI): MapStateToPropsI => ({
   examIndexList: state.resources.dicom,
   user: state.user,
+  account: state.account,
   dicomSettings: state.dicomSettings,
 });
 const mapDispatchToProps: MapDispatchToPropsI = {
-  // getList: getExamIndexListAction,
   getList: getExamList,
   delList: deleteExamIndexListAction,
   setSortBy: SetViewSortByAction,

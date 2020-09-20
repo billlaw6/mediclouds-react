@@ -52,7 +52,7 @@ const Personal: FunctionComponent = () => {
   }, []);
 
   const onFinish = () => {
-    if (!captchaVal) return;
+    // if (!captchaVal) return;
 
     phoneLogin(loginFormData, "/resources").then(
       () => console.log("phone login successed"),
@@ -78,7 +78,7 @@ const Personal: FunctionComponent = () => {
               <Input value={loginFormData["cell_phone"] || ""}></Input>
             </FormItem>
             <SmsCode loginType="phone" cell_phone={loginFormData["cell_phone"] || ""}></SmsCode>
-            <Captcha onChecked={(val): void => setCaptchaVal(val)}></Captcha>
+            {/* <Captcha onChecked={(val): void => setCaptchaVal(val)}></Captcha> */}
             <FormItem>
               <Button type="primary" htmlType="submit">
                 登录

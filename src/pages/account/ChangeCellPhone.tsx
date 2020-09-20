@@ -27,11 +27,11 @@ const ChangeCellPhone: FunctionComponent<ChangeCellPhonePropsI> = (props) => {
       </FormItem>
       <SmsCode
         cell_phone={cellPhone}
-        captcha={captcha}
+        // captcha={captcha}
         className="account-item"
         loginType="phone"
       />
-      <Captcha className="account-item" onChecked={(val): void => setCaptcha(val)} />
+      {/* <Captcha className="account-item" onChecked={(val): void => setCaptcha(val)} /> */}
       <FormItem className="account-item">
         <Button type="primary">更新手机号</Button>
       </FormItem>

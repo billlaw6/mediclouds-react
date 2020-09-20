@@ -2,8 +2,13 @@ import { personalReq } from "_axios";
 import { ReactNode } from "react";
 import { GetSearchQueryPropsI } from "_types/api";
 import CryptoJS from "crypto-js";
+import { type } from "os";
 
 export const isArray = (arr: any): boolean => Array.isArray(arr);
+export const isUndefined = (val: any): boolean => typeof val === "undefined";
+export const isNull = (val: any): boolean =>
+  Object.prototype.toString.call(val) === "[object Null]";
+
 export const isIE = (): boolean => navigator.userAgent.indexOf("MSIE") > -1;
 
 /* 加密 */

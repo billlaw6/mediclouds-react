@@ -1,4 +1,6 @@
 import { publicReq } from "_axios";
+import { SearchQueryResI } from "_types/api";
+import { ExamIndexListI } from "_types/core";
 
 /**
  * 上传资源
@@ -22,9 +24,23 @@ export const uploadResources = async (
   });
 };
 
-/* 获取dicom资源列表 */
-export const getDicomList = async (id: string) =>
+/* 获取dicom检查列表 */
+export const getDicomList = async (id: string): Promise<SearchQueryResI<ExamIndexListI[]>> =>
   await publicReq({
     method: "GET",
-    url: "/resources/dicom-list/",
+    url: `/resources/exam-list/${id}/`,
+  });
+
+/* 获取pdf资源列表 */
+export const getPdfList = async (id: string) =>
+  await publicReq({
+    method: "GET",
+    url: `/resources/pdf-list/${id}/`,
+  });
+
+/* 获取图片资源列表 */
+export const getImgList = async (id: string) =>
+  await publicReq({
+    method: "GET",
+    url: `/resources/img-list/${id}/`,
   });

@@ -1,5 +1,5 @@
 import { ExamIndexI } from "_types/api";
-import { CustomerI } from "_types/account";
+import { AccountI, CustomerI } from "_types/account";
 import {
   getExamIndexListAction,
   deleteExamIndexListAction,
@@ -9,10 +9,12 @@ import {
 import { RouteComponentProps } from "react-router";
 import { ReactElement } from "react";
 import { getExamList } from "_actions/resources";
+import { ImgI, PdfI } from "_types/resources";
 
 export interface MapStateToPropsI {
   examIndexList: ExamIndexI[];
   user: CustomerI;
+  account: AccountI;
   dicomSettings: {
     sortBy: SortTypeEnum;
     viewMode: ViewTypeEnum;
@@ -37,6 +39,8 @@ export interface ResourcesStateI {
   showNotify: boolean; // 是否显示提示
   poll: boolean; // 是否开启轮询
   pageSize: number; // 每页展示的数量
+  pdfList: PdfI[]; // pdf列表
+  imgList: ImgI[]; // pdf列表
 }
 
 // 排序类型
