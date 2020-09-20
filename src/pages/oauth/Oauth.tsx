@@ -9,6 +9,7 @@ const Oauth: FunctionComponent = () => {
 
   const { code } = query;
 
+  console.log("query", query);
   if (process.env.NODE_ENV === "development") return null;
 
   if (code) {
