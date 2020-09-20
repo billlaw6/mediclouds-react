@@ -6,6 +6,7 @@ export interface OrderI {
   order_number: string; // 订单号
   order_type: string; // 订单类型
   owner_id: string; // 订单拥有者id
+  order_price: number; // 订单金额 单位：分
   owner_username: string; // 订单拥有者用户名
   owner_role: RoleE; // 订单拥有者role类型
   first_name: string; // 用户真实姓 first_name
@@ -35,6 +36,7 @@ export interface UpdateOrderDataI {
   flag?: 0 | 1 | 2 | 3 | 4;
 }
 
+/* 订单类型 */
 export enum OrderTypesE {
   DATA_STORAGE = "data_storage",
   EMR_COPY = "EMR_copy",

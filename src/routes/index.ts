@@ -26,7 +26,7 @@ import Manager from "_pages/manager";
 import ManagerLayout from "_layout/Manager";
 import AccountRole from "_components/AccountRole";
 import Register from "_pages/register";
-import WechatPay from "_pages/pay/WechatPay";
+import Pay from "_pages/pay/index";
 
 const IS_MOBILE = /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent);
 
@@ -35,8 +35,11 @@ const routes: RoutesI[] = [
     name: "home",
     path: "/",
     exact: true,
-    component: Home,
-    layout: FullscreenLayout,
+    component: Resources,
+    layout: DefaultLayout,
+    permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN, RoleE.DOCTOR, RoleE.PATIENT],
+    // component: Home,
+    // layout: FullscreenLayout,
   },
   {
     name: "resources",
@@ -158,7 +161,7 @@ const routes: RoutesI[] = [
     path: "/register",
     component: Register,
   },
-  { name: "wechatPay", path: "/wechat-pay", component: WechatPay },
+  { name: "pay", path: "/pay", component: Pay },
 ];
 
 export default routes;

@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import { OrderI } from "_types/order";
 import { Descriptions, Input, Form, Button, Space, Tabs, Popconfirm, Menu, Select } from "antd";
 import { Store } from "antd/lib/form/interface";
@@ -13,6 +13,7 @@ import QrcodeGenerator from "qrcode.react";
 
 import "./style.less";
 import config from "_config";
+import { getWechatPayQrcode } from "_api/pay";
 
 interface OrderInfoPropsI {
   info?: OrderI;
@@ -26,6 +27,15 @@ const { TabPane } = Tabs;
 const OrderInfo: FunctionComponent<OrderInfoPropsI> = (props) => {
   const { info, onChange } = props;
   const [preData, setPreData] = useState<{ flag: 0 | 1 | 2 | 3 | 4; comment: string }>();
+  const [wechatQrcodeUrl, setWechatQrcodeUrl] = useState("");
+
+  useEffect(() => {
+    if (info && info.flag < 2) {
+      getWechatPayQrcode(info.order_number)
+        .then((res) => setWechatQrcodeUrl(res))
+        .catch((err) => console.error(err));
+    }
+  }, []);
 
   if (!info) return null;
 
@@ -38,6 +48,7 @@ const OrderInfo: FunctionComponent<OrderInfoPropsI> = (props) => {
     created_at,
     charged_at,
     updated_at,
+    order_price,
     first_name,
     last_name,
     owner_role,
@@ -68,6 +79,7 @@ const OrderInfo: FunctionComponent<OrderInfoPropsI> = (props) => {
               <DescItem label="订单号">{order_number}</DescItem>
               <DescItem label="创建时间">{created_at}</DescItem>
               <DescItem label="创建者">{creator_username}</DescItem>
+              <DescItem label="订单金额">{order_price}</DescItem>
               <DescItem label="订单状态">
                 <FormItem name="flag">
                   {flag > 2 ? (
@@ -98,12 +110,11 @@ const OrderInfo: FunctionComponent<OrderInfoPropsI> = (props) => {
                   <Input.TextArea></Input.TextArea>
                 </FormItem>
               </DescItem>
-              <DescItem label="扫码付款" span={2}>
-                <QrcodeGenerator
-                  value={`${config.registerBaseUrl}/?order_number=${encodeURI(order_number)}}`}
-                  size={256}
-                ></QrcodeGenerator>
-              </DescItem>
+              {flag < 2 ? (
+                <DescItem label="扫码付款">
+                  <QrcodeGenerator value={wechatQrcodeUrl || ""} size={256}></QrcodeGenerator>
+                </DescItem>
+              ) : null}
             </Descriptions>
 
             <div className="order-info-ctl">

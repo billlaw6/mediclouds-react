@@ -15,5 +15,5 @@ export default {
   personalBaseUrl: `${BASE_URL}/rest-api`,
   publicBaseUrl: `${BASE_URL}/public-api`,
   registerBaseUrl: isDev ? "http://192.168.31.75:3000/register" : `${PROD_URL}/register`,
-  wechatPayBaseUrl: isDev ? "http://192.168.31.75:3000/wechat-pay" : `${PROD_URL}/wechat-pay`,
+  wechatPayBaseUrl: isDev ? "http://192.168.31.75:3000/pay" : `${PROD_URL}/pay`,
 };

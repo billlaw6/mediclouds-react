@@ -8,8 +8,8 @@
 
 import React, { FunctionComponent, useState, ReactNode } from "react";
 import { AccountI, RoleE, StatsI } from "_types/account";
-import { Tabs, Input, Descriptions, Spin } from "antd";
-import { EditOutlined, SyncOutlined, SaveOutlined } from "@ant-design/icons";
+import { Tabs, Input, Descriptions, Spin, DatePicker, Space } from "antd";
+import { EditOutlined, SyncOutlined, SaveOutlined, CloseOutlined } from "@ant-design/icons";
 import { getStats } from "_api/user";
 import AccountList from "_components/AccountList";
 import AccountStats from "./AccountStats";
@@ -85,25 +85,56 @@ const Account: FunctionComponent<AccountPropsI> = (props) => {
     return [
       ...Basic,
       <DescItem key="first_name" label="姓">
-        <Input bordered={false} disabled={!editMode} value={getVal("first_name")}></Input>
+        <Input
+          bordered={editMode ? true : false}
+          disabled={!editMode}
+          value={getVal("first_name")}
+          onChange={(e): void => setVal("first_name", e.currentTarget.value)}
+        ></Input>
       </DescItem>,
       <DescItem key="last_name" label="名">
-        <Input bordered={false} disabled={!editMode} value={getVal("last_name")}></Input>
+        <Input
+          bordered={editMode ? true : false}
+          disabled={!editMode}
+          value={getVal("last_name")}
+          onChange={(e): void => setVal("last_name", e.currentTarget.value)}
+        ></Input>
       </DescItem>,
       <DescItem key="nickname" label="昵称">
-        <Input bordered={false} disabled={!editMode} value={getVal("nickname")}></Input>
+        <Input
+          bordered={editMode ? true : false}
+          disabled={!editMode}
+          value={getVal("nickname")}
+          onChange={(e): void => setVal("nickname", e.currentTarget.value)}
+        ></Input>
       </DescItem>,
       <DescItem key="address" label="地址">
-        <Input bordered={false} disabled={!editMode} value={getVal("address")}></Input>
+        <Input
+          bordered={editMode ? true : false}
+          disabled={!editMode}
+          value={getVal("address")}
+          onChange={(e): void => setVal("address", e.currentTarget.value)}
+        ></Input>
       </DescItem>,
       <DescItem key="sex" label="性别">
         {getVal("sex")}
       </DescItem>,
       <DescItem key="age" label="年龄">
-        <Input bordered={false} disabled={!editMode} value={getVal("age")}></Input>
+        {editMode ? (
+          <DatePicker
+            onChange={(val) => val && setVal("birthday", val.format("YYYY-MM-DD"))}
+          ></DatePicker>
+        ) : (
+          getVal("age")
+        )}
       </DescItem>,
       <DescItem key="sign" label="签名">
-        <Input bordered={false} disabled={!editMode} value={getVal("sign")}></Input>
+        <Input
+          bordered={editMode ? true : false}
+          disabled={!editMode}
+          value={getVal("sign")}
+          onChange={(e) => setVal("sign", e.currentTarget.value)}
+        ></Input>
       </DescItem>,
       <DescItem key="recommended_users" label="邀请人数">
         {recommended_users.length}
@@ -126,7 +157,16 @@ const Account: FunctionComponent<AccountPropsI> = (props) => {
         <TabPane tab="账户信息" key="info">
           <div className="account-ctl">
             {editMode ? (
-              <SaveOutlined className="account-ctl-icon" alt="保存" onClick={updateAccount} />
+              <Space>
+                <CloseOutlined
+                  alt="取消"
+                  onClick={(): void => {
+                    setPreUpdateData({});
+                    setEditMode(false);
+                  }}
+                />
+                <SaveOutlined className="account-ctl-icon" alt="保存" onClick={updateAccount} />
+              </Space>
             ) : (
               <EditOutlined
                 className="account-ctl-icon"
@@ -170,16 +210,6 @@ const Account: FunctionComponent<AccountPropsI> = (props) => {
             <AccountList id={id} viewable={false}></AccountList>
           </TabPane>
         ) : null}
-        {/* {role === RoleE.SUPER_ADMIN ? (
-          <>
-            <TabPane tab="用户" key="customerList">
-              用户列表
-            </TabPane>
-            <TabPane tab="订单" key="orderList">
-              订单列表
-            </TabPane>
-          </>
-        ) : null} */}
       </Tabs>
     </div>
   );

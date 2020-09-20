@@ -82,6 +82,11 @@ const OrderList: FunctionComponent = () => {
       sorter: (a, b): number => a.uploaded_resources - b.uploaded_resources,
     },
     {
+      title: "备注",
+      key: "comment",
+      dataIndex: "comment",
+    },
+    {
       title: "订单状态",
       key: "flag",
       dataIndex: "flag",

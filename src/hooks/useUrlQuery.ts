@@ -5,8 +5,7 @@ import { useLocation } from "react-router";
  * @return {object} params
  */
 export default <T = any>(): any => {
-  const location = useLocation();
-  const search = location.search.substring(1);
+  const search = window.location.search.substring(1);
   const param: { [key: string]: any } = {};
   const arr = search.split("&");
 
