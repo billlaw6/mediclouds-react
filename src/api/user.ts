@@ -1,5 +1,5 @@
 import { personalReq, publicReq } from "./index";
-import { AccountI, StatsI } from "_types/account";
+import { AccountI, CustomerI, StatsI } from "_types/account";
 import { CreateAccountDataI } from "_types/account";
 import {
   ApiFuncI,
@@ -106,7 +106,7 @@ export const getAffiliatedList = async (
 export const getCustomerList = async (
   id: string,
   searchQuery?: GetSearchQueryPropsI,
-): Promise<SearchQueryResI<AccountI>> =>
+): Promise<SearchQueryResI<CustomerI>> =>
   await publicReq({
     method: "GET",
     url: `/user/customer-list/${id}/`,
@@ -205,9 +205,9 @@ export const register: ApiFuncI<{ token: string; user_info: UserI }> = async (
 /* 获取全部账户、用户 */
 export const getAllUser: ApiFuncI = async (searchQuery?: GetSearchQueryPropsI) =>
   await publicReq({
-    method: "GET",
+    method: "POST",
     url: "/user/all/",
-    params: searchQuery,
+    data: searchQuery,
   });
 
 /* 批量删除账户、用户 */

@@ -9,7 +9,7 @@ import React, {
   useCallback,
 } from "react";
 import Table, { ColumnsType } from "antd/lib/table";
-import { AccountI, RoleE } from "_types/account";
+import { CustomerI, RoleE, UserI } from "_types/account";
 import { Space, Button, Result } from "antd";
 import useAccount from "_hooks/useAccount";
 import { delAccount, getCustomerList } from "_api/user";
@@ -26,7 +26,7 @@ interface CustomerListPropsI {
 const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
   const { account } = useAccount();
   const id = useRef<string>(props.id || account.id);
-  const [list, setList] = useState<{ total: number; arr: AccountI[] }>();
+  const [list, setList] = useState<{ total: number; arr: CustomerI[] }>();
   const [createOrderId, setCreateOrderId] = useState<string | null>(null);
   const [orderStatus, setOrderStatus] = useState<null | {
     status: ResultStatusType;
@@ -36,10 +36,11 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
   const [pagination, setPagination] = useState({ pageSize: 10, current: 1 }); // 选择的页码
   const [searchVal, setSearchVal] = useState(""); // 搜索的内容
   const [dateRange, setDateRange] = useState<string[]>();
+  const [filters, setFilters] = useState<any>(); // 过滤条件
 
   const onSelectChange = (selectedRowKeys: Key[]): void => setSelected(selectedRowKeys as string[]);
 
-  const colums: ColumnsType<AccountI> = [
+  const colums: ColumnsType<CustomerI> = [
     {
       title: "账户名",
       key: "username",
@@ -64,7 +65,7 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
         { text: "女", value: 2 },
         { text: "保密", value: 0 },
       ],
-      onFilter: (val, account): boolean => account.sex === (val as number),
+      // onFilter: (val, account): boolean => account.sex === (val as number),
     },
     {
       title: "顾客类型",
@@ -77,7 +78,7 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
         { text: "医生", value: RoleE.DOCTOR },
         { text: "患者", value: RoleE.PATIENT },
       ],
-      onFilter: (val, account): boolean => account.role === (val as RoleE),
+      // onFilter: (val, account): boolean => account.role === (val as RoleE),
     },
     {
       title: "注册日期",
@@ -100,6 +101,10 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
       title: "状态",
       key: "is_active",
       dataIndex: "is_active",
+      filters: [
+        { text: "已启用", value: 1 },
+        { text: "已禁用", value: 0 },
+      ],
       render: (val) => <AccountStatus status={val}></AccountStatus>,
     },
     {
@@ -132,7 +137,7 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
     if (!id.current) return;
 
     const { current, pageSize } = pagination;
-    let searchQuery = { keyword: searchVal, current, size: pageSize };
+    let searchQuery = { keyword: searchVal, current, size: pageSize, filters };
     if (dateRange)
       searchQuery = Object.assign({}, searchQuery, {
         start: dateRange[0],
@@ -141,7 +146,7 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
     getCustomerList(id.current, searchQuery)
       .then((res) => setList({ total: res.count, arr: res.results }))
       .catch((err) => console.error(err));
-  }, [dateRange, pagination.current, pagination.pageSize, searchVal]);
+  }, [dateRange, pagination.current, pagination.pageSize, searchVal, filters]);
 
   /**
    *  更新页码触发
@@ -169,7 +174,7 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
     if (list) setList(undefined);
 
     fetchList();
-  }, [fetchList, pagination.current, pagination.pageSize, searchVal]);
+  }, [fetchList, pagination.current, pagination.pageSize, searchVal, filters]);
 
   return (
     <div className="customer-list">
@@ -224,6 +229,17 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
               total: list ? list.total : 0,
               onChange: onChangePagination,
               onShowSizeChange: onChangePagination,
+            }}
+            onChange={(pagination, filters) => {
+              const _filters: any = {};
+
+              for (const key in filters) {
+                const val = filters[key];
+
+                if (val) _filters[key] = val;
+              }
+
+              setFilters(_filters);
             }}
           ></Table>
         </>

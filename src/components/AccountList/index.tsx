@@ -30,13 +30,14 @@ import AccountRole from "_components/AccountRole";
 import ListControlBar from "_components/ListControlBar";
 import { ColumnType } from "antd/lib/table";
 import Nail from "_components/Nail";
+import { UserI } from "_types/account";
 
 import "./style.less";
 
 interface AccountListPropsI {
   id?: string; // 指定账户的ID 数据源为此ID的下属账户 没有的话就是当前账户
   viewable?: boolean; // 是否能查看下属账户的详细信息（弹出Modal)
-  filterRole?: RoleE[]; // 过滤显示的角色类型 填入的被过滤
+  filterRole?: RoleE[]; // 过滤显示的角色类型
   filterCol?: string[]; // 过滤显示的列 填入列id 填入的被过滤
   searchPlaceholder?: string; // 搜索框的placeholder
 }
@@ -49,7 +50,8 @@ const AccountList: FunctionComponent<AccountListPropsI> = (props) => {
   const [selected, setSelected] = useState<string[]>(); // 批量选择的账户id
   const [pagination, setPagination] = useState({ pageSize: 10, current: 1 }); // 选择的页码
   const [searchVal, setSearchVal] = useState(""); // 搜索的内容
-  // const [selectMode, setSelectMode] = useState(false); // 切换选择模式
+  const [filters, setFilters] = useState<any>(filterRole ? { role: filterRole } : undefined); // 过滤内容
+  const [activeSelectSuperior, setActiveSelectSuperior] = useState(false);
 
   const id = useRef<string>(props.id || account.id);
 
@@ -63,20 +65,13 @@ const AccountList: FunctionComponent<AccountListPropsI> = (props) => {
 
     const { current, pageSize } = pagination;
 
-    getAffiliatedList(id.current, { keyword: searchVal, current, size: pageSize })
+    getAffiliatedList(id.current, { keyword: searchVal, current, size: pageSize, filters })
       .then((res) => {
-        let { results: list } = res;
-
-        if (filterRole)
-          list = list.filter((item) => {
-            const { role } = item;
-            return filterRole.indexOf(role) < 0;
-          });
-
+        const { results: list } = res;
         setList({ total: res.count, arr: list });
       })
       .catch((err) => console.error(err));
-  }, [filterRole, pagination.pageSize, pagination.current, searchVal]);
+  }, [filterRole, pagination.pageSize, pagination.current, searchVal, filters]);
 
   /**
    * 批量选择
@@ -84,7 +79,13 @@ const AccountList: FunctionComponent<AccountListPropsI> = (props) => {
    * @param {*} props
    * @returns
    */
-  const onSelectChange = (selectedRowKeys: Key[]): void => setSelected(selectedRowKeys as string[]);
+  const onSelectChange = (selectedRowKeys: Key[], row: AccountI[]): void => {
+    const _role = row[0].role;
+    if (row.some((item) => item.role === _role)) setActiveSelectSuperior(true);
+    else setActiveSelectSuperior(false);
+
+    setSelected(selectedRowKeys as string[]);
+  };
 
   /**
    *  更新页码触发
@@ -110,7 +111,7 @@ const AccountList: FunctionComponent<AccountListPropsI> = (props) => {
     if (list) setList(undefined);
 
     fetchData();
-  }, [fetchData, pagination.pageSize, pagination.current, searchVal]);
+  }, [fetchData, pagination.pageSize, pagination.current, searchVal, filters]);
 
   let columns: ColumnsType<AccountI> = [
     {
@@ -177,6 +178,10 @@ const AccountList: FunctionComponent<AccountListPropsI> = (props) => {
       title: "激活状态",
       key: "is_active",
       dataIndex: "is_active",
+      filters: [
+        { text: "已启用", value: 1 },
+        { text: "已停用", value: 0 },
+      ],
       render: (val) => (
         <Nail
           target={`${val}`}
@@ -206,6 +211,8 @@ const AccountList: FunctionComponent<AccountListPropsI> = (props) => {
       const { dataIndex } = item as ColumnType<AccountI>;
       return filterCol.indexOf(dataIndex as string) < 0;
     });
+
+  console.log("list", list);
 
   return (
     <div className="account-list">
@@ -243,6 +250,16 @@ const AccountList: FunctionComponent<AccountListPropsI> = (props) => {
             viewable && setCurrentAccount(record);
           },
         })}
+        onChange={(pagination, onChangeFilters) => {
+          const _filters: any = {};
+
+          for (const key in onChangeFilters) {
+            const val = onChangeFilters[key];
+
+            if (val) _filters[key] = val;
+          }
+          setFilters(Object.assign({}, filters, _filters));
+        }}
         pagination={{
           defaultPageSize: 10,
           defaultCurrent: 1,

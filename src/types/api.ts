@@ -50,6 +50,10 @@ export interface CaptchaI {
   image: string; // 验证码图片的base64编码字符串
 }
 
+export interface FiltersI {
+  [key: string]: string[];
+}
+
 // 查询参数
 export interface GetSearchQueryPropsI {
   id?: string;
@@ -60,6 +64,7 @@ export interface GetSearchQueryPropsI {
   ascend?: 0 | 1; // 正序逆序
   sort?: string; // 排序规则
   keyword?: string; // 检查关键字
+  filters?: FiltersI; // 过滤
 }
 
 // 查询返回结构

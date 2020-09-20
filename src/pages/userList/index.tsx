@@ -8,9 +8,9 @@ import { ColumnsType, TablePaginationConfig } from "antd/es/table";
 import AccountRole from "_components/AccountRole";
 import Nail from "_components/Nail";
 import ListControlBar from "_components/ListControlBar";
+import Account from "_components/Account";
 
 import "./style.less";
-import Account from "_components/Account";
 
 const UserList: FunctionComponent = () => {
   const [list, setList] = useState<UserI[]>(); // 获取用户资源
@@ -21,6 +21,7 @@ const UserList: FunctionComponent = () => {
     current: 1,
     total: 0,
   }); // 选择的页码
+  const [filters, setFilters] = useState<any>();
   const [searchVal, setSearchVal] = useState("");
 
   console.log("pagination", pagination);
@@ -46,7 +47,12 @@ const UserList: FunctionComponent = () => {
   const fetchList = () => {
     const { pageSize, current } = pagination;
 
-    getAllUser({ current, size: pageSize, keyword: searchVal })
+    getAllUser({
+      current,
+      size: pageSize,
+      keyword: searchVal,
+      filters: filters,
+    })
       .then((res) => {
         setList(res.results);
         setPagination(Object.assign({}, pagination, { total: res.count }));
@@ -56,7 +62,7 @@ const UserList: FunctionComponent = () => {
 
   useEffect(() => {
     fetchList();
-  }, [searchVal, pagination.current]);
+  }, [searchVal, pagination.current, filters]);
 
   const columns: ColumnsType<UserI> = [
     { title: "id", dataIndex: "id", key: "id" },
@@ -73,7 +79,7 @@ const UserList: FunctionComponent = () => {
         { text: "患者", value: RoleE.PATIENT },
         { text: "医生", value: RoleE.DOCTOR },
       ],
-      onFilter: (val, account): boolean => account.role === (val as RoleE),
+      // onFilter: (val, account): boolean => account.role === (val as RoleE),
     },
     {
       title: "用户名",
@@ -90,6 +96,10 @@ const UserList: FunctionComponent = () => {
       title: "状态",
       key: "is_active",
       dataIndex: "is_active",
+      filters: [
+        { text: "已启用", value: "1" },
+        { text: "已禁用", value: "0" },
+      ],
       render: (val) => {
         console.log("val", val);
         return (
@@ -153,6 +163,19 @@ const UserList: FunctionComponent = () => {
             setCurrentAccount(record);
           },
         })}
+        onChange={(pagination, filters, sorter) => {
+          console.log("pagination: ", pagination);
+          console.log("filters", filters);
+          console.log("sorter", sorter);
+          const _filters: any = {};
+
+          for (const key in filters) {
+            const val = filters[key];
+
+            if (val) _filters[key] = val;
+          }
+          setFilters(_filters);
+        }}
         pagination={{
           ...pagination,
           onChange: onChangePagination,

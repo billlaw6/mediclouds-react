@@ -11,18 +11,12 @@
 */
 
 import React, { FunctionComponent, useState } from "react";
-import { Tabs, Form, Input } from "antd";
 
 import LoginBtn from "./LoginBtn";
-import useAccount from "_hooks/useAccount";
 
 import logo from "_images/logo.png";
 import welcome from "_assets/videos/welcome.mp4";
 
-import { useSelector } from "react-redux";
-import { StoreStateI } from "_types/core";
-import { CustomerI, AccountI } from "_types/account";
-import { useHistory } from "react-router";
 import Personal from "./Personal";
 import Business from "./Business";
 

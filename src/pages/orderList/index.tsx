@@ -32,6 +32,7 @@ const OrderList: FunctionComponent = () => {
   const [pagination, setPagination] = useState({ pageSize: 10, current: 1 }); // 选择的页码
   const [searchVal, setSearchVal] = useState(""); // 搜索的内容
   const [dateRange, setDateRange] = useState<string[]>(); // 日期范围
+  const [filters, setFilters] = useState<any>(); // 过滤
 
   const columns: ColumnsType<OrderI> = [
     {
@@ -102,7 +103,7 @@ const OrderList: FunctionComponent = () => {
     if (!id.current) return;
 
     const { current, pageSize } = pagination;
-    let searchQuery = { keyword: searchVal, current, size: pageSize };
+    let searchQuery = { keyword: searchVal, current, size: pageSize, filters };
     if (dateRange)
       searchQuery = Object.assign({}, searchQuery, {
         start: dateRange[0],
@@ -112,11 +113,11 @@ const OrderList: FunctionComponent = () => {
     getOrderList(id.current, searchQuery)
       .then((res) => setOrderList(res.results))
       .catch((err) => console.error(err));
-  }, [dateRange, pagination, searchVal]);
+  }, [dateRange, pagination, searchVal, filters]);
 
   useEffect(() => {
     fetchData();
-  }, [fetchData, pagination, searchVal]);
+  }, [fetchData, pagination, searchVal, filters]);
 
   /**
    * 批量选择
@@ -175,6 +176,16 @@ const OrderList: FunctionComponent = () => {
           ...pagination,
           onChange: onChangePagination,
           onShowSizeChange: onChangePagination,
+        }}
+        onChange={(pagination, filters): void => {
+          const _filters: any = {};
+
+          for (const key in filters) {
+            const val = filters[key];
+            if (val) _filters[key] = val;
+
+            setFilters(_filters);
+          }
         }}
       ></Table>
       <Modal

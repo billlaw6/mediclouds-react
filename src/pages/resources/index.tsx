@@ -15,12 +15,7 @@ import {
   MapDispatchToPropsI,
   TableDataI,
 } from "./type";
-import {
-  getExamIndexListAction,
-  deleteExamIndexListAction,
-  SetViewSortByAction,
-  setViewModeAction,
-} from "_actions/dicom";
+import { deleteExamIndexListAction, SetViewSortByAction, setViewModeAction } from "_actions/dicom";
 
 import { Gutter } from "antd/lib/grid/row";
 import { ColumnProps, TablePaginationConfig } from "antd/lib/table";
@@ -521,7 +516,7 @@ class Resources extends Component<ResourcesPropsI, ResourcesStateI> {
         ) : (
           <Empty></Empty>
         )}
-        {/* <PrivacyNotice user={user} onChecked={this.onChecked}></PrivacyNotice> */}
+        <PrivacyNotice user={user} onChecked={this.onChecked}></PrivacyNotice>
       </section>
     );
   }

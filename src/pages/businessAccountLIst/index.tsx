@@ -12,7 +12,7 @@ const BusinessAccountList: FunctionComponent = () => {
   return (
     <AccountList
       id={account.id}
-      filterRole={[RoleE.EMPLOYEE, RoleE.MANAGER]}
+      filterRole={[RoleE.BUSINESS]}
       filterCol={["role", "cell_phone", "first_name", "last_name", "sex"]}
       searchPlaceholder="搜索企业名称"
     ></AccountList>

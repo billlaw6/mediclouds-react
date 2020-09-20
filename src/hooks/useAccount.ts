@@ -134,7 +134,6 @@ export default () => {
     try {
       const res = await userApi.register(data);
       const { token, user_info } = res;
-      alert(res.token);
 
       if (token) {
         setToken(token);

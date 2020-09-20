@@ -9,8 +9,10 @@ import { WarningOutlined } from "@ant-design/icons";
 import Uploader from "_components/Uploader";
 import { RoleE } from "_types/account";
 import { updateOrder } from "_api/order";
+import QrcodeGenerator from "qrcode.react";
 
 import "./style.less";
+import config from "_config";
 
 interface OrderInfoPropsI {
   info?: OrderI;
@@ -95,6 +97,12 @@ const OrderInfo: FunctionComponent<OrderInfoPropsI> = (props) => {
                 <FormItem className="order-info-form-item" name="comment">
                   <Input.TextArea></Input.TextArea>
                 </FormItem>
+              </DescItem>
+              <DescItem label="扫码付款" span={2}>
+                <QrcodeGenerator
+                  value={`${config.registerBaseUrl}/?order_number=${encodeURI(order_number)}}`}
+                  size={256}
+                ></QrcodeGenerator>
               </DescItem>
             </Descriptions>
 

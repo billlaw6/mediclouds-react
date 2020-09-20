@@ -26,6 +26,7 @@ import Manager from "_pages/manager";
 import ManagerLayout from "_layout/Manager";
 import AccountRole from "_components/AccountRole";
 import Register from "_pages/register";
+import WechatPay from "_pages/pay/WechatPay";
 
 const IS_MOBILE = /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent);
 
@@ -157,6 +158,7 @@ const routes: RoutesI[] = [
     path: "/register",
     component: Register,
   },
+  { name: "wechatPay", path: "/wechat-pay", component: WechatPay },
 ];
 
 export default routes;

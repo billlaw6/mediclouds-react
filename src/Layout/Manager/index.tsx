@@ -45,8 +45,8 @@ const ManagerLayout: FunctionComponent = () => {
         return <Account></Account>;
       case "create-account":
         return <ManagerCreateAccount></ManagerCreateAccount>;
-      case "business-account-list":
-        return <BusinessAccountList></BusinessAccountList>;
+      // case "business-account-list":
+      //   return <BusinessAccountList></BusinessAccountList>;
       case "account-list":
         return <ManagerAccountList></ManagerAccountList>;
       case "customer-list":

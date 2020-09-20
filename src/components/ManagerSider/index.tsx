@@ -71,16 +71,16 @@ const ManagerSider: FunctionComponent<ManagerSiderPropsI> = (props) => {
       </MenuItem>
     );
 
-    const BusinessAccount = (
-      <MenuItem
-        key="business-account-list"
-        title="企业账户"
-        icon={<BankOutlined />}
-        onClick={(): void => history.push("/manager/business-account-list")}
-      >
-        企业账户
-      </MenuItem>
-    );
+    // const BusinessAccount = (
+    //   <MenuItem
+    //     key="business-account-list"
+    //     title="企业账户"
+    //     icon={<BankOutlined />}
+    //     onClick={(): void => history.push("/manager/business-account-list")}
+    //   >
+    //     企业账户
+    //   </MenuItem>
+    // );
 
     const AccountList = (
       <MenuItem
@@ -163,12 +163,14 @@ const ManagerSider: FunctionComponent<ManagerSiderPropsI> = (props) => {
       case RoleE.EMPLOYEE: {
         return [Statistics, CustomerList, OrderList, MyQrcode];
       }
-      case RoleE.BUSINESS:
       case RoleE.MANAGER: {
         return [Statistics, CustomerList, AccountList, OrderList, CreateAccount, MyQrcode];
       }
+      case RoleE.BUSINESS: {
+        return [Statistics, CustomerList, AccountList, OrderList, CreateAccount];
+      }
       case RoleE.SUPER_ADMIN: {
-        return [Statistics, CreateAccount, AllUsers, BusinessAccount, HomeRes, MdEditor, Gallery];
+        return [Statistics, CreateAccount, AllUsers, HomeRes, MdEditor, Gallery];
       }
       default:
         return [];
