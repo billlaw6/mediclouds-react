@@ -99,7 +99,7 @@ const customResErr = (error: any) => {
 
   switch (status) {
     case 401:
-      // window.location.replace(`${window.location.origin}/login`);
+      window.location.replace(`${window.location.origin}/login`);
       break;
     default:
       throw new Error(error);
