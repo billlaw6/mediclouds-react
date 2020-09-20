@@ -57,11 +57,13 @@ export default () => {
 
   /* 微信二维码登录 */
   const wechatLogin = async (params: any): Promise<void> => {
+    clearToken();
     try {
       const loginRes = await userApi.loginWechat(params);
       const { token, user_info } = loginRes;
       setToken(token);
       dispatch({ type: AccountActionTypes.LOGIN_WECHAT, payload: user_info });
+      history.push("/resources");
     } catch (error) {
       throw new Error(error);
     }
