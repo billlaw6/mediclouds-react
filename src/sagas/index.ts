@@ -1,7 +1,7 @@
 import { call, put, takeEvery } from "redux-saga/effects";
 import { updateUserAction, logoutUserAction } from "_actions/user";
 import { getExamIndexListAction, deleteExamIndexListAction } from "_actions/dicom";
-import { logoutUser, updateUserInfo } from "_api/user";
+import { logoutPersonal, updateUserInfo } from "_api/user";
 import { getExamIndex, deleteExamIndex } from "_api/dicom";
 import * as types from "../store/action-types";
 import { push } from "connected-react-router";
@@ -27,7 +27,7 @@ function* updateUserEffect(action: ReturnType<typeof updateUserAction>) {
 
 function* logoutUserEffect(action: ReturnType<typeof logoutUserAction>) {
   try {
-    const res = yield call(logoutUser);
+    const res = yield call(logoutPersonal);
     yield put({ type: types.SET_EXAM_INDEX_LIST, payload: [] });
     yield put({ type: types.SET_TOKEN, payload: "" });
     yield put({ type: types.SET_USER, payload: {} });

@@ -50,7 +50,6 @@ class Resources extends Component<ResourcesPropsI, ResourcesStateI> {
   constructor(props: ResourcesPropsI) {
     super(props);
 
-    console.log("this.props", props);
     this.state = {
       viewType: ViewTypeEnum.GRID,
       sortType: SortTypeEnum.TIME,
@@ -485,8 +484,6 @@ class Resources extends Component<ResourcesPropsI, ResourcesStateI> {
     const { examIndexList = [], user, getList, dicomSettings } = this.props;
     const { redirectUpload, showNotify, parsing } = this.state;
     const { viewMode } = dicomSettings;
-
-    console.log("examIndexList", examIndexList);
 
     // if (redirectUpload) return <Redirect to="/upload" />;
     // else

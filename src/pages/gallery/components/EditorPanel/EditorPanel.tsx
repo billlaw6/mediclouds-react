@@ -257,7 +257,6 @@ const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
               <Select
                 value={getVal("image_type")}
                 onChange={(val: string): void => {
-                  console.log("val", val);
                   changeUploadData("image_type", val);
                 }}
               >

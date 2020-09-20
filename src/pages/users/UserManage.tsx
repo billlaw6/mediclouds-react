@@ -265,8 +265,6 @@ class UserManage extends React.Component<UserManagePropsI, UserManageStateI> {
             }}
             onFinish={(vals: { dateRange: Moment[] | null; keyword: string }): void => {
               const { searchQuery } = this.state;
-
-              console.log("searchQuery", searchQuery);
               this.fetchUserList(searchQuery);
             }}
           >

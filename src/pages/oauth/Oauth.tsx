@@ -1,26 +1,28 @@
-import React, { FunctionComponent } from "react";
-import { Link } from "react-router-dom";
+import React, { FunctionComponent, useEffect } from "react";
+import { Link, useHistory } from "react-router-dom";
 import getQueryString from "_helper";
 import useAccount from "_hooks/useAccount";
 
 const Oauth: FunctionComponent = () => {
+  const history = useHistory();
   const query = getQueryString();
   const { wechatLogin } = useAccount();
 
   const { code } = query;
+  // if (process.env.NODE_ENV === "development") return null;
 
-  console.log("query", query);
-  if (process.env.NODE_ENV === "development") return null;
-
-  if (code) {
-    wechatLogin(query)
-      .then(() => {
-        console.log("login successed");
-      })
-      .catch((err) => console.error(err));
-  } else {
-    console.log("no code");
-  }
+  console.log("OAUTH");
+  useEffect(() => {
+    if (code) {
+      wechatLogin(query)
+        .then(() => {
+          history.push("/resources");
+        })
+        .catch((err) => console.error(err));
+    } else {
+      console.log("no code");
+    }
+  }, []);
 
   return (
     <div className="login-redirect">

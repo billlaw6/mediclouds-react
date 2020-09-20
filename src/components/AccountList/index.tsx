@@ -212,8 +212,6 @@ const AccountList: FunctionComponent<AccountListPropsI> = (props) => {
       return filterCol.indexOf(dataIndex as string) < 0;
     });
 
-  console.log("list", list);
-
   return (
     <div className="account-list">
       <ListControlBar

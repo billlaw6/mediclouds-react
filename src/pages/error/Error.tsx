@@ -5,7 +5,6 @@ import error404 from "_images/404.png";
 import "./Error.less";
 
 const Error: FunctionComponent = () => {
-  console.log("404");
   return (
     <section className="error">
       <img src={error404} alt="404" />

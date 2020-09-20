@@ -13,8 +13,8 @@ import {
   RegisterDataI,
 } from "_types/api";
 
-export const wechatLogin: ApiFuncI = async (data: any) =>
-  await personalReq({ method: "POST", url: "/user/wechat-oauth2-login/", data });
+export const loginWechat: ApiFuncI = async (data: any) =>
+  await personalReq({ method: "POST", url: "/user/wechat-oauth2-login/", data }, false);
 
 export const loginUser = async (data: any): Promise<{ key: string }> =>
   await personalReq({ method: "POST", data });
@@ -60,7 +60,7 @@ export const getUserInfo = async () =>
 export const updateUserInfo = async (data: any) =>
   await personalReq({ method: "POST", url: "/user/update/", data });
 
-export const logoutUser = async () =>
+export const logoutPersonal = async () =>
   await personalReq({ method: "POST", url: "/auth/logout/" }, false);
 
 export const sendIdentifyingCode = async (data: any) =>
@@ -243,7 +243,7 @@ export const enableUser: ApiFuncI = async (id: string[]) =>
 export default {
   loginForm,
   loginPhone,
-  loginWechat: wechatLogin,
+  loginWechat,
   getAffiliatedList,
   getCustomerList,
   createAccount,
@@ -252,6 +252,7 @@ export default {
   getSmsCode,
   getStats,
   logout,
+  logoutPersonal,
   register,
   getAllUser,
   delUser,

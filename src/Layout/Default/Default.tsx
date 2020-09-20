@@ -1,25 +1,24 @@
 import React, { FunctionComponent } from "react";
 import { Layout } from "antd";
-import { useSelector } from "react-redux";
 
 /* components */
 import Header from "_components/Header/Header";
 import Footer from "_components/Footer/Footer";
-import { StoreStateI } from "_types/core";
 
 /* action */
-import { logoutUserAction } from "_actions/user";
 import SideBtns from "_components/SideBtns";
-import { CustomerI, RoleE } from "_types/account";
+import { RoleE } from "_types/account";
+
+import useAccount from "_hooks/useAccount";
 
 /* style */
 import "./Default.less";
-import useAccount from "_hooks/useAccount";
 
 const { Content } = Layout;
 
 const DefalutLayout: FunctionComponent = (props) => {
   const { children } = props;
+  const { logoutPersonal } = useAccount();
 
   // const user = useSelector<StoreStateI, CustomerI>((state) => state.user);
   const { user } = useAccount();
@@ -32,7 +31,7 @@ const DefalutLayout: FunctionComponent = (props) => {
         avatar={avatar}
         isSuperuser={role === RoleE.SUPER_ADMIN}
         nickname={nickname}
-        logout={logoutUserAction}
+        logout={logoutPersonal}
       ></Header>
       <Content id="content">{children}</Content>
       <Footer></Footer>

@@ -16,23 +16,21 @@ const LoginForm: FunctionComponent = () => {
     dispatch(setTokenAction(""));
     loginUser(values)
       .then((res) => {
-        console.log(res);
         dispatch(setTokenAction(res.key));
         history.replace("/resources");
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
 
   const fetchUserInfo = (): void => {
     getUserInfo()
       .then((res) => {
-        console.log(res.data);
         dispatch(setUserAction(res.data));
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
 

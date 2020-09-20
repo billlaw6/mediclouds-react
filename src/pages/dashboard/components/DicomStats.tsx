@@ -37,7 +37,6 @@ class Stats extends React.Component<MapStateToPropsI, StatsStateI> {
 
   getOption(): any {
     const { totalAmount, dailyAmount } = this.state;
-    console.log(dailyAmount);
     return {
       title: {
         text: "近14天上传统计，总计已上传: " + Math.round(totalAmount / (1024 * 1024)) + "Mb",
@@ -84,7 +83,6 @@ class Stats extends React.Component<MapStateToPropsI, StatsStateI> {
             dailyAmount.forEach((item) => {
               xColumns.push(item.dt);
             });
-            console.log(xColumns);
             return xColumns;
           })(),
         },
@@ -108,7 +106,6 @@ class Stats extends React.Component<MapStateToPropsI, StatsStateI> {
             dailyAmount.forEach((item) => {
               yValue.push(Math.round(item.amount));
             });
-            console.log(yValue);
             return yValue;
           })(),
           color: "#0780cf",

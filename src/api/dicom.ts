@@ -9,8 +9,6 @@ export const getExamIndex = async (params?: any): Promise<ExamIndexListI[]> => {
     params,
   });
 
-  console.log("get exam", res);
-
   return res;
 };
 

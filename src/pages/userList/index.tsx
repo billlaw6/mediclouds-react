@@ -24,8 +24,6 @@ const UserList: FunctionComponent = () => {
   const [filters, setFilters] = useState<any>();
   const [searchVal, setSearchVal] = useState("");
 
-  console.log("pagination", pagination);
-
   /**
    *  更新页码触发
    *
@@ -101,7 +99,6 @@ const UserList: FunctionComponent = () => {
         { text: "已禁用", value: "0" },
       ],
       render: (val) => {
-        console.log("val", val);
         return (
           <Nail
             target={`${val}`}
@@ -164,9 +161,6 @@ const UserList: FunctionComponent = () => {
           },
         })}
         onChange={(pagination, filters, sorter) => {
-          console.log("pagination: ", pagination);
-          console.log("filters", filters);
-          console.log("sorter", sorter);
           const _filters: any = {};
 
           for (const key in filters) {

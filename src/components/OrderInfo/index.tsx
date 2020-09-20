@@ -58,14 +58,11 @@ const OrderInfo: FunctionComponent<OrderInfoPropsI> = (props) => {
   } = info;
 
   const onFinish = (vals: Store): void => {
-    console.log("vals", vals);
     updateOrder(order_number, vals).then(
-      (res) => console.log("update order", res),
+      (res) => console.log("update order"),
       (err) => console.error(err),
     );
   };
-
-  console.log("flag", flag);
 
   return (
     <div className="order-info">
@@ -124,7 +121,7 @@ const OrderInfo: FunctionComponent<OrderInfoPropsI> = (props) => {
                     title="确认作废订单吗？此操作不可逆"
                     onConfirm={(): void => {
                       updateOrder(order_number, { flag: 3 }).then(
-                        (res) => console.log("update flag: ", res),
+                        (res) => console.log("update flag"),
                         (err) => console.error(err),
                       );
                     }}

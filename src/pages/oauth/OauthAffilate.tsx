@@ -4,7 +4,7 @@ import qs from "qs";
 import { connect } from "react-redux";
 import { StoreStateI } from "_types/core";
 import { setTokenAction, setUserAction } from "_actions/user";
-import { wechatLogin } from "_api/user";
+import userApi from "_api/user";
 
 class OauthAffiliate extends React.Component<any, { registered: boolean }> {
   constructor(props: any) {
@@ -20,7 +20,8 @@ class OauthAffiliate extends React.Component<any, { registered: boolean }> {
     const obj = qs.parse(query);
 
     if (obj.code) {
-      wechatLogin(obj)
+      userApi
+        .loginWechat(obj)
         .then((res) => {
           this.setState({ registered: true });
         })

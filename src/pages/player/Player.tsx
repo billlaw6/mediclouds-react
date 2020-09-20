@@ -744,7 +744,6 @@ const Player: FunctionComponent<{ id: string }> = (props) => {
         }
       };
       $img.onerror = (err): void => {
-        // console.log("img load err", err);
         _imgs[index] = imgLoadErr;
         count += 1;
         setProgress((count / pics.length) * 100);

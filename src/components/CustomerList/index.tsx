@@ -211,7 +211,7 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
             onDateChage={onDateChange}
             onDel={(ids): void => {
               delAccount(ids)
-                .then((res) => console.log("del customer success", res))
+                .then((res) => console.log("del customer success"))
                 .catch((err) => console.error(err));
             }}
             customerBtns={null}

@@ -57,13 +57,12 @@ export default () => {
 
   /* 微信二维码登录 */
   const wechatLogin = async (params: any): Promise<void> => {
-    clearToken();
     try {
       const loginRes = await userApi.loginWechat(params);
+      window.localStorage.clear();
       const { token, user_info } = loginRes;
       setToken(token);
       dispatch({ type: AccountActionTypes.LOGIN_WECHAT, payload: user_info });
-      history.push("/resources");
     } catch (error) {
       throw new Error(error);
     }
@@ -73,6 +72,7 @@ export default () => {
   const formLogin = async (data: FormLoginDataI): Promise<void> => {
     try {
       const loginRes = await userApi.loginForm(data);
+      window.localStorage.clear();
       const { token, user_info } = loginRes;
 
       if (token) {
@@ -89,6 +89,7 @@ export default () => {
   const phoneLogin = async (data: PhoneLoginDataI, url = "/manager"): Promise<void> => {
     try {
       const loginRes = await userApi.loginPhone(data);
+      window.localStorage.clear();
       const { token, user_info } = loginRes;
       if (token) {
         setToken(token);
@@ -124,6 +125,20 @@ export default () => {
     try {
       await userApi.logout();
       clearToken();
+      window.localStorage.clear();
+      await store.persistor.purge();
+      history.push("/login");
+    } catch (error) {
+      throw new Error(error);
+    }
+  };
+
+  /* 个人用户退出登录 */
+  const logoutPersonal = async (): Promise<void> => {
+    try {
+      await userApi.logoutPersonal();
+      clearToken();
+      window.localStorage.clear();
       await store.persistor.purge();
       history.push("/login");
     } catch (error) {
@@ -156,6 +171,7 @@ export default () => {
     account,
     // devFormLogin: _devFormLogin,
     logout,
+    logoutPersonal,
     register,
   };
 };

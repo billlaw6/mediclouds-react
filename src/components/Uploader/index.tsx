@@ -137,7 +137,6 @@ const Uploader: FunctionComponent<UploaderPropsI> = (props) => {
   }, [getList, onChange, upload, uploadList]);
 
   const list = getList();
-  console.log("getList", list);
 
   return (
     <div className="uploader">
