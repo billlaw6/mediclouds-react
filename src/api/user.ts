@@ -13,11 +13,11 @@ import {
   RegisterDataI,
 } from "_types/api";
 
-export const wechatLogin: ApiFuncI = async (params: any) =>
-  await personalReq({ method: "POST", url: "/user/wechat-oauth2-login/" }, params);
+export const wechatLogin: ApiFuncI = async (data: any) =>
+  await personalReq({ method: "POST", url: "/user/wechat-oauth2-login/" }, data);
 
-export const loginUser = async (params: any): Promise<{ key: string }> =>
-  await personalReq({ method: "POST", params });
+export const loginUser = async (data: any): Promise<{ key: string }> =>
+  await personalReq({ method: "POST", data });
 
 /* 用户表单登录 */
 export const loginForm: ApiFuncI = async (data: FormLoginDataI) =>
@@ -85,8 +85,8 @@ export const getFeedbackType = async () =>
 export const getFeedback = async (params: any) =>
   await personalReq({ method: "GET", url: `/user/feedback/`, params });
 
-export const createFeedback = async (params: any) =>
-  await personalReq({ method: "POST", url: "/user/feedback/" }, params);
+export const createFeedback = async (data: any) =>
+  await personalReq({ method: "POST", url: "/user/feedback/", data });
 
 export const getUserStats = async (params?: any) =>
   await personalReq({ method: "GET", url: "/user/user-stats/", params });
