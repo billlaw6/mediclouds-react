@@ -15,9 +15,9 @@ export const getOrderList = async (
   searchQuery?: GetSearchQueryPropsI,
 ): Promise<SearchQueryResI<OrderI>> =>
   await publicReq({
-    method: "GET",
+    method: "POST",
     url: `/order/list/${id}/`,
-    params: searchQuery,
+    data: searchQuery,
   });
 
 /* 创建订单 */

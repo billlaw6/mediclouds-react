@@ -97,9 +97,9 @@ export const getAffiliatedList = async (
   searchQuery?: GetSearchQueryPropsI,
 ): Promise<SearchQueryResI<AccountI>> =>
   await publicReq({
-    method: "GET",
+    method: "post",
     url: `/user/account-list/${id}/`,
-    params: searchQuery,
+    data: searchQuery,
   });
 
 /* 获得下属用户列表 */
@@ -108,9 +108,9 @@ export const getCustomerList = async (
   searchQuery?: GetSearchQueryPropsI,
 ): Promise<SearchQueryResI<CustomerI>> =>
   await publicReq({
-    method: "GET",
+    method: "POST",
     url: `/user/customer-list/${id}/`,
-    params: searchQuery,
+    data: searchQuery,
   });
 
 /* 创建新账户 */
