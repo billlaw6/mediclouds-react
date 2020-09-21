@@ -12,7 +12,7 @@ import { getExamList } from "_actions/resources";
 import { ImgI, PdfI } from "_types/resources";
 
 export interface MapStateToPropsI {
-  examIndexList: ExamIndexI[];
+  examIndexList?: ExamIndexI[];
   user: CustomerI;
   account: AccountI;
   dicomSettings: {

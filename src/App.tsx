@@ -49,28 +49,6 @@ class App extends Component {
       <Router>
         <Switch>
           {routers}
-          {/* {routes.map((item, index) => {
-            // return <RouteWithSubRoutes key={index} {...item} />;
-            const { component, layout, name, ...args } = item;
-            const Layout = layout;
-            const Cmp = component;
-
-            return (
-              <AuthorizedRoute
-                key={index}
-                {...args}
-                render={(props) => {
-                  return Layout ? (
-                    <Layout>
-                      <Cmp {...props}></Cmp>
-                    </Layout>
-                  ) : (
-                    <Cmp {...props}></Cmp>
-                  );
-                }}
-              ></AuthorizedRoute>
-            );
-          })} */}
           <Route
             render={(): ReactElement => {
               console.log("not found");

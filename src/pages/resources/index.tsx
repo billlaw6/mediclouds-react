@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import React, { ReactElement, Component } from "react";
 import { connect } from "react-redux";
-import { Row, Col, Dropdown, Menu, Pagination, Table, Checkbox, Modal } from "antd";
+import { Row, Col, Dropdown, Menu, Pagination, Table, Checkbox, Modal, Spin } from "antd";
 import DicomCard from "_components/DicomCard/DicomCard";
 import { ExamIndexI } from "_types/api";
 import { StoreStateI } from "_types/core";
@@ -21,7 +21,7 @@ import { Gutter } from "antd/lib/grid/row";
 import { ColumnProps, TablePaginationConfig } from "antd/lib/table";
 import LinkButton from "_components/LinkButton/LinkButton";
 import ListDesc from "./components/ListDesc";
-import PrivacyNotice from "./components/PrivacyNotice";
+import PrivacyNotice from "_components/PrivacyNotice";
 
 import { isNull } from "_helper";
 import Notify from "_components/Notify";
@@ -35,11 +35,13 @@ import {
   SortAscendingOutlined,
   MenuOutlined,
   AppstoreOutlined,
+  LoadingOutlined,
 } from "@ant-design/icons";
 import { getExamList } from "_actions/resources";
 
 import "./resources.less";
 import { getImgList, getPdfList } from "_api/resources";
+import ExamTable from "./components/ExamTable";
 
 const DEFAULT_PAGE_SIZE = 12;
 
@@ -246,7 +248,7 @@ class Resources extends Component<ResourcesPropsI, ResourcesStateI> {
             hideOnSinglePage={true}
             current={page}
             pageSize={pageSize}
-            total={examIndexList.length}
+            total={examIndexList ? examIndexList.length : 0}
             onShowSizeChange={(_current, size): void => {
               // console.log("current, size", current, size);
               this.setState({ pageSize: size });
@@ -266,7 +268,7 @@ class Resources extends Component<ResourcesPropsI, ResourcesStateI> {
    * @memberof Resources
    */
   onClickItem = (id: string): void => {
-    const { history, examIndexList } = this.props;
+    const { history, examIndexList = [] } = this.props;
     const { isSelectable, selections } = this.state;
 
     if (isSelectable) {
@@ -287,7 +289,7 @@ class Resources extends Component<ResourcesPropsI, ResourcesStateI> {
   };
 
   getCurrentItem = (): ExamIndexI[] => {
-    const { examIndexList, dicomSettings } = this.props;
+    const { examIndexList = [], dicomSettings } = this.props;
     const { page, pageSize } = this.state;
     const resList = this.sortList(examIndexList);
 
@@ -302,7 +304,7 @@ class Resources extends Component<ResourcesPropsI, ResourcesStateI> {
     return (
       <div id="controller" className={`controller`}>
         <div className="controller-left">
-          <span className="controller-title">影像列表</span>
+          <span className="controller-title">检查资料</span>
           <LinkButton className="controller-upload" to="/upload" icon={<CloudUploadOutlined />}>
             上传
           </LinkButton>
@@ -501,7 +503,7 @@ class Resources extends Component<ResourcesPropsI, ResourcesStateI> {
   };
 
   render(): ReactElement {
-    const { examIndexList = [], user, getList, dicomSettings } = this.props;
+    const { examIndexList, user, getList, dicomSettings } = this.props;
     const { redirectUpload, showNotify, parsing } = this.state;
     const { viewMode } = dicomSettings;
 
@@ -524,14 +526,19 @@ class Resources extends Component<ResourcesPropsI, ResourcesStateI> {
           </Notify>
         ) : null}
         {this.controller()}
-        {examIndexList.length ? (
-          viewMode === ViewTypeEnum.GRID ? (
-            this.dicoms()
+        {examIndexList ? (
+          examIndexList.length ? (
+            viewMode === ViewTypeEnum.GRID ? (
+              this.dicoms()
+            ) : (
+              this.list()
+              // <ExamTable data={examIndexList}></ExamTable>
+            )
           ) : (
-            this.list()
+            <Empty></Empty>
           )
         ) : (
-          <Empty></Empty>
+          <Spin indicator={<LoadingOutlined />} style={{ marginTop: "30px" }}></Spin>
         )}
         <PrivacyNotice user={user} onChecked={this.onChecked}></PrivacyNotice>
       </section>

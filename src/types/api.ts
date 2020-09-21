@@ -1,8 +1,8 @@
-// 推荐注册Data
+// 账户邀请注册Data
 export interface RegisterDataI {
   cell_phone: string;
   auth_code: string;
-  recommender_id: string;
+  account_id: string;
 }
 
 // 上传状态

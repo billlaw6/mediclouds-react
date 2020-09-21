@@ -5,14 +5,14 @@ import { Action, AnyAction, Reducer } from "redux";
 
 // Store相关接口
 // 本地变量遵循js规范使用驼峰式全名，需要与后台数据库字段对应的变量使用下划线风格。
-export declare interface LoginFormI {
+export interface LoginFormI {
   username: string;
   password: string;
   remember: boolean;
   messages: Array<string>;
 }
 
-export declare interface ProfileFormI {
+export interface ProfileFormI {
   id: number;
   sex: number;
   birthday: Date;
@@ -23,7 +23,7 @@ export declare interface ProfileFormI {
   cell_phone: string;
 }
 
-export declare interface CurrentUserI {
+export interface CurrentUserI {
   id: number;
   token: string;
   username: string;
@@ -40,7 +40,7 @@ export declare interface CurrentUserI {
   // user_permissions?: Array<number>;
 }
 
-// export declare interface UserInfoI {
+// export  interface UserInfoI {
 //   id: number;
 //   username: string;
 //   email: string;
@@ -58,20 +58,20 @@ export declare interface CurrentUserI {
 //   user_permissions: Array<number>;
 // }
 
-export declare interface SearchFormI {
+export interface SearchFormI {
   dtRange: Date[];
   keyword: string;
   fields?: string[];
 }
 
-export declare interface DicomPictureListI {
+export interface DicomPictureListI {
   id: string;
   mpr_order: number;
   frame_order: number;
   url: string;
 }
 
-export declare interface DicomPictureI {
+export interface DicomPictureI {
   id: string;
   mpr_order: number;
   frame_order: number;
@@ -79,14 +79,14 @@ export declare interface DicomPictureI {
   url: string;
 }
 
-export declare interface DicomSeriesListI {
+export interface DicomSeriesListI {
   id: string;
   series_number: number;
   mpr_flag: number;
   thumbnail: string;
 }
 
-export declare interface DicomSeriesI {
+export interface DicomSeriesI {
   id: string;
   thumbnail: string;
   study_id: string;
@@ -104,7 +104,7 @@ export declare interface DicomSeriesI {
   pictures: DicomPictureListI[];
 }
 
-export declare interface ExamIndexListI {
+export interface ExamIndexListI {
   id: string;
   modality: string;
   patient_id: string;
@@ -119,12 +119,12 @@ export declare interface ExamIndexListI {
   display_frame_rate: number;
 }
 
-export declare interface ExamIndexFormI {
+export interface ExamIndexFormI {
   id: string;
   desc: string;
 }
 
-export declare interface RouteI {
+export interface RouteI {
   path: string;
   name: string;
   exact: boolean;
@@ -135,13 +135,13 @@ export declare interface RouteI {
 
 // 创建store时要遵循的rootState接口，不能使用rootReducers的类型
 // 作为组件创建时props类型！！！必须用store.d里定义的！三天的教训！
-export declare interface StoreStateI {
+export interface StoreStateI {
   // router: { location: Location };
   // token: string;
   user: CustomerI & { login: boolean };
   // examIndexList: ExamIndexI[];
   resources: {
-    dicom: ExamIndexListI[];
+    dicom?: ExamIndexI[];
   };
   account: AccountI & { login: boolean };
   dicomSettings: {

@@ -11,9 +11,10 @@ import { RoleE } from "_types/account";
 import { updateOrder } from "_api/order";
 import QrcodeGenerator from "qrcode.react";
 
-import "./style.less";
 import config from "_config";
 import { getWechatPayQrcode } from "_api/pay";
+
+import "./style.less";
 
 interface OrderInfoPropsI {
   info?: OrderI;
@@ -107,7 +108,7 @@ const OrderInfo: FunctionComponent<OrderInfoPropsI> = (props) => {
                   <Input.TextArea></Input.TextArea>
                 </FormItem>
               </DescItem>
-              {flag < 2 ? (
+              {flag < 1 ? (
                 <DescItem label="扫码付款">
                   <QrcodeGenerator value={wechatQrcodeUrl || ""} size={256}></QrcodeGenerator>
                 </DescItem>

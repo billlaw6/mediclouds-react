@@ -6,7 +6,7 @@ import { getPrivacyNotice, agreePrivacyNotice } from "_api/user";
 import { setUserAction } from "_actions/user";
 
 import { PrivacyNoticePropsI } from "./type";
-import "./PrivacyNotice.less";
+import "./style.less";
 
 const PrivacyNotice: FunctionComponent<PrivacyNoticePropsI> = (props) => {
   const { user, onChecked } = props;

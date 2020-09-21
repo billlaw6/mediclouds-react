@@ -60,6 +60,7 @@ export default () => {
     try {
       const loginRes = await userApi.loginWechat(params);
       window.localStorage.clear();
+      await store.persistor.purge();
       const { token, user_info } = loginRes;
       setToken(token);
       dispatch({ type: AccountActionTypes.LOGIN_WECHAT, payload: user_info });
@@ -73,6 +74,7 @@ export default () => {
     try {
       const loginRes = await userApi.loginForm(data);
       window.localStorage.clear();
+      await store.persistor.purge();
       const { token, user_info } = loginRes;
 
       if (token) {
@@ -90,6 +92,7 @@ export default () => {
     try {
       const loginRes = await userApi.loginPhone(data);
       window.localStorage.clear();
+      await store.persistor.purge();
       const { token, user_info } = loginRes;
       if (token) {
         setToken(token);
@@ -155,7 +158,6 @@ export default () => {
       if (token) {
         setToken(token);
         dispatch({ type: AccountActionTypes.REGISTER, payload: user_info });
-        history.replace("/resources");
       }
     } catch (err) {
       throw new Error(err);
