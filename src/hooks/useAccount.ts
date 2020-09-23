@@ -88,6 +88,23 @@ export default () => {
   };
 
   /* 手机号登录 */
+  const personalPhoneLogin = async (data: PhoneLoginDataI, url = "/resources"): Promise<void> => {
+    try {
+      const loginRes = await userApi.loginPhone(data);
+      window.localStorage.clear();
+      await store.persistor.purge();
+      const { token, user_info } = loginRes;
+      if (token) {
+        setToken(token);
+        dispatch({ type: AccountActionTypes.PERSONAL_LOGIN_PHONE, payload: user_info });
+        history.replace(url);
+      }
+    } catch (error) {
+      throw new Error(error);
+    }
+  };
+
+  /* 手机号登录 */
   const phoneLogin = async (data: PhoneLoginDataI, url = "/manager"): Promise<void> => {
     try {
       const loginRes = await userApi.loginPhone(data);
@@ -171,7 +188,7 @@ export default () => {
     updateAccount,
     user,
     account,
-    // devFormLogin: _devFormLogin,
+    personalPhoneLogin,
     logout,
     logoutPersonal,
     register,

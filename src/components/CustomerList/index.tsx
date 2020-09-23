@@ -84,7 +84,7 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
       title: "注册日期",
       key: "date_joined",
       dataIndex: "date_joined",
-      render: (val) => <span>{moment(val).format("YYYY-MM-DD hh:mm:ss")}</span>,
+      render: (val) => <span>{moment(val).format("YYYY-MM-DD HH:mm:ss")}</span>,
       sorter: (a, b): number => Date.parse(a.date_joined) - Date.parse(b.date_joined),
     },
     {
@@ -93,7 +93,7 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
       dataIndex: "last_login",
       render: (val) => {
         if (!val) return null;
-        return <span>{moment(val).format("YYYY-MM-DD hh:mm:ss")}</span>;
+        return <span>{moment(val).format("YYYY-MM-DD HH:mm:ss")}</span>;
       },
       sorter: (a, b): number => Date.parse(a.last_login) - Date.parse(b.last_login),
     },

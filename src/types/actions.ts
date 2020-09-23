@@ -5,6 +5,7 @@ export enum AccountActionTypes {
   LOGIN_WECHAT = "login_wechat", // 微信二维码登录
   LOGIN_FORM = "login_form", // 表单登录
   LOGIN_PHONE = "login_phone", // 手机号登录
+  PERSONAL_LOGIN_PHONE = "personal_login_phone", // C端用户手机号登录
   LOGOUT = "logout", // 注销
   UPDATE_INFO = "update_info", // 更新账户信息
   GET_CUSTOMERS = "get_customers", // 获取当前用户下的顾客

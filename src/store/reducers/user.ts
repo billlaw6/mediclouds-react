@@ -42,6 +42,7 @@ const userReducer: Reducer<CustomerStateI, ActionI<AccountActionTypes, CustomerI
   const { type, payload } = action;
 
   switch (type) {
+    case AccountActionTypes.PERSONAL_LOGIN_PHONE:
     case AccountActionTypes.LOGIN_WECHAT: {
       return Object.assign({}, payload, { login: true });
     }

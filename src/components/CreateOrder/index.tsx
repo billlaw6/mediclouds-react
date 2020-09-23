@@ -78,9 +78,10 @@ const CreateOrder: FunctionComponent<CreateOrderPropsI> = (props) => {
   return (
     <Modal
       {...others}
+      title="创建订单"
       onOk={(): void => {
         setConfirmLoading(true);
-        createOrder({ owner_id: ownerId, order_type: select.key || "", comment })
+        createOrder({ owner_id: ownerId, comment })
           .then((res) => {
             onSuccessed && onSuccessed(res);
           })
@@ -93,11 +94,11 @@ const CreateOrder: FunctionComponent<CreateOrderPropsI> = (props) => {
       confirmLoading={confirmLoading}
     >
       <Form labelCol={{ span: 4 }}>
-        <FormItem label="订单类型" name="order_type">
+        {/* <FormItem label="订单类型" name="order_type">
           <Dropdown trigger={["click"]} overlay={CreateOrderMenu}>
             <Button>{select.value}</Button>
           </Dropdown>
-        </FormItem>
+        </FormItem> */}
         <FormItem label="备注" name="comment">
           <Input.TextArea onInput={(e): void => setComment(e.currentTarget.value)}></Input.TextArea>
         </FormItem>

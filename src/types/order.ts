@@ -4,7 +4,7 @@ import { RoleE } from "./account";
 export interface OrderI {
   id: string; // 订单id
   order_number: string; // 订单号
-  order_type: string; // 订单类型
+  order_type?: string; // 订单类型
   owner_id: string; // 订单拥有者id
   order_price: number; // 订单金额 单位：分
   owner_username: string; // 订单拥有者用户名
@@ -26,7 +26,7 @@ export interface OrderI {
 /* 创建订单Data */
 export interface CreateOrderDataI {
   owner_id: string;
-  order_type: string;
+  order_type?: string;
   comment?: string;
 }
 

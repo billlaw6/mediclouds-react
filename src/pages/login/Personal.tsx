@@ -35,7 +35,7 @@ const QRCODE_URL =
   `#wechat_redirect`;
 
 const Personal: FunctionComponent = () => {
-  const { phoneLogin } = useAccount();
+  const { personalPhoneLogin } = useAccount();
   const [hiddenScan, setHiddenScan] = useState(false);
   const [loginType, setLoginType] = useState<"form" | "qrcode">("qrcode");
   const [loginFormData, setLoginFormData] = useState<any>({});
@@ -54,7 +54,7 @@ const Personal: FunctionComponent = () => {
   const onFinish = () => {
     // if (!captchaVal) return;
 
-    phoneLogin(loginFormData, "/resources").then(
+    personalPhoneLogin(loginFormData, "/resources").then(
       () => console.log("phone login successed"),
       (err: any) => console.error(err),
     );
