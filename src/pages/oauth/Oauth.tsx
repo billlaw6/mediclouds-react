@@ -11,7 +11,6 @@ const Oauth: FunctionComponent = () => {
   const { code } = query;
   // if (process.env.NODE_ENV === "development") return null;
 
-  console.log("OAUTH");
   useEffect(() => {
     if (code) {
       wechatLogin(query)

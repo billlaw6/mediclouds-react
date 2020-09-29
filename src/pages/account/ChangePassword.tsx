@@ -22,6 +22,9 @@ const ChangePassword: FunctionComponent<ChangePasswordPropsI> = (props) => {
       <FormItem className="account-item" label="新密码" name="password">
         <Input.Password></Input.Password>
       </FormItem>
+      <FormItem className="account-item" label="确认密码" name="checkPassword">
+        <Input.Password></Input.Password>
+      </FormItem>
       {/* <Captcha className="account-item" /> */}
       <FormItem className="account-item">
         <Button type="primary" htmlType="submit">

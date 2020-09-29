@@ -14,23 +14,34 @@ interface InfoPropsI {
 const Info: FunctionComponent<InfoPropsI> = (props) => {
   const { account, onFinish } = props;
 
-  const { first_name, last_name, business_name, role, age, sex, birthday, sign } = account;
+  const {
+    first_name = "",
+    last_name = "",
+    business_name = "",
+    role,
+    nickname = "",
+    age,
+    sex,
+    birthday,
+    sign,
+  } = account;
 
   return (
     <Form
       labelCol={{ span: 6 }}
       initialValues={{
-        businessName: business_name,
-        firstName: first_name,
-        lastName: last_name,
+        business_name: business_name,
+        first_name,
+        last_name,
         sex,
         birthday: moment(birthday || "1900-01-01"),
         sign,
+        nickname,
       }}
       onFinish={onFinish}
     >
       {role === RoleE.BUSINESS ? (
-        <FormItem className="account-item" label="企业名称" name="businessName">
+        <FormItem className="account-item" label="企业名称" name="business_name">
           <Input></Input>
         </FormItem>
       ) : (

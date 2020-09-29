@@ -25,7 +25,6 @@ const generateData = (count: number): ExamIndexI[] => {
     result.push(data);
   }
 
-  console.log("result: ", result);
   return result;
 };
 

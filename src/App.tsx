@@ -51,7 +51,6 @@ class App extends Component {
           {routers}
           <Route
             render={(): ReactElement => {
-              console.log("not found");
               return (
                 <DefaultLayout>
                   <Error></Error>

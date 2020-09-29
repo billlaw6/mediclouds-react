@@ -21,8 +21,6 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
   const { user, updateUserAction } = props;
   const $form = useRef<HTMLFormElement>(null);
 
-  console.log("user", user);
-
   const [userInfo, setUserInfo] = useState(user); // 网页中的用户信息 默认为服务器端用户信息
   const [isEdit, setIsEdit] = useState(false); // 是否是编辑模式
 

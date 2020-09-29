@@ -4,8 +4,6 @@ import { getDicomList } from "_api/resources";
 export default () => {
   const _getDicomList = async () => {
     const res = await getExamIndex();
-
-    console.log("res", res);
   };
 
   return {

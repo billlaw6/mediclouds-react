@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState } from "react";
-import { Tabs } from "antd";
+import { message, Tabs } from "antd";
 import useAccount from "_hooks/useAccount";
 import { RoleE } from "_types/account";
 
@@ -17,13 +17,19 @@ const { TabPane } = Tabs;
 
 const Account: FunctionComponent = () => {
   const { account, updateAccount } = useAccount();
+
   const { role } = account;
   const [currentTab, setCurrentTab] = useState("info");
 
   const _update = (vals: Store): void => {
     updateAccount(vals, account.id)
-      .then(() => console.log("successed update account"))
-      .catch((err) => console.error("error", err));
+      .then(() => {
+        message.success("更新成功！");
+      })
+      .catch((err) => {
+        console.error("error", err);
+        message.error("更新失败，请重试");
+      });
   };
 
   return (
