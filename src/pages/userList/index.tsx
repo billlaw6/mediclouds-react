@@ -11,6 +11,7 @@ import ListControlBar from "_components/ListControlBar";
 import Account from "_components/Account";
 
 import "./style.less";
+import moment from "antd/node_modules/moment";
 
 const UserList: FunctionComponent = () => {
   const [list, setList] = useState<UserI[]>(); // 获取用户资源
@@ -63,7 +64,12 @@ const UserList: FunctionComponent = () => {
   }, [searchVal, pagination.current, filters]);
 
   const columns: ColumnsType<UserI> = [
-    { title: "id", dataIndex: "id", key: "id" },
+    {
+      title: "用户名",
+      key: "username",
+      dataIndex: "username",
+      sorter: (a, b): number => a.username.localeCompare(b.username),
+    },
     {
       title: "角色",
       dataIndex: "role",
@@ -80,15 +86,21 @@ const UserList: FunctionComponent = () => {
       // onFilter: (val, account): boolean => account.role === (val as RoleE),
     },
     {
-      title: "用户名",
-      key: "username",
-      dataIndex: "username",
-      sorter: (a, b): number => a.username.localeCompare(b.username),
-    },
-    {
       title: "手机号",
       key: "cell_phone",
       dataIndex: "cell_phone",
+    },
+    {
+      title: "创建日期",
+      key: "date_joined",
+      dataIndex: "date_joined",
+      render: (val) => moment(val).format("YYYY-MM-DD HH:mm:ss"),
+    },
+    {
+      title: "最后登录日期",
+      key: "last_login",
+      dataIndex: "last_login",
+      render: (val) => moment(val).format("YYYY-MM-DD HH:mm:ss"),
     },
     {
       title: "状态",
