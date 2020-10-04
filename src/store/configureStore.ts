@@ -8,8 +8,6 @@ const encryptor = createTransform(
   (inboundState, key) => {
     if (!inboundState) return inboundState;
     return encrypt(inboundState);
-
-    // return cryptedText.toString();
   },
   (outboundState, key) => {
     if (!outboundState) return outboundState;

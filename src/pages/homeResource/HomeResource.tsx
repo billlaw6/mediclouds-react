@@ -6,7 +6,6 @@ import { Table, Button, Popconfirm } from "antd";
 import EditPanel from "./EditPanel/EditPanel";
 import { HomeResI } from "./type";
 import { delHomeResList, getHomeResList } from "_api/manager";
-import { cancel } from "redux-saga/effects";
 
 import "./HomeResource.less";
 

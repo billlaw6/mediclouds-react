@@ -2,8 +2,6 @@
 import React, { FunctionComponent } from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-// import { AppContainer } from "react-hot-loader";
-import { ConnectedRouter } from "connected-react-router";
 import configureStore from "./store/configureStore";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
@@ -76,9 +74,6 @@ ReactDOM.render(
     <MobileHome />
   ) : (
     <Provider store={store.store}>
-      {/* place ConnectedRouter under Provider */}
-      {/* <ConnectedRouter history={history}> */}
-      {/* your usual react-router v4/v5 routing */}
       <IntlProvider locale="zh" messages={messages["zh"]}>
         <PersistGate loading={null} persistor={store.persistor}>
           <ConfigProvider locale={locale}>
@@ -86,7 +81,6 @@ ReactDOM.render(
           </ConfigProvider>
         </PersistGate>
       </IntlProvider>
-      {/* </ConnectedRouter> */}
     </Provider>
   ),
   document.getElementById("root"),

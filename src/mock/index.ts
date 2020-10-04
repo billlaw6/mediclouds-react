@@ -1,6 +1,5 @@
 import Mock from "mockjs";
-import { AccountI, StatsI } from "_types/account";
-import { retry } from "redux-saga/effects";
+import { AccountI } from "_types/account";
 
 interface GenerateAccountPorpsI {
   isSuper?: boolean;
