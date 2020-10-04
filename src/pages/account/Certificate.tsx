@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState } from "react";
-import { AccountI } from "_types/account";
+import { UserI } from "_types/account";
 import { Store } from "antd/lib/form/interface";
 import { Upload, Button } from "antd";
 import { ImageFileToBase64 } from "_helper";
@@ -7,7 +7,7 @@ import { ImageFileToBase64 } from "_helper";
 import "./certificate.less";
 
 interface CertificatePropsI {
-  account: AccountI;
+  account: UserI;
   onFinish: (vals: Store) => void;
 }
 

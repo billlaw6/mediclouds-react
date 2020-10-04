@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
-import user from "./user";
+// import user from "./user";
 import account from "./account";
 import resources from "./resources";
 import dicomSettings from "./dicomSettings";
@@ -8,7 +8,7 @@ import dicomSettings from "./dicomSettings";
 // export type IState = ReturnType<typeof createRootReducer>
 
 export default combineReducers({
-  user,
+  // user,
   resources,
   dicomSettings,
   account,

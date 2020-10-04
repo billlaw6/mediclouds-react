@@ -3,7 +3,7 @@ import { Input, Button, Popconfirm, Row, Col, Space, DatePicker, Modal, Select }
 import { isUndefined } from "util";
 
 import "./style.less";
-import { AccountI, RoleE } from "_types/account";
+import { UserI, RoleE } from "_types/account";
 import useAccount from "_hooks/useAccount";
 import { getAffiliatedList } from "_api/user";
 import AccountRole from "_components/AccountRole";
@@ -52,7 +52,7 @@ const ListControlBar: FunctionComponent<ListControlBarPropsI> = (props) => {
   const { account } = useAccount();
   const [superiorId, setSuperiorId] = useState("");
   const [showChangePanel, setShowChangePanel] = useState(false);
-  const [list, setList] = useState<AccountI[]>([]); // 可修改的上级列表
+  const [list, setList] = useState<UserI[]>([]); // 可修改的上级列表
 
   // useEffect(() => {
   //   if (!showChangePanel || !currentRole) return;

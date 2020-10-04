@@ -1,6 +1,6 @@
 import { SortTypeEnum, ViewTypeEnum } from "_pages/resources/type";
 import { CollectionI, SexT, ExamIndexI } from "_types/api";
-import { AccountI, CustomerI } from "_types/account";
+import { UserI } from "_types/account";
 import { Action, AnyAction, Reducer } from "redux";
 
 // Store相关接口
@@ -136,14 +136,10 @@ export interface RouteI {
 // 创建store时要遵循的rootState接口，不能使用rootReducers的类型
 // 作为组件创建时props类型！！！必须用store.d里定义的！三天的教训！
 export interface StoreStateI {
-  // router: { location: Location };
-  // token: string;
-  user: CustomerI & { login: boolean };
-  // examIndexList: ExamIndexI[];
   resources: {
     dicom?: ExamIndexI[];
   };
-  account: AccountI & { login: boolean };
+  account: UserI & { login: boolean };
   dicomSettings: {
     sortBy: SortTypeEnum;
     viewMode: ViewTypeEnum;

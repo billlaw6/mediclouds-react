@@ -1,10 +1,10 @@
 import { ReducerI } from "_types/reducer";
 import { AccountActionTypes } from "_types/actions";
-import { AccountI, RoleE, UserI } from "_types/account";
+import { UserI, RoleE } from "_types/account";
 import { Reducer } from "redux";
 import { ActionI } from "_types/core";
 
-interface AccountStateI extends AccountI {
+interface AccountStateI extends UserI {
   login: boolean;
 }
 
@@ -32,9 +32,13 @@ const DEFAULT_ACCOUNT: AccountStateI = {
   last_login: "",
   is_active: 0,
   login: false,
+  address: "",
+  unionid: "",
+  score: 0,
+  privacy_notice: -1,
 };
 
-const accountReducer: Reducer<AccountStateI, ActionI<AccountActionTypes, AccountI>> = (
+const accountReducer: Reducer<AccountStateI, ActionI<AccountActionTypes, UserI>> = (
   state = DEFAULT_ACCOUNT,
   action,
 ) => {
@@ -44,6 +48,8 @@ const accountReducer: Reducer<AccountStateI, ActionI<AccountActionTypes, Account
     case AccountActionTypes.REGISTER:
     case AccountActionTypes.LOGIN_FORM:
     case AccountActionTypes.LOGIN_PHONE:
+    case AccountActionTypes.LOGIN_WECHAT:
+    case AccountActionTypes.PERSONAL_LOGIN_PHONE:
       return Object.assign({}, state, payload, { login: true });
 
     case AccountActionTypes.UPDATE_INFO:

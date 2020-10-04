@@ -7,7 +7,7 @@
 */
 
 import React, { FunctionComponent, useState, ReactNode } from "react";
-import { AccountI, RoleE, StatsI } from "_types/account";
+import { UserI, RoleE, StatsI } from "_types/account";
 import { Tabs, Input, Descriptions, Spin, DatePicker, Space } from "antd";
 import { EditOutlined, SyncOutlined, SaveOutlined, CloseOutlined } from "@ant-design/icons";
 import { getStats } from "_api/user";
@@ -16,7 +16,7 @@ import AccountStats from "./AccountStats";
 
 import "./style.less";
 
-interface AccountPropsI extends AccountI {
+interface AccountPropsI extends UserI {
   [key: string]: any;
 }
 

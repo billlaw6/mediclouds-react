@@ -1,12 +1,12 @@
 import Mock from "mockjs";
-import { AccountI } from "_types/account";
+import { UserI } from "_types/account";
 
 interface GenerateAccountPorpsI {
   isSuper?: boolean;
   isCustomer?: boolean;
 }
 
-export const generateAccount = (props?: GenerateAccountPorpsI): AccountI => {
+export const generateAccount = (props?: GenerateAccountPorpsI): UserI => {
   let userTypeList = ["employee", "manager", "business"];
   if (props) {
     const { isSuper, isCustomer } = props;

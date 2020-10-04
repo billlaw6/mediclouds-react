@@ -1,4 +1,4 @@
-import { CustomerI } from "_types/account";
+import { UserI } from "_types/account";
 import { ActionI } from "_types/core";
 import * as types from "../action-types";
 
@@ -13,9 +13,9 @@ export const setTokenAction: SetTokenActionFuncI = (payload) => ({
 });
 
 // 设置登录用户全局变量
-export type SetUserActionT = ActionI<string, CustomerI>;
+export type SetUserActionT = ActionI<string, UserI>;
 export interface SetUserActionFuncT {
-  (payload: CustomerI): SetUserActionT;
+  (payload: UserI): SetUserActionT;
 }
 export const setUserAction: SetUserActionFuncT = (payload) => ({
   type: types.SET_USER,
@@ -51,27 +51,27 @@ export const logoutUserAction: LogoutUserActionFuncT = (payload) => ({
 //   payload,
 // });
 
-// export type SetUserInfoActionT = ActionI<string, CustomerI>;
+// export type SetUserInfoActionT = ActionI<string, UserI>;
 // export interface SetUserInfoActionFuncT {
-//   (payload: CustomerI): SetUserInfoActionT;
+//   (payload: UserI): SetUserInfoActionT;
 // }
 // export const setUserInfoAction: SetUserInfoActionFuncT = payload => ({
 //   type: types.SET_USER_INFO,
 //   payload,
 // });
 
-// export type SetUserListActionT = ActionI<string, CustomerI[]>;
+// export type SetUserListActionT = ActionI<string, UserI[]>;
 // export interface SetUserListActionFuncT {
-//   (payload: CustomerI[]): SetUserListActionT;
+//   (payload: UserI[]): SetUserListActionT;
 // }
 // export const setUserListAction: SetUserListActionFuncT = payload => ({
 //   type: types.SET_USER_LIST,
 //   payload,
 // });
 
-// export type UpdateUserInfoActionT = ActionI<string, CustomerI>;
+// export type UpdateUserInfoActionT = ActionI<string, UserI>;
 // export interface UpdateUserInfoActionFuncT {
-//   (payload: CustomerI): UpdateUserInfoActionT;
+//   (payload: UserI): UpdateUserInfoActionT;
 // }
 // export const updateUserInfoAction: UpdateUserInfoActionFuncT = payload => ({
 //   type: types.UPDATE_USER_INFO,

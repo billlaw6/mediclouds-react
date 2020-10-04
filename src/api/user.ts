@@ -1,5 +1,5 @@
 import { personalReq, publicReq } from "./index";
-import { AccountI, CustomerI, StatsI } from "_types/account";
+import { UserI, StatsI } from "_types/account";
 import { CreateAccountDataI } from "_types/account";
 import {
   ApiFuncI,
@@ -9,7 +9,6 @@ import {
   SendSmsDataI,
   FormLoginDataI,
   SearchQueryResI,
-  UserI,
   RegisterDataI,
 } from "_types/api";
 
@@ -95,7 +94,7 @@ export const getUserStats = async (params?: any) =>
 export const getAffiliatedList = async (
   id: string,
   searchQuery?: GetSearchQueryPropsI,
-): Promise<SearchQueryResI<AccountI>> =>
+): Promise<SearchQueryResI<UserI>> =>
   await publicReq({
     method: "post",
     url: `/user/account-list/${id}/`,
@@ -106,7 +105,7 @@ export const getAffiliatedList = async (
 export const getCustomerList = async (
   id: string,
   searchQuery?: GetSearchQueryPropsI,
-): Promise<SearchQueryResI<CustomerI>> =>
+): Promise<SearchQueryResI<UserI>> =>
   await publicReq({
     method: "POST",
     url: `/user/customer-list/${id}/`,
@@ -114,7 +113,7 @@ export const getCustomerList = async (
   });
 
 /* 创建新账户 */
-export const createAccount = async (data: CreateAccountDataI): Promise<AccountI> =>
+export const createAccount = async (data: CreateAccountDataI): Promise<UserI> =>
   await publicReq({
     method: "POST",
     url: "/user/create/",
@@ -129,7 +128,7 @@ export const getStats = async (id: string): Promise<StatsI> =>
   });
 
 /* 更新账户信息 */
-export const updateAccount = async (id: string, data: FormData): Promise<AccountI> =>
+export const updateAccount = async (id: string, data: FormData): Promise<UserI> =>
   await publicReq({
     method: "POST",
     url: `/user/update/${id}/`,
@@ -162,7 +161,7 @@ export const getBilling = async (): Promise<any> =>
   });
 
 /* 获取账户信息 */
-export const getAccountInfo = async (id: string): Promise<AccountI> =>
+export const getAccountInfo = async (id: string): Promise<UserI> =>
   await publicReq({
     method: "GET",
     url: `/user/info/${id}`,

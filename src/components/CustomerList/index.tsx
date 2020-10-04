@@ -9,7 +9,7 @@ import React, {
   useCallback,
 } from "react";
 import Table, { ColumnsType } from "antd/lib/table";
-import { CustomerI, RoleE, UserI } from "_types/account";
+import { UserI, RoleE } from "_types/account";
 import { Space, Button, Result } from "antd";
 import useAccount from "_hooks/useAccount";
 import { delAccount, getCustomerList } from "_api/user";
@@ -26,7 +26,7 @@ interface CustomerListPropsI {
 const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
   const { account } = useAccount();
   const id = useRef<string>(props.id || account.id);
-  const [list, setList] = useState<{ total: number; arr: CustomerI[] }>();
+  const [list, setList] = useState<{ total: number; arr: UserI[] }>();
   const [createOrderId, setCreateOrderId] = useState<string | null>(null);
   const [orderStatus, setOrderStatus] = useState<null | {
     status: ResultStatusType;
@@ -40,7 +40,7 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
 
   const onSelectChange = (selectedRowKeys: Key[]): void => setSelected(selectedRowKeys as string[]);
 
-  const colums: ColumnsType<CustomerI> = [
+  const colums: ColumnsType<UserI> = [
     {
       title: "账户名",
       key: "username",

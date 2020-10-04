@@ -296,7 +296,7 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
 };
 
 const mapStateToProps = (state: StoreStateI): MapStateToPropsI => ({
-  user: state.user,
+  user: state.account,
 });
 const mapDispatchToProps: MapDispatchToPropsI = {
   updateUserAction,

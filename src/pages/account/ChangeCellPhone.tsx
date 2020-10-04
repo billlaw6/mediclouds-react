@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState } from "react";
-import { AccountI } from "_types/account";
+import { UserI } from "_types/account";
 import { Store } from "antd/lib/form/interface";
 import Form from "antd/lib/form/Form";
 import FormItem from "antd/lib/form/FormItem";
@@ -8,7 +8,7 @@ import Captcha from "_pages/login/Captcha";
 import SmsCode from "_components/SmsCode";
 
 interface ChangeCellPhonePropsI {
-  account: AccountI;
+  account: UserI;
   onFinish: (vals: Store) => void;
 }
 

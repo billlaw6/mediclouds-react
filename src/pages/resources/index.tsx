@@ -95,17 +95,17 @@ class Resources extends Component<ResourcesPropsI, ResourcesStateI> {
   };
 
   fetchImgList = (): void => {
-    const { user, account } = this.props;
+    const { user } = this.props;
 
-    getImgList(user.id || account.id)
+    getImgList(user.id)
       .then((res) => console.log("img list", res))
       .catch((err) => console.error(err));
   };
 
   fetchPdfList = (): void => {
-    const { user, account } = this.props;
+    const { user } = this.props;
 
-    getPdfList(user.id || account.id)
+    getPdfList(user.id)
       .then((res) => console.log("pdf list ", res))
       .catch((err) => console.error(err));
   };
@@ -548,8 +548,7 @@ class Resources extends Component<ResourcesPropsI, ResourcesStateI> {
 
 const mapStateToProps = (state: StoreStateI): MapStateToPropsI => ({
   examIndexList: state.resources.dicom,
-  user: state.user,
-  account: state.account,
+  user: state.account,
   dicomSettings: state.dicomSettings,
 });
 const mapDispatchToProps: MapDispatchToPropsI = {

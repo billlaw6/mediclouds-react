@@ -21,7 +21,7 @@ import React, {
 } from "react";
 import { Table, Modal } from "antd";
 import useAccount from "_hooks/useAccount";
-import { AccountI, RoleE } from "_types/account";
+import { UserI, RoleE } from "_types/account";
 import { delAccount, disableUser, enableUser, getAffiliatedList } from "_api/user";
 import { ColumnsType } from "antd/es/table";
 import { Key } from "antd/es/table/interface";
@@ -30,7 +30,6 @@ import AccountRole from "_components/AccountRole";
 import ListControlBar from "_components/ListControlBar";
 import { ColumnType } from "antd/lib/table";
 import Nail from "_components/Nail";
-import { UserI } from "_types/account";
 
 import "./style.less";
 
@@ -45,8 +44,8 @@ interface AccountListPropsI {
 const AccountList: FunctionComponent<AccountListPropsI> = (props) => {
   const { viewable = true, filterRole, filterCol, searchPlaceholder } = props;
   const { account } = useAccount();
-  const [list, setList] = useState<{ total: number; arr: AccountI[] }>(); // 用户列表
-  const [currentAccount, setCurrentAccount] = useState<AccountI>(); // 当前选择的账户
+  const [list, setList] = useState<{ total: number; arr: UserI[] }>(); // 用户列表
+  const [currentAccount, setCurrentAccount] = useState<UserI>(); // 当前选择的账户
   const [selected, setSelected] = useState<string[]>(); // 批量选择的账户id
   const [pagination, setPagination] = useState({ pageSize: 10, current: 1 }); // 选择的页码
   const [searchVal, setSearchVal] = useState(""); // 搜索的内容
@@ -79,7 +78,7 @@ const AccountList: FunctionComponent<AccountListPropsI> = (props) => {
    * @param {*} props
    * @returns
    */
-  const onSelectChange = (selectedRowKeys: Key[], row: AccountI[]): void => {
+  const onSelectChange = (selectedRowKeys: Key[], row: UserI[]): void => {
     const _role = row[0].role;
     if (row.some((item) => item.role === _role)) setActiveSelectSuperior(true);
     else setActiveSelectSuperior(false);
@@ -113,7 +112,7 @@ const AccountList: FunctionComponent<AccountListPropsI> = (props) => {
     fetchData();
   }, [fetchData, pagination.pageSize, pagination.current, searchVal, filters]);
 
-  let columns: ColumnsType<AccountI> = [
+  let columns: ColumnsType<UserI> = [
     {
       title: "账户名",
       key: "username",
@@ -208,7 +207,7 @@ const AccountList: FunctionComponent<AccountListPropsI> = (props) => {
 
   if (filterCol)
     columns = columns.filter((item) => {
-      const { dataIndex } = item as ColumnType<AccountI>;
+      const { dataIndex } = item as ColumnType<UserI>;
       return filterCol.indexOf(dataIndex as string) < 0;
     });
 

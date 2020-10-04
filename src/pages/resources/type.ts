@@ -1,5 +1,5 @@
 import { ExamIndexI } from "_types/api";
-import { AccountI, CustomerI } from "_types/account";
+import { UserI } from "_types/account";
 import {
   getExamIndexListAction,
   deleteExamIndexListAction,
@@ -13,8 +13,7 @@ import { ImgI, PdfI } from "_types/resources";
 
 export interface MapStateToPropsI {
   examIndexList?: ExamIndexI[];
-  user: CustomerI;
-  account: AccountI;
+  user: UserI;
   dicomSettings: {
     sortBy: SortTypeEnum;
     viewMode: ViewTypeEnum;

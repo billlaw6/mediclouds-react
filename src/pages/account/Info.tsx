@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from "react";
-import { AccountI, RoleE } from "_types/account";
+import { UserI, RoleE } from "_types/account";
 import { Store } from "antd/lib/form/interface";
 import Form from "antd/lib/form/Form";
 import moment from "antd/node_modules/moment";
@@ -7,7 +7,7 @@ import FormItem from "antd/lib/form/FormItem";
 import { Input, Select, DatePicker, Button } from "antd";
 
 interface InfoPropsI {
-  account: AccountI;
+  account: UserI;
   onFinish: (vals: Store) => void;
 }
 

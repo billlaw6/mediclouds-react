@@ -1,20 +1,19 @@
 import { useSelector, useDispatch } from "react-redux";
 import { StoreStateI } from "_types/core";
-import { CustomerI, UpdateAccountDataI } from "_types/account";
-import { AccountI } from "_types/account";
+import { UserI, UpdateAccountDataI } from "_types/account";
 import { AccountActionTypes } from "_types/actions";
 import userApi from "_api/user";
 import { setToken, clearToken } from "_helper";
 import { useHistory } from "react-router";
 import moment from "antd/node_modules/moment";
-import { FormLoginDataI, PhoneLoginDataI, RegisterDataI, UserI } from "_types/api";
+import { FormLoginDataI, PhoneLoginDataI, RegisterDataI } from "_types/api";
 import { store } from "../index";
 
 export default () => {
   const history = useHistory();
   const dispatch = useDispatch();
-  const user = useSelector<StoreStateI, CustomerI>((state) => state.user);
-  const account = useSelector<StoreStateI, AccountI & { login: boolean }>((state) => state.account);
+  // const user = useSelector<StoreStateI, UserI>((state) => state.user);
+  const account = useSelector<StoreStateI, UserI & { login: boolean }>((state) => state.account);
 
   // /* 开发表单登录 */
   // const _devFormLogin = async ({
@@ -74,7 +73,7 @@ export default () => {
     try {
       const loginRes = await userApi.loginForm(data);
       window.localStorage.clear();
-      await store.persistor.purge();
+      // await store.persistor.purge();
       const { token, user_info } = loginRes;
 
       if (token) {
@@ -87,12 +86,12 @@ export default () => {
     }
   };
 
-  /* 手机号登录 */
+  /* 顾客手机号登录 */
   const personalPhoneLogin = async (data: PhoneLoginDataI, url = "/resources"): Promise<void> => {
     try {
       const loginRes = await userApi.loginPhone(data);
       window.localStorage.clear();
-      await store.persistor.purge();
+      // await store.persistor.purge();
       const { token, user_info } = loginRes;
       if (token) {
         setToken(token);
@@ -109,7 +108,7 @@ export default () => {
     try {
       const loginRes = await userApi.loginPhone(data);
       window.localStorage.clear();
-      await store.persistor.purge();
+      // await store.persistor.purge();
       const { token, user_info } = loginRes;
       if (token) {
         setToken(token);
@@ -146,7 +145,7 @@ export default () => {
       await userApi.logout();
       clearToken();
       window.localStorage.clear();
-      await store.persistor.purge();
+      // await store.persistor.purge();
       history.push("/login");
     } catch (error) {
       throw new Error(error);
@@ -159,7 +158,7 @@ export default () => {
       await userApi.logoutPersonal();
       clearToken();
       window.localStorage.clear();
-      await store.persistor.purge();
+      // await store.persistor.purge();
       history.push("/login");
     } catch (error) {
       throw new Error(error);
@@ -186,7 +185,7 @@ export default () => {
     formLogin,
     phoneLogin,
     updateAccount,
-    user,
+    // user,
     account,
     personalPhoneLogin,
     logout,

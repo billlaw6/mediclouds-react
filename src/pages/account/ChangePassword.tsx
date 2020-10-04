@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from "react";
-import { AccountI } from "_types/account";
+import { UserI } from "_types/account";
 import { Store } from "antd/lib/form/interface";
 import Form from "antd/lib/form/Form";
 import FormItem from "antd/lib/form/FormItem";
@@ -7,7 +7,7 @@ import { Input, Button } from "antd";
 import Captcha from "_pages/login/Captcha";
 
 interface ChangePasswordPropsI {
-  account: AccountI;
+  account: UserI;
   onFinish: (vals: Store) => void;
 }
 
