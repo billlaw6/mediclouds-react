@@ -43,6 +43,7 @@ const Register: FunctionComponent = () => {
           labelCol={{ span: 1 }}
           onFinish={onFinish}
           onValuesChange={(vals) => {
+            console.log("vals", vals);
             setFormData(Object.assign({}, formData, vals));
           }}
         >
@@ -53,9 +54,11 @@ const Register: FunctionComponent = () => {
             className="register-item"
             label="手机号"
             name="cell_phone"
-            rules={[{ required: true, message: "请输入手机号" }]}
+            rules={[
+              { required: true, message: "请输入正确的手机号", len: 11, pattern: /^1[3-9]\d{9}$/ },
+            ]}
           >
-            <Input></Input>
+            <Input maxLength={11}></Input>
           </FormItem>
           <FormItem className="register-item" name="auth_code">
             <SmsCode loginType="phone" cell_phone={formData["cell_phone"]}></SmsCode>
