@@ -7,9 +7,11 @@ import { setUserAction } from "_actions/user";
 
 import { PrivacyNoticePropsI } from "./type";
 import "./style.less";
+import useAccount from "_hooks/useAccount";
 
 const PrivacyNotice: FunctionComponent<PrivacyNoticePropsI> = (props) => {
-  const { user, onChecked } = props;
+  const { account: user } = useAccount();
+  const { onChecked } = props;
 
   const [checkWarn, setCheckWarn] = useState(false); // 当未选中同意时，点击确定 提醒
   const [check, setCheck] = useState(false); // 是否勾选同意

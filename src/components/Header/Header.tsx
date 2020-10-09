@@ -38,7 +38,7 @@ const AvatarMenu: FunctionComponent<HeaderPropsI> = (props): ReactElement => {
         </MenuItem>
         {isSuperuser ? (
           <MenuItem className="dashboard" key="dashboard">
-            <Link to="/dashboard">管理看板</Link>
+            <Link to="/manager">管理后台</Link>
           </MenuItem>
         ) : (
           <div></div>

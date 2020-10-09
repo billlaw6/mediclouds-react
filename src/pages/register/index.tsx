@@ -43,7 +43,6 @@ const Register: FunctionComponent = () => {
           labelCol={{ span: 1 }}
           onFinish={onFinish}
           onValuesChange={(vals) => {
-            console.log("vals", vals);
             setFormData(Object.assign({}, formData, vals));
           }}
         >

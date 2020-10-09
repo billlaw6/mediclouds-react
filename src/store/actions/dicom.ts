@@ -1,7 +1,7 @@
-import { ExamIndexI } from "_types/api";
+import { ExamIndexI, ExamSortKeyE, ImgAndPdfSortKeyE } from "_types/resources";
 import { ActionI, SearchFormI } from "_types/core";
 import * as types from "../action-types";
-import { ViewTypeEnum, SortTypeEnum } from "_pages/resources/type";
+import { ViewTypeEnum } from "_pages/resources/type";
 
 // 用于在SAGA中触发请求
 export type GetExamIndexListActionT = ActionI<string, SearchFormI>;
@@ -45,7 +45,7 @@ export const setViewModeAction: SetViewModeActionFuncI = (mode) => ({
 
 // 改变dicom list 排序
 export interface SetViewSortByActionFuncI {
-  (mode: SortTypeEnum): ActionI<string, SortTypeEnum>;
+  (mode: ExamSortKeyE | ImgAndPdfSortKeyE): ActionI<string, ExamSortKeyE | ImgAndPdfSortKeyE>;
 }
 export const SetViewSortByAction: SetViewSortByActionFuncI = (sortBy) => ({
   type: types.SET_VIEW_SORY_BY,

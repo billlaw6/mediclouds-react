@@ -1,4 +1,3 @@
-import { ExamIndexI } from "_types/api";
 import { UserI } from "_types/account";
 import {
   getExamIndexListAction,
@@ -9,13 +8,13 @@ import {
 import { RouteComponentProps } from "react-router";
 import { ReactElement } from "react";
 import { getExamList } from "_actions/resources";
-import { ImgI, PdfI } from "_types/resources";
+import { ImgI, PdfI, ExamIndexI, ExamSortKeyE, ImgAndPdfSortKeyE } from "_types/resources";
 
 export interface MapStateToPropsI {
   examIndexList?: ExamIndexI[];
   user: UserI;
-  dicomSettings: {
-    sortBy: SortTypeEnum;
+  resourcesSettings: {
+    sortBy: ExamSortKeyE | ImgAndPdfSortKeyE;
     viewMode: ViewTypeEnum;
   };
 }
@@ -29,7 +28,7 @@ export interface MapDispatchToPropsI {
 export type ResourcesPropsI = MapStateToPropsI & MapDispatchToPropsI & RouteComponentProps;
 export interface ResourcesStateI {
   viewType: ViewTypeEnum; // 视图模式
-  sortType: SortTypeEnum; // 排序规则
+  sortType: ExamSortKeyE; // 排序规则
   isSelectable: boolean; // 是否是可选择的
   page: number; // 当前在第几页 从1开始
   selections: string[]; //当前已选择的dicom id 集
@@ -42,11 +41,11 @@ export interface ResourcesStateI {
   imgList: ImgI[]; // pdf列表
 }
 
-// 排序类型
-export enum SortTypeEnum {
-  TIME = "time",
-  TYPE = "type",
-}
+// // 排序类型
+// export enum SortTypeEnum {
+//   TIME = "time",
+//   TYPE = "type",
+// }
 
 // 视图类型
 export enum ViewTypeEnum {

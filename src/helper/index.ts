@@ -2,7 +2,8 @@ import { personalReq } from "_axios";
 import { ReactNode } from "react";
 import { GetSearchQueryPropsI } from "_types/api";
 import CryptoJS from "crypto-js";
-import { type } from "os";
+import moment from "antd/node_modules/moment";
+import { MomentInput } from "moment";
 
 export const isArray = (arr: any): boolean => Array.isArray(arr);
 export const isUndefined = (val: any): boolean => typeof val === "undefined";
@@ -219,4 +220,37 @@ export const ImageFileToBase64 = (image: File): Promise<string> => {
 
     reader.readAsDataURL(image);
   });
+};
+/**
+ * 手动更新已选择的列表
+ *
+ * @param {string[]} data 当前已选择的列表
+ * @param {string} id 当前选择的id
+ * @returns {string[]}
+ */
+export const getSelected = (data: string[], id: string): string[] => {
+  const index = data.indexOf(id);
+
+  if (index < 0) return [...data, id];
+  return [...data, id].filter((item) => item !== id);
+};
+
+/**
+ * 展平数组（一维）
+ * @param {string[]} arr
+ * @return {string[]}
+ */
+export const flattenArr = (arr: string[][]): string[] => new Array<string>().concat(...arr);
+
+/**
+ * 格式化日期
+ *
+ * @param {MomentInput} val 日期
+ * @param {boolean} [time] 是否显示时间
+ * @returns {string}
+ */
+export const formatDate = (val: MomentInput, time?: boolean): string => {
+  const formatRule = `YYYY-MM-DD${time ? " HH:mm:ss" : ""}`;
+
+  return moment(val).format(formatRule);
 };

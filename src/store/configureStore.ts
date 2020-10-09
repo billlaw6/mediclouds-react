@@ -19,7 +19,7 @@ const persistConfig = {
   key: "root", // 必须有
   storage, // storage is now required
   // blacklist: ["router"], // reducer里不持久化的数据，不把router剔出来会有刷新跳回原页面的问题。
-  whitelist: ["account", "user", "dicomSettings"], // reducer里持久化的数据
+  whitelist: ["account", "user", "resourcesSettings"], // reducer里持久化的数据
   transforms: [encryptor],
 };
 

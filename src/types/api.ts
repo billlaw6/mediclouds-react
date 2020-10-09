@@ -55,15 +55,15 @@ export interface FiltersI {
 }
 
 // 查询参数
-export interface GetSearchQueryPropsI {
+export interface GetSearchQueryPropsI<S = string, K = string> {
   id?: string;
   current?: number; // 当前页码
   size?: number; // 每页数量
   start?: string; // 开始时间
   end?: string; // 结束时间
   ascend?: 0 | 1; // 正序逆序
-  sort?: string; // 排序规则
-  keyword?: string; // 检查关键字
+  sort?: S; // 排序规则
+  keyword?: K; // 检查关键字
   filters?: FiltersI; // 过滤
 }
 
@@ -86,21 +86,6 @@ export enum CollectionTypeE {
 
 // mpr顺序
 export type MprOrderT = 0 | 1 | 2;
-
-// 影像集
-export interface ExamIndexI {
-  id: string;
-  modality: string;
-  patient_name: string;
-  thumbnail: string;
-  desc: string;
-  study_date: string;
-  // created_at: Date;
-  // patient_id: string;
-  // institution_name: string;
-  // display_frame_rate: number;
-  // series: DicomSeriesListI[];
-}
 
 // 用户信息
 export interface UserI {

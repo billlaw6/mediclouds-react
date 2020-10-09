@@ -1,7 +1,9 @@
 import React, { ReactElement, FunctionComponent, useState } from "react";
-import { ListDescPropsI } from "../type";
+import { ListDescPropsI } from "../../type";
 import { Input } from "antd";
 import { EditOutlined, CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
+
+import "./style.less";
 
 const ListDesc: FunctionComponent<ListDescPropsI> = (props): ReactElement => {
   const { desc, updateDesc } = props;
@@ -11,16 +13,16 @@ const ListDesc: FunctionComponent<ListDescPropsI> = (props): ReactElement => {
 
   return (
     <>
-      <span className={`dicom-list-desc-text`}>{desc}</span>
+      <span className={`exam-table-desc-text`}>{desc}</span>
       <EditOutlined
-        className={`dicom-list-desc-edit iconfont`}
+        className={`exam-table-desc-edit iconfont`}
         onClick={(e): void => {
           e.stopPropagation();
           editDesc(true);
         }}
       ></EditOutlined>
       {/* <Icon
-        className={`dicom-list-desc-edit iconfont`}
+        className={`exam-table-desc-edit iconfont`}
         type="edit"
         onClick={(e): void => {
           e.stopPropagation();
@@ -28,14 +30,14 @@ const ListDesc: FunctionComponent<ListDescPropsI> = (props): ReactElement => {
         }}
       /> */}
       <Input
-        className={`dicom-list-desc-editor ${showEditor ? "dicom-list-desc-show" : ""}`}
+        className={`exam-table-desc-editor ${showEditor ? "exam-table-desc-show" : ""}`}
         value={inputValue || ""}
         placeholder="备注上限20个字"
         maxLength={20}
         onClick={(e): void => e.stopPropagation()}
         onInput={(e): void => changeInputValue(e.currentTarget.value)}
         addonAfter={
-          <div className="dicom-list-desc-ctl">
+          <div className="exam-table-desc-ctl">
             <CheckCircleOutlined
               className="iconfont icon_ic-complete"
               onClick={(e): void => {

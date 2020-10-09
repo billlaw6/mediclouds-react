@@ -10,6 +10,6 @@ import dicomSettings from "./dicomSettings";
 export default combineReducers({
   // user,
   resources,
-  dicomSettings,
+  resourcesSettings: dicomSettings,
   account,
 });

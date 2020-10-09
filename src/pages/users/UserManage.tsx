@@ -24,7 +24,6 @@ class UserManage extends React.Component<UserManagePropsI, UserManageStateI> {
   fetchUserList = (searchQuery?: GetSearchQueryPropsI): void => {
     getUserList(searchQuery)
       .then((res: any) => {
-        console.log("user list", res);
         this.setState({ userList: res.results, searchResult: res.results, userTotal: res.count });
       })
       .catch((err: any) => {
