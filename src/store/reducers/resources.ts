@@ -1,9 +1,13 @@
 import { Reducer } from "redux";
-import { ActionI, ExamIndexListI } from "_types/core";
-import { ResourcesActionE } from "_types/resources";
+import { ViewTypeEnum } from "_pages/resources/type";
+import { SearchQueryResI } from "_types/api";
+import { ActionI } from "_types/core";
+import { ExamIndexI, ImgI, PdfI, ResourcesActionE } from "_types/resources";
 
 interface ResourcesStateI {
-  dicom?: ExamIndexListI[];
+  examList?: SearchQueryResI<ExamIndexI>;
+  imgList?: SearchQueryResI<ImgI>;
+  pdfList?: SearchQueryResI<PdfI>;
 }
 
 const resources: Reducer<ResourcesStateI, ActionI<ResourcesActionE, any>> = (
@@ -14,7 +18,15 @@ const resources: Reducer<ResourcesStateI, ActionI<ResourcesActionE, any>> = (
 
   switch (type) {
     case ResourcesActionE.GET_EXAM_LIST: {
-      if (payload) return Object.assign({}, state, { dicom: payload });
+      if (payload) return Object.assign({}, state, { examList: payload });
+      else return state;
+    }
+    case ResourcesActionE.GET_IMG_LIST: {
+      if (payload) return Object.assign({}, state, { imgList: payload });
+      else return state;
+    }
+    case ResourcesActionE.GET_PDF_LIST: {
+      if (payload) return Object.assign({}, state, { pdfList: payload });
       else return state;
     }
     default:

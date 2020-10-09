@@ -1,7 +1,9 @@
-import { SortTypeEnum, ViewTypeEnum } from "_pages/resources/type";
-import { CollectionI, SexT, ExamIndexI } from "_types/api";
+import { ViewTypeEnum } from "_pages/resources/type";
+import { CollectionI, SearchQueryResI, SexT } from "_types/api";
+import { ExamIndexI, ExamSortKeyE, ImgAndPdfSortKeyE, ResourcesTypeE } from "_types/resources";
 import { UserI } from "_types/account";
 import { Action, AnyAction, Reducer } from "redux";
+import { ImgI, PdfI } from "./resources";
 
 // Store相关接口
 // 本地变量遵循js规范使用驼峰式全名，需要与后台数据库字段对应的变量使用下划线风格。
@@ -137,11 +139,17 @@ export interface RouteI {
 // 作为组件创建时props类型！！！必须用store.d里定义的！三天的教训！
 export interface StoreStateI {
   resources: {
-    dicom?: ExamIndexI[];
+    examList?: SearchQueryResI<ExamIndexI>;
+    imgList?: SearchQueryResI<ImgI>;
+    pdfList?: SearchQueryResI<PdfI>;
   };
   account: UserI & { login: boolean };
-  dicomSettings: {
-    sortBy: SortTypeEnum;
+  resourcesSettings: {
+    sortBy: {
+      [ResourcesTypeE.EXAM]: ExamSortKeyE;
+      [ResourcesTypeE.IMG]: ImgAndPdfSortKeyE;
+      [ResourcesTypeE.PDF]: ImgAndPdfSortKeyE;
+    };
     viewMode: ViewTypeEnum;
   };
 }

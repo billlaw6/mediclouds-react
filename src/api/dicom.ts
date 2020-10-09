@@ -82,9 +82,13 @@ export const getDicomFileStats = async (params?: any) =>
  * @description 检查dicom解析进度并返回剩余解析量
  * @returns {Promise<number>}
  */
-export const checkDicomParseProgress = async (): Promise<number> => {
+export const checkDicomParseProgress = async (): Promise<{
+  error: number;
+  parsing: number;
+  total: number;
+}> => {
   try {
-    return (await personalReq({ method: "GET", url: "/dicom/parse-progress/" })).parsing as number;
+    return await personalReq({ method: "GET", url: "/dicom/parse-progress/" });
   } catch (error) {
     throw new Error(error);
   }

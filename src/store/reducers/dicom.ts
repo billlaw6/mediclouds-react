@@ -1,4 +1,4 @@
-import { ExamIndexI } from "_types/api";
+import { ExamIndexI } from "_types/resources";
 import * as types from "../action-types";
 import { setExamIndexListAction } from "_actions/dicom";
 

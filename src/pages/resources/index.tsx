@@ -1,560 +1,312 @@
-/* eslint-disable @typescript-eslint/camelcase */
-import React, { ReactElement, Component } from "react";
-import { connect } from "react-redux";
-import { Row, Col, Dropdown, Menu, Pagination, Table, Checkbox, Modal, Spin } from "antd";
-import DicomCard from "_components/DicomCard/DicomCard";
-import { ExamIndexI } from "_types/api";
-import { StoreStateI } from "_types/core";
+import React, { FunctionComponent, useEffect, useState } from "react";
+import { Image, message, Modal, Tabs } from "antd";
 
-import {
-  MapStateToPropsI,
-  ResourcesPropsI,
-  ResourcesStateI,
-  ViewTypeEnum,
-  SortTypeEnum,
-  MapDispatchToPropsI,
-  TableDataI,
-} from "./type";
-import { deleteExamIndexListAction, SetViewSortByAction, setViewModeAction } from "_actions/dicom";
+import useResources from "_hooks/useResources";
+import { ExamIndexI, ImgI, PdfI, ResourcesTypeE } from "_types/resources";
+import Controller from "./components/Controller";
+import { GetSearchQueryPropsI } from "_types/api";
 
-import { Gutter } from "antd/lib/grid/row";
-import { ColumnProps, TablePaginationConfig } from "antd/lib/table";
-import LinkButton from "_components/LinkButton/LinkButton";
-import ListDesc from "./components/ListDesc";
-import PrivacyNotice from "_components/PrivacyNotice";
-
-import { isNull } from "_helper";
-import Notify from "_components/Notify";
-import { personalReq } from "_axios";
-import { checkDicomParseProgress, getExamIndex } from "_api/dicom";
-import Empty from "./components/Empty/Empty";
-import {
-  CloudUploadOutlined,
-  ArrowLeftOutlined,
-  DeleteOutlined,
-  SortAscendingOutlined,
-  MenuOutlined,
-  AppstoreOutlined,
-  LoadingOutlined,
-} from "@ant-design/icons";
-import { getExamList } from "_actions/resources";
-
-import "./resources.less";
-import { getImgList, getPdfList } from "_api/resources";
+import "./style.less";
+import { ViewTypeEnum } from "./type";
 import ExamTable from "./components/ExamTable";
+import ExamCards from "./components/ExamCards";
+import { flattenArr } from "_helper";
+import ImgCards from "./components/ImgCards";
+import PdfTable from "./components/PdfTable";
+import Notify from "_components/Notify";
+import { checkDicomParseProgress } from "_api/dicom";
+import PrivacyNotice from "_components/PrivacyNotice";
+import useAccount from "_hooks/useAccount";
 
-const DEFAULT_PAGE_SIZE = 12;
+interface SelectedI {
+  exam: string[][];
+  img: string[][];
+  pdf: string[][];
+}
 
-class Resources extends Component<ResourcesPropsI, ResourcesStateI> {
-  pollTimer: number | null;
+/* 资源当前的页码 */
+interface SearchQueryI {
+  exam: GetSearchQueryPropsI<"study_date" | "modality">;
+  img: GetSearchQueryPropsI<"created_at" | "filename">;
+  pdf: GetSearchQueryPropsI<"created_at" | "filename">;
+}
 
-  constructor(props: ResourcesPropsI) {
-    super(props);
+const { TabPane } = Tabs;
 
-    this.state = {
-      viewType: ViewTypeEnum.GRID,
-      sortType: SortTypeEnum.TIME,
-      isSelectable: false,
-      page: 1,
-      selections: [],
-      redirectUpload: false,
-      parsing: 0,
-      showNotify: false,
-      poll: false,
-      pageSize: DEFAULT_PAGE_SIZE,
-      pdfList: [],
-      imgList: [],
-    };
+let timer: number | null = null;
 
-    this.pollTimer = null;
-  }
+const Resources: FunctionComponent = () => {
+  const {
+    fetchExamList,
+    delExam,
+    fetchImgList,
+    delImg,
+    fetchPdfList,
+    delPdf,
+    examList,
+    imgList,
+    pdfList,
+    sortBy,
+    viewMode,
+    changeSortBy,
+  } = useResources();
+  const { account } = useAccount();
 
-  componentDidMount(): void {
-    checkDicomParseProgress()
-      .then((res) => this.setState({ parsing: res, showNotify: !!res, poll: !!res }))
-      .catch((err) => console.error(err));
+  const [tabType, setTabType] = useState(ResourcesTypeE.EXAM); // 当前tab页类型
+  const [selected, setSelected] = useState<SelectedI>({ exam: [], img: [], pdf: [] }); // 已选择的
+  const [searchQuery, setSearchQuery] = useState<SearchQueryI>({
+    exam: {
+      current: 1,
+      size: 12,
+      sort: sortBy.exam,
+    },
+    img: {
+      current: 1,
+      size: 12,
+      sort: sortBy.img,
+    },
+    pdf: {
+      current: 1,
+      size: 12,
+      sort: sortBy.pdf,
+    },
+  });
+  const [selectMode, setSelectMode] = useState(false); // 选择模式
+  const [showNotify, setShowNotify] = useState(false); // 显示解析
+  const [parsingInfo, setParingInfo] = useState<{
+    error: number;
+    parsing: number;
+    total: number;
+  } | null>(null); // 解析进度
 
-    this.fetchExamList();
-
-    // this.fetchImgList();
-    // this.fetchPdfList();
-  }
-
-  componentDidUpdate(): void {
-    if (this.state.poll && isNull(this.pollTimer)) {
-      this.poll();
-    }
-  }
-
-  fetchExamList = (): void => {
-    const { getList } = this.props;
-
-    getExamIndex()
-      .then((res) => getList && getList(res))
-      .catch((err) => console.error(err));
+  /**
+   * 更新所选tab页的已选id列表
+   * @param type
+   * @param vals
+   */
+  const updateSelected = (type: ResourcesTypeE, vals: string[]): void => {
+    setSelected(Object.assign({}, selected, { [type]: vals }));
   };
 
-  fetchImgList = (): void => {
-    const { user } = this.props;
-
-    getImgList(user.id)
-      .then((res) => console.log("img list", res))
-      .catch((err) => console.error(err));
-  };
-
-  fetchPdfList = (): void => {
-    const { user } = this.props;
-
-    getPdfList(user.id)
-      .then((res) => console.log("pdf list ", res))
-      .catch((err) => console.error(err));
-  };
-
-  poll = (): void => {
-    this.pollTimer = window.setInterval(() => {
-      checkDicomParseProgress()
-        .then((res) => {
-          this.setState({ parsing: res, poll: !!res });
-          if (res <= 0) {
-            this.fetchExamList();
-            this.pollTimer && window.clearInterval(this.pollTimer);
-            this.pollTimer = null;
-          }
-        })
-        .catch((err) => console.error(err));
-    }, 5000);
-  };
-
-  list = (): ReactElement | undefined => {
-    const { selections, isSelectable, page, pageSize } = this.state;
-    const columns: ColumnProps<TableDataI>[] = [
-      {
-        title: "类型",
-        dataIndex: "modality",
-        render: (text: string, record): ReactElement | string => {
-          const { id } = record;
-          return isSelectable ? (
-            <>
-              <Checkbox value={id} checked={selections.indexOf(id) > -1}></Checkbox>
-              <span>{text}</span>
-            </>
-          ) : (
-            text
-          );
-        },
-      },
-      { title: "姓名", dataIndex: "patient_name" },
-      { title: "上传日期", dataIndex: "study_date" },
-      { title: "备注", dataIndex: "desc", className: "dicom-list-desc" },
-    ];
-
-    const dataSource: TableDataI[] = [];
-    const renderList = this.getCurrentItem();
-
-    renderList.forEach((data) => {
-      const { desc, ...others } = data;
-      const editorDesc = (
-        <ListDesc
-          desc={desc}
-          updateDesc={(value: string): void => this.updateDesc(others.id, value)}
-        ></ListDesc>
-      );
-      dataSource.push({ ...others, desc: editorDesc });
-    });
-
-    const paginationConfig: TablePaginationConfig = {
-      current: page,
-      defaultPageSize: pageSize,
-      total: renderList.length,
-      hideOnSinglePage: true,
-      onChange: (page: number): void => {
-        this.setState({ page });
-      },
-    };
-
-    return (
-      <Table
-        className="dicom-list dicom-list-table"
-        rowKey={"id"}
-        columns={columns}
-        dataSource={dataSource}
-        pagination={paginationConfig}
-        onRow={(record) => {
-          return {
-            onClick: (): void => {
-              this.onClickItem(record.id);
-            },
-          };
-        }}
-      ></Table>
-    );
-  };
-
-  dicoms = (): ReactElement | undefined => {
-    const { examIndexList } = this.props;
-    const { page, isSelectable, selections, pageSize } = this.state;
-    const renderList = this.getCurrentItem();
-
-    if (renderList && renderList.length) {
-      const rows: ReactElement[] = [];
-      let cols: ReactElement[] = [];
-      const gutter: [Gutter, Gutter] = [
-        { xs: 8, sm: 16, md: 24 },
-        { xs: 20, sm: 30, md: 40 },
-      ];
-
-      let count = 0;
-
-      renderList.forEach((item) => {
-        const { id, patient_name, study_date, desc, thumbnail, modality } = item;
-        if (count >= 4) {
-          count = 0;
-          rows.push(
-            <Row key={rows.length} gutter={gutter} align="middle">
-              {cols}
-            </Row>,
-          );
-          cols = [];
-        }
-
-        cols.push(
-          <Col key={id} xs={24} md={12} lg={8} xl={6}>
-            <DicomCard
-              id={id}
-              patientName={patient_name}
-              studyDate={study_date}
-              desc={desc}
-              thumbnail={thumbnail}
-              modality={modality}
-              checkbox={isSelectable}
-              checked={selections.indexOf(id) > -1}
-              onClick={(): void => this.onClickItem(id)}
-              updateDesc={(value: string): void => this.updateDesc(id, value)}
-            ></DicomCard>
-          </Col>,
-        );
-      });
-
-      rows.push(
-        <Row key={rows.length} gutter={gutter} align="top">
-          {cols}
-        </Row>,
-      );
-
-      return (
-        <div className="dicom-list dicom-list-square">
-          {rows}
-          <Pagination
-            hideOnSinglePage={true}
-            current={page}
-            pageSize={pageSize}
-            total={examIndexList ? examIndexList.length : 0}
-            onShowSizeChange={(_current, size): void => {
-              // console.log("current, size", current, size);
-              this.setState({ pageSize: size });
-            }}
-            onChange={(page): void => {
-              this.setState({ page });
-            }}
-          ></Pagination>
-        </div>
-      );
+  const fetchResources = (type: ResourcesTypeE): void => {
+    switch (type) {
+      case ResourcesTypeE.EXAM:
+        fetchExamList(searchQuery[ResourcesTypeE.EXAM])
+          .then(() => console.log("successed fetch examList"))
+          .catch((err) => console.error(err));
+        break;
+      case ResourcesTypeE.IMG:
+        fetchImgList(searchQuery[ResourcesTypeE.IMG])
+          .then(() => console.log("successed fetch imgList"))
+          .catch((err) => console.error(err));
+        break;
+      case ResourcesTypeE.PDF:
+        fetchPdfList(searchQuery[ResourcesTypeE.PDF])
+          .then(() => console.log("successed fetch pdfList"))
+          .catch((err) => console.error(err));
+        break;
+      default:
+        break;
     }
   };
 
   /**
-   * 点击某个dicom 切换到播放器
-   *
-   * @memberof Resources
+   *  获取当前tab页的资源
+   * @param type
    */
-  onClickItem = (id: string): void => {
-    const { history, examIndexList = [] } = this.props;
-    const { isSelectable, selections } = this.state;
-
-    if (isSelectable) {
-      const nextSelections = selections.filter((item) => item !== id);
-      if (nextSelections.length === selections.length) {
-        nextSelections.push(id);
-      }
-      this.setState({ selections: nextSelections });
-    } else {
-      const currentExam = examIndexList.find((item) => item.id === id);
-      if (currentExam) {
-        const { id } = currentExam;
-        history.push("/player", {
-          id,
-        });
-      }
+  const getCurrentResources = (type: ResourcesTypeE) => {
+    switch (type) {
+      case ResourcesTypeE.EXAM:
+        return examList;
+      case ResourcesTypeE.IMG:
+        return imgList;
+      case ResourcesTypeE.PDF:
+        return pdfList;
+      default:
+        return;
     }
   };
 
-  getCurrentItem = (): ExamIndexI[] => {
-    const { examIndexList = [], dicomSettings } = this.props;
-    const { page, pageSize } = this.state;
-    const resList = this.sortList(examIndexList);
-
-    if (dicomSettings.viewMode === ViewTypeEnum.GRID)
-      return resList.slice((page - 1) * pageSize, page * pageSize);
-    return resList;
+  /**
+   * 当前tab页的分页切换时触发
+   * @param type
+   * @param current
+   */
+  const onChangePagination = (type: ResourcesTypeE, current: number): void => {
+    const nextData = Object.assign({}, searchQuery[type], { current });
+    setSearchQuery(Object.assign({}, searchQuery, { [type]: nextData }));
   };
 
-  controller = (): ReactElement => {
-    const { examIndexList = [], dicomSettings } = this.props;
-    const { isSelectable } = this.state;
-    return (
-      <div id="controller" className={`controller`}>
-        <div className="controller-left">
-          <span className="controller-title">检查资料</span>
-          <LinkButton className="controller-upload" to="/upload" icon={<CloudUploadOutlined />}>
-            上传
-          </LinkButton>
-          {examIndexList.length ? (
-            <div className={`controller-del ${isSelectable ? "controller-del-open" : ""}`}>
-              {isSelectable ? (
-                <ArrowLeftOutlined
-                  className="iconfont"
-                  onClick={(): void =>
-                    this.setState({ isSelectable: !isSelectable, selections: [] })
-                  }
-                ></ArrowLeftOutlined>
-              ) : (
-                <DeleteOutlined
-                  className="iconfont"
-                  onClick={(): void =>
-                    this.setState({ isSelectable: !isSelectable, selections: [] })
-                  }
-                ></DeleteOutlined>
-              )}
-              {/* <Icon
-                className="iconfont"
-                type={isSelectable ? "arrow-left" : "delete"}
-                onClick={(): void => this.setState({ isSelectable: !isSelectable, selections: [] })}
-              /> */}
-              {/* <span onClick={this.selectedAll}>全选</span> */}
-              <span onClick={this.showConfirm}>删除</span>
-            </div>
-          ) : null}
-        </div>
-        <div className={`controller-right ${examIndexList.length ? "" : "hidden"}`}>
-          <Dropdown overlay={this.dropdownContent()} placement="bottomRight">
-            <SortAscendingOutlined className="controller-select-sort iconfont"></SortAscendingOutlined>
-            {/* <Icon className="controller-select-sort iconfont" type="sort-ascending" /> */}
-          </Dropdown>
-          {dicomSettings.viewMode === ViewTypeEnum.GRID ? (
-            <MenuOutlined
-              className="controller-select-view iconfont"
-              onClick={this.changeViewType}
-            ></MenuOutlined>
-          ) : (
-            <AppstoreOutlined
-              className="controller-select-view iconfont"
-              onClick={this.changeViewType}
-            ></AppstoreOutlined>
-          )}
-          {/* <Icon
-            className="controller-select-view iconfont"
-            type={dicomSettings.viewMode === ViewTypeEnum.GRID ? "menu" : "appstore"}
-            onClick={this.changeViewType}
-          /> */}
-        </div>
-      </div>
-    );
-  };
+  /**
+   * 确认删除
+   */
+  const confirmDel = () => {
+    const ids = flattenArr(selected[tabType]);
 
-  selectedAll = (): void => {
-    const currentItems = this.getCurrentItem();
-    this.setState({
-      selections:
-        currentItems.length === this.state.selections.length
-          ? []
-          : currentItems.map((item) => item.id),
-    });
-  };
+    if (!ids || !ids.length) return;
 
-  changeViewType = (): void => {
-    const { dicomSettings, setViewMode } = this.props;
+    let delFunction: Function | undefined = undefined,
+      typeName = "";
 
-    const nextType =
-      dicomSettings.viewMode === ViewTypeEnum.GRID ? ViewTypeEnum.LIST : ViewTypeEnum.GRID;
-    setViewMode(nextType);
-  };
-
-  showConfirm = (): void => {
-    if (!this.state.selections.length) return;
+    switch (tabType) {
+      case ResourcesTypeE.EXAM:
+        delFunction = delExam;
+        typeName = "检查";
+        break;
+      case ResourcesTypeE.IMG:
+        delFunction = delImg;
+        typeName = "图片";
+        break;
+      case ResourcesTypeE.PDF:
+        delFunction = delPdf;
+        typeName = "PDF";
+        break;
+      default:
+        break;
+    }
 
     Modal.confirm({
       centered: true,
       className: "del-confirm",
       title: "确认删除",
-      content: "确认删除所选文件/文件夹吗？",
+      content: `确认删除所选【${typeName}】吗？`,
       cancelText: "取消",
       okText: "确定",
       onOk: async (): Promise<void> => {
-        await this.delDicom();
-        this.setState({
-          isSelectable: false,
-          selections: [],
-        });
+        try {
+          if (delFunction) {
+            await delFunction(ids);
+            fetchResources(tabType);
+            updateSelected(tabType, []);
+          }
+
+          setSelectMode(false);
+        } catch (error) {
+          throw new Error(error);
+        }
       },
       onCancel: (): void => {
-        this.setState({
-          isSelectable: false,
-          selections: [],
-        });
+        // updateSelected(tabType, []);
+        // setSelectMode(false);
       },
     });
   };
 
-  /**
-   * 返回列表排序的内容部分
-   *
-   * @memberof Resources
-   */
-  dropdownContent = (): ReactElement => {
-    const { dicomSettings, setSortBy } = this.props;
-    const { sortBy } = dicomSettings;
+  useEffect(() => {
+    timer = window.setInterval(() => {
+      checkDicomParseProgress()
+        .then((res) => {
+          setParingInfo(res);
+          if (res.parsing <= 0) {
+            timer && window.clearInterval(timer);
+            timer = null;
+          } else {
+            if (!showNotify) setShowNotify(true);
+          }
+        })
+        .catch((err) => console.error(err));
+    }, 5000);
+  }, []);
 
-    return (
-      <Menu
-        className="resources-dicom-sort"
-        onClick={(data): void => {
-          // this.setState({ sortType: data.key as SortTypeEnum });
-          setSortBy(data.key as SortTypeEnum);
+  useEffect(() => {
+    // 根据tab页签拉取相应的资源
+    fetchResources(tabType);
+  }, [tabType, searchQuery, parsingInfo]);
+
+  const currentResources = getCurrentResources(tabType);
+  const showDelBtn = currentResources ? !!currentResources.results.length : false;
+
+  return (
+    <section className="resources">
+      {showNotify ? (
+        <Notify
+          mode={parsingInfo && parsingInfo.parsing ? "parsing" : "successed"}
+          onClose={(): void => setShowNotify(false)}
+        >
+          {parsingInfo && parsingInfo.parsing
+            ? `您上传的DICOM文件仍有${parsingInfo.parsing}个正在解析，展示的不是全部影像，请耐心等待。`
+            : "DICOM文件已经全部解析成功"}
+        </Notify>
+      ) : null}
+      <Controller
+        resourcesType={tabType}
+        showDelBtn={showDelBtn}
+        isSelectable={selectMode}
+        onDel={confirmDel}
+        onClickDelBtn={(): void => setSelectMode(true)}
+        onClickCancelBtn={(): void => {
+          setSelectMode(false);
+          setSelected({ exam: [], img: [], pdf: [] });
         }}
+        onSortByChange={(val): void => {
+          changeSortBy(tabType, val);
+          setSearchQuery(
+            Object.assign({}, searchQuery, {
+              [tabType]: {
+                ...searchQuery[tabType],
+                sort: val,
+              },
+            }),
+          );
+        }}
+      ></Controller>
+      <Tabs
+        type="card"
+        activeKey={tabType}
+        onChange={(val): void => setTabType(val as ResourcesTypeE)}
       >
-        <Menu.Item disabled={sortBy === SortTypeEnum.TIME} key={SortTypeEnum.TIME}>
-          时间排序
-        </Menu.Item>
-        <Menu.Item disabled={sortBy === SortTypeEnum.TYPE} key={SortTypeEnum.TYPE}>
-          种类排序
-        </Menu.Item>
-      </Menu>
-    );
-  };
-
-  /**
-   * 当确认隐私后 如果没有影响列表 跳转到upload界面
-   *
-   * @memberof Resources
-   */
-  onChecked = (): void => {
-    // const { examIndexList } = this.props;
-    // if (!examIndexList.length) this.setState({ redirectUpload: true });
-  };
-
-  /* === APIS 与服务器交互数据的方法 START === */
-
-  /**
-   * 更新指定dicom的desc
-   *
-   * @param {string} id dicom id
-   * @param {string} value 更新的desc
-   *
-   * @memberof Resources
-   */
-  updateDesc = (id: string, value: string): void => {
-    personalReq({
-      method: "POST",
-      url: `/dicom/exam-index/${id}/`,
-      data: { desc: value },
-    })
-      .then(() => {
-        this.fetchExamList();
-      })
-      .catch((err) => console.error(err));
-  };
-
-  /**
-   * 删除所选dicom
-   *
-   * @memberof Resources
-   */
-  delDicom = async (): Promise<void> => {
-    const { selections } = this.state;
-    const { delList } = this.props;
-    delList(selections);
-  };
-  /* === APIS 与服务器交互数据的方法 END === */
-
-  /**
-   * 排序列表
-   *
-   * @memberof Resources
-   */
-  sortList = (list: ExamIndexI[]): ExamIndexI[] => {
-    // const { sortType } = this.state;
-    const { sortBy } = this.props.dicomSettings;
-    const temp = [...list];
-
-    return temp.sort((a, b) => {
-      if (sortBy === SortTypeEnum.TIME) {
-        const studyDateA = a.study_date;
-        const studyDateB = b.study_date;
-        return studyDateA < studyDateB ? 1 : -1;
-      }
-      if (sortBy === SortTypeEnum.TYPE) {
-        const modalityA = a.modality;
-        const modalityB = b.modality;
-        return modalityA < modalityB ? -1 : 1;
-      }
-
-      return 0;
-    });
-  };
-
-  render(): ReactElement {
-    const { examIndexList, user, getList, dicomSettings } = this.props;
-    const { redirectUpload, showNotify, parsing } = this.state;
-    const { viewMode } = dicomSettings;
-
-    // if (redirectUpload) return <Redirect to="/upload" />;
-    // else
-    return (
-      <section className="resources">
-        {showNotify ? (
-          <Notify
-            mode={parsing ? "parsing" : "successed"}
-            // onChange={(parsing): void => {
-            //   getList && getList({ dtRange: [new Date(), new Date()], keyword: "" });
-            //   this.setState({ parsing });
-            // }}
-            onClose={(): void => this.setState({ showNotify: false })}
-          >
-            {parsing
-              ? `您上传的DICOM文件仍有${parsing}个正在解析，展示的不是全部影像，请耐心等待。`
-              : "DICOM文件已经全部解析成功"}
-          </Notify>
-        ) : null}
-        {this.controller()}
-        {examIndexList ? (
-          examIndexList.length ? (
-            viewMode === ViewTypeEnum.GRID ? (
-              this.dicoms()
-            ) : (
-              this.list()
-              // <ExamTable data={examIndexList}></ExamTable>
-            )
+        <TabPane tab="检查" key={ResourcesTypeE.EXAM}>
+          {viewMode === ViewTypeEnum.LIST ? (
+            <ExamTable
+              data={examList}
+              isSelectable={selectMode}
+              searchQuery={searchQuery[ResourcesTypeE.EXAM]}
+              onChangePagination={(current): void => {
+                onChangePagination(ResourcesTypeE.EXAM, current);
+              }}
+              selected={flattenArr(selected[ResourcesTypeE.EXAM])}
+              onSelected={(vals): void => updateSelected(ResourcesTypeE.EXAM, vals)}
+              onUpdateDescSuccess={(): void => {
+                fetchResources(tabType);
+              }}
+            ></ExamTable>
           ) : (
-            <Empty></Empty>
-          )
-        ) : (
-          <Spin indicator={<LoadingOutlined />} style={{ marginTop: "30px" }}></Spin>
-        )}
-        <PrivacyNotice user={user} onChecked={this.onChecked}></PrivacyNotice>
-      </section>
-    );
-  }
-}
+            <ExamCards
+              data={examList}
+              isSelectable={selectMode}
+              searchQuery={searchQuery[ResourcesTypeE.EXAM]}
+              onChangePagination={(current): void => {
+                onChangePagination(ResourcesTypeE.EXAM, current);
+              }}
+              selected={flattenArr(selected[ResourcesTypeE.EXAM])}
+              onSelected={(vals): void => updateSelected(ResourcesTypeE.EXAM, vals)}
+              onUpdateDescSuccess={(): void => fetchResources(tabType)}
+            ></ExamCards>
+          )}
+        </TabPane>
+        <TabPane tab="图片" key={ResourcesTypeE.IMG}>
+          <ImgCards
+            data={imgList}
+            isSelectable={selectMode}
+            selected={flattenArr(selected[ResourcesTypeE.IMG])}
+            searchQuery={searchQuery[ResourcesTypeE.IMG]}
+            onSelected={(vals): void => updateSelected(ResourcesTypeE.IMG, vals)}
+          ></ImgCards>
+        </TabPane>
+        <TabPane tab="PDF" key={ResourcesTypeE.PDF}>
+          <PdfTable
+            data={pdfList}
+            isSelectable={selectMode}
+            selected={flattenArr(selected[ResourcesTypeE.PDF])}
+            searchQuery={searchQuery[ResourcesTypeE.PDF]}
+            onSelected={(vals): void => updateSelected(ResourcesTypeE.PDF, vals)}
+          ></PdfTable>
+        </TabPane>
+      </Tabs>
 
-const mapStateToProps = (state: StoreStateI): MapStateToPropsI => ({
-  examIndexList: state.resources.dicom,
-  user: state.account,
-  dicomSettings: state.dicomSettings,
-});
-const mapDispatchToProps: MapDispatchToPropsI = {
-  getList: getExamList,
-  delList: deleteExamIndexListAction,
-  setSortBy: SetViewSortByAction,
-  setViewMode: setViewModeAction,
+      <PrivacyNotice></PrivacyNotice>
+    </section>
+  );
 };
-export default connect(mapStateToProps, mapDispatchToProps)(Resources);
+
+export default Resources;
