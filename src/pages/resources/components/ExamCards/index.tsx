@@ -2,6 +2,7 @@ import { Row, Col, Pagination, message } from "antd";
 import { Gutter } from "antd/lib/grid/row";
 import { count } from "console";
 import React, { FunctionComponent, ReactElement } from "react";
+import { useHistory } from "react-router-dom";
 import { personalReq } from "_axios";
 import DicomCard from "_components/DicomCard/DicomCard";
 import { getSelected } from "_helper";
@@ -30,6 +31,7 @@ const ExamCards: FunctionComponent<ExamCardsPropsI> = (props) => {
     onUpdateDescSuccess,
   } = props;
 
+  const history = useHistory();
   const { updateExamDesc } = useResources();
   const { current, size } = searchQuery;
   const rows: ReactElement[] = [];
@@ -40,9 +42,13 @@ const ExamCards: FunctionComponent<ExamCardsPropsI> = (props) => {
   ];
 
   const onClickItem = (id: string): void => {
-    // 点击单个时触发
-    const list = getSelected(selected, id);
-    onSelected && onSelected(list);
+    if (!isSelectable) {
+      history.push("/player", { id });
+    } else {
+      // 点击单个时触发
+      const list = getSelected(selected, id);
+      onSelected && onSelected(list);
+    }
   };
 
   const updateDesc = (id: string, value: string): void => {

@@ -12,7 +12,7 @@ export type PermissionT = (RoleE | AccountStatusE)[];
 export interface RoutesI {
   name: string;
   path: string;
-  component: ComponentType<any>;
+  component?: ComponentType<any>;
   exact?: boolean;
   routes?: RoutesI[];
   permission?: PermissionT;

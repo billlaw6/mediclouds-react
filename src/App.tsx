@@ -25,6 +25,7 @@ const getRouters = (routers: RoutesI[], parentPath = ""): ReactNode => {
         {...args}
         render={(props): ReactNode => {
           if (routes) return <>{getRouters(routes, path)}</>;
+          if (!Cmp) return Layout ? <Layout></Layout> : null;
 
           return Layout ? (
             <Layout>

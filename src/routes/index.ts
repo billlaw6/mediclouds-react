@@ -27,6 +27,7 @@ import ManagerLayout from "_layout/Manager";
 import AccountRole from "_components/AccountRole";
 import Register from "_pages/register";
 import Pay from "_pages/pay/index";
+import AILayout from "_layout/AI";
 
 const IS_MOBILE = /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent);
 
@@ -116,6 +117,12 @@ const routes: RoutesI[] = [
       RoleE.MANAGER,
       RoleE.EMPLOYEE,
     ],
+  },
+  {
+    name: "ai",
+    path: "/ai/:name",
+    layout: AILayout,
+    permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN, RoleE.PATIENT],
   },
   {
     name: "user_manage",
