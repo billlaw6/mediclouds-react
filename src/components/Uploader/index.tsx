@@ -14,7 +14,7 @@ interface UploaderPropsI {
   orderNumber?: string;
   directory?: boolean;
   accept?: string;
-  onChange?: (fileProgressCmp: ReactNode) => void; // 当上传列表改变时触发
+  onChange?: (uploadList: UploaderCellI[], fileProgressCmp: ReactNode) => void; // 当上传列表改变时触发
 }
 
 /* 创建上传单元 */
@@ -133,7 +133,7 @@ const Uploader: FunctionComponent<UploaderPropsI> = (props) => {
       preloadList.forEach((item) => upload(item));
     }
 
-    onChange && onChange(uploadList.length ? getList() : null);
+    onChange && onChange(uploadList, getList());
   }, [getList, onChange, upload, uploadList]);
 
   const list = getList();
@@ -161,6 +161,7 @@ const Uploader: FunctionComponent<UploaderPropsI> = (props) => {
           <p>暂不支持压缩文件</p>
         </Space>
       </div>
+      {props.children}
       {onChange ? null : <div className="uploader-list">{list}</div>}
     </div>
   );

@@ -1,4 +1,5 @@
 /* config-overrides.js */
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 const path = require("path");
 const {
   override,
@@ -13,6 +14,8 @@ const copyWebpackPlugin = require("copy-webpack-plugin");
 
 const SRC = path.resolve(__dirname, "src");
 
+const { NODE_ENV, BUILD_MODE } = process.env;
+
 const addProxy = () => (config) => ({
   ...config,
   proxy: {
@@ -26,7 +29,7 @@ const addProxy = () => (config) => ({
 
 module.exports = {
   webpack: override(
-    setWebpackPublicPath(process.env.NODE_ENV === "production" ? "/web" : "/"),
+    setWebpackPublicPath(NODE_ENV === "production" ? "/web" : "/"),
     fixBabelImports("import", {
       libraryName: "antd",
       libraryDirectory: "es",
@@ -59,6 +62,9 @@ module.exports = {
       ["_config"]: path.join(SRC, "config.ts"),
       ["_hooks"]: path.join(SRC, "hooks"),
     }),
+    NODE_ENV === "production" && BUILD_MODE === "analyze"
+      ? addWebpackPlugin(new BundleAnalyzerPlugin())
+      : undefined,
   ),
   // devServer: overrideDevServer(addProxy()),
 };
