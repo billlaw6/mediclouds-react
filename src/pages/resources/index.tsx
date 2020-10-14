@@ -265,7 +265,7 @@ const Resources: FunctionComponent = () => {
         onChange={(val): void => setTabType(val as ResourcesTypeE)}
       >
         <TabPane tab="检查" key={ResourcesTypeE.EXAM}>
-          {!examList ? (
+          {examList ? (
             viewMode === ViewTypeEnum.LIST ? (
               <ExamTable
                 data={examList}
