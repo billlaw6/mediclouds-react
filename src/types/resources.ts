@@ -14,6 +14,12 @@ export enum ResourcesTypeE {
   EXAM = "exam",
   PDF = "pdf",
   IMG = "img",
+  REPORT = "report",
+}
+
+/* 报告类型 */
+export enum ReportTypeE {
+  LUNG_NODULES = "lung_nodules",
 }
 
 /* Exam 排序字段 */
@@ -26,6 +32,12 @@ export enum ExamSortKeyE {
 export enum ImgAndPdfSortKeyE {
   CREATED_AT = "created_at",
   FILENAME = "filename",
+}
+
+/* PDF IMG 排序字段 */
+export enum ReportSortKeyE {
+  STUDY_DATE = "study_date",
+  MODALITY = "modality",
 }
 
 /* 检查结构 */
@@ -55,6 +67,15 @@ export interface ImgI {
   filename: string; // 文件名
   thumbnail: string; // 缩略图
   desc?: string; // 描述
+}
+
+/* 报告结构 */
+export interface ReportI {
+  id: string;
+  title: string;
+  created_at: string;
+  updated_at: string;
+  type: ReportTypeE;
 }
 
 /* 资源删除Data结果 */

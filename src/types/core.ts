@@ -1,6 +1,12 @@
 import { ViewTypeEnum } from "_pages/resources/type";
 import { CollectionI, SearchQueryResI, SexT } from "_types/api";
-import { ExamIndexI, ExamSortKeyE, ImgAndPdfSortKeyE, ResourcesTypeE } from "_types/resources";
+import {
+  ExamIndexI,
+  ExamSortKeyE,
+  ImgAndPdfSortKeyE,
+  ReportSortKeyE,
+  ResourcesTypeE,
+} from "_types/resources";
 import { UserI } from "_types/account";
 import { Action, AnyAction, Reducer } from "redux";
 import { ImgI, PdfI } from "./resources";
@@ -149,6 +155,7 @@ export interface StoreStateI {
       [ResourcesTypeE.EXAM]: ExamSortKeyE;
       [ResourcesTypeE.IMG]: ImgAndPdfSortKeyE;
       [ResourcesTypeE.PDF]: ImgAndPdfSortKeyE;
+      [ResourcesTypeE.REPORT]: ReportSortKeyE;
     };
     viewMode: ViewTypeEnum;
   };

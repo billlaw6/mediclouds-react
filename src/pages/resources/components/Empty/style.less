@@ -1,0 +1,63 @@
+@primaryColor: #7398ff;
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  margin: 200px 0;
+
+  &-qrcode {
+    width: 120px;
+  }
+
+  p {
+    color: #8c8c8c;
+    margin: 0;
+  }
+
+  &-info {
+    font-size: 16px !important;
+    color: #595959 !important;
+
+    &-tip {
+      color: #8c8c8c;
+    }
+  }
+
+  small {
+    margin-bottom: 20px;
+  }
+
+  &-download {
+    position: relative;
+    width: 110px;
+    height: 38px;
+    box-sizing: border-box;
+    border: 1px solid @primaryColor;
+    background-color: #fff;
+    margin: 24px 0;
+    border-radius: 18px;
+    color: @primaryColor;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 200ms;
+    cursor: pointer;
+
+    &:hover {
+      background-color: @primaryColor;
+      color: #fff;
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  .iconfont {
+    margin-right: 10px;
+    font-size: 24px;
+  }
+}

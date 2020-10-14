@@ -1,12 +1,11 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { Image, message, Modal, Tabs } from "antd";
+import { Modal, Tabs } from "antd";
 
 import useResources from "_hooks/useResources";
-import { ExamIndexI, ImgI, PdfI, ResourcesTypeE } from "_types/resources";
+import { ResourcesTypeE } from "_types/resources";
 import Controller from "./components/Controller";
 import { GetSearchQueryPropsI } from "_types/api";
 
-import "./style.less";
 import { ViewTypeEnum } from "./type";
 import ExamTable from "./components/ExamTable";
 import ExamCards from "./components/ExamCards";
@@ -17,11 +16,15 @@ import Notify from "_components/Notify";
 import { checkDicomParseProgress } from "_api/dicom";
 import PrivacyNotice from "_components/PrivacyNotice";
 import useAccount from "_hooks/useAccount";
+import Empty from "./components/Empty";
+
+import "./style.less";
 
 interface SelectedI {
   exam: string[][];
   img: string[][];
   pdf: string[][];
+  report: string[][];
 }
 
 /* 资源当前的页码 */
@@ -29,6 +32,7 @@ interface SearchQueryI {
   exam: GetSearchQueryPropsI<"study_date" | "modality">;
   img: GetSearchQueryPropsI<"created_at" | "filename">;
   pdf: GetSearchQueryPropsI<"created_at" | "filename">;
+  report: GetSearchQueryPropsI<"study_date" | "modality">;
 }
 
 const { TabPane } = Tabs;
@@ -53,7 +57,7 @@ const Resources: FunctionComponent = () => {
   const { account } = useAccount();
 
   const [tabType, setTabType] = useState(ResourcesTypeE.EXAM); // 当前tab页类型
-  const [selected, setSelected] = useState<SelectedI>({ exam: [], img: [], pdf: [] }); // 已选择的
+  const [selected, setSelected] = useState<SelectedI>({ exam: [], img: [], pdf: [], report: [] }); // 已选择的
   const [searchQuery, setSearchQuery] = useState<SearchQueryI>({
     exam: {
       current: 1,
@@ -69,6 +73,11 @@ const Resources: FunctionComponent = () => {
       current: 1,
       size: 12,
       sort: sortBy.pdf,
+    },
+    report: {
+      current: 1,
+      size: 12,
+      sort: sortBy.report,
     },
   });
   const [selectMode, setSelectMode] = useState(false); // 选择模式
@@ -236,7 +245,7 @@ const Resources: FunctionComponent = () => {
         onClickDelBtn={(): void => setSelectMode(true)}
         onClickCancelBtn={(): void => {
           setSelectMode(false);
-          setSelected({ exam: [], img: [], pdf: [] });
+          setSelected({ exam: [], img: [], pdf: [], report: [] });
         }}
         onSortByChange={(val): void => {
           changeSortBy(tabType, val);
@@ -256,32 +265,36 @@ const Resources: FunctionComponent = () => {
         onChange={(val): void => setTabType(val as ResourcesTypeE)}
       >
         <TabPane tab="检查" key={ResourcesTypeE.EXAM}>
-          {viewMode === ViewTypeEnum.LIST ? (
-            <ExamTable
-              data={examList}
-              isSelectable={selectMode}
-              searchQuery={searchQuery[ResourcesTypeE.EXAM]}
-              onChangePagination={(current): void => {
-                onChangePagination(ResourcesTypeE.EXAM, current);
-              }}
-              selected={flattenArr(selected[ResourcesTypeE.EXAM])}
-              onSelected={(vals): void => updateSelected(ResourcesTypeE.EXAM, vals)}
-              onUpdateDescSuccess={(): void => {
-                fetchResources(tabType);
-              }}
-            ></ExamTable>
+          {!examList ? (
+            viewMode === ViewTypeEnum.LIST ? (
+              <ExamTable
+                data={examList}
+                isSelectable={selectMode}
+                searchQuery={searchQuery[ResourcesTypeE.EXAM]}
+                onChangePagination={(current): void => {
+                  onChangePagination(ResourcesTypeE.EXAM, current);
+                }}
+                selected={flattenArr(selected[ResourcesTypeE.EXAM])}
+                onSelected={(vals): void => updateSelected(ResourcesTypeE.EXAM, vals)}
+                onUpdateDescSuccess={(): void => {
+                  fetchResources(tabType);
+                }}
+              ></ExamTable>
+            ) : (
+              <ExamCards
+                data={examList}
+                isSelectable={selectMode}
+                searchQuery={searchQuery[ResourcesTypeE.EXAM]}
+                onChangePagination={(current): void => {
+                  onChangePagination(ResourcesTypeE.EXAM, current);
+                }}
+                selected={flattenArr(selected[ResourcesTypeE.EXAM])}
+                onSelected={(vals): void => updateSelected(ResourcesTypeE.EXAM, vals)}
+                onUpdateDescSuccess={(): void => fetchResources(tabType)}
+              ></ExamCards>
+            )
           ) : (
-            <ExamCards
-              data={examList}
-              isSelectable={selectMode}
-              searchQuery={searchQuery[ResourcesTypeE.EXAM]}
-              onChangePagination={(current): void => {
-                onChangePagination(ResourcesTypeE.EXAM, current);
-              }}
-              selected={flattenArr(selected[ResourcesTypeE.EXAM])}
-              onSelected={(vals): void => updateSelected(ResourcesTypeE.EXAM, vals)}
-              onUpdateDescSuccess={(): void => fetchResources(tabType)}
-            ></ExamCards>
+            <Empty />
           )}
         </TabPane>
         <TabPane tab="图片" key={ResourcesTypeE.IMG}>

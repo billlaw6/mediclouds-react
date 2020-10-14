@@ -1,13 +1,15 @@
-import { Form, Input, Modal, PageHeader, Space, Spin } from "antd";
+import { Form, Input, message, Modal, PageHeader, Popconfirm, Space, Spin } from "antd";
 import React, { FunctionComponent, useState } from "react";
 import { useHistory } from "react-router-dom";
 import Uploader from "_components/Uploader";
+import useAccount from "_hooks/useAccount";
 import { SeriesI, SeriesListI, UploaderCellI, UploaderStatusE } from "_types/api";
 
 import "./style.less";
 
 const LungNodules: FunctionComponent = () => {
   const history = useHistory();
+  const { account } = useAccount();
   const [series, setSeries] = useState<SeriesI[] | undefined>([
     {
       id: "123",
@@ -25,7 +27,8 @@ const LungNodules: FunctionComponent = () => {
   const [selected, setSelected] = useState<SeriesI>(); // 当前已选的序列
   const [report, setReport] = useState<Map<string, any>>(); // 检测报告
 
-  console.log("uploaderList", uploaderList);
+  const { score } = account;
+
   const allSuccessed = !!(
     uploaderList.length && uploaderList.every((item) => item.status === UploaderStatusE.SUCCESS)
   );
@@ -52,17 +55,17 @@ const LungNodules: FunctionComponent = () => {
    * 获取可做筛查的序列
    */
   const getSeries = () => {
-    if (!allSuccessed) return null;
-    if (!analyzeStatus) {
-      return (
-        <div className="lung-nodules-pending">
-          <Space>
-            <Spin />
-            <span>正在分析中，请不要关闭窗口</span>
-          </Space>
-        </div>
-      );
-    }
+    // if (!allSuccessed) return null;
+    // if (!analyzeStatus) {
+    //   return (
+    //     <div className="lung-nodules-pending">
+    //       <Space>
+    //         <Spin />
+    //         <span>正在分析中，请不要关闭窗口</span>
+    //       </Space>
+    //     </div>
+    //   );
+    // }
     if (series) {
       return (
         <div className="lung-nodules-result">
@@ -72,17 +75,27 @@ const LungNodules: FunctionComponent = () => {
                 const { id, thumbnail } = item;
 
                 return (
-                  <div
+                  <Popconfirm
                     key={id}
-                    className="lung-nodules-result-item"
-                    onClick={(): void => setSelected(item)}
+                    title="确定扣除1000积分筛查吗？"
+                    okText="确定"
+                    cancelText="取消"
+                    onConfirm={(): void => {
+                      if (score >= 1000) {
+                        message.error("积分不足");
+                      } else {
+                        setSelected(item);
+                      }
+                    }}
                   >
-                    <div
-                      className="lung-nodules-result-item-thumb"
-                      style={{ backgroundImage: `url(${thumbnail})` }}
-                    ></div>
-                    <div className="lung-nodules-result-item-flag"></div>
-                  </div>
+                    <div className="lung-nodules-result-item">
+                      <div
+                        className="lung-nodules-result-item-thumb"
+                        style={{ backgroundImage: `url(${thumbnail})` }}
+                      ></div>
+                      <div className="lung-nodules-result-item-flag"></div>
+                    </div>
+                  </Popconfirm>
                 );
               })}
             </Space>

@@ -1,5 +1,5 @@
-import { Checkbox, Image, Pagination, Space } from "antd";
-import React, { FunctionComponent, ReactElement, ReactNode, useState } from "react";
+import { Checkbox, Image, Pagination, Empty } from "antd";
+import React, { FunctionComponent, ReactElement } from "react";
 import { GetSearchQueryPropsI, SearchQueryResI } from "_types/api";
 import Gallery from "react-photo-gallery";
 import { ImgI } from "_types/resources";
@@ -30,6 +30,10 @@ const ImgCards: FunctionComponent<ImgCardsPropsI> = (props) => {
     const list = getSelected(selected || [], id);
     onSelected && onSelected(list);
   };
+
+  if (!data) {
+    return <Empty />;
+  }
 
   return (
     <div className="resources-img-cards">

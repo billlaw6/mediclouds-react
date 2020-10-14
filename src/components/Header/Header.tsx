@@ -68,11 +68,11 @@ const Header: FunctionComponent<HeaderPropsI> = (props): ReactElement => {
             if (key === "logout" && logout) logout();
           }}
         >
-          <SubMenu popupClassName="header-menu-sub" title="AI功能" key="ai">
+          {/* <SubMenu popupClassName="header-menu-sub" title="AI功能" key="ai">
             <MenuItem className="header-menu-item" key="lungNodules">
               <Link to="/ai/lung-nodules">肺结节筛查</Link>
             </MenuItem>
-          </SubMenu>
+          </SubMenu> */}
           <SubMenu
             key="user"
             popupClassName="header-menu-sub"
