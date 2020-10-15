@@ -1,5 +1,5 @@
 import { personalReq } from ".";
-import { GalleryI, GalleryStatsI } from "_types/api";
+import { GalleryI, GalleryStatsI, SeriesListI } from "_types/api";
 import { ExamIndexListI } from "_types/core";
 
 export const getExamIndex = async (params?: any): Promise<ExamIndexListI[]> => {
@@ -20,12 +20,6 @@ export const getExamIndexDetail = async (params: any) =>
     method: "GET",
     url: `/dicom/exam-index/${params.id}/`,
     params,
-  });
-
-export const getDicomSeries = async (id: string) =>
-  await personalReq({
-    method: "GET",
-    url: `/dicom/exam-index/${id}/`,
   });
 
 export const getDicomSeriesDetail = async (params: any) =>
@@ -215,4 +209,15 @@ export const uploadDicom = async (
       "Content-Type": "multipart/form-data",
     },
     onUploadProgress,
+  });
+
+/**
+ * 获取series列表
+ *
+ * @param {string} id exam id
+ */
+export const getDicomSeries = async (id: string): Promise<SeriesListI> =>
+  await personalReq({
+    method: "GET",
+    url: `/dicom/exam-index/${id}/`,
   });

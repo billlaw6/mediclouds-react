@@ -133,6 +133,7 @@ export interface SeriesBasicI {
 // 单个影像序列
 export interface SeriesI extends SeriesBasicI {
   pictures: ImageI[];
+  dicoms: string[];
 }
 
 export interface SeriesMprI extends SeriesBasicI {
