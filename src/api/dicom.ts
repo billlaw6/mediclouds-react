@@ -210,7 +210,6 @@ export const uploadDicom = async (
     },
     onUploadProgress,
   });
-
 /**
  * 获取series列表
  *
