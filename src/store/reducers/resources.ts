@@ -1,5 +1,6 @@
 import { Reducer } from "redux";
 import { ViewTypeEnum } from "_pages/resources/type";
+import { LungNoduleReportI } from "_types/ai";
 import { SearchQueryResI } from "_types/api";
 import { ActionI } from "_types/core";
 import { ExamIndexI, ImgI, PdfI, ResourcesActionE } from "_types/resources";
@@ -8,6 +9,7 @@ interface ResourcesStateI {
   examList?: SearchQueryResI<ExamIndexI>;
   imgList?: SearchQueryResI<ImgI>;
   pdfList?: SearchQueryResI<PdfI>;
+  lungNodulesReport?: SearchQueryResI<LungNoduleReportI>;
 }
 
 const resources: Reducer<ResourcesStateI, ActionI<ResourcesActionE, any>> = (
@@ -27,6 +29,10 @@ const resources: Reducer<ResourcesStateI, ActionI<ResourcesActionE, any>> = (
     }
     case ResourcesActionE.GET_PDF_LIST: {
       if (payload) return Object.assign({}, state, { pdfList: payload });
+      else return state;
+    }
+    case ResourcesActionE.GET_LUNG_NODULES_REPORT: {
+      if (payload) return Object.assign({}, state, { lungNodulesReportList: payload });
       else return state;
     }
     default:

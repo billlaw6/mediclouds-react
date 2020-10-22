@@ -15,6 +15,7 @@ import AccountList from "_components/AccountList";
 import AccountStats from "./AccountStats";
 
 import "./style.less";
+import { getSexName } from "_helper";
 
 interface AccountPropsI extends UserI {
   [key: string]: any;
@@ -41,14 +42,7 @@ const Account: FunctionComponent<AccountPropsI> = (props) => {
   const getVal: GetValI = (key) => {
     const res = preUpdateData[key] || props[key];
     if (key === "sex") {
-      switch (res) {
-        case 1:
-          return "男";
-        case 2:
-          return "女";
-        default:
-          return "保密";
-      }
+      return getSexName(res);
     }
     return res;
   };

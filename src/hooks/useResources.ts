@@ -1,7 +1,15 @@
 import { stat } from "fs";
 import { useDispatch, useSelector } from "react-redux";
+import { getLungNoduleReport } from "_api/ai";
 import { deleteExamIndex } from "_api/dicom";
-import { delExamList, getExamList, getImgList, getPdfList, updateExamDesc } from "_api/resources";
+import {
+  delExamList,
+  getExamList,
+  getImgList,
+  getLungNodulesReportList,
+  getPdfList,
+  updateExamDesc,
+} from "_api/resources";
 import { ViewTypeEnum } from "_pages/resources/type";
 import { GetSearchQueryPropsI } from "_types/api";
 import { StoreStateI } from "_types/core";
@@ -16,7 +24,7 @@ import useAccount from "./useAccount";
 export default () => {
   const { account } = useAccount();
   const dispatch = useDispatch();
-  const { examList, pdfList, imgList, sortBy, viewMode } = useSelector<
+  const { examList, pdfList, imgList, lungNodulesReportList, sortBy, viewMode } = useSelector<
     StoreStateI,
     StoreStateI["resources"] & StoreStateI["resourcesSettings"]
   >((state) => ({ ...state.resources, ...state.resourcesSettings }));
@@ -36,6 +44,11 @@ export default () => {
   const fetchPdfList = async (searchQuery?: GetSearchQueryPropsI): Promise<void> => {
     const res = await getPdfList(id, searchQuery);
     dispatch({ type: ResourcesActionE.GET_PDF_LIST, payload: res });
+  };
+
+  const fetchLungNodulesReportList = async (searchQuery?: GetSearchQueryPropsI): Promise<void> => {
+    const res = await getLungNodulesReportList(id, searchQuery);
+    dispatch({ type: ResourcesActionE.GET_LUNG_NODULES_REPORT, payload: res });
   };
 
   const changeViewMode = (type: ViewTypeEnum): void => {
@@ -64,6 +77,12 @@ export default () => {
     dispatch({ type: ResourcesActionE.DEL_IMG_LIST, payload: res });
   };
 
+  /* 删除肺结节筛查报告 */
+  const delLungNodulesReport = async (ids: string[]): Promise<void> => {
+    const res = await delExamList(ResourcesTypeE.LUNG_NODULES_REPORT, ids);
+    dispatch({ type: ResourcesActionE.DEL_LUNG_NODULES_REPORT, payload: res });
+  };
+
   const _updateExamDesc = async (id: string, desc: string): Promise<void> => {
     await updateExamDesc(id, desc);
   };
@@ -72,6 +91,7 @@ export default () => {
     examList,
     pdfList,
     imgList,
+    lungNodulesReportList,
     sortBy,
     viewMode,
     fetchExamList,
@@ -80,6 +100,8 @@ export default () => {
     delImg,
     fetchPdfList,
     delPdf,
+    fetchLungNodulesReportList,
+    delLungNodulesReport,
     changeViewMode,
     changeSortBy,
     updateExamDesc: _updateExamDesc,

@@ -1,10 +1,16 @@
 export enum ResourcesActionE {
   GET_EXAM_LIST = "get_exam_list", // 获取检查列表
   DEL_EXAM_LIST = "del_exam_list", // 删除检查列表
+
   GET_PDF_LIST = "get_pdf_list", // 获取pdf列表
   DEL_PDF_LIST = "del_pdf_list", // 删除pdf列表
+
   GET_IMG_LIST = "get_img_list", // 获取图片列表
   DEL_IMG_LIST = "del_img_list", // 删除图片列表
+
+  GET_LUNG_NODULES_REPORT = "get_lung_nodules_report", // 获取肺结节筛查报告
+  DEL_LUNG_NODULES_REPORT = "del_lung_nodules_report", // 删除肺结节筛查报告
+
   SET_VIEW_MODE = "set_view_mode", // 切换exam视图模式
   SET_SORT_BY_KEY = "set_sort_by_key", // 切换排序字段
 }
@@ -14,7 +20,7 @@ export enum ResourcesTypeE {
   EXAM = "exam",
   PDF = "pdf",
   IMG = "img",
-  REPORT = "report",
+  LUNG_NODULES_REPORT = "lung_nodules_report",
 }
 
 /* 报告类型 */
@@ -34,7 +40,7 @@ export enum ImgAndPdfSortKeyE {
   FILENAME = "filename",
 }
 
-/* PDF IMG 排序字段 */
+/* 报告排序字段 */
 export enum ReportSortKeyE {
   STUDY_DATE = "study_date",
   MODALITY = "modality",
@@ -48,6 +54,7 @@ export interface ExamIndexI {
   thumbnail: string;
   desc: string;
   study_date: string;
+  lung_nodule_flag: 0 | 1; // 是否可以做肺结节筛查 0:N 1:Y
 }
 
 /* pdf结构 */

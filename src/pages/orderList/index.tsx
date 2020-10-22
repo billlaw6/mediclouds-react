@@ -20,7 +20,7 @@ import ListControlBar from "_components/ListControlBar";
 
 import "./style.less";
 import useAccount from "_hooks/useAccount";
-import moment from "antd/node_modules/moment";
+import dayjs from "dayjs";
 
 const OrderList: FunctionComponent = () => {
   const { account } = useAccount();
@@ -58,22 +58,15 @@ const OrderList: FunctionComponent = () => {
       title: "创建时间",
       key: "created_at",
       dataIndex: "created_at",
-      render: (val) => <span>{moment(val).format("YYYY-MM-DD HH:mm:ss")}</span>,
+      render: (val) => <span>{dayjs(val).format("YYYY-MM-DD HH:mm:ss")}</span>,
       sorter: (a, b): number => Date.parse(a.created_at) - Date.parse(b.created_at),
     },
-    // {
-    //   title: "修改时间",
-    //   key: "updated_at",
-    //   dataIndex: "updated_at",
-    //   render: (val) => <span>{moment(val).format("YYYY-MM-DD HH:mm:ss")}</span>,
-    //   sorter: (a, b): number => Date.parse(a.updated_at) - Date.parse(b.updated_at),
-    // },
     {
       title: "过期时间",
       key: "expire_date",
       dataIndex: "expire_date",
       sorter: (a, b): number => Date.parse(a.expire_date) - Date.parse(b.expire_date),
-      render: (val) => <span>{moment(val).format("YYYY-MM-DD HH:mm:ss")}</span>,
+      render: (val) => <span>{dayjs(val).format("YYYY-MM-DD HH:mm:ss")}</span>,
     },
     {
       title: "资源数量",

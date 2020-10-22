@@ -5,8 +5,7 @@ import { GalleryListPropsI } from "_pages/gallery/type";
 import "./List.less";
 import { Table } from "antd";
 import { GalleryI, GalleryByTable } from "_types/api";
-import moment from "moment";
-
+import dayjs from "dayjs";
 /* 
 
   {
@@ -67,14 +66,14 @@ const filter = (
   if (desc) res = res.filter((item) => item.description.indexOf(desc) >= 0);
   if (date && date.length)
     res = res.filter((item) => {
-      return moment(item.published_at).isBetween(...date);
+      return dayjs(item.published_at).isBetween(...date);
     });
 
   /* 还要加上是否显示的过滤 */
 
   /* 排序 */
   res.sort((a, b) => {
-    return moment(b.created_at).isAfter(moment(a.created_at)) ? 1 : -1;
+    return dayjs(b.created_at).isAfter(dayjs(a.created_at)) ? 1 : -1;
   });
 
   return res;

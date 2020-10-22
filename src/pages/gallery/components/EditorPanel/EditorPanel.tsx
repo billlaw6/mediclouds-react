@@ -17,7 +17,7 @@ import {
 import { EditorPanelPropsI } from "_pages/gallery/type";
 
 import { isUndefined } from "util";
-import moment from "moment";
+import dayjs from "dayjs";
 
 import { UploadOutlined } from "@ant-design/icons";
 import { RcFile } from "antd/lib/upload/interface";
@@ -25,6 +25,7 @@ import { uploadPublicImage, updatePublicImage } from "_api/dicom";
 
 import "./EditorPanel.less";
 import TextArea from "antd/lib/input/TextArea";
+import { Moment } from "moment";
 
 /* 
 
@@ -321,7 +322,7 @@ const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
           <Col span={6}>
             <FormItem label="文章发表时间" htmlFor="published_at">
               <DatePicker
-                value={getVal("published_at") ? moment(getVal("published_at")) : null}
+                value={getVal("published_at") ? (dayjs(getVal("published_at")) as Moment) : null}
                 format={"YYYY-MM-DD"}
                 onChange={(data, dataString): void => {
                   changeUploadData("published_at", dataString);

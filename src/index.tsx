@@ -10,6 +10,10 @@ import zh_CN from "./locales/zh_CN";
 import en_US from "./locales/en_US";
 import { PersistGate } from "redux-persist/integration/react";
 import wechatQrcode from "_images/wechat-qrcode.jpg";
+import dayjs from "dayjs";
+import isBetween from "dayjs/plugin/isBetween";
+
+import "dayjs/locale/zh-cn";
 
 /* 
   为使用Antd的datePicker组件，需要正确设置国际化（针对antd组件）
@@ -17,9 +21,6 @@ import wechatQrcode from "_images/wechat-qrcode.jpg";
 // 引入所需组件和国际化文件
 import { ConfigProvider } from "antd";
 import locale from "antd/es/locale/zh_CN";
-// 设置依赖组件moment的国际化
-import moment from "moment";
-import "moment/locale/zh-cn";
 
 /* mock */
 // import "./mock";
@@ -27,7 +28,8 @@ import "moment/locale/zh-cn";
 import "core-js/stable";
 import "regenerator-runtime/runtime";
 
-moment.locale("zh-cn");
+dayjs.locale("zh-cn");
+dayjs.extend(isBetween);
 
 export const store = configureStore();
 // const persistor = persistStore(store);

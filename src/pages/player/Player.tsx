@@ -47,7 +47,7 @@ import {
 } from "./type";
 import "./Player.less";
 import { Slider, Progress } from "antd";
-import { ImageI, SeriesListI, SeriesI } from "_types/api";
+import { ImageI, SeriesListI, SeriesI, PatientExamI } from "_types/api";
 import { CustomHTMLDivElement } from "_types/core";
 
 // import axios from "axios";
@@ -121,11 +121,11 @@ const Player: FunctionComponent<{ id: string }> = (props) => {
   const [ctx, setCtx] = useState<CanvasRenderingContext2D>();
   const [isMpr, setIsMpr] = useState(false); // 是否为mpr模式
   const [progress, setProgress] = useState(0); // 加载进度
-  const [patient, setPatient] = useState<PatientI>({
+  const [patient, setPatient] = useState<PatientExamI>({
     patient_name: "NA",
     patient_id: "NA",
     birthday: "NA",
-    sex: "NA",
+    sex: "",
     study_date: "NA",
     institution_name: "NA",
     modality: "NA",

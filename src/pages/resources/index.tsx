@@ -12,6 +12,7 @@ import ExamCards from "./components/ExamCards";
 import { flattenArr } from "_helper";
 import ImgCards from "./components/ImgCards";
 import PdfTable from "./components/PdfTable";
+import LungNodulesReportCards from "./components/LungNodulesReportCards";
 import Notify from "_components/Notify";
 import { checkDicomParseProgress } from "_api/dicom";
 import PrivacyNotice from "_components/PrivacyNotice";
@@ -24,7 +25,7 @@ interface SelectedI {
   exam: string[][];
   img: string[][];
   pdf: string[][];
-  report: string[][];
+  lung_nodules_report: string[][];
 }
 
 /* 资源当前的页码 */
@@ -32,7 +33,7 @@ interface SearchQueryI {
   exam: GetSearchQueryPropsI<"study_date" | "modality">;
   img: GetSearchQueryPropsI<"created_at" | "filename">;
   pdf: GetSearchQueryPropsI<"created_at" | "filename">;
-  report: GetSearchQueryPropsI<"study_date" | "modality">;
+  lung_nodules_report: GetSearchQueryPropsI<"study_date" | "modality">;
 }
 
 const { TabPane } = Tabs;
@@ -47,6 +48,9 @@ const Resources: FunctionComponent = () => {
     delImg,
     fetchPdfList,
     delPdf,
+    lungNodulesReportList,
+    fetchLungNodulesReportList,
+    delLungNodulesReport,
     examList,
     imgList,
     pdfList,
@@ -54,10 +58,16 @@ const Resources: FunctionComponent = () => {
     viewMode,
     changeSortBy,
   } = useResources();
+
   const { account } = useAccount();
 
   const [tabType, setTabType] = useState(ResourcesTypeE.EXAM); // 当前tab页类型
-  const [selected, setSelected] = useState<SelectedI>({ exam: [], img: [], pdf: [], report: [] }); // 已选择的
+  const [selected, setSelected] = useState<SelectedI>({
+    exam: [],
+    img: [],
+    pdf: [],
+    lung_nodules_report: [],
+  }); // 已选择的
   const [searchQuery, setSearchQuery] = useState<SearchQueryI>({
     exam: {
       current: 1,
@@ -74,10 +84,10 @@ const Resources: FunctionComponent = () => {
       size: 12,
       sort: sortBy.pdf,
     },
-    report: {
+    lung_nodules_report: {
       current: 1,
       size: 12,
-      sort: sortBy.report,
+      sort: sortBy.lung_nodules_report,
     },
   });
   const [selectMode, setSelectMode] = useState(false); // 选择模式
@@ -114,6 +124,11 @@ const Resources: FunctionComponent = () => {
           .then(() => console.log("successed fetch pdfList"))
           .catch((err) => console.error(err));
         break;
+      case ResourcesTypeE.LUNG_NODULES_REPORT:
+        fetchLungNodulesReportList(searchQuery[ResourcesTypeE.LUNG_NODULES_REPORT])
+          .then(() => console.log("successed fetch lung nodules report"))
+          .catch((err) => console.error(err));
+        break;
       default:
         break;
     }
@@ -131,6 +146,8 @@ const Resources: FunctionComponent = () => {
         return imgList;
       case ResourcesTypeE.PDF:
         return pdfList;
+      case ResourcesTypeE.LUNG_NODULES_REPORT:
+        return lungNodulesReportList;
       default:
         return;
     }
@@ -169,6 +186,10 @@ const Resources: FunctionComponent = () => {
       case ResourcesTypeE.PDF:
         delFunction = delPdf;
         typeName = "PDF";
+        break;
+      case ResourcesTypeE.LUNG_NODULES_REPORT:
+        delFunction = delLungNodulesReport;
+        typeName = "肺结节AI筛查报告";
         break;
       default:
         break;
@@ -225,6 +246,8 @@ const Resources: FunctionComponent = () => {
   const currentResources = getCurrentResources(tabType);
   const showDelBtn = currentResources ? !!currentResources.results.length : false;
 
+  console.log("selected", selected);
+
   return (
     <section className="resources">
       {showNotify ? (
@@ -245,7 +268,12 @@ const Resources: FunctionComponent = () => {
         onClickDelBtn={(): void => setSelectMode(true)}
         onClickCancelBtn={(): void => {
           setSelectMode(false);
-          setSelected({ exam: [], img: [], pdf: [], report: [] });
+          setSelected({
+            [ResourcesTypeE.EXAM]: [],
+            [ResourcesTypeE.IMG]: [],
+            [ResourcesTypeE.PDF]: [],
+            [ResourcesTypeE.LUNG_NODULES_REPORT]: [],
+          });
         }}
         onSortByChange={(val): void => {
           changeSortBy(tabType, val);
@@ -260,6 +288,7 @@ const Resources: FunctionComponent = () => {
         }}
       ></Controller>
       <Tabs
+        className="resources-tabs"
         type="card"
         activeKey={tabType}
         onChange={(val): void => setTabType(val as ResourcesTypeE)}
@@ -315,6 +344,15 @@ const Resources: FunctionComponent = () => {
             onSelected={(vals): void => updateSelected(ResourcesTypeE.PDF, vals)}
           ></PdfTable>
         </TabPane>
+        {/* <TabPane tab="肺结节AI筛查报告" key={ResourcesTypeE.LUNG_NODULES_REPORT}>
+          <LungNodulesReportCards
+            data={lungNodulesReportList}
+            searchQuery={searchQuery[ResourcesTypeE.PDF]}
+            onSelected={(vals): void => updateSelected(ResourcesTypeE.LUNG_NODULES_REPORT, vals)}
+            selected={flattenArr(selected[ResourcesTypeE.LUNG_NODULES_REPORT])}
+            isSelectable={selectMode}
+          ></LungNodulesReportCards>
+        </TabPane> */}
       </Tabs>
 
       <PrivacyNotice></PrivacyNotice>

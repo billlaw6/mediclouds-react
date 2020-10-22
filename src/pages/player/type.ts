@@ -4,7 +4,7 @@ export interface PatientI {
   patient_name: string;
   patient_id: string;
   birthday: string;
-  sex: string;
+  sex: 0 | 1 | 2;
   study_date: string;
   institution_name: string;
   modality: string;

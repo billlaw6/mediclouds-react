@@ -1,6 +1,7 @@
 import React, { FunctionComponent, useState, useRef, useEffect } from "react";
 import { Form, Input, Row, Col, Select, DatePicker } from "antd";
-import moment, { Moment } from "moment";
+import dayjs from "dayjs";
+import { Moment } from "moment";
 import { connect, useDispatch } from "react-redux";
 
 import { StoreStateI } from "_types/core";
@@ -179,10 +180,10 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
                     className="profile-form-birthday"
                     disabled={!isEdit}
                     disabledDate={(date): boolean => {
-                      if (date && date.isBetween("1900-01-01", moment.now())) return false;
+                      if (date && date.isBetween("1900-01-01", dayjs() as Moment)) return false;
                       return true;
                     }}
-                    value={userInfo.birthday ? moment(userInfo.birthday) : undefined}
+                    value={userInfo.birthday ? (dayjs(userInfo.birthday) as Moment) : undefined}
                     onChange={(_date, dateString: string): void => {
                       setUserInfo(
                         Object.assign({}, userInfo, {

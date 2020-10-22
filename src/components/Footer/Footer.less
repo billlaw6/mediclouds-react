@@ -5,6 +5,7 @@
 
 #footer {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   background-color: @footerBgColor;
@@ -14,20 +15,28 @@
   padding: @footerPadding;
   min-height: 100px;
   user-select: none;
-  div {
-    margin-bottom: 16px;
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
-  span {
-    margin-right: 8px;
-    &:last-child {
-      margin-right: 0;
-    }
-  }
 
-  a {
-    color: @footerColor;
+  .footer {
+    &-notice {
+      margin-bottom: 10px;
+    }
+    &-info {
+      div {
+        margin-bottom: 16px;
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+      span {
+        margin-right: 8px;
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+
+      a {
+        color: @footerColor;
+      }
+    }
   }
 }

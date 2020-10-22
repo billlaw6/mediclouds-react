@@ -1,4 +1,5 @@
 import { personalReq, publicReq } from "_axios";
+import { LungNoduleReportI } from "_types/ai";
 import { GetSearchQueryPropsI, SearchQueryResI } from "_types/api";
 import { ExamIndexListI } from "_types/core";
 import { ImgI, PdfI, ResourcesDelDataI, ResourcesTypeE } from "_types/resources";
@@ -65,6 +66,17 @@ export const getImgList = async (
   await publicReq({
     method: "POST",
     url: `/resources/img-list/${id}/`,
+    data: searchQuery,
+  });
+
+/* 获取肺结节筛查报告资源列表 */
+export const getLungNodulesReportList = async (
+  id: string,
+  searchQuery?: GetSearchQueryPropsI,
+): Promise<SearchQueryResI<LungNoduleReportI[]>> =>
+  await publicReq({
+    method: "POST",
+    url: `/resources/lung-nodules-list/${id}/`,
     data: searchQuery,
   });
 

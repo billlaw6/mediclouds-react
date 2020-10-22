@@ -4,6 +4,7 @@ import { GetSearchQueryPropsI } from "_types/api";
 import CryptoJS from "crypto-js";
 import moment from "antd/node_modules/moment";
 import { MomentInput } from "moment";
+import dayjs from "dayjs";
 
 export const isArray = (arr: any): boolean => Array.isArray(arr);
 export const isUndefined = (val: any): boolean => typeof val === "undefined";
@@ -249,8 +250,35 @@ export const flattenArr = (arr: string[][]): string[] => new Array<string>().con
  * @param {boolean} [time] 是否显示时间
  * @returns {string}
  */
-export const formatDate = (val: MomentInput, time?: boolean): string => {
+export const formatDate = (val: string, time?: boolean): string => {
   const formatRule = `YYYY-MM-DD${time ? " HH:mm:ss" : ""}`;
 
-  return moment(val).format(formatRule);
+  return dayjs(val).format(formatRule);
+};
+
+/**
+ * 获取性别中文名字
+ *
+ * @param {number} val
+ * @returns {string}
+ */
+export const getSexName = (val: number): string => {
+  switch (val) {
+    case 1:
+      return "男";
+    case 2:
+      return "女";
+    default:
+      return "保密";
+  }
+};
+
+/**
+ * 获取年龄
+ *
+ * @param {string} birthday
+ * @returns {number}
+ */
+export const getAgeByBirthday = (birthday: string): number => {
+  return moment().year() - moment(birthday).year();
 };

@@ -16,8 +16,8 @@ import { delAccount, getCustomerList } from "_api/user";
 import CreateOrder from "_components/CreateOrder";
 import { ResultStatusType } from "antd/lib/result";
 import ListControlBar from "_components/ListControlBar";
-import moment from "antd/node_modules/moment";
 import AccountStatus from "_components/AccountStatus";
+import dayjs from "dayjs";
 
 interface CustomerListPropsI {
   id?: string;
@@ -84,7 +84,7 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
       title: "注册日期",
       key: "date_joined",
       dataIndex: "date_joined",
-      render: (val) => <span>{moment(val).format("YYYY-MM-DD HH:mm:ss")}</span>,
+      render: (val) => <span>{dayjs(val).format("YYYY-MM-DD HH:mm:ss")}</span>,
       sorter: (a, b): number => Date.parse(a.date_joined) - Date.parse(b.date_joined),
     },
     {
@@ -93,7 +93,7 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
       dataIndex: "last_login",
       render: (val) => {
         if (!val) return null;
-        return <span>{moment(val).format("YYYY-MM-DD HH:mm:ss")}</span>;
+        return <span>{dayjs(val).format("YYYY-MM-DD HH:mm:ss")}</span>;
       },
       sorter: (a, b): number => Date.parse(a.last_login) - Date.parse(b.last_login),
     },

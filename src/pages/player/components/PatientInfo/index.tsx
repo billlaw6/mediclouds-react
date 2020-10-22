@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
 import { DEFAULT_SERIES } from "_constants/index";
-import { isIE } from "_helper";
+import { getSexName, isIE } from "_helper";
 
 import { PatientInfoPropsI } from "./type";
 import "./style.less";

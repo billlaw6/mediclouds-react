@@ -1,11 +1,12 @@
 import React, { FunctionComponent, useState, useEffect } from "react";
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, Space } from "antd";
 import SmsCode from "_components/SmsCode";
 
 import wechatScan from "_images/wechat-scan.png";
+import qqlogin from "_images/qqlogin.png";
+import useAccount from "_hooks/useAccount";
 
 import "./personal.less";
-import useAccount from "_hooks/useAccount";
 import Captcha from "./Captcha";
 
 const { Item: FormItem } = Form;
@@ -105,12 +106,17 @@ const Personal: FunctionComponent = () => {
           </span>
         </>
       )}
-      <span
-        className="login-personal-switch"
-        onClick={(): void => setLoginType(loginType === "form" ? "qrcode" : "form")}
-      >
-        {loginType === "form" ? "微信扫码登录" : "手机号登录"}
-      </span>
+      <Space>
+        <span
+          className="login-personal-switch"
+          onClick={(): void => setLoginType(loginType === "form" ? "qrcode" : "form")}
+        >
+          {loginType === "form" ? "微信扫码登录" : "手机号登录"}
+        </span>
+        <span>
+          <img src={qqlogin}></img>
+        </span>
+      </Space>
     </div>
   );
 };

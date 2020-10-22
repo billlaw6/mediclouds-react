@@ -1,5 +1,6 @@
 /* config-overrides.js */
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
+const AntdDayjsWebpackPlugin = require("antd-dayjs-webpack-plugin");
 const path = require("path");
 const {
   override,
@@ -46,6 +47,7 @@ module.exports = {
         patterns: [{ from: "src/assets/styles/qrcode.css", to: "static/css/[name].[ext]" }],
       }),
     ),
+    addWebpackPlugin(new AntdDayjsWebpackPlugin()),
     addWebpackAlias({
       ["_components"]: path.join(SRC, "components"),
       ["_pages"]: path.join(SRC, "pages"),

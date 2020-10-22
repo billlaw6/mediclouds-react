@@ -11,7 +11,7 @@ import React, { FunctionComponent, ReactElement, ReactNode } from "react";
 import LinkButton from "_components/LinkButton/LinkButton";
 import useResources from "_hooks/useResources";
 import { ViewTypeEnum } from "_pages/resources/type";
-import { ExamSortKeyE, ImgAndPdfSortKeyE, ResourcesTypeE } from "_types/resources";
+import { ExamSortKeyE, ImgAndPdfSortKeyE, ReportSortKeyE, ResourcesTypeE } from "_types/resources";
 
 import "./style.less";
 
@@ -58,6 +58,25 @@ const Controller: FunctionComponent<ControllerPropsI> = (props) => {
             </Menu.Item>
             <Menu.Item
               disabled={sortBy[resourcesType] === ExamSortKeyE.MODALITY}
+              key={ExamSortKeyE.MODALITY}
+            >
+              种类排序
+            </Menu.Item>
+          </>
+        );
+        break;
+      }
+      case ResourcesTypeE.LUNG_NODULES_REPORT: {
+        items = (
+          <>
+            <Menu.Item
+              disabled={sortBy[resourcesType] === ReportSortKeyE.STUDY_DATE}
+              key={ExamSortKeyE.STUDY_DATE}
+            >
+              时间排序
+            </Menu.Item>
+            <Menu.Item
+              disabled={sortBy[resourcesType] === ReportSortKeyE.MODALITY}
               key={ExamSortKeyE.MODALITY}
             >
               种类排序

@@ -2,7 +2,7 @@ import React, { FunctionComponent } from "react";
 import { UserI, RoleE } from "_types/account";
 import { Store } from "antd/lib/form/interface";
 import Form from "antd/lib/form/Form";
-import moment from "antd/node_modules/moment";
+import dayjs from "dayjs";
 import FormItem from "antd/lib/form/FormItem";
 import { Input, Select, DatePicker, Button } from "antd";
 
@@ -34,7 +34,7 @@ const Info: FunctionComponent<InfoPropsI> = (props) => {
         first_name,
         last_name,
         sex,
-        birthday: moment(birthday || "1900-01-01"),
+        birthday: dayjs(birthday || "1900-01-01"),
         sign,
         nickname,
       }}

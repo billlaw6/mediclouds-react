@@ -10,6 +10,7 @@ import {
 import { UserI } from "_types/account";
 import { Action, AnyAction, Reducer } from "redux";
 import { ImgI, PdfI } from "./resources";
+import { LungNoduleReportI } from "./ai";
 
 // Store相关接口
 // 本地变量遵循js规范使用驼峰式全名，需要与后台数据库字段对应的变量使用下划线风格。
@@ -148,6 +149,7 @@ export interface StoreStateI {
     examList?: SearchQueryResI<ExamIndexI>;
     imgList?: SearchQueryResI<ImgI>;
     pdfList?: SearchQueryResI<PdfI>;
+    lungNodulesReportList?: SearchQueryResI<LungNoduleReportI>;
   };
   account: UserI & { login: boolean };
   resourcesSettings: {
@@ -155,7 +157,7 @@ export interface StoreStateI {
       [ResourcesTypeE.EXAM]: ExamSortKeyE;
       [ResourcesTypeE.IMG]: ImgAndPdfSortKeyE;
       [ResourcesTypeE.PDF]: ImgAndPdfSortKeyE;
-      [ResourcesTypeE.REPORT]: ReportSortKeyE;
+      [ResourcesTypeE.LUNG_NODULES_REPORT]: ReportSortKeyE;
     };
     viewMode: ViewTypeEnum;
   };

@@ -263,14 +263,21 @@ export interface GalleryByTable {
 }
 
 // 病人检查信息
-export interface PatientExamI {
+export interface PatientBasicI {
   patient_name: string; //	病人姓名
   patient_id: string; //	病人ID
-  sex: string; //	病人性别
   birthday: string; //	病人生日
   institution_name: string; //	检查单位
   study_date: string; //	检查日期
   modality: string; //	检查类型
+}
+
+export interface PatientExamI extends PatientBasicI {
+  sex: string; //	病人性别
+}
+
+export interface PatientI extends PatientBasicI {
+  sex: 0 | 1 | 2; //	病人性别 0: 保密 1: 男 2: 女
 }
 
 /* ===============  根据Tower文档整理的接口相关的interface END =============== */

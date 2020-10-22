@@ -9,9 +9,9 @@ import AccountRole from "_components/AccountRole";
 import Nail from "_components/Nail";
 import ListControlBar from "_components/ListControlBar";
 import Account from "_components/Account";
+import dayjs from "dayjs";
 
 import "./style.less";
-import moment from "antd/node_modules/moment";
 
 const UserList: FunctionComponent = () => {
   const [list, setList] = useState<UserI[]>(); // 获取用户资源
@@ -94,13 +94,13 @@ const UserList: FunctionComponent = () => {
       title: "创建日期",
       key: "date_joined",
       dataIndex: "date_joined",
-      render: (val) => moment(val).format("YYYY-MM-DD HH:mm:ss"),
+      render: (val) => dayjs(val).format("YYYY-MM-DD HH:mm:ss"),
     },
     {
       title: "最后登录日期",
       key: "last_login",
       dataIndex: "last_login",
-      render: (val) => moment(val).format("YYYY-MM-DD HH:mm:ss"),
+      render: (val) => (val ? dayjs(val).format("YYYY-MM-DD HH:mm:ss") : "NULL"),
     },
     {
       title: "状态",
