@@ -4,12 +4,12 @@ import DefalutLayout from "_layout/Default/Default";
 import LungNodules from "_pages/lungNodules";
 
 const AILayout: FunctionComponent = () => {
-  const { name } = useParams<{ name: string }>();
+  const { type, id } = useParams<{ type: string; id: string }>();
 
   const getContent = () => {
-    switch (name) {
+    switch (type) {
       case "lung-nodules":
-        return <LungNodules></LungNodules>;
+        return <LungNodules id={id}></LungNodules>;
       default:
         return <Redirect to="/404"></Redirect>;
     }

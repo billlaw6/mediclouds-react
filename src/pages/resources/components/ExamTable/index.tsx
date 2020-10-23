@@ -39,45 +39,45 @@ const ExamTable: FunctionComponent<ExamTablePropsI> = (props) => {
     { title: "类型", key: "modality", dataIndex: "modality" },
     { title: "姓名", key: "patient_name", dataIndex: "patient_name" },
     { title: "检查日期", key: "study_date", dataIndex: "study_date" },
-    // {
-    //   title: "AI报告",
-    //   key: "id",
-    //   dataIndex: "id",
-    //   render: (id, record) => {
-    //     const children: ReactNode[] = [];
-    //     console.log("record", record);
-    //     if (record.lung_nodule_flag)
-    //       children.push(
-    //         <Popconfirm
-    //           title="确定消费1000积分获取简易AI报告吗？"
-    //           onConfirm={(e): void => {
-    //             e && e.stopPropagation();
-    //             generateLungNodule(record.id)
-    //               .then((res) => {
-    //                 message.success({
-    //                   content: "报告创建中，请3-5分钟后刷新页面查看",
-    //                 });
-    //               })
-    //               .catch((err) => console.error(err));
-    //           }}
-    //           onCancel={(e): void => {
-    //             e && e.stopPropagation();
-    //           }}
-    //         >
-    //           <Button
-    //             onClick={(e): void => {
-    //               e.stopPropagation();
-    //             }}
-    //             key="lung-nodules"
-    //           >
-    //             肺结节筛查
-    //           </Button>
-    //         </Popconfirm>,
-    //       );
+    {
+      title: "AI报告",
+      key: "id",
+      dataIndex: "id",
+      render: (id, record) => {
+        const children: ReactNode[] = [];
+        if (record.lung_nodule_flag)
+          children.push(
+            <Popconfirm
+              key={id}
+              title="确定消费1000积分获取简易AI报告吗？"
+              onConfirm={(e): void => {
+                e && e.stopPropagation();
+                generateLungNodule(record.id)
+                  .then((res) => {
+                    message.success({
+                      content: "报告创建中，请3-5分钟后刷新页面查看",
+                    });
+                  })
+                  .catch((err) => console.error(err));
+              }}
+              onCancel={(e): void => {
+                e && e.stopPropagation();
+              }}
+            >
+              <Button
+                onClick={(e): void => {
+                  e.stopPropagation();
+                }}
+                key="lung-nodules"
+              >
+                肺结节筛查
+              </Button>
+            </Popconfirm>,
+          );
 
-    //     return <div className="exam-table-ai">{children}</div>;
-    //   },
-    // },
+        return <div className="exam-table-ai">{children}</div>;
+      },
+    },
     {
       title: "备注",
       key: "desc",

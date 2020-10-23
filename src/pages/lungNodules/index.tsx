@@ -3,7 +3,13 @@ import LungNoduleReport from "_components/LungNoduleReport";
 
 import "./style.less";
 
-const LungNodules: FunctionComponent = () => {
+interface LungNodulesPropsI {
+  id: string; // 报告id
+}
+
+const LungNodules: FunctionComponent<LungNodulesPropsI> = (props) => {
+  const { id } = props;
+
   return <LungNoduleReport></LungNoduleReport>;
 };
 

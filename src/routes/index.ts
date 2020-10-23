@@ -120,7 +120,7 @@ const routes: RoutesI[] = [
   },
   {
     name: "ai",
-    path: "/ai/:name",
+    path: "/ai/:type/:id",
     layout: AILayout,
     permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN, RoleE.PATIENT],
   },

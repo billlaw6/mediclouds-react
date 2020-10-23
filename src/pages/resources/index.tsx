@@ -246,8 +246,6 @@ const Resources: FunctionComponent = () => {
   const currentResources = getCurrentResources(tabType);
   const showDelBtn = currentResources ? !!currentResources.results.length : false;
 
-  console.log("selected", selected);
-
   return (
     <section className="resources">
       {showNotify ? (
@@ -333,6 +331,9 @@ const Resources: FunctionComponent = () => {
             selected={flattenArr(selected[ResourcesTypeE.IMG])}
             searchQuery={searchQuery[ResourcesTypeE.IMG]}
             onSelected={(vals): void => updateSelected(ResourcesTypeE.IMG, vals)}
+            onChangePagination={(current): void => {
+              onChangePagination(ResourcesTypeE.IMG, current);
+            }}
           ></ImgCards>
         </TabPane>
         <TabPane tab="PDF" key={ResourcesTypeE.PDF}>
@@ -342,17 +343,23 @@ const Resources: FunctionComponent = () => {
             selected={flattenArr(selected[ResourcesTypeE.PDF])}
             searchQuery={searchQuery[ResourcesTypeE.PDF]}
             onSelected={(vals): void => updateSelected(ResourcesTypeE.PDF, vals)}
+            onChangePagination={(current): void => {
+              onChangePagination(ResourcesTypeE.PDF, current);
+            }}
           ></PdfTable>
         </TabPane>
-        {/* <TabPane tab="肺结节AI筛查报告" key={ResourcesTypeE.LUNG_NODULES_REPORT}>
+        <TabPane tab="肺结节AI筛查报告" key={ResourcesTypeE.LUNG_NODULES_REPORT}>
           <LungNodulesReportCards
             data={lungNodulesReportList}
             searchQuery={searchQuery[ResourcesTypeE.PDF]}
             onSelected={(vals): void => updateSelected(ResourcesTypeE.LUNG_NODULES_REPORT, vals)}
             selected={flattenArr(selected[ResourcesTypeE.LUNG_NODULES_REPORT])}
             isSelectable={selectMode}
+            onChangePagination={(current): void => {
+              onChangePagination(ResourcesTypeE.LUNG_NODULES_REPORT, current);
+            }}
           ></LungNodulesReportCards>
-        </TabPane> */}
+        </TabPane>
       </Tabs>
 
       <PrivacyNotice></PrivacyNotice>

@@ -1,4 +1,4 @@
-import { Badge, Card, Checkbox, Col, Empty, Grid, Row, Modal } from "antd";
+import { Badge, Card, Checkbox, Col, Empty, Grid, Row, Modal, Pagination } from "antd";
 import React, { FunctionComponent, ReactNode, useState } from "react";
 import { formatDate } from "_helper";
 import { LungNoduleReportI } from "_types/ai";
@@ -50,10 +50,14 @@ const CardMeta: FunctionComponent<{ data: LungNoduleReportI }> = (props) => {
 };
 
 const LungNodulesReportCards: FunctionComponent<LungNodulesReportCardsPropsI> = (props) => {
-  const { data, selected, isSelectable, onSelected } = props;
+  const { data, selected, isSelectable, onSelected, searchQuery, onChangePagination } = props;
+  const { current, size } = searchQuery;
+
   const screen = useBreakpoint();
 
-  const [current, setCurrent] = useState<LungNoduleReportI>();
+  const [currentReport, setCurrentReport] = useState<LungNoduleReportI>();
+
+  console.log("currentReport", currentReport);
 
   const getColCount = (): number => {
     const { xs, sm, xl, lg } = screen;
@@ -130,7 +134,7 @@ const LungNodulesReportCards: FunctionComponent<LungNodulesReportCardsPropsI> = 
           ];
         if (flag === 1)
           actions = [
-            <span key="full" onClick={(): void => setCurrent(item)}>
+            <span key="full" onClick={(): void => setCurrentReport(item)}>
               查看完整版
             </span>,
           ];
@@ -194,12 +198,22 @@ const LungNodulesReportCards: FunctionComponent<LungNodulesReportCardsPropsI> = 
       >
         {getContent(data.results)}
       </Checkbox.Group>
-
-      {current ? (
-        <Modal onCancel={(): void => setCurrent(undefined)}>
-          <LungNoduleReport data={current}></LungNoduleReport>
-        </Modal>
-      ) : null}
+      <Pagination
+        style={{ marginTop: `${20}px` }}
+        current={current}
+        pageSize={size}
+        total={data ? data.count : 0}
+        onChange={(page): void => {
+          onChangePagination && onChangePagination(page);
+        }}
+      ></Pagination>
+      <Modal
+        width={1000}
+        visible={!!currentReport}
+        onCancel={(): void => setCurrentReport(undefined)}
+      >
+        <LungNoduleReport data={currentReport}></LungNoduleReport>
+      </Modal>
     </div>
   );
 };
