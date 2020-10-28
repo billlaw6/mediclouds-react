@@ -160,6 +160,7 @@ export interface StoreStateI {
       [ResourcesTypeE.LUNG_NODULES_REPORT]: ReportSortKeyE;
     };
     viewMode: ViewTypeEnum;
+    tabType: ResourcesTypeE;
   };
 }
 

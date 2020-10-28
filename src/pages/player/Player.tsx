@@ -68,6 +68,7 @@ import {
 } from "@ant-design/icons";
 import PatientInfo from "./components/PatientInfo";
 import { getSeriesList, getSeries, getMprSeries } from "./actions";
+import getQueryString from "_helper";
 
 const VIEWPORT_WIDTH_DEFAULT = 890; // 视图默认宽
 const VIEWPORT_HEIGHT_DEFAULT = 550; // 视图默认高
@@ -111,9 +112,13 @@ const getDrawInfo = (
 let playTimer: number | undefined = undefined;
 let showPanelsTimer: number | undefined = undefined;
 
-const Player: FunctionComponent<{ id: string }> = (props) => {
+const Player: FunctionComponent = (props) => {
   // let ctx: CanvasRenderingContext2D | null = null;
-  const { id } = props;
+  const { exam: id, series: originSeriesId, index: originImgIndex } = getQueryString<{
+    exam: string;
+    series?: string;
+    index?: string;
+  }>();
   /* =============== use ref =============== */
   const $player = useRef<CustomHTMLDivElement>(null);
   const $viewport = useRef<HTMLCanvasElement>(null);
@@ -689,7 +694,17 @@ const Player: FunctionComponent<{ id: string }> = (props) => {
 
         setPatient({ ...args });
         setSeriesList(result);
-        setImgIndexs(new Array<number>(children.length).fill(1));
+
+        const _seriesIndexArr = new Array<number>(children.length).fill(1);
+
+        if (originSeriesId) {
+          const _seriesIndex = result.children.findIndex((item) => item.id === originSeriesId);
+          setSeriesIndex(_seriesIndex + 1);
+          if (originImgIndex) {
+            _seriesIndexArr[_seriesIndex] = parseInt(originImgIndex, 10);
+          }
+        }
+        setImgIndexs(_seriesIndexArr);
       });
     }
   }, [id]);
@@ -705,7 +720,7 @@ const Player: FunctionComponent<{ id: string }> = (props) => {
       getSeries(id)
         .then((series) => {
           _seriesMap.set(id, series);
-          index === 0 && setCurrentSeries(series);
+          index === seriesIndex - 1 && setCurrentSeries(series);
           count += 1;
           if (count === children.length) {
             setSeriesMap(_seriesMap);
@@ -1000,6 +1015,9 @@ const Player: FunctionComponent<{ id: string }> = (props) => {
   let className = "player";
   if (isFullscreen) className += " player-fullscreen";
   if (isShowPanels) className += " player-show-panels";
+
+  console.log("series", seriesIndex);
+  console.log("img index", imgIndexs);
 
   return (
     <section className={className}>

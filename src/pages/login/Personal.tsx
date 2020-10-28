@@ -61,6 +61,12 @@ const Personal: FunctionComponent = () => {
     );
   };
 
+  useEffect(() => {
+    (window as any).QC.Login({
+      btnId: "qqLogin", //插入按钮的节点id
+    });
+  }, []);
+
   return (
     <div className="login-personal">
       {loginType === "form" ? (
@@ -113,9 +119,7 @@ const Personal: FunctionComponent = () => {
         >
           {loginType === "form" ? "微信扫码登录" : "手机号登录"}
         </span>
-        <span>
-          <img src={qqlogin}></img>
-        </span>
+        <span id="qqLogin"></span>
       </Space>
     </div>
   );

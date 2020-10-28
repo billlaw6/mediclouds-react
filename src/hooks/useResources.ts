@@ -24,10 +24,17 @@ import useAccount from "./useAccount";
 export default () => {
   const { account } = useAccount();
   const dispatch = useDispatch();
-  const { examList, pdfList, imgList, lungNodulesReportList, sortBy, viewMode } = useSelector<
-    StoreStateI,
-    StoreStateI["resources"] & StoreStateI["resourcesSettings"]
-  >((state) => ({ ...state.resources, ...state.resourcesSettings }));
+  const {
+    examList,
+    pdfList,
+    imgList,
+    lungNodulesReportList,
+    sortBy,
+    viewMode,
+    tabType,
+  } = useSelector<StoreStateI, StoreStateI["resources"] & StoreStateI["resourcesSettings"]>(
+    (state) => ({ ...state.resources, ...state.resourcesSettings }),
+  );
 
   const { id = "" } = account;
 
@@ -87,6 +94,11 @@ export default () => {
     await updateExamDesc(id, desc);
   };
 
+  /* 切换tabType 配置 */
+  const switchTabType = (type: ResourcesTypeE): void => {
+    dispatch({ type: ResourcesActionE.SWITCH_RESOURCES_TYPE, payload: type });
+  };
+
   return {
     examList,
     pdfList,
@@ -94,6 +106,7 @@ export default () => {
     lungNodulesReportList,
     sortBy,
     viewMode,
+    tabType,
     fetchExamList,
     delExam,
     fetchImgList,
@@ -105,5 +118,6 @@ export default () => {
     changeViewMode,
     changeSortBy,
     updateExamDesc: _updateExamDesc,
+    switchTabType,
   };
 };

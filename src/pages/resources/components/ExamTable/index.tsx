@@ -1,15 +1,16 @@
 /* eslint-disable react/display-name */
-import { Button, Input, message, Modal, Popconfirm, Table } from "antd";
+import { Button, message, Popconfirm, Spin, Table } from "antd";
 import { ColumnsType } from "antd/es/table";
 import React, { FunctionComponent, ReactNode, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { generateLungNodule } from "_api/ai";
-import { getSelected } from "_helper";
+import useAccount from "_hooks/useAccount";
 import useResources from "_hooks/useResources";
-import { TableDataI } from "_pages/resources/type";
 import { GetSearchQueryPropsI, SearchQueryResI } from "_types/api";
 import { ExamIndexI } from "_types/resources";
 import ListDesc from "../ListDesc";
+
+import "./style.less";
 
 interface ExamTablePropsI {
   searchQuery: GetSearchQueryPropsI;
@@ -23,6 +24,7 @@ interface ExamTablePropsI {
 
 const ExamTable: FunctionComponent<ExamTablePropsI> = (props) => {
   const history = useHistory();
+  const { account } = useAccount();
   const {
     isSelectable,
     selected,
@@ -34,6 +36,7 @@ const ExamTable: FunctionComponent<ExamTablePropsI> = (props) => {
   } = props;
   const { current, size } = searchQuery;
   const { updateExamDesc } = useResources();
+  const [onPending, setOnPending] = useState(false); // 是否在发送请求
 
   const columns: ColumnsType<ExamIndexI> = [
     { title: "类型", key: "modality", dataIndex: "modality" },
@@ -52,13 +55,26 @@ const ExamTable: FunctionComponent<ExamTablePropsI> = (props) => {
               title="确定消费1000积分获取简易AI报告吗？"
               onConfirm={(e): void => {
                 e && e.stopPropagation();
-                generateLungNodule(record.id)
-                  .then((res) => {
-                    message.success({
-                      content: "报告创建中，请3-5分钟后刷新页面查看",
+                if (account.score <= 1000) {
+                  message.warn({
+                    content: "积分不足，无法创建AI报告",
+                  });
+                } else {
+                  setOnPending(true);
+                  generateLungNodule(record.id)
+                    .then((res) => {
+                      setOnPending(false);
+                      message.success({
+                        content: "报告创建中，请3-5分钟后刷新页面查看",
+                      });
+                    })
+                    .catch((err) => {
+                      setOnPending(false);
+                      message.error({
+                        content: "报告创建失败，请重试",
+                      });
                     });
-                  })
-                  .catch((err) => console.error(err));
+                }
               }}
               onCancel={(e): void => {
                 e && e.stopPropagation();
@@ -70,7 +86,7 @@ const ExamTable: FunctionComponent<ExamTablePropsI> = (props) => {
                 }}
                 key="lung-nodules"
               >
-                肺结节筛查
+                肺结节AI筛查
               </Button>
             </Popconfirm>,
           );
@@ -102,33 +118,40 @@ const ExamTable: FunctionComponent<ExamTablePropsI> = (props) => {
   ];
 
   return (
-    <Table
-      rowKey="id"
-      dataSource={data ? data.results : []}
-      columns={columns}
-      onRow={(item) => ({
-        onClick: (): void => {
-          !isSelectable && history.push("/player", { id: item.id });
-        },
-      })}
-      rowSelection={
-        isSelectable
-          ? {
-              selectedRowKeys: selected,
-              onChange: (vals): void => onSelected && onSelected(vals as string[]),
-            }
-          : undefined
-      }
-      pagination={{
-        position: ["bottomLeft"],
-        current,
-        pageSize: size,
-        total: data ? data.count : 0,
-        onChange: (current): void => {
-          onChangePagination && onChangePagination(current);
-        },
-      }}
-    ></Table>
+    <Spin
+      delay={200}
+      className="resources-exam-table-spin"
+      spinning={onPending}
+      tip="正在请求肺结节AI筛查"
+    >
+      <Table
+        rowKey="id"
+        dataSource={data ? data.results : []}
+        columns={columns}
+        onRow={(item) => ({
+          onClick: (): void => {
+            !isSelectable && history.push(`/player/?exam=${item.id}`);
+          },
+        })}
+        rowSelection={
+          isSelectable
+            ? {
+                selectedRowKeys: selected,
+                onChange: (vals): void => onSelected && onSelected(vals as string[]),
+              }
+            : undefined
+        }
+        pagination={{
+          position: ["bottomLeft"],
+          current,
+          pageSize: size,
+          total: data ? data.count : 0,
+          onChange: (current): void => {
+            onChangePagination && onChangePagination(current);
+          },
+        }}
+      ></Table>
+    </Spin>
   );
 };
 

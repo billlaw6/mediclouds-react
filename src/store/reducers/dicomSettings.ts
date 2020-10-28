@@ -30,6 +30,14 @@ export const SetViewSortByAction: SetViewSortByActionFuncI = (type, key) => ({
   payload: { [type]: key },
 });
 
+export interface SwitchTabTypeActionFuncI {
+  (type: ResourcesTypeE): ActionI<string, ResourcesTypeE>;
+}
+export const switchTabTypeAction: SwitchTabTypeActionFuncI = (type) => ({
+  type: ResourcesActionE.SWITCH_RESOURCES_TYPE,
+  payload: type,
+});
+
 interface DicomSettingsStateI {
   sortBy: {
     [ResourcesTypeE.EXAM]: ExamSortKeyE;
@@ -37,6 +45,7 @@ interface DicomSettingsStateI {
     [ResourcesTypeE.PDF]: ImgAndPdfSortKeyE;
   };
   viewMode: ViewTypeEnum;
+  tabType: ResourcesTypeE;
 }
 
 const defaultState: DicomSettingsStateI = {
@@ -46,11 +55,14 @@ const defaultState: DicomSettingsStateI = {
     [ResourcesTypeE.PDF]: ImgAndPdfSortKeyE.CREATED_AT,
   },
   viewMode: ViewTypeEnum.GRID,
+  tabType: ResourcesTypeE.EXAM,
 };
 
 export default (
   state = defaultState,
-  action: ReturnType<typeof setViewModeAction | typeof SetViewSortByAction>,
+  action: ReturnType<
+    typeof setViewModeAction | typeof SetViewSortByAction | typeof switchTabTypeAction
+  >,
 ): DicomSettingsStateI => {
   const { type, payload } = action;
 
@@ -61,6 +73,11 @@ export default (
     }
     case ResourcesActionE.SET_SORT_BY_KEY: {
       const res = Object.assign({}, state, { sortBy: Object.assign({}, state.sortBy, payload) });
+
+      return res;
+    }
+    case ResourcesActionE.SWITCH_RESOURCES_TYPE: {
+      const res = Object.assign({}, state, { tabType: payload || ResourcesTypeE.EXAM });
 
       return res;
     }

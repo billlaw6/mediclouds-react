@@ -4,9 +4,10 @@ import { generateLungNodule } from "_api/ai";
 import { formatDate } from "_helper";
 import { LungNoduleI, LungNoduleReportI } from "_types/ai";
 import imgFail from "_images/img-fail.png";
+import { filterLongAxis, LongAxisT } from "./helper";
+import { useHistory } from "react-router-dom";
 
 import Nodule from "./Nodule";
-import { filterLongAxis, LongAxisT } from "./helper";
 
 import "./style.less";
 
@@ -15,9 +16,19 @@ interface LungNoduleReportPropsI {
 }
 
 const LungNoduleReport: FunctionComponent<LungNoduleReportPropsI> = (props) => {
+  const history = useHistory();
   const { data } = props;
 
   if (!data) return <Empty></Empty>;
+
+  const goPlayer = (index: number): void => {
+    const { nodule_details } = data;
+
+    if (!nodule_details) return;
+    const { exam_id, series_id } = data;
+
+    history.push(`/player/?exam=${exam_id}&series=${series_id}&index=${index}`);
+  };
 
   /* 获取完整版 */
   const onGetFull = (id: string): void => {
@@ -35,7 +46,7 @@ const LungNoduleReport: FunctionComponent<LungNoduleReportPropsI> = (props) => {
   };
 
   const getNodulesDetailNode = (data: Map<LongAxisT, LungNoduleI[]>, type: "max" | "min") => {
-    const detailTitle = type === "max" ? "真实结节概率 0.7 ～ 1.0" : "真实结节概率小于 0.7";
+    const detailTitle = type === "max" ? "真实结节概率大于 70%" : "真实结节概率小于 70%";
     const min = data.get("min"),
       mid = data.get("mid"),
       max = data.get("max");
@@ -52,12 +63,12 @@ const LungNoduleReport: FunctionComponent<LungNoduleReportPropsI> = (props) => {
 
     return (
       <section className="report-full-wrapper">
-        <h1 className="report-full-wrapper-title">{detailTitle}</h1>
+        <h1 className="report-full-wrapper-title">{detailTitle}的结节列表</h1>
         {min && min.length ? (
           <div className="report-full-detail">
             {min.map((item) => {
               count++;
-              return <Nodule data={item} index={count} key={item.id}></Nodule>;
+              return <Nodule onClick={goPlayer} data={item} index={count} key={item.id}></Nodule>;
             })}
           </div>
         ) : null}
@@ -65,7 +76,7 @@ const LungNoduleReport: FunctionComponent<LungNoduleReportPropsI> = (props) => {
           <div className="report-full-detail">
             {mid.map((item) => {
               count++;
-              return <Nodule data={item} index={count} key={item.id}></Nodule>;
+              return <Nodule onClick={goPlayer} data={item} index={count} key={item.id}></Nodule>;
             })}
           </div>
         ) : null}
@@ -73,7 +84,7 @@ const LungNoduleReport: FunctionComponent<LungNoduleReportPropsI> = (props) => {
           <div className="report-full-detail">
             {max.map((item) => {
               count++;
-              return <Nodule data={item} index={count} key={item.id}></Nodule>;
+              return <Nodule onClick={goPlayer} data={item} index={count} key={item.id}></Nodule>;
             })}
           </div>
         ) : null}
@@ -83,8 +94,6 @@ const LungNoduleReport: FunctionComponent<LungNoduleReportPropsI> = (props) => {
 
   const getNodulesDetail = (data: LungNoduleI[]) => {
     if (!data || !data.length) return null;
-
-    console.log("data", data);
 
     /* 过滤没有长轴的 */
     const _data = data.filter((item) => item.long_axis);
@@ -120,7 +129,7 @@ const LungNoduleReport: FunctionComponent<LungNoduleReportPropsI> = (props) => {
             <Image src={thumbnail || imgFail}></Image>
           </Col>
           <Col span={24 - 8}>
-            <Descriptions>
+            <Descriptions column={1}>
               <Descriptions.Item key="patientName" label="姓名">
                 {patient_name}
               </Descriptions.Item>

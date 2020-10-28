@@ -13,6 +13,8 @@ export enum ResourcesActionE {
 
   SET_VIEW_MODE = "set_view_mode", // 切换exam视图模式
   SET_SORT_BY_KEY = "set_sort_by_key", // 切换排序字段
+
+  SWITCH_RESOURCES_TYPE = "switch_resources_type", // 切换资料tab类型
 }
 
 /* 资源类型 */
@@ -21,11 +23,6 @@ export enum ResourcesTypeE {
   PDF = "pdf",
   IMG = "img",
   LUNG_NODULES_REPORT = "lung_nodules_report",
-}
-
-/* 报告类型 */
-export enum ReportTypeE {
-  LUNG_NODULES = "lung_nodules",
 }
 
 /* Exam 排序字段 */
@@ -74,15 +71,6 @@ export interface ImgI {
   filename: string; // 文件名
   thumbnail: string; // 缩略图
   desc?: string; // 描述
-}
-
-/* 报告结构 */
-export interface ReportI {
-  id: string;
-  title: string;
-  created_at: string;
-  updated_at: string;
-  type: ReportTypeE;
 }
 
 /* 资源删除Data结果 */

@@ -1,14 +1,16 @@
-import { Row, Col, Pagination, message } from "antd";
+import { Row, Col, Pagination, message, Button, Popconfirm, Spin } from "antd";
 import { Gutter } from "antd/lib/grid/row";
-import { count } from "console";
-import React, { FunctionComponent, ReactElement } from "react";
+import React, { FunctionComponent, ReactElement, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { personalReq } from "_axios";
+import { generateLungNodule } from "_api/ai";
 import DicomCard from "_components/DicomCard/DicomCard";
 import { getSelected } from "_helper";
+import useAccount from "_hooks/useAccount";
 import useResources from "_hooks/useResources";
 import { GetSearchQueryPropsI, SearchQueryResI } from "_types/api";
 import { ExamIndexI } from "_types/resources";
+
+import "./style.less";
 
 interface ExamCardsPropsI {
   data?: SearchQueryResI<ExamIndexI>;
@@ -31,6 +33,9 @@ const ExamCards: FunctionComponent<ExamCardsPropsI> = (props) => {
     onUpdateDescSuccess,
   } = props;
 
+  const { account } = useAccount();
+
+  const [onPending, setOnPending] = useState(false); // 是否在发送请求
   const history = useHistory();
   const { updateExamDesc } = useResources();
   const { current, size } = searchQuery;
@@ -43,7 +48,7 @@ const ExamCards: FunctionComponent<ExamCardsPropsI> = (props) => {
 
   const onClickItem = (id: string): void => {
     if (!isSelectable) {
-      history.push("/player", { id });
+      history.push(`/player/?exam=${id}`);
     } else {
       // 点击单个时触发
       const list = getSelected(selected, id);
@@ -66,7 +71,7 @@ const ExamCards: FunctionComponent<ExamCardsPropsI> = (props) => {
     let count = 0;
 
     results.forEach((item) => {
-      const { id, patient_name, study_date, desc, thumbnail, modality } = item;
+      const { id, patient_name, study_date, desc, thumbnail, modality, lung_nodule_flag } = item;
       if (count >= 4) {
         count = 0;
         rows.push(
@@ -91,6 +96,49 @@ const ExamCards: FunctionComponent<ExamCardsPropsI> = (props) => {
             onClick={(): void => onClickItem(id)}
             updateDesc={(value: string): void => updateDesc(id, value)}
           ></DicomCard>
+          {lung_nodule_flag ? (
+            <div>
+              <span>AI功能：</span>
+              <Popconfirm
+                title="确定消费1000积分获取简易AI报告吗？"
+                onConfirm={(e): void => {
+                  e && e.stopPropagation();
+                  if (account.score < 1000) {
+                    message.warn({
+                      content: "积分不足，无法创建AI报告",
+                    });
+                  } else {
+                    setOnPending(true);
+                    generateLungNodule(id)
+                      .then((res) => {
+                        setOnPending(false);
+                        message.success({
+                          content: "报告创建中，请3-5分钟后刷新页面查看",
+                        });
+                      })
+                      .catch((err) => {
+                        setOnPending(false);
+                        message.error({
+                          content: "报告创建失败，请重试",
+                        });
+                      });
+                  }
+                }}
+                onCancel={(e): void => {
+                  e && e.stopPropagation();
+                }}
+              >
+                <Button
+                  onClick={(e): void => {
+                    e.stopPropagation();
+                  }}
+                  key="lung-nodules"
+                >
+                  肺结节AI筛查
+                </Button>
+              </Popconfirm>
+            </div>
+          ) : null}
         </Col>,
       );
     });
@@ -103,18 +151,25 @@ const ExamCards: FunctionComponent<ExamCardsPropsI> = (props) => {
   );
 
   return (
-    <div className="resources-exam-cards">
-      {rows}
-      <Pagination
-        hideOnSinglePage={true}
-        current={current}
-        pageSize={size}
-        total={data ? data.count : 0}
-        onChange={(page): void => {
-          onChangePagination && onChangePagination(page);
-        }}
-      ></Pagination>
-    </div>
+    <Spin
+      delay={200}
+      className="resources-exam-cards-spin"
+      spinning={onPending}
+      tip="正在请求肺结节AI筛查"
+    >
+      <div className="resources-exam-cards">
+        {rows}
+        <Pagination
+          hideOnSinglePage={true}
+          current={current}
+          pageSize={size}
+          total={data ? data.count : 0}
+          onChange={(page): void => {
+            onChangePagination && onChangePagination(page);
+          }}
+        ></Pagination>
+      </div>
+    </Spin>
   );
 };
 

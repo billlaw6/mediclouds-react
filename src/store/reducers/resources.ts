@@ -1,4 +1,5 @@
 import { Reducer } from "redux";
+import { pay } from "_api/pay";
 import { ViewTypeEnum } from "_pages/resources/type";
 import { LungNoduleReportI } from "_types/ai";
 import { SearchQueryResI } from "_types/api";

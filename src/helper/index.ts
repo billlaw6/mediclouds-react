@@ -63,7 +63,7 @@ export const checkDicomTotalCount = async (): Promise<number> => {
  * 获取url内传递的参数
  * @return {object} params
  */
-export const getQueryString = (): any => {
+export const getQueryString = <T = any>(): any => {
   const search = window.location.search.substring(1);
   const param: { [key: string]: any } = {};
   const arr = search.split("&");
@@ -74,7 +74,7 @@ export const getQueryString = (): any => {
     param[item[0]] = decodeURIComponent(item[1]);
   }
 
-  return param;
+  return param as T;
 };
 
 export default getQueryString;
@@ -281,4 +281,41 @@ export const getSexName = (val: number): string => {
  */
 export const getAgeByBirthday = (birthday: string): number => {
   return moment().year() - moment(birthday).year();
+};
+
+// 获取图片完全显示在视图区域并保持比例的信息：
+// x, y：相对于视图区域的x，y轴坐标
+// width，height：图片渲染的尺寸
+interface DrawInfoPropsI {
+  viewWidth: number;
+  viewHeight: number;
+  width: number;
+  height: number;
+}
+interface DrawInfoResultI {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+export const getDrawInfo = (props: DrawInfoPropsI): DrawInfoResultI => {
+  let drawW = 0,
+    drawH = 0,
+    x = 0,
+    y = 0;
+  const { viewWidth, viewHeight, width, height } = props;
+
+  if (viewWidth / width < viewHeight / height) {
+    // 视图和图片宽度比 小于 视图和图片高度比， 宽度等于视图宽度
+    drawW = viewWidth;
+    drawH = (drawW * height) / width;
+    y = (viewHeight - drawH) / 2;
+  } else {
+    // 视图和图片宽度比 大于 视图和图片高度比， 高度等于视图高度
+    drawH = viewHeight;
+    drawW = (drawH * width) / height;
+    x = (viewWidth - drawW) / 2;
+  }
+
+  return { x, y, width: drawW, height: drawH };
 };

@@ -23,11 +23,11 @@ export const filterLongAxis = (
   } else if (long_axis <= 8 && long_axis >= 6) {
     const midList = list.get("mid") || [];
     const nextMidList: LungNoduleI[] = [...midList, data];
-    cacheList.set("min", nextMidList);
+    cacheList.set("mid", nextMidList);
   } else {
     const maxList = list.get("max") || [];
     const nextMaxList: LungNoduleI[] = [...maxList, data];
-    cacheList.set("min", nextMaxList);
+    cacheList.set("max", nextMaxList);
   }
 
   return cacheList;

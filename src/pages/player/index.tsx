@@ -1,14 +1,11 @@
 import React, { FunctionComponent } from "react";
 import PlayerWeb from "./Player";
-import { RouteComponentProps } from "react-router-dom";
 
 const IS_MOBILE = /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent);
 
-const Player: FunctionComponent<RouteComponentProps<{}, {}, { id: string }>> = (props) => {
-  const { id } = props.location.state;
-
+const Player: FunctionComponent = () => {
   if (IS_MOBILE) return <div>mobile</div>;
-  return <PlayerWeb id={id}></PlayerWeb>;
+  return <PlayerWeb></PlayerWeb>;
 };
 
 export default Player;

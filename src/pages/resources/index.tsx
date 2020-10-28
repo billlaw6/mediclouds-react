@@ -56,12 +56,13 @@ const Resources: FunctionComponent = () => {
     pdfList,
     sortBy,
     viewMode,
+    tabType,
     changeSortBy,
+    switchTabType,
   } = useResources();
 
   const { account } = useAccount();
 
-  const [tabType, setTabType] = useState(ResourcesTypeE.EXAM); // 当前tab页类型
   const [selected, setSelected] = useState<SelectedI>({
     exam: [],
     img: [],
@@ -161,6 +162,7 @@ const Resources: FunctionComponent = () => {
   const onChangePagination = (type: ResourcesTypeE, current: number): void => {
     const nextData = Object.assign({}, searchQuery[type], { current });
     setSearchQuery(Object.assign({}, searchQuery, { [type]: nextData }));
+    switchTabType(type);
   };
 
   /**
@@ -289,7 +291,7 @@ const Resources: FunctionComponent = () => {
         className="resources-tabs"
         type="card"
         activeKey={tabType}
-        onChange={(val): void => setTabType(val as ResourcesTypeE)}
+        onChange={(val): void => switchTabType(val as ResourcesTypeE)}
       >
         <TabPane tab="检查" key={ResourcesTypeE.EXAM}>
           {examList ? (
@@ -358,6 +360,7 @@ const Resources: FunctionComponent = () => {
             onChangePagination={(current): void => {
               onChangePagination(ResourcesTypeE.LUNG_NODULES_REPORT, current);
             }}
+            onGenerateFullReport={(): void => fetchResources(ResourcesTypeE.LUNG_NODULES_REPORT)}
           ></LungNodulesReportCards>
         </TabPane>
       </Tabs>
