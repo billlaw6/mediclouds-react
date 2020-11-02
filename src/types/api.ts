@@ -22,6 +22,7 @@ export interface UploaderCellI {
   files: File[]; // 上传的文件列表
   filePath?: string; // 文件的本地路径
   failText?: string; // 文件描述&文件名
+  errFiles?: string[]; // 本次上传的无效文件名列表
 }
 
 // 手机登录Data

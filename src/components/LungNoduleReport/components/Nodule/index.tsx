@@ -1,9 +1,8 @@
 import { Button, Descriptions, Space } from "antd";
 import React, { FunctionComponent, useEffect, useRef, useState } from "react";
-import { useHistory } from "react-router";
 import { LungNoduleI } from "_types/ai";
 
-import "./nodule.less";
+import "./style.less";
 
 const VIEWPORT_WIDTH = 410; // 原图区域宽度
 

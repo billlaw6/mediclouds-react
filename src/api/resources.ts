@@ -14,7 +14,7 @@ import { ImgI, PdfI, ResourcesDelDataI, ResourcesTypeE } from "_types/resources"
 export const uploadResources = async (
   data: FormData,
   onUploadProgress?: (progressEvent: ProgressEvent) => void,
-): Promise<void> => {
+): Promise<string[] | undefined> =>
   await publicReq({
     method: "POST",
     url: "/resources/upload/",
@@ -24,7 +24,6 @@ export const uploadResources = async (
     },
     onUploadProgress,
   });
-};
 
 /* 删除资源 */
 export const delExamList = async (type: ResourcesTypeE, id: string[]): Promise<ResourcesDelDataI> =>

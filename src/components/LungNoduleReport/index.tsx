@@ -1,125 +1,104 @@
-import { Button, Col, Descriptions, Empty, Image, Modal, Row } from "antd";
+import { Button, Col, Descriptions, Empty, Image, Modal, Row, Tabs } from "antd";
 import React, { FunctionComponent } from "react";
 import { generateLungNodule } from "_api/ai";
 import { formatDate } from "_helper";
 import { LungNoduleI, LungNoduleReportI } from "_types/ai";
 import imgFail from "_images/img-fail.png";
-import { filterLongAxis, LongAxisT } from "./helper";
-import { useHistory } from "react-router-dom";
+import { filterNoduleProbable, filterNoduleSize, filterNoduleType } from "./helper";
+import { NodulesGroupI, NodulesGroupItemI, RenderDataI } from "./types";
 
-import Nodule from "./Nodule";
+import Group from "./components/Group";
 
 import "./style.less";
+
+const { TabPane } = Tabs;
 
 interface LungNoduleReportPropsI {
   data?: LungNoduleReportI;
 }
 
 const LungNoduleReport: FunctionComponent<LungNoduleReportPropsI> = (props) => {
-  const history = useHistory();
+  // const history = useHistory();
   const { data } = props;
 
   if (!data) return <Empty></Empty>;
 
-  const goPlayer = (index: number): void => {
-    const { nodule_details } = data;
+  // const goPlayer = (index: number): void => {
+  //   const { nodule_details } = data;
 
-    if (!nodule_details) return;
-    const { exam_id, series_id } = data;
+  //   if (!nodule_details) return;
+  //   const { exam_id, series_id } = data;
 
-    history.push(`/player/?exam=${exam_id}&series=${series_id}&index=${index}`);
-  };
+  //   history.push(`/player/?exam=${exam_id}&series=${series_id}&index=${index}`);
+  // };
 
-  /* 获取完整版 */
-  const onGetFull = (id: string): void => {
-    Modal.confirm({
-      title: "确认获取完整版报告",
-      content: "是否消费2000积分获取完整报告？",
-      okText: "确定",
-      cancelText: "取消",
-      onOk: () => {
-        generateLungNodule(id, "full")
-          .then((res) => console.log(res))
-          .catch((err) => console.error(err));
-      },
-    });
-  };
+  // /* 获取完整版 */
+  // const onGetFull = (id: string): void => {
+  //   Modal.confirm({
+  //     title: "确认获取完整版报告",
+  //     content: "是否消费2000积分获取完整报告？",
+  //     okText: "确定",
+  //     cancelText: "取消",
+  //     onOk: () => {
+  //       generateLungNodule(id, "full")
+  //         .then((res) => console.log(res))
+  //         .catch((err) => console.error(err));
+  //     },
+  //   });
+  // };
 
-  const getNodulesDetailNode = (data: Map<LongAxisT, LungNoduleI[]>, type: "max" | "min") => {
-    const detailTitle = type === "max" ? "真实结节概率大于 70%" : "真实结节概率小于 70%";
-    const min = data.get("min"),
-      mid = data.get("mid"),
-      max = data.get("max");
-
-    // 如果 min&mid&max 都没有
-    if ((!min || !min.length) && (!max || !max.length) && (!mid || !mid.length))
-      return (
-        <div className="report-full-wrapper">
-          <span>没有{detailTitle}的结节</span>
-        </div>
-      );
-
-    let count = 0;
-
-    return (
-      <section className="report-full-wrapper">
-        <h1 className="report-full-wrapper-title">{detailTitle}的结节列表</h1>
-        {min && min.length ? (
-          <div className="report-full-detail">
-            {min.map((item) => {
-              count++;
-              return <Nodule onClick={goPlayer} data={item} index={count} key={item.id}></Nodule>;
-            })}
-          </div>
-        ) : null}
-        {mid && mid.length ? (
-          <div className="report-full-detail">
-            {mid.map((item) => {
-              count++;
-              return <Nodule onClick={goPlayer} data={item} index={count} key={item.id}></Nodule>;
-            })}
-          </div>
-        ) : null}
-        {max && max.length ? (
-          <div className="report-full-detail">
-            {max.map((item) => {
-              count++;
-              return <Nodule onClick={goPlayer} data={item} index={count} key={item.id}></Nodule>;
-            })}
-          </div>
-        ) : null}
-      </section>
-    );
-  };
-
-  const getNodulesDetail = (data: LungNoduleI[]) => {
-    if (!data || !data.length) return null;
+  /**
+   * 获取渲染Data
+   * @param data
+   */
+  const getRenderData = (data?: LungNoduleI[]): RenderDataI | undefined => {
+    if (!data) return;
 
     /* 过滤没有长轴的 */
     const _data = data.filter((item) => item.long_axis);
 
-    /* 按实性分类 */
-    let realMax: Map<LongAxisT, LungNoduleI[]> = new Map(); // 概率 0.7 - 1.0
-    let realMin: Map<LongAxisT, LungNoduleI[]> = new Map(); // 概率小于 .7
+    const renderData: RenderDataI = {};
 
-    _data.forEach((item) => {
-      const { score } = item;
-      if (score >= 0.7) {
-        realMax = filterLongAxis(item, realMax);
-      } else {
-        realMin = filterLongAxis(item, realMin);
+    /* 依结节性质分类 */
+    const typeRes = filterNoduleType(_data);
+    for (const typeKey of Object.keys(typeRes)) {
+      const data = typeRes[typeKey] || [];
+
+      /* 依结节真实性分类 */
+      const realRes = filterNoduleProbable(data);
+      const group: NodulesGroupI = {};
+
+      for (const realKey of Object.keys(realRes)) {
+        const data = realRes[realKey] || [];
+
+        /* 依结节长轴尺寸分类 */
+        const sizeRes = filterNoduleSize(data);
+        const groupItem: NodulesGroupItemI = sizeRes;
+        group[realKey] = groupItem;
       }
-    });
 
-    return (
-      <>
-        {getNodulesDetailNode(realMax, "max")}
-        {getNodulesDetailNode(realMin, "min")}
-      </>
-    );
+      renderData[typeKey] = group;
+    }
+
+    console.log("render Data", renderData);
+
+    return renderData;
   };
 
-  const { thumbnail, nodule_details = [], desc, patient_name, sex, study_date, exam_id } = data;
+  const {
+    thumbnail,
+    nodule_details = [],
+    desc,
+    patient_name,
+    sex,
+    study_date,
+    exam_id,
+    series_id,
+  } = data;
+
+  const renderData = getRenderData(nodule_details);
+
+  console.log("rednerData", renderData);
 
   return (
     <section className="report">
@@ -146,11 +125,37 @@ const LungNoduleReport: FunctionComponent<LungNoduleReportPropsI> = (props) => {
           </Col>
         </Row>
       </header>
-      {nodule_details ? (
-        <div className="report-full">{getNodulesDetail(nodule_details)}</div>
-      ) : (
-        <Button onClick={(): void => onGetFull(exam_id)}>获取完整版报告</Button>
-      )}
+      <div className="report-full">
+        <Tabs defaultActiveKey="0">
+          <TabPane key="0" tab="实性">
+            <Group
+              key="0"
+              data={renderData ? renderData.solid : undefined}
+              type="实性"
+              seriesId={series_id}
+              examId={exam_id}
+            ></Group>
+          </TabPane>
+          <TabPane tab="亚实性" key="1">
+            <Group
+              key="1"
+              data={renderData ? renderData.subSolid : undefined}
+              type="亚实性"
+              seriesId={series_id}
+              examId={exam_id}
+            ></Group>
+          </TabPane>
+          <TabPane tab="磨玻璃" key="2">
+            <Group
+              key="2"
+              data={renderData ? renderData.groundGlass : undefined}
+              type="磨玻璃"
+              seriesId={series_id}
+              examId={exam_id}
+            ></Group>
+          </TabPane>
+        </Tabs>
+      </div>
     </section>
   );
 };

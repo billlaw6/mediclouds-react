@@ -2,22 +2,19 @@ import React, { useState, FunctionComponent, useRef, useEffect } from "react";
 import { Switch } from "antd";
 import { useDropzone } from "react-dropzone";
 import * as type from "_store/action-types";
-import config from "_config";
-import axios from "axios";
 
 import { UploadStatusI } from "./type";
-
 import FileProgress from "_components/FileProgress/FileProgress";
 
 import { Link } from "react-router-dom";
-import {} from "_components/FileProgress/type";
 
-import "./Upload.less";
 import { useDispatch } from "react-redux";
 import { checkDicomTotalCount, uploadDicom } from "_api/dicom";
 import wechatQrcode from "_images/wechat-qrcode.jpg";
 import { InboxOutlined, ArrowLeftOutlined } from "@ant-design/icons";
 import { UploaderStatusE } from "_types/api";
+
+import "./Upload.less";
 
 const Upload: FunctionComponent = () => {
   const dispatch = useDispatch();
@@ -51,7 +48,7 @@ const Upload: FunctionComponent = () => {
     const { id } = progressInfo;
 
     try {
-      await uploadDicom(formData, (progressEvent: ProgressEvent) => {
+      const errFiles = await uploadDicom(formData, (progressEvent: ProgressEvent) => {
         const { loaded, total } = progressEvent;
         updateCurrentLoad(
           Object.assign({}, progressInfo, {
@@ -59,37 +56,17 @@ const Upload: FunctionComponent = () => {
           }),
         );
         if (loaded === total && globaltotal <= 0) {
-          // if (loaded === total && total > 0) {
           setTotal(progressInfo.count);
           setShowTip(true);
         }
       });
-      // const res = await axios.post(URL, formData, {
-      //   // .post(`${axios.defaults.baseURL}dicom/upload/`, formData, {
-      //   headers: {
-      //     "Content-Type": "multipart/form-data",
-      //   },
-      //   onUploadProgress: function (progressEvent: any) {
-      //     // console.log("progressEvent: ", progressEvent);
-      //     const { loaded, total } = progressEvent;
-      //     updateCurrentLoad(
-      //       Object.assign({}, progressInfo, {
-      //         progress: (loaded / total) * 100,
-      //       }),
-      //     );
-      //     if (loaded === total && globaltotal <= 0) {
-      //       // if (loaded === total && total > 0) {
-      //       setTotal(progressInfo.count);
-      //       setShowTip(true);
-      //     }
-      //   },
-      // });
 
       dispatch({ type: type.GET_EXAM_INDEX_LIST });
       updateCurrentLoad(
         Object.assign({}, progressInfo, {
           progress: 100,
           status: UploaderStatusE.SUCCESS,
+          errFiles: errFiles || undefined,
         }),
       );
 

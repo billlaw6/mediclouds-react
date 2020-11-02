@@ -206,7 +206,7 @@ export const delPublicImages = async (id: string[]): Promise<any> => {
 export const uploadDicom = async (
   data: FormData,
   onUploadProgress?: (progressEvent: ProgressEvent) => void,
-): Promise<void> => {
+): Promise<string[] | undefined> =>
   await personalReq({
     method: "POST",
     url: "/dicom/upload/",
@@ -216,4 +216,3 @@ export const uploadDicom = async (
     },
     onUploadProgress,
   });
-};

@@ -7,6 +7,7 @@ export interface UploadStatusI {
   status: UploaderStatusE;
   filePath?: string;
   failText?: string;
+  errFiles?: string[]; // 本次上传无效文件数组
 }
 
 // export interface UploadStateI {

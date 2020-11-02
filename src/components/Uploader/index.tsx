@@ -66,7 +66,7 @@ const Uploader: FunctionComponent<UploaderPropsI> = (props) => {
 
   const getList = useCallback((): ReactNode => {
     return uploadList.map((cell) => {
-      const { id, progress, status, count } = cell;
+      const { id, progress, status, count, errFiles } = cell;
 
       return (
         <FileProgress
@@ -74,6 +74,7 @@ const Uploader: FunctionComponent<UploaderPropsI> = (props) => {
           count={count}
           progress={progress}
           status={status}
+          errFiles={errFiles}
           onReload={(): void =>
             updateCell(id, Object.assign({}, cell, { status: UploaderStatusE.PRELOAD }))
           }
@@ -100,7 +101,6 @@ const Uploader: FunctionComponent<UploaderPropsI> = (props) => {
       formData.append("order_number", orderNumber || "");
 
       updateCell(id, { status: UploaderStatusE.UPLOADING });
-
       uploadResources(formData, (progressEvent: ProgressEvent) => {
         const { total, loaded } = progressEvent;
 
@@ -109,10 +109,11 @@ const Uploader: FunctionComponent<UploaderPropsI> = (props) => {
           status: UploaderStatusE.UPLOADING,
         });
       })
-        .then(() => {
+        .then((errArr) => {
           updateCell(id, {
             progress: 100,
             status: UploaderStatusE.SUCCESS,
+            errFiles: errArr || undefined,
           });
         })
         .catch((err) => {
