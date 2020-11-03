@@ -19,7 +19,9 @@ import { GetSearchQueryPropsI, SearchQueryResI } from "_types/api";
 import { generateLungNodule } from "_api/ai";
 import LungNoduleReport from "_components/LungNoduleReport";
 
+import Desc from "_components/LungNoduleReport/components/Desc";
 import imgFail from "_assets/images/img-fail.png";
+
 import "./style.less";
 
 const { Meta } = Card;
@@ -56,7 +58,13 @@ const CardMeta: FunctionComponent<{ data: LungNoduleReportI }> = (props) => {
       <br />
       <span>检查日期: {formatDate(study_date)}</span>
       <br />
-      {err ? <span style={{ color: "red" }}>此报告出错</span> : `影像信息: ${desc || "没有信息"}`}
+      {err ? (
+        <span style={{ color: "red" }}>此报告出错</span>
+      ) : (
+        <span>
+          分析结果: <Desc>{desc}</Desc>
+        </span>
+      )}
     </div>
   );
 

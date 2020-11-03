@@ -1,13 +1,14 @@
 import { Button, Col, Descriptions, Empty, Image, Modal, Row, Tabs } from "antd";
 import React, { FunctionComponent } from "react";
 import { generateLungNodule } from "_api/ai";
-import { formatDate } from "_helper";
+import { formatDate, parseLungNoduleDesc } from "_helper";
 import { LungNoduleI, LungNoduleReportI } from "_types/ai";
 import imgFail from "_images/img-fail.png";
 import { filterNoduleProbable, filterNoduleSize, filterNoduleType } from "./helper";
 import { NodulesGroupI, NodulesGroupItemI, RenderDataI } from "./types";
 
 import Group from "./components/Group";
+import Desc from "./components/Desc";
 
 import "./style.less";
 
@@ -118,8 +119,8 @@ const LungNoduleReport: FunctionComponent<LungNoduleReportPropsI> = (props) => {
               <Descriptions.Item key="sutdyDate" label="检查日期">
                 {formatDate(study_date)}
               </Descriptions.Item>
-              <Descriptions.Item key="desc" label="描述">
-                {desc || "没有描述"}
+              <Descriptions.Item key="desc" label="分析结果">
+                <Desc>{desc}</Desc>
               </Descriptions.Item>
             </Descriptions>
           </Col>

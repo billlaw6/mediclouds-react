@@ -319,3 +319,39 @@ export const getDrawInfo = (props: DrawInfoPropsI): DrawInfoResultI => {
 
   return { x, y, width: drawW, height: drawH };
 };
+
+interface ParseLungNoduleDescResI {
+  title: string;
+  content: string[];
+  extra?: {
+    title: string;
+    content: string[];
+  };
+}
+
+/**
+ * 解析肺结节筛查报告的描述
+ *
+ * @param {string} val
+ * @returns {ParseLungNoduleDescResI}
+ */
+export const parseLungNoduleDesc = (val: string): ParseLungNoduleDescResI => {
+  const [primary, extra] = val.split("&");
+  const [title, contentVal] = primary.split(":");
+
+  const res: ParseLungNoduleDescResI = {
+    title: title.trim(),
+    content: contentVal.split(";").map((item) => item.trim()),
+  };
+
+  if (extra) {
+    const [extraTitle, extraContentVal] = extra.split(":");
+
+    res.extra = {
+      title: extraTitle.trim(),
+      content: extraContentVal.split(";").map((item) => item.trim()),
+    };
+  }
+
+  return res;
+};

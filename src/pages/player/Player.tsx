@@ -701,7 +701,7 @@ const Player: FunctionComponent = (props) => {
           const _seriesIndex = result.children.findIndex((item) => item.id === originSeriesId);
           setSeriesIndex(_seriesIndex + 1);
           if (originImgIndex) {
-            _seriesIndexArr[_seriesIndex] = parseInt(originImgIndex, 10);
+            _seriesIndexArr[_seriesIndex] = parseInt(originImgIndex, 10) + 1;
           }
         }
         setImgIndexs(_seriesIndexArr);

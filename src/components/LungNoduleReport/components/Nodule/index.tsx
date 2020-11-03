@@ -42,6 +42,7 @@ const Nodule: FunctionComponent<NodulePropsI> = (props) => {
     img_y,
     tex,
     rad_pixel,
+    description,
   } = data;
 
   const getTexVal = (tex: 0 | 1 | 2): string => {
@@ -168,7 +169,7 @@ const Nodule: FunctionComponent<NodulePropsI> = (props) => {
           <div className="lung-nodule-report">
             <Space className="lung-nodule-report-info" direction="vertical">
               <Descriptions bordered size="small" column={2}>
-                <Descriptions.Item label="位置(帧)">{disp_z}</Descriptions.Item>
+                <Descriptions.Item label="位置(帧)">{disp_z + 1}</Descriptions.Item>
                 <Descriptions.Item label="体积(立方毫米)">{vol}</Descriptions.Item>
                 <Descriptions.Item label="结节材质">{getTexVal(tex)}</Descriptions.Item>
                 <Descriptions.Item label="尺寸(mm x mm)">{`${long_axis} x ${short_axis}`}</Descriptions.Item>
@@ -187,6 +188,7 @@ const Nodule: FunctionComponent<NodulePropsI> = (props) => {
                 <Descriptions.Item label="最大CT值">{max_hu}</Descriptions.Item>
                 <Descriptions.Item label="最小CT值">{min_hu}</Descriptions.Item>
                 <Descriptions.Item label="平均CT值">{mean_hu}</Descriptions.Item>
+                <Descriptions.Item label="结节位置">{description}</Descriptions.Item>
               </Descriptions>
               <Button
                 type="ghost"
