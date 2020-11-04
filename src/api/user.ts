@@ -257,4 +257,5 @@ export default {
   delUser,
   disableUser,
   enableUser,
+  getUserInfo,
 };

@@ -10,12 +10,10 @@ import Uploader from "_components/Uploader";
 import { RoleE } from "_types/account";
 import { updateOrder } from "_api/order";
 import QrcodeGenerator from "qrcode.react";
-import dayjs from "dayjs";
-
-import config from "_config";
 import { getWechatPayQrcode } from "_api/pay";
 
 import "./style.less";
+import { formatDate } from "_helper";
 
 interface OrderInfoPropsI {
   info?: OrderI;
@@ -76,9 +74,7 @@ const OrderInfo: FunctionComponent<OrderInfoPropsI> = (props) => {
           >
             <Descriptions className="order-info-content" bordered={true}>
               <DescItem label="订单号">{order_number}</DescItem>
-              <DescItem label="创建时间">
-                {dayjs(created_at).format("YYYY-MM-DD HH:mm:ss")}
-              </DescItem>
+              <DescItem label="创建时间">{formatDate(created_at, true)}</DescItem>
               <DescItem label="创建者">{creator_username}</DescItem>
               <DescItem label="订单金额">{order_price}</DescItem>
               <DescItem label="订单状态">

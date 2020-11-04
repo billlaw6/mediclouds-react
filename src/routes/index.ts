@@ -6,10 +6,10 @@ import FullscreenLayout from "_layout/FullscreenLayout/FullscreenLayout";
 import Resources from "_pages/resources/index";
 import Player from "_pages/player/index";
 import Login from "_pages/login";
-import LoginForm from "_pages/login_form/Login";
+// import LoginForm from "_pages/login_form/Login";
 import Upload from "_pages/upload/Upload";
 import Profile from "_pages/profile/Profile";
-import UserManage from "_pages/users/UserManage";
+// import UserManage from "_pages/users/UserManage";
 import Feedback from "_pages/feedback/Feedback";
 import Dashboard from "_pages/dashboard/Dashboard";
 import MdEditor from "_pages/mdEditor/MdEditor";
@@ -17,7 +17,7 @@ import MobileUpload from "_pages/mobileUpload/MobileUpload";
 import Oauth from "_pages/oauth/Oauth";
 import Gallery from "_pages/gallery/Gallery";
 import LoginAffiliate from "_pages/login_affiliate/LoginAffiliate";
-import OauthAffilate from "_pages/oauth/OauthAffilate";
+// import OauthAffilate from "_pages/oauth/OauthAffilate";
 import HomeResource from "_pages/homeResource/HomeResource";
 import Home from "_pages/home";
 import { RoutesI } from "_types/router";
@@ -124,12 +124,12 @@ const routes: RoutesI[] = [
     layout: AILayout,
     permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN, RoleE.PATIENT],
   },
-  {
-    name: "user_manage",
-    path: "/users",
-    component: UserManage,
-    permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN],
-  },
+  // {
+  //   name: "user_manage",
+  //   path: "/users",
+  //   component: UserManage,
+  //   permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN],
+  // },
   // {
   //   name: "homeRes",
   //   path: "/home-res",

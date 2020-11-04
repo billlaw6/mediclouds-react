@@ -1,12 +1,19 @@
 .report {
   &-overview {
     margin-bottom: 20px;
+    &-item:first-child {
+      margin-bottom: 10px;
+    }
   }
-  // &-full {
-  //   &-wrapper {
-  //     &-title {
-  //       font-size: 20px;
-  //     }
-  //   }
-  // }
+
+  &-get-full {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    button {
+      width: 300px;
+    }
+  }
 }

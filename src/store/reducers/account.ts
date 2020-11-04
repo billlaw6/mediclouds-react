@@ -1,4 +1,3 @@
-import { ReducerI } from "_types/reducer";
 import { AccountActionTypes } from "_types/actions";
 import { UserI, RoleE } from "_types/account";
 import { Reducer } from "redux";

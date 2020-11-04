@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { StoreStateI } from "_types/core";
-import { UserI, UpdateAccountDataI } from "_types/account";
+import { UserI, UpdateAccountDataI, AccountI } from "_types/account";
 import { AccountActionTypes } from "_types/actions";
 import userApi from "_api/user";
 import { setToken, clearToken } from "_helper";
@@ -12,47 +12,7 @@ import { store } from "../index";
 export default () => {
   const history = useHistory();
   const dispatch = useDispatch();
-  // const user = useSelector<StoreStateI, UserI>((state) => state.user);
   const account = useSelector<StoreStateI, UserI & { login: boolean }>((state) => state.account);
-
-  // /* 开发表单登录 */
-  // const _devFormLogin = async ({
-  //   username,
-  //   password,
-  // }: {
-  //   username: string;
-  //   password: string;
-  // }): Promise<void> => {
-  //   try {
-  //     clearToken();
-
-  //     const loginRes = await devFormLogin({ username, password });
-  //     console.log("dev form login", loginRes);
-  //     const { key } = loginRes;
-
-  //     // setToken(key);
-  //     // dispatch({ type: AccountActionTypes.LOGIN_FORM, payload: {} });
-
-  //     // history.replace("/resources");
-  //   } catch (error) {
-  //     throw new Error(error);
-  //   }
-  // };
-  // /* 顾客表单登录 */
-  // const customerFormLogin = async ({
-  //   username,
-  //   password,
-  // }: {
-  //   username: string;
-  //   password: string;
-  // }) => {
-  //   try {
-  //     const loginRes = await loginUser({ username, password });
-  //     // const { token, userInfo } = loginRes;
-  //   } catch (error) {
-  //     throw new Error(error);
-  //   }
-  // };
 
   /* 微信二维码登录 */
   const wechatLogin = async (params: any): Promise<void> => {
@@ -115,6 +75,16 @@ export default () => {
         dispatch({ type: AccountActionTypes.LOGIN_PHONE, payload: user_info });
         history.replace(url);
       }
+    } catch (error) {
+      throw new Error(error);
+    }
+  };
+
+  /** 获取当前用户信息 */
+  const fetchAccount = async (): Promise<void> => {
+    try {
+      const getUserInfoRes = await userApi.getUserInfo();
+      dispatch({ type: AccountActionTypes.UPDATE_INFO, payload: getUserInfoRes });
     } catch (error) {
       throw new Error(error);
     }
@@ -185,8 +155,8 @@ export default () => {
     formLogin,
     phoneLogin,
     updateAccount,
-    // user,
     account,
+    fetchAccount,
     personalPhoneLogin,
     logout,
     logoutPersonal,

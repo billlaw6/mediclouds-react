@@ -9,9 +9,9 @@ import AccountRole from "_components/AccountRole";
 import Nail from "_components/Nail";
 import ListControlBar from "_components/ListControlBar";
 import Account from "_components/Account";
-import dayjs from "dayjs";
 
 import "./style.less";
+import { formatDate } from "_helper";
 
 const UserList: FunctionComponent = () => {
   const [list, setList] = useState<UserI[]>(); // 获取用户资源
@@ -94,13 +94,13 @@ const UserList: FunctionComponent = () => {
       title: "创建日期",
       key: "date_joined",
       dataIndex: "date_joined",
-      render: (val) => dayjs(val).format("YYYY-MM-DD HH:mm:ss"),
+      render: (val) => formatDate(val, true),
     },
     {
       title: "最后登录日期",
       key: "last_login",
       dataIndex: "last_login",
-      render: (val) => (val ? dayjs(val).format("YYYY-MM-DD HH:mm:ss") : "NULL"),
+      render: (val) => (val ? formatDate(val, true) : "NULL"),
     },
     {
       title: "状态",

@@ -1,7 +1,4 @@
-import { stat } from "fs";
 import { useDispatch, useSelector } from "react-redux";
-import { getLungNoduleReport } from "_api/ai";
-import { deleteExamIndex } from "_api/dicom";
 import {
   delExamList,
   getExamList,
@@ -58,10 +55,12 @@ export default () => {
     dispatch({ type: ResourcesActionE.GET_LUNG_NODULES_REPORT, payload: res });
   };
 
+  /** 切换检查视图模式 */
   const changeViewMode = (type: ViewTypeEnum): void => {
     dispatch({ type: ResourcesActionE.SET_VIEW_MODE, payload: type });
   };
 
+  /** 切换排序 */
   const changeSortBy = (type: ResourcesTypeE, sortKey: ExamSortKeyE | ImgAndPdfSortKeyE): void => {
     dispatch({ type: ResourcesActionE.SET_SORT_BY_KEY, payload: { [type]: sortKey } });
   };

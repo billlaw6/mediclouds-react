@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import React, { FunctionComponent } from "react";
 import { GalleryListPropsI } from "_pages/gallery/type";
+import { Table } from "antd";
+import { GalleryI } from "_types/api";
+import moment from "antd/node_modules/moment";
 
 import "./List.less";
-import { Table } from "antd";
-import { GalleryI, GalleryByTable } from "_types/api";
-import dayjs from "dayjs";
 /* 
 
   {
@@ -66,14 +66,14 @@ const filter = (
   if (desc) res = res.filter((item) => item.description.indexOf(desc) >= 0);
   if (date && date.length)
     res = res.filter((item) => {
-      return dayjs(item.published_at).isBetween(...date);
+      return moment(item.published_at).isBetween(...date);
     });
 
   /* 还要加上是否显示的过滤 */
 
   /* 排序 */
   res.sort((a, b) => {
-    return dayjs(b.created_at).isAfter(dayjs(a.created_at)) ? 1 : -1;
+    return moment(b.created_at).isAfter(moment(a.created_at)) ? 1 : -1;
   });
 
   return res;

@@ -1,5 +1,5 @@
-import { Button, Col, Descriptions, Empty, Image, Modal, Row, Tabs } from "antd";
-import React, { FunctionComponent } from "react";
+import { Button, Col, Descriptions, Divider, Empty, Image, Modal, Row, Tabs } from "antd";
+import React, { FunctionComponent, useState } from "react";
 import { generateLungNodule } from "_api/ai";
 import { formatDate, parseLungNoduleDesc } from "_helper";
 import { LungNoduleI, LungNoduleReportI } from "_types/ai";
@@ -16,37 +16,35 @@ const { TabPane } = Tabs;
 
 interface LungNoduleReportPropsI {
   data?: LungNoduleReportI;
+  onGenerateFullSuccessed?: () => void; // 当获取完整版成功后触发
 }
 
 const LungNoduleReport: FunctionComponent<LungNoduleReportPropsI> = (props) => {
-  // const history = useHistory();
-  const { data } = props;
+  const { data, onGenerateFullSuccessed } = props;
+  const [pending, setPending] = useState(false);
 
   if (!data) return <Empty></Empty>;
 
-  // const goPlayer = (index: number): void => {
-  //   const { nodule_details } = data;
-
-  //   if (!nodule_details) return;
-  //   const { exam_id, series_id } = data;
-
-  //   history.push(`/player/?exam=${exam_id}&series=${series_id}&index=${index}`);
-  // };
-
-  // /* 获取完整版 */
-  // const onGetFull = (id: string): void => {
-  //   Modal.confirm({
-  //     title: "确认获取完整版报告",
-  //     content: "是否消费2000积分获取完整报告？",
-  //     okText: "确定",
-  //     cancelText: "取消",
-  //     onOk: () => {
-  //       generateLungNodule(id, "full")
-  //         .then((res) => console.log(res))
-  //         .catch((err) => console.error(err));
-  //     },
-  //   });
-  // };
+  /* 获取完整版 */
+  const onGetFull = (id: string): void => {
+    Modal.confirm({
+      title: "确认获取完整版报告",
+      content: "是否消费2000积分获取完整报告？",
+      okText: "确定",
+      cancelText: "取消",
+      centered: true,
+      onOk: () => {
+        setPending(true);
+        generateLungNodule(id, "full")
+          .then((res) => {
+            console.log(res);
+            onGenerateFullSuccessed && onGenerateFullSuccessed();
+          })
+          .catch((err) => console.error(err))
+          .finally(() => setPending(false));
+      },
+    });
+  };
 
   /**
    * 获取渲染Data
@@ -81,8 +79,6 @@ const LungNoduleReport: FunctionComponent<LungNoduleReportPropsI> = (props) => {
       renderData[typeKey] = group;
     }
 
-    console.log("render Data", renderData);
-
     return renderData;
   };
 
@@ -95,16 +91,18 @@ const LungNoduleReport: FunctionComponent<LungNoduleReportPropsI> = (props) => {
     study_date,
     exam_id,
     series_id,
+    flag,
   } = data;
 
   const renderData = getRenderData(nodule_details);
 
+  console.log("flag", flag);
   console.log("rednerData", renderData);
 
   return (
     <section className="report">
       <header className="report-overview">
-        <Row gutter={24}>
+        <Row className="report-overview-item" gutter={24}>
           <Col span={8}>
             <Image src={thumbnail || imgFail}></Image>
           </Col>
@@ -120,43 +118,60 @@ const LungNoduleReport: FunctionComponent<LungNoduleReportPropsI> = (props) => {
                 {formatDate(study_date)}
               </Descriptions.Item>
               <Descriptions.Item key="desc" label="分析结果">
-                <Desc>{desc}</Desc>
+                <Desc details={flag < 1}>{desc}</Desc>
               </Descriptions.Item>
             </Descriptions>
           </Col>
         </Row>
+        <Row className="report-overview-item">
+          <Col
+            span={24}
+            style={{
+              color: "#c1c1c1",
+              fontSize: "14px",
+            }}
+          >
+            （该报告仅是对影像进行的技术分析，不作为诊断及医疗依据）
+          </Col>
+        </Row>
       </header>
-      <div className="report-full">
-        <Tabs defaultActiveKey="0">
-          <TabPane key="0" tab="实性">
-            <Group
-              key="0"
-              data={renderData ? renderData.solid : undefined}
-              type="实性"
-              seriesId={series_id}
-              examId={exam_id}
-            ></Group>
-          </TabPane>
-          <TabPane tab="亚实性" key="1">
-            <Group
-              key="1"
-              data={renderData ? renderData.subSolid : undefined}
-              type="亚实性"
-              seriesId={series_id}
-              examId={exam_id}
-            ></Group>
-          </TabPane>
-          <TabPane tab="磨玻璃" key="2">
-            <Group
-              key="2"
-              data={renderData ? renderData.groundGlass : undefined}
-              type="磨玻璃"
-              seriesId={series_id}
-              examId={exam_id}
-            ></Group>
-          </TabPane>
-        </Tabs>
-      </div>
+      {flag < 1 ? (
+        <Button type="primary" block loading={pending} onClick={(): void => onGetFull(exam_id)}>
+          获取完整版
+        </Button>
+      ) : (
+        <div className="report-full">
+          <Tabs defaultActiveKey="0">
+            <TabPane key="0" tab="实性">
+              <Group
+                key="0"
+                data={renderData ? renderData.solid : undefined}
+                type="实性"
+                seriesId={series_id}
+                examId={exam_id}
+              ></Group>
+            </TabPane>
+            <TabPane tab="亚实性" key="1">
+              <Group
+                key="1"
+                data={renderData ? renderData.subSolid : undefined}
+                type="亚实性"
+                seriesId={series_id}
+                examId={exam_id}
+              ></Group>
+            </TabPane>
+            <TabPane tab="磨玻璃" key="2">
+              <Group
+                key="2"
+                data={renderData ? renderData.groundGlass : undefined}
+                type="磨玻璃"
+                seriesId={series_id}
+                examId={exam_id}
+              ></Group>
+            </TabPane>
+          </Tabs>
+        </div>
+      )}
     </section>
   );
 };

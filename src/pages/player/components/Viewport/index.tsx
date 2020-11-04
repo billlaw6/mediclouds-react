@@ -1,26 +1,40 @@
-import React, { FunctionComponent, useEffect, useState, useRef } from "react";
+/** absolute import */
+import React, { FunctionComponent, useEffect, useRef, useState } from "react";
 
-interface ViewportPropsI {
-  width: number;
-  height: number;
-}
+/** relative import */
+import { ViewportPropsI } from "./types";
 
 const Viewport: FunctionComponent<ViewportPropsI> = (props) => {
-  const { width, height } = props;
-  const $viewport = useRef<HTMLCanvasElement>(null);
-  const [ctx, setCtx] = useState<CanvasRenderingContext2D>();
+  /** parse props */
+  const { cs, data, className } = props;
+  /** init hooks */
+  const $viewport = useRef<HTMLDivElement>(null);
+  const [enabled, setEnabled] = useState(false); // 是否已经启用视图
 
-  /* 更新 */
   useEffect(() => {
-    if ($viewport.current) {
-      const _ctx = $viewport.current.getContext("2d");
-      if (_ctx) setCtx(_ctx);
-    }
-  }, []);
+    if (!$viewport.current) return;
 
-  return (
-    <canvas className="player-viewport" ref={$viewport} width={width} height={height}></canvas>
-  );
+    let isEnabled = enabled;
+
+    if (!isEnabled) {
+      // 初始化视图
+      cs.enable($viewport.current);
+      isEnabled = true;
+      setEnabled(isEnabled);
+    }
+
+    if (!data) return;
+
+    const { cache, frame } = data;
+    if (!cache) return;
+
+    const currentImg = cache[frame];
+    cs.displayImage($viewport.current, currentImg);
+  }, [cs, data, enabled]);
+
+  const _className = className ? `viewport ${className}` : "viewport";
+
+  return <div className={_className} ref={$viewport}></div>;
 };
 
 export default Viewport;

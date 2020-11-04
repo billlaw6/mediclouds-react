@@ -1,7 +1,6 @@
 import React, { useState, FunctionComponent, useRef, useEffect } from "react";
 import { Switch } from "antd";
 import { useDropzone } from "react-dropzone";
-import * as type from "_store/action-types";
 
 import { UploadStatusI } from "./type";
 import FileProgress from "_components/FileProgress/FileProgress";
@@ -15,6 +14,7 @@ import { InboxOutlined, ArrowLeftOutlined } from "@ant-design/icons";
 import { UploaderStatusE } from "_types/api";
 
 import "./Upload.less";
+import { ResourcesActionE } from "_types/resources";
 
 const Upload: FunctionComponent = () => {
   const dispatch = useDispatch();
@@ -61,7 +61,7 @@ const Upload: FunctionComponent = () => {
         }
       });
 
-      dispatch({ type: type.GET_EXAM_INDEX_LIST });
+      dispatch({ type: ResourcesActionE.GET_EXAM_LIST });
       updateCurrentLoad(
         Object.assign({}, progressInfo, {
           progress: 100,

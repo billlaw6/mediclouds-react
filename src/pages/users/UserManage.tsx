@@ -1,11 +1,13 @@
 import React, { ReactElement } from "react";
 import { Table, Button, Form, Input, DatePicker } from "antd";
-import dayjs, { Dayjs } from "dayjs";
 import { GetSearchQueryPropsI, SearchQueryResI, UserI } from "_types/api";
 import { getUserList, deactivateUsers, activateUsers, deleteUsers } from "_api/user";
 import { UserManagePropsI, UserManageStateI } from "_pages/users/type";
-import "./UserManage.less";
 import { KeyOutlined } from "@ant-design/icons";
+
+import "./UserManage.less";
+import moment from "antd/node_modules/moment";
+import { Moment } from "moment";
 
 const dateFormat = "YYYY-MM-DD HH:mm:ss";
 
@@ -168,7 +170,7 @@ class UserManage extends React.Component<UserManagePropsI, UserManageStateI> {
         dataIndex: "date_joined",
         key: "date_joined",
         render: (value: string) => {
-          const dt = dayjs(new Date(value));
+          const dt = moment(new Date(value));
           return <span>{dt.format("YYYY-MM-DD")}</span>;
         },
         sorter: (a: UserI, b: UserI) => {
@@ -185,7 +187,7 @@ class UserManage extends React.Component<UserManagePropsI, UserManageStateI> {
         dataIndex: "last_login",
         key: "last_login",
         render: (value: string) => {
-          const dt = dayjs(new Date(value));
+          const dt = moment(new Date(value));
           return <span>{dt.locale("zh-cn").format("YYYY-MM-DD HH:mm")}</span>;
         },
         sorter: (a: UserI, b: UserI) => {
@@ -262,7 +264,7 @@ class UserManage extends React.Component<UserManagePropsI, UserManageStateI> {
 
               this.setState({ searchQuery });
             }}
-            onFinish={(vals: { dateRange: Dayjs[] | null; keyword: string }): void => {
+            onFinish={(vals: { dateRange: Moment[] | null; keyword: string }): void => {
               const { searchQuery } = this.state;
               this.fetchUserList(searchQuery);
             }}

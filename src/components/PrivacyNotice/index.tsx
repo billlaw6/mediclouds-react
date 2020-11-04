@@ -3,14 +3,14 @@ import React, { FunctionComponent, useState, useEffect } from "react";
 import { Modal, Button, Checkbox } from "antd";
 import { useDispatch } from "react-redux";
 import { getPrivacyNotice, agreePrivacyNotice } from "_api/user";
-import { setUserAction } from "_actions/user";
+// import { setUserAction } from "_actions/user";
 
 import { PrivacyNoticePropsI } from "./type";
 import "./style.less";
 import useAccount from "_hooks/useAccount";
 
 const PrivacyNotice: FunctionComponent<PrivacyNoticePropsI> = (props) => {
-  const { account: user } = useAccount();
+  const { account: user, updateAccount } = useAccount();
   const { onChecked } = props;
 
   const [checkWarn, setCheckWarn] = useState(false); // 当未选中同意时，点击确定 提醒
@@ -38,17 +38,19 @@ const PrivacyNotice: FunctionComponent<PrivacyNoticePropsI> = (props) => {
     } else {
       // something
       /* =========== 这里应当返回成功以后再执行 先放到finally内 后删 ============= */
-      agreePrivacyNotice({ privacy_notice_id: version }).then(
-        (): void => {
-          dispatch(setUserAction(Object.assign({}, user, { privacy_notice: version })));
+      agreePrivacyNotice({ privacy_notice_id: version })
+        .then(() => {
+          return updateAccount({ privacy_notice: version });
+          // dispatch(setUserAction(Object.assign({}, user, { privacy_notice: version })))
+        })
+        .then(() => {
           setShow(false);
           onChecked && onChecked();
-        },
-        (err) => {
+        })
+        .catch((err) => {
           setShow(false);
           console.error(err);
-        },
-      );
+        });
     }
   }
 

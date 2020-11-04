@@ -8,7 +8,6 @@ import dicomSettings from "./dicomSettings";
 // export type IState = ReturnType<typeof createRootReducer>
 
 export default combineReducers({
-  // user,
   resources,
   resourcesSettings: dicomSettings,
   account,

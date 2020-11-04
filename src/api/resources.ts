@@ -1,6 +1,6 @@
 import { personalReq, publicReq } from "_axios";
 import { LungNoduleReportI } from "_types/ai";
-import { GetSearchQueryPropsI, SearchQueryResI } from "_types/api";
+import { GetSearchQueryPropsI, SearchQueryResI, SeriesListI } from "_types/api";
 import { ExamIndexListI } from "_types/core";
 import { ImgI, PdfI, ResourcesDelDataI, ResourcesTypeE } from "_types/resources";
 
@@ -44,6 +44,15 @@ export const getExamList = async (
     method: "POST",
     url: `/resources/exam-list/${id}/`,
     data: searchQuery,
+  });
+
+/* 获取dicom检查列表 */
+export const getSeriesList = async (
+  id: string, // exam id
+): Promise<SeriesListI> =>
+  await publicReq({
+    method: "GET",
+    url: `/resources/series-list/${id}/`,
   });
 
 /* 获取pdf资源列表 */

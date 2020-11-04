@@ -1,6 +1,5 @@
-import React, { useState, FunctionComponent, useRef, useEffect } from "react";
+import React, { useState, FunctionComponent, useRef } from "react";
 import { useDropzone } from "react-dropzone";
-import * as type from "_store/action-types";
 import config from "_config";
 import axios from "axios";
 
@@ -12,6 +11,7 @@ import { InboxOutlined } from "@ant-design/icons";
 import { UploaderStatusE } from "_types/api";
 
 import "./MobileUpload.less";
+import { ResourcesActionE } from "_types/resources";
 
 const MobileUpload: FunctionComponent = () => {
   const dispatch = useDispatch();
@@ -57,7 +57,7 @@ const MobileUpload: FunctionComponent = () => {
         },
       });
 
-      dispatch({ type: type.GET_EXAM_INDEX_LIST });
+      dispatch({ type: ResourcesActionE.GET_EXAM_LIST });
       updateCurrentLoad(
         Object.assign({}, progressInfo, {
           progress: 100,

@@ -1,41 +1,55 @@
 import React, { FunctionComponent, useState, useRef, useEffect } from "react";
 import { Form, Input, Row, Col, Select, DatePicker } from "antd";
-import dayjs from "dayjs";
-import { Moment } from "moment";
-import { connect, useDispatch } from "react-redux";
-
-import { StoreStateI } from "_types/core";
-import { MapStateToPropsI, MapDispatchToPropsI } from "./type";
 
 import DEFAULT_AVATAR from "_images/avatar.png";
-import { updateUserAction, setUserAction } from "_actions/user";
-import { getUserInfo } from "_api/user";
 import { Link } from "react-router-dom";
 import { ArrowLeftOutlined } from "@ant-design/icons";
+
+import useAccount from "_hooks/useAccount";
+import { UserI } from "_types/account";
+import moment from "antd/node_modules/moment";
 
 import "./Profile.less";
 
 const { Item } = Form;
 const { Option } = Select;
 
-const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (props) => {
-  const { user, updateUserAction } = props;
+const Profile: FunctionComponent = (props) => {
+  const { account, updateAccount, fetchAccount } = useAccount();
   const $form = useRef<HTMLFormElement>(null);
 
-  const [userInfo, setUserInfo] = useState(user); // 网页中的用户信息 默认为服务器端用户信息
   const [isEdit, setIsEdit] = useState(false); // 是否是编辑模式
+  const [editedInfo, setEditedInfo] = useState<UserI & { [key: string]: any }>(); // 已修改的用户信息
 
-  const dispatch = useDispatch();
+  const getInfo = (key: string) => {
+    const originRes = (account as UserI & { [key: string]: any })[key];
+
+    if (editedInfo) {
+      const res = editedInfo[key];
+      if (!res) return originRes;
+      else return;
+    }
+
+    return originRes;
+  };
+
+  const setInfo = (key: string, val: any): void => {
+    const nextInfo = Object.assign({}, editedInfo, {
+      [key]: val,
+    });
+
+    setEditedInfo(nextInfo);
+  };
 
   // 取消修改
   const onCancel = (): void => {
-    setUserInfo(user);
+    setEditedInfo(undefined);
     setIsEdit(false);
   };
   // 提交修改
   const onSubmit = (): void => {
-    if (!$form.current) return setIsEdit(false);
-    const formData = new FormData($form.current);
+    // if (!$form.current) return setIsEdit(false);
+    // const formData = new FormData($form.current);
     /* ======== 此处添加update User Info action == START ======== */
     //  将 [formData] 作为 data
     /* ======== 此处添加update User Info action == END ======== */
@@ -49,7 +63,9 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
     //   formData.delete("avatar");
     // }
 
-    updateUserAction(formData);
+    // updateUserAction(formData);
+
+    console.log("editedInfo", editedInfo);
     setIsEdit(false);
   };
 
@@ -59,9 +75,12 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
     if (!files) return;
 
     const avatarData = files[0];
+
+    console.log("avatarData", avatarData);
     if (!avatarData) return;
-    const url = URL.createObjectURL(avatarData);
-    setUserInfo(Object.assign({}, userInfo, { avatar: url }));
+    // const url = URL.createObjectURL(avatarData);
+    // console.log("url", url);
+    setInfo("avatar", avatarData);
   };
 
   // 更新页面中的用户信息
@@ -69,7 +88,8 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
     const $el = e.currentTarget;
     const { name, value } = $el;
     if (name === "sign" && value.length > 30) return;
-    setUserInfo(Object.assign({}, userInfo, { [name]: value }));
+
+    setInfo(name, value);
   };
 
   const updateInputWidthMaxTotal = (
@@ -78,18 +98,23 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
   ): void => {
     const { name, value } = payload;
     if (value.length > total) return;
-    setUserInfo(Object.assign({}, userInfo, { [name]: value }));
+
+    setInfo(name, value);
   };
 
   /* effect */
   useEffect(() => {
     // ========= 登录profile页面 获取一次userInfo ======== //
-    getUserInfo()
-      .then((res) => {
-        dispatch(setUserAction(res.data));
-      })
-      .catch((err) => console.error(err));
-  }, [dispatch]);
+    fetchAccount().then(
+      () => {
+        //
+      },
+      (err) => console.error(err),
+    );
+  }, []);
+
+  console.log("AVATAR", getInfo("avatar"));
+
   /* render */
   return (
     <section className="profile">
@@ -101,12 +126,12 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
         </Link>
       </div>
       <div className="profile-content">
-        <form
+        <Form
           className="profile-form"
           name="profile"
-          ref={$form}
           encType="multipart/form-data"
           method="post"
+          initialValues={account}
         >
           <div className={`profile-form-header ${isEdit ? "profile-editing" : ""}`}>
             <Item className={`profile-form-avatar`}>
@@ -119,11 +144,12 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
                 // accept="image/png"
                 onChange={previewAvatar}
               />
-              <img src={userInfo.avatar || DEFAULT_AVATAR} alt="avatar" />
+              <img src={getInfo("avatar") || DEFAULT_AVATAR} alt="avatar" />
             </Item>
             <Item>
               <Input
                 className="profile-form-btn profile-form-edit"
+                style={{ visibility: "hidden" }}
                 type="button"
                 name="edit"
                 value="编辑信息"
@@ -135,31 +161,42 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
             </div>
           </div>
           <div className="profile-form-info">
-            <Item className="profile-form-item" label="姓名" colon={false}>
-              <Input
-                disabled={!isEdit}
-                type="text"
-                name="nickname"
-                value={userInfo.nickname}
-                onInput={(e): void =>
-                  updateInputWidthMaxTotal(15, {
-                    name: e.currentTarget.name,
-                    value: e.currentTarget.value,
-                  })
-                }
-                suffix={<span className="text-count">{userInfo.nickname.length}/15</span>}
-              />
-            </Item>
+            <Row gutter={22}>
+              <Col span={12}>
+                <Item className="profile-form-item" label="姓名" colon={false}>
+                  <Input
+                    disabled={!isEdit}
+                    type="text"
+                    name="nickname"
+                    value={getInfo("nickname")}
+                    onInput={(e): void =>
+                      updateInputWidthMaxTotal(15, {
+                        name: e.currentTarget.name,
+                        value: e.currentTarget.value,
+                      })
+                    }
+                    suffix={
+                      <span className="text-count">
+                        {getInfo("nickname") ? getInfo("nickname").length : 0}/15
+                      </span>
+                    }
+                  />
+                </Item>
+              </Col>
+              <Col span={12}>
+                <Item className="profile-form-item" label="积分" colon={false}>
+                  <Input disabled={!isEdit} value={getInfo("score")}></Input>
+                </Item>
+              </Col>
+            </Row>
             <Row className="profile-hoz profile-form-item" gutter={22}>
               <Col span={12}>
                 <Item label="性别" colon={false}>
                   <Select
                     dropdownClassName="profile-form-sex"
                     disabled={!isEdit}
-                    value={userInfo.sex}
-                    onChange={(value: number): void =>
-                      setUserInfo(Object.assign({}, userInfo, { sex: value }))
-                    }
+                    value={getInfo("sex")}
+                    onChange={(value: number): void => setInfo("sex", value)}
                   >
                     <Option value={0}>保密</Option>
                     <Option value={1}>男</Option>
@@ -169,7 +206,7 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
                     style={{ display: "none" }}
                     type="text"
                     name="sex"
-                    value={userInfo.sex}
+                    value={getInfo("sex")}
                     onChange={updateInputVal}
                   ></Input>
                 </Item>
@@ -180,23 +217,21 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
                     className="profile-form-birthday"
                     disabled={!isEdit}
                     disabledDate={(date): boolean => {
-                      if (date && date.isBetween("1900-01-01", dayjs() as Moment)) return false;
+                      console.log("date", date.toString());
+                      if (date && moment(date as any).isBetween("1900-01-01", moment()))
+                        return false;
                       return true;
                     }}
-                    value={userInfo.birthday ? (dayjs(userInfo.birthday) as Moment) : undefined}
+                    value={getInfo("birthday") ? moment(getInfo("birthday")) : undefined}
                     onChange={(_date, dateString: string): void => {
-                      setUserInfo(
-                        Object.assign({}, userInfo, {
-                          birthday: dateString,
-                        }),
-                      );
+                      setInfo("birthday", dateString);
                     }}
                   ></DatePicker>
                   <Input
                     style={{ display: "none" }}
                     type="string"
                     name="birthday"
-                    value={userInfo.birthday}
+                    value={getInfo("birthday")}
                     onInput={updateInputVal}
                   ></Input>
                 </Item>
@@ -208,14 +243,18 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
                 disabled={!isEdit}
                 type="text"
                 name="sign"
-                value={userInfo.sign}
+                value={getInfo("sign")}
                 onInput={(e): void =>
                   updateInputWidthMaxTotal(20, {
                     name: e.currentTarget.name,
                     value: e.currentTarget.value,
                   })
                 }
-                suffix={<span className="text-count">{userInfo.sign.length}/20</span>}
+                suffix={
+                  <span className="text-count">
+                    {getInfo("sign") ? getInfo("sign").length : 0}/20
+                  </span>
+                }
               />
             </Item>
             <Item className="profile-form-item" label="通讯地址" colon={false}>
@@ -224,14 +263,18 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
                 disabled={!isEdit}
                 type="text"
                 name="address"
-                value={userInfo.address}
+                value={getInfo("address")}
                 onInput={(e): void =>
                   updateInputWidthMaxTotal(20, {
                     name: e.currentTarget.name,
                     value: e.currentTarget.value,
                   })
                 }
-                suffix={<span className="text-count">{userInfo.address.length}/20</span>}
+                suffix={
+                  <span className="text-count">
+                    {getInfo("address") ? getInfo("address").length : 0}/20
+                  </span>
+                }
               />
             </Item>
             <Item className="profile-form-item" label="就职单位" colon={false}>
@@ -240,14 +283,18 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
                 disabled={!isEdit}
                 type="text"
                 name="unit"
-                value={userInfo.unit}
+                value={getInfo("unit")}
                 onInput={(e): void =>
                   updateInputWidthMaxTotal(20, {
                     name: e.currentTarget.name,
                     value: e.currentTarget.value,
                   })
                 }
-                suffix={<span className="text-count">{userInfo.unit.length}/20</span>}
+                suffix={
+                  <span className="text-count">
+                    {getInfo("unit") ? getInfo("unit").length : 0}/20
+                  </span>
+                }
               />
             </Item>
             <Item className="profile-form-item" label="手机" colon={false}>
@@ -255,7 +302,7 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
                 disabled={true}
                 type="number"
                 name="cell_phone"
-                value={userInfo.cell_phone}
+                value={getInfo("cell_phone")}
                 onInput={updateInputVal}
               />
             </Item>
@@ -290,16 +337,10 @@ const Profile: FunctionComponent<MapStateToPropsI & MapDispatchToPropsI> = (prop
               </Col>
             </Row>
           </div>
-        </form>
+        </Form>
       </div>
     </section>
   );
 };
 
-const mapStateToProps = (state: StoreStateI): MapStateToPropsI => ({
-  user: state.account,
-});
-const mapDispatchToProps: MapDispatchToPropsI = {
-  updateUserAction,
-};
-export default connect(mapStateToProps, mapDispatchToProps)(Profile);
+export default Profile;

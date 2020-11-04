@@ -1,31 +1,6 @@
-import { UserI } from "_types/account";
-import {
-  getExamIndexListAction,
-  deleteExamIndexListAction,
-  SetViewSortByAction,
-  setViewModeAction,
-} from "_actions/dicom";
-import { RouteComponentProps } from "react-router";
 import { ReactElement } from "react";
-import { getExamList } from "_actions/resources";
-import { ImgI, PdfI, ExamIndexI, ExamSortKeyE, ImgAndPdfSortKeyE } from "_types/resources";
+import { ImgI, PdfI, ExamSortKeyE } from "_types/resources";
 
-export interface MapStateToPropsI {
-  examIndexList?: ExamIndexI[];
-  user: UserI;
-  resourcesSettings: {
-    sortBy: ExamSortKeyE | ImgAndPdfSortKeyE;
-    viewMode: ViewTypeEnum;
-  };
-}
-export interface MapDispatchToPropsI {
-  getList: typeof getExamList;
-  delList: typeof deleteExamIndexListAction;
-  setSortBy: typeof SetViewSortByAction;
-  setViewMode: typeof setViewModeAction;
-}
-
-export type ResourcesPropsI = MapStateToPropsI & MapDispatchToPropsI & RouteComponentProps;
 export interface ResourcesStateI {
   viewType: ViewTypeEnum; // 视图模式
   sortType: ExamSortKeyE; // 排序规则
@@ -40,12 +15,6 @@ export interface ResourcesStateI {
   pdfList: PdfI[]; // pdf列表
   imgList: ImgI[]; // pdf列表
 }
-
-// // 排序类型
-// export enum SortTypeEnum {
-//   TIME = "time",
-//   TYPE = "type",
-// }
 
 // 视图类型
 export enum ViewTypeEnum {

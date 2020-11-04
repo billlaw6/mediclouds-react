@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name */
-import { Button, message, Popconfirm, Spin, Table } from "antd";
+import { Button, message, Modal, Popconfirm, Spin, Table } from "antd";
 import { ColumnsType } from "antd/es/table";
 import React, { FunctionComponent, ReactNode, useState } from "react";
 import { useHistory } from "react-router-dom";
@@ -38,6 +38,42 @@ const ExamTable: FunctionComponent<ExamTablePropsI> = (props) => {
   const { updateExamDesc } = useResources();
   const [onPending, setOnPending] = useState(false); // 是否在发送请求
 
+  const generateReport = (id: string): void => {
+    Modal.confirm({
+      centered: true,
+      title: "免责声明",
+      content: (
+        <div>
+          为了遵守中华人民共和国的相关法律法规，医影只为您提供CT影像学AI筛查服务。我们服务提供的预测结果不能被解释或作为临床诊断。本平台将根据您提交的CT图像提供模型预测。请您根据实际情况咨询医生或就诊。
+        </div>
+      ),
+      okText: "创建（限时免费）",
+      cancelText: "取消",
+      onOk: () => {
+        // if (account.score < 1000) {
+        //   message.warn({
+        //     content: "积分不足，无法创建AI报告",
+        //   });
+        // } else {
+        setOnPending(true);
+        generateLungNodule(id)
+          .then((res) => {
+            setOnPending(false);
+            message.success({
+              content: "报告创建中，请3-5分钟后刷新页面查看",
+            });
+          })
+          .catch((err) => {
+            setOnPending(false);
+            message.error({
+              content: "报告创建失败，请重试",
+            });
+          });
+        // }
+      },
+    });
+  };
+
   const columns: ColumnsType<ExamIndexI> = [
     { title: "类型", key: "modality", dataIndex: "modality" },
     { title: "姓名", key: "patient_name", dataIndex: "patient_name" },
@@ -50,45 +86,15 @@ const ExamTable: FunctionComponent<ExamTablePropsI> = (props) => {
         const children: ReactNode[] = [];
         if (record.lung_nodule_flag)
           children.push(
-            <Popconfirm
-              key={id}
-              title="确定消费1000积分获取简易AI报告吗？"
-              onConfirm={(e): void => {
-                e && e.stopPropagation();
-                if (account.score <= 1000) {
-                  message.warn({
-                    content: "积分不足，无法创建AI报告",
-                  });
-                } else {
-                  setOnPending(true);
-                  generateLungNodule(record.id)
-                    .then((res) => {
-                      setOnPending(false);
-                      message.success({
-                        content: "报告创建中，请3-5分钟后刷新页面查看",
-                      });
-                    })
-                    .catch((err) => {
-                      setOnPending(false);
-                      message.error({
-                        content: "报告创建失败，请重试",
-                      });
-                    });
-                }
+            <Button
+              onClick={(e): void => {
+                e.stopPropagation();
+                generateReport(id);
               }}
-              onCancel={(e): void => {
-                e && e.stopPropagation();
-              }}
+              key="lung-nodules"
             >
-              <Button
-                onClick={(e): void => {
-                  e.stopPropagation();
-                }}
-                key="lung-nodules"
-              >
-                肺结节AI筛查
-              </Button>
-            </Popconfirm>,
+              肺结节AI筛查
+            </Button>,
           );
 
         return <div className="exam-table-ai">{children}</div>;

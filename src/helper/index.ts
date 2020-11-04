@@ -3,8 +3,6 @@ import { ReactNode } from "react";
 import { GetSearchQueryPropsI } from "_types/api";
 import CryptoJS from "crypto-js";
 import moment from "antd/node_modules/moment";
-import { MomentInput } from "moment";
-import dayjs from "dayjs";
 
 export const isArray = (arr: any): boolean => Array.isArray(arr);
 export const isUndefined = (val: any): boolean => typeof val === "undefined";
@@ -253,7 +251,7 @@ export const flattenArr = (arr: string[][]): string[] => new Array<string>().con
 export const formatDate = (val: string, time?: boolean): string => {
   const formatRule = `YYYY-MM-DD${time ? " HH:mm:ss" : ""}`;
 
-  return dayjs(val).format(formatRule);
+  return moment(val).format(formatRule);
 };
 
 /**

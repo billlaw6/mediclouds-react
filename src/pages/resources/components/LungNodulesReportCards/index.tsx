@@ -1,5 +1,4 @@
 import {
-  Badge,
   Card,
   Checkbox,
   Col,
@@ -88,8 +87,6 @@ const LungNodulesReportCards: FunctionComponent<LungNodulesReportCardsPropsI> = 
 
   const [currentReport, setCurrentReport] = useState<LungNoduleReportI>();
 
-  console.log("currentReport", currentReport);
-
   const getColCount = (): number => {
     const { xs, sm, xl, lg } = screen;
 
@@ -101,20 +98,20 @@ const LungNodulesReportCards: FunctionComponent<LungNodulesReportCardsPropsI> = 
     return SCREEN_SIZE_LIST.xl;
   };
 
-  /* 获取完整版 */
-  const onGetFull = (id: string): void => {
-    Modal.confirm({
-      title: "确认获取完整版报告",
-      content: "是否消费2000积分获取完整报告？",
-      okText: "确定",
-      cancelText: "取消",
-      onOk: () => {
-        generateLungNodule(id, "full")
-          .then((res) => onGenerateFullReport && onGenerateFullReport())
-          .catch((err) => console.error(err));
-      },
-    });
-  };
+  // /* 获取完整版 */
+  // const onGetFull = (id: string): void => {
+  //   Modal.confirm({
+  //     title: "确认获取完整版报告",
+  //     content: "是否消费2000积分获取完整报告？",
+  //     okText: "确定",
+  //     cancelText: "取消",
+  //     onOk: () => {
+  //       generateLungNodule(id, "full")
+  //         .then((res) => onGenerateFullReport && onGenerateFullReport())
+  //         .catch((err) => console.error(err));
+  //     },
+  //   });
+  // };
 
   const getContent = (data: LungNoduleReportI[]): ReactNode => {
     const res: ReactNode[] = [];
@@ -132,43 +129,9 @@ const LungNodulesReportCards: FunctionComponent<LungNodulesReportCardsPropsI> = 
         cols = [];
         count = 0;
       }
-      const { id, thumbnail = "", flag, err, exam_id } = item;
-
-      let badgeVals = {
-        text: "简版",
-        color: "green",
-      };
-
-      switch (flag) {
-        case 1:
-          badgeVals = {
-            text: "完整版",
-            color: "green",
-          };
-          break;
-        case 2:
-          badgeVals = {
-            text: "完整版（含三维重建）",
-            color: "purple",
-          };
-          break;
-        default:
-          break;
-      }
+      const { id, thumbnail = "", err, exam_id } = item;
 
       let actions: ReactNode[] = [];
-      if (flag === 0)
-        actions = [
-          <span key="get-full" onClick={(): void => onGetFull(exam_id)}>
-            获取完整版
-          </span>,
-        ];
-      if (flag === 1)
-        actions = [
-          <span key="full" onClick={(): void => setCurrentReport(item)}>
-            查看完整版
-          </span>,
-        ];
       if (err)
         actions = [
           <Popconfirm
@@ -178,13 +141,13 @@ const LungNodulesReportCards: FunctionComponent<LungNodulesReportCardsPropsI> = 
               e && e.stopPropagation();
               setOnPending(true);
               generateLungNodule(exam_id)
-                .then((res) => {
+                .then(() => {
                   setOnPending(false);
                   message.success({
                     content: "报告创建中，请3-5分钟后刷新页面查看",
                   });
                 })
-                .catch((err) => {
+                .catch(() => {
                   setOnPending(false);
                   message.error({
                     content: "报告创建失败，请重试",
@@ -219,11 +182,18 @@ const LungNodulesReportCards: FunctionComponent<LungNodulesReportCardsPropsI> = 
                 value={id}
               ></Checkbox>
             ) : null}
-            <Badge.Ribbon {...badgeVals} placement="start">
-              <Card actions={actions} cover={<img src={thumbnail || imgFail}></img>}>
-                <CardMeta data={item}></CardMeta>
-              </Card>
-            </Badge.Ribbon>
+            <Card
+              onClick={(): void => {
+                if (isSelectable || err) return;
+                setCurrentReport(item);
+              }}
+              actions={actions}
+              hoverable
+              cover={<img src={thumbnail || imgFail}></img>}
+              style={{ cursor: !isSelectable && !!err ? "not-allowed" : "pointer" }}
+            >
+              <CardMeta data={item}></CardMeta>
+            </Card>
           </label>
         </Col>,
       );
@@ -282,7 +252,12 @@ const LungNodulesReportCards: FunctionComponent<LungNodulesReportCardsPropsI> = 
           onCancel={(): void => setCurrentReport(undefined)}
           footer={null}
         >
-          <LungNoduleReport data={currentReport}></LungNoduleReport>
+          <LungNoduleReport
+            data={currentReport}
+            onGenerateFullSuccessed={(): void => {
+              onGenerateFullReport && onGenerateFullReport();
+            }}
+          ></LungNoduleReport>
         </Modal>
       </div>
     </Spin>

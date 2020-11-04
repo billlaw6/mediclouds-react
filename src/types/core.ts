@@ -8,7 +8,7 @@ import {
   ResourcesTypeE,
 } from "_types/resources";
 import { UserI } from "_types/account";
-import { Action, AnyAction, Reducer } from "redux";
+import { AnyAction } from "redux";
 import { ImgI, PdfI } from "./resources";
 import { LungNoduleReportI } from "./ai";
 

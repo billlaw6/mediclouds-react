@@ -17,10 +17,10 @@ import OrderInfo from "_components/OrderInfo";
 
 import OrderStatus from "_components/OrderStatus";
 import ListControlBar from "_components/ListControlBar";
+import useAccount from "_hooks/useAccount";
 
 import "./style.less";
-import useAccount from "_hooks/useAccount";
-import dayjs from "dayjs";
+import { formatDate } from "_helper";
 
 const OrderList: FunctionComponent = () => {
   const { account } = useAccount();
@@ -58,7 +58,7 @@ const OrderList: FunctionComponent = () => {
       title: "创建时间",
       key: "created_at",
       dataIndex: "created_at",
-      render: (val) => <span>{dayjs(val).format("YYYY-MM-DD HH:mm:ss")}</span>,
+      render: (val) => <span>{formatDate(val, true)}</span>,
       sorter: (a, b): number => Date.parse(a.created_at) - Date.parse(b.created_at),
     },
     {
@@ -66,7 +66,7 @@ const OrderList: FunctionComponent = () => {
       key: "expire_date",
       dataIndex: "expire_date",
       sorter: (a, b): number => Date.parse(a.expire_date) - Date.parse(b.expire_date),
-      render: (val) => <span>{dayjs(val).format("YYYY-MM-DD HH:mm:ss")}</span>,
+      render: (val) => <span>{formatDate(val, true)}</span>,
     },
     {
       title: "资源数量",
