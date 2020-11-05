@@ -1,16 +1,6 @@
-import { ViewTypeEnum } from "_pages/resources/type";
-import { CollectionI, SearchQueryResI, SexT } from "_types/api";
-import {
-  ExamIndexI,
-  ExamSortKeyE,
-  ImgAndPdfSortKeyE,
-  ReportSortKeyE,
-  ResourcesTypeE,
-} from "_types/resources";
-import { UserI } from "_types/account";
+import { CollectionI, SexT } from "_types/api";
 import { AnyAction } from "redux";
-import { ImgI, PdfI } from "./resources";
-import { LungNoduleReportI } from "./ai";
+import reducer from "../store/reducers";
 
 // Store相关接口
 // 本地变量遵循js规范使用驼峰式全名，需要与后台数据库字段对应的变量使用下划线风格。
@@ -48,24 +38,6 @@ export interface CurrentUserI {
   privacy_notice: number;
   // user_permissions?: Array<number>;
 }
-
-// export  interface UserInfoI {
-//   id: number;
-//   username: string;
-//   email: string;
-//   cell_phone: string;
-//   openid: string;
-//   unionid: string;
-//   // 数组定义方法一
-//   groups: number[];
-//   first_name?: string;
-//   last_name?: string;
-//   pinyin?: string;
-//   py?: string;
-//   sex: number;
-//   // 数组定义方法二
-//   user_permissions: Array<number>;
-// }
 
 export interface SearchFormI {
   dtRange: Date[];
@@ -142,40 +114,14 @@ export interface RouteI {
   permission?: string[];
 }
 
-// 创建store时要遵循的rootState接口，不能使用rootReducers的类型
-// 作为组件创建时props类型！！！必须用store.d里定义的！三天的教训！
-export interface StoreStateI {
-  resources: {
-    examList?: SearchQueryResI<ExamIndexI>;
-    imgList?: SearchQueryResI<ImgI>;
-    pdfList?: SearchQueryResI<PdfI>;
-    lungNodulesReportList?: SearchQueryResI<LungNoduleReportI>;
-  };
-  account: UserI & { login: boolean };
-  resourcesSettings: {
-    sortBy: {
-      [ResourcesTypeE.EXAM]: ExamSortKeyE;
-      [ResourcesTypeE.IMG]: ImgAndPdfSortKeyE;
-      [ResourcesTypeE.PDF]: ImgAndPdfSortKeyE;
-      [ResourcesTypeE.LUNG_NODULES_REPORT]: ReportSortKeyE;
-    };
-    viewMode: ViewTypeEnum;
-    tabType: ResourcesTypeE;
-  };
-}
+// state 结构
+export type StoreStateI = ReturnType<typeof reducer>;
 
 export declare interface CustomHTMLDivElement extends HTMLDivElement {
   webkitRequestFullscreen: () => void;
   msRequestFullscreen: () => void;
   mozRequestFullScreen: () => void;
 }
-
-// interface Document {
-//   exitFullscreen: any;
-//   webkitExitFullscreen: any;
-//   mozCancelFullScreen: any;
-//   msExitFullscreen: any;
-// }
 export declare interface Document {
   exitFullscreen: () => void;
   webkitExitFullscreen: () => void;

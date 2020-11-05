@@ -33,7 +33,7 @@ const VariableCard: FunctionComponent<VariableCardPropsI> = (props) => {
           );
         })
       ) : (
-        <span className="variable-card-empty">没有此大小的结节</span>
+        <span className="variable-card-empty">没有此类结节</span>
       )}
     </div>
   );

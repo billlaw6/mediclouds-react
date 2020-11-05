@@ -2,11 +2,11 @@
 
 ## 初始化数据
 
-| Name | Type | Default | Optional | Desc |
-| -- | -- | -- | -- | -- |
-| exam | string | - | N | 检查id |
-| series | number | 0 | Y | 序列索引 |
-| frames | number | 0 | Y | 帧索引 |
+| Name   | Type   | Default | Optional | Desc     |
+| ------ | ------ | ------- | -------- | -------- |
+| exam   | string | -       | N        | 检查 id  |
+| series | number | 0       | Y        | 序列索引 |
+| frames | number | 0       | Y        | 帧索引   |
 
 ## 全局状态 global state
 

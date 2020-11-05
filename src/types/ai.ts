@@ -73,3 +73,19 @@ export interface LungNoduleSliceImgI {
   z_image_tag: string; // z轴未标记图片
   s_image_tag?: string; // 实性轴已标记图片
 }
+
+/** AI报告类型 */
+export type aiReportType = "lung_nodules" | "others";
+
+/** AI报告action */
+export enum AiReportActionE {
+  UPDATE_LUNG_NODULE = "update_lung_nodule", // 更新当前的肺结节筛查报告
+}
+
+/** AI报告State */
+export interface AiReportStateI {
+  lungNodule?: LungNoduleReportI;
+}
+
+/** AI报告Payload */
+export type AiReportPayloadT<T = any> = T;

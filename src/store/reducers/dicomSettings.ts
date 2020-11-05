@@ -9,6 +9,7 @@ import { ActionI } from "_types/core";
 
 interface ResourcesSettingsStateI {
   sortBy: {
+    [key: string]: any;
     [ResourcesTypeE.EXAM]: ExamSortKeyE;
     [ResourcesTypeE.IMG]: ImgAndPdfSortKeyE;
     [ResourcesTypeE.PDF]: ImgAndPdfSortKeyE;
@@ -19,6 +20,7 @@ interface ResourcesSettingsStateI {
 
 interface ActionPayloadI {
   sortBy?: {
+    [key: string]: any;
     [ResourcesTypeE.EXAM]?: ExamSortKeyE;
     [ResourcesTypeE.IMG]?: ImgAndPdfSortKeyE;
     [ResourcesTypeE.PDF]?: ImgAndPdfSortKeyE;

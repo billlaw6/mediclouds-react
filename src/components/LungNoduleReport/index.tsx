@@ -1,29 +1,27 @@
-import { Button, Col, Descriptions, Divider, Empty, Image, Modal, Row, Tabs } from "antd";
+import { Badge, Button, Col, Descriptions, Empty, Image, Modal, Row, Tabs } from "antd";
 import React, { FunctionComponent, useState } from "react";
-import { generateLungNodule } from "_api/ai";
-import { formatDate, parseLungNoduleDesc } from "_helper";
-import { LungNoduleI, LungNoduleReportI } from "_types/ai";
+import { formatDate } from "_helper";
 import imgFail from "_images/img-fail.png";
-import { filterNoduleProbable, filterNoduleSize, filterNoduleType } from "./helper";
-import { NodulesGroupI, NodulesGroupItemI, RenderDataI } from "./types";
+import { filterNodulesTruth, getCountWithNoduleType, getRenderData } from "./helper";
+import VariableCard from "./components/VariableCard";
 
-import Group from "./components/Group";
 import Desc from "./components/Desc";
+import GroupItem from "./components/GroupItem";
+import useReport from "_hooks/useReport";
 
 import "./style.less";
 
 const { TabPane } = Tabs;
 
-interface LungNoduleReportPropsI {
-  data?: LungNoduleReportI;
-  onGenerateFullSuccessed?: () => void; // 当获取完整版成功后触发
-}
+const LungNoduleReport: FunctionComponent = () => {
+  const { lungNodule: data, generateFullLungNodule } = useReport();
 
-const LungNoduleReport: FunctionComponent<LungNoduleReportPropsI> = (props) => {
-  const { data, onGenerateFullSuccessed } = props;
   const [pending, setPending] = useState(false);
 
   if (!data) return <Empty></Empty>;
+
+  /* 选出real和fake 的结节 */
+  const { real: realNodules, fake: fakeNodules } = filterNodulesTruth(data.nodule_details || []);
 
   /* 获取完整版 */
   const onGetFull = (id: string): void => {
@@ -35,10 +33,9 @@ const LungNoduleReport: FunctionComponent<LungNoduleReportPropsI> = (props) => {
       centered: true,
       onOk: () => {
         setPending(true);
-        generateLungNodule(id, "full")
+        generateFullLungNodule(id)
           .then((res) => {
-            console.log(res);
-            onGenerateFullSuccessed && onGenerateFullSuccessed();
+            // console.log(res);
           })
           .catch((err) => console.error(err))
           .finally(() => setPending(false));
@@ -46,58 +43,10 @@ const LungNoduleReport: FunctionComponent<LungNoduleReportPropsI> = (props) => {
     });
   };
 
-  /**
-   * 获取渲染Data
-   * @param data
-   */
-  const getRenderData = (data?: LungNoduleI[]): RenderDataI | undefined => {
-    if (!data) return;
+  const { thumbnail, desc, patient_name, sex, study_date, exam_id, series_id, flag } = data;
 
-    /* 过滤没有长轴的 */
-    const _data = data.filter((item) => item.long_axis);
-
-    const renderData: RenderDataI = {};
-
-    /* 依结节性质分类 */
-    const typeRes = filterNoduleType(_data);
-    for (const typeKey of Object.keys(typeRes)) {
-      const data = typeRes[typeKey] || [];
-
-      /* 依结节真实性分类 */
-      const realRes = filterNoduleProbable(data);
-      const group: NodulesGroupI = {};
-
-      for (const realKey of Object.keys(realRes)) {
-        const data = realRes[realKey] || [];
-
-        /* 依结节长轴尺寸分类 */
-        const sizeRes = filterNoduleSize(data);
-        const groupItem: NodulesGroupItemI = sizeRes;
-        group[realKey] = groupItem;
-      }
-
-      renderData[typeKey] = group;
-    }
-
-    return renderData;
-  };
-
-  const {
-    thumbnail,
-    nodule_details = [],
-    desc,
-    patient_name,
-    sex,
-    study_date,
-    exam_id,
-    series_id,
-    flag,
-  } = data;
-
-  const renderData = getRenderData(nodule_details);
-
-  console.log("flag", flag);
-  console.log("rednerData", renderData);
+  const renderData = getRenderData(realNodules);
+  const noduleTypeCount = getCountWithNoduleType(realNodules);
 
   return (
     <section className="report">
@@ -118,7 +67,9 @@ const LungNoduleReport: FunctionComponent<LungNoduleReportPropsI> = (props) => {
                 {formatDate(study_date)}
               </Descriptions.Item>
               <Descriptions.Item key="desc" label="分析结果">
-                <Desc details={flag < 1}>{desc}</Desc>
+                <Desc details={flag < 1} tab extra>
+                  {desc}
+                </Desc>
               </Descriptions.Item>
             </Descriptions>
           </Col>
@@ -142,32 +93,63 @@ const LungNoduleReport: FunctionComponent<LungNoduleReportPropsI> = (props) => {
       ) : (
         <div className="report-full">
           <Tabs defaultActiveKey="0">
-            <TabPane key="0" tab="实性">
-              <Group
+            <TabPane
+              key="0"
+              tab={
+                <Badge size="small" count={noduleTypeCount.solid || 0} offset={[6, -4]}>
+                  实性
+                </Badge>
+              }
+            >
+              <GroupItem
                 key="0"
                 data={renderData ? renderData.solid : undefined}
-                type="实性"
+                // type="实性"
                 seriesId={series_id}
                 examId={exam_id}
-              ></Group>
+              ></GroupItem>
             </TabPane>
-            <TabPane tab="亚实性" key="1">
-              <Group
+            <TabPane
+              tab={
+                <Badge size="small" count={noduleTypeCount.subSolid || 0} offset={[6, -4]}>
+                  亚实性
+                </Badge>
+              }
+              key="1"
+            >
+              <GroupItem
                 key="1"
                 data={renderData ? renderData.subSolid : undefined}
-                type="亚实性"
+                // type="亚实性"
                 seriesId={series_id}
                 examId={exam_id}
-              ></Group>
+              ></GroupItem>
             </TabPane>
-            <TabPane tab="磨玻璃" key="2">
-              <Group
+            <TabPane
+              tab={
+                <Badge size="small" count={noduleTypeCount.groundGlass || 0} offset={[6, -4]}>
+                  磨玻璃
+                </Badge>
+              }
+              key="2"
+            >
+              <GroupItem
                 key="2"
                 data={renderData ? renderData.groundGlass : undefined}
-                type="磨玻璃"
+                // type="磨玻璃"
                 seriesId={series_id}
                 examId={exam_id}
-              ></Group>
+              ></GroupItem>
+            </TabPane>
+            <TabPane
+              tab={
+                <Badge size="small" count={fakeNodules.length || 0} offset={[6, -4]}>
+                  疑似结节
+                </Badge>
+              }
+              key="3"
+            >
+              <VariableCard data={fakeNodules} examId={exam_id} seriesId={series_id}></VariableCard>
             </TabPane>
           </Tabs>
         </div>

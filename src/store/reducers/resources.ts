@@ -8,7 +8,7 @@ interface ResourcesStateI {
   examList?: SearchQueryResI<ExamIndexI>;
   imgList?: SearchQueryResI<ImgI>;
   pdfList?: SearchQueryResI<PdfI>;
-  lungNodulesReport?: SearchQueryResI<LungNoduleReportI>;
+  lungNodulesReportList?: SearchQueryResI<LungNoduleReportI>;
 }
 
 const resources: Reducer<ResourcesStateI, ActionI<ResourcesActionE, any>> = (

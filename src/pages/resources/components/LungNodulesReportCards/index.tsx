@@ -22,6 +22,7 @@ import Desc from "_components/LungNoduleReport/components/Desc";
 import imgFail from "_assets/images/img-fail.png";
 
 import "./style.less";
+import useReport from "_hooks/useReport";
 
 const { Meta } = Card;
 const { useBreakpoint } = Grid;
@@ -33,7 +34,6 @@ interface LungNodulesReportCardsPropsI {
   data?: SearchQueryResI<LungNoduleReportI>; // 数据
   onSelected?: (vals: string[]) => void;
   onChangePagination?: (current: number) => void; // 当页码更新时触发
-  onGenerateFullReport?: () => void; // 当生成完整报告成功时触发
 }
 
 const SCREEN_SIZE_LIST = {
@@ -71,21 +71,14 @@ const CardMeta: FunctionComponent<{ data: LungNoduleReportI }> = (props) => {
 };
 
 const LungNodulesReportCards: FunctionComponent<LungNodulesReportCardsPropsI> = (props) => {
-  const {
-    data,
-    selected,
-    isSelectable,
-    onSelected,
-    searchQuery,
-    onChangePagination,
-    onGenerateFullReport,
-  } = props;
+  const { data, selected, isSelectable, onSelected, searchQuery, onChangePagination } = props;
   const { current, size } = searchQuery;
 
+  const { lungNodule, updateLungNodule } = useReport();
   const screen = useBreakpoint();
   const [onPending, setOnPending] = useState(false);
 
-  const [currentReport, setCurrentReport] = useState<LungNoduleReportI>();
+  // const [currentReport, setCurrentReport] = useState<LungNoduleReportI>();
 
   const getColCount = (): number => {
     const { xs, sm, xl, lg } = screen;
@@ -97,21 +90,6 @@ const LungNodulesReportCards: FunctionComponent<LungNodulesReportCardsPropsI> = 
 
     return SCREEN_SIZE_LIST.xl;
   };
-
-  // /* 获取完整版 */
-  // const onGetFull = (id: string): void => {
-  //   Modal.confirm({
-  //     title: "确认获取完整版报告",
-  //     content: "是否消费2000积分获取完整报告？",
-  //     okText: "确定",
-  //     cancelText: "取消",
-  //     onOk: () => {
-  //       generateLungNodule(id, "full")
-  //         .then((res) => onGenerateFullReport && onGenerateFullReport())
-  //         .catch((err) => console.error(err));
-  //     },
-  //   });
-  // };
 
   const getContent = (data: LungNoduleReportI[]): ReactNode => {
     const res: ReactNode[] = [];
@@ -185,7 +163,7 @@ const LungNodulesReportCards: FunctionComponent<LungNodulesReportCardsPropsI> = 
             <Card
               onClick={(): void => {
                 if (isSelectable || err) return;
-                setCurrentReport(item);
+                updateLungNodule(item);
               }}
               actions={actions}
               hoverable
@@ -245,19 +223,14 @@ const LungNodulesReportCards: FunctionComponent<LungNodulesReportCardsPropsI> = 
           }}
         ></Pagination>
         <Modal
-          title={currentReport ? `${currentReport.patient_name}的肺结节AI筛查报告` : null}
+          title={lungNodule ? `${lungNodule.patient_name}的肺结节AI筛查报告` : null}
           destroyOnClose
           width={1000}
-          visible={!!currentReport}
-          onCancel={(): void => setCurrentReport(undefined)}
+          visible={!!lungNodule}
+          onCancel={(): void => updateLungNodule()}
           footer={null}
         >
-          <LungNoduleReport
-            data={currentReport}
-            onGenerateFullSuccessed={(): void => {
-              onGenerateFullReport && onGenerateFullReport();
-            }}
-          ></LungNoduleReport>
+          <LungNoduleReport></LungNoduleReport>
         </Modal>
       </div>
     </Spin>

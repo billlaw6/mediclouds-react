@@ -61,8 +61,6 @@ const Resources: FunctionComponent = () => {
     switchTabType,
   } = useResources();
 
-  const { account } = useAccount();
-
   const [selected, setSelected] = useState<SelectedI>({
     exam: [],
     img: [],
@@ -360,7 +358,6 @@ const Resources: FunctionComponent = () => {
             onChangePagination={(current): void => {
               onChangePagination(ResourcesTypeE.LUNG_NODULES_REPORT, current);
             }}
-            onGenerateFullReport={(): void => fetchResources(ResourcesTypeE.LUNG_NODULES_REPORT)}
           ></LungNodulesReportCards>
         </TabPane>
       </Tabs>

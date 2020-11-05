@@ -1,42 +1,7 @@
 import { LungNoduleI } from "_types/ai";
-import { NodulesGroupI, NodulesGroupItemI } from "./types";
+import { NoduleItemsI, RenderDataI } from "./types";
 
 export type LongAxisT = "min" | "mid" | "max"; // min: 小于6mm mid: 6-8mm max: 大于8mm
-
-/**
- * 对结节大小分类
- *
- * @param {LungNoduleI} data 结节
- * @param {Map<LongAxisT, LungNoduleI[]>} list 分类结节列表
- * @returns {Map<LongAxisT, LungNoduleI[]>}
- */
-export const filterLongAxis = (
-  data: LungNoduleI,
-  list?: Map<LongAxisT, LungNoduleI[]>,
-): Map<LongAxisT, LungNoduleI[]> | undefined => {
-  if (!list) return;
-
-  const { long_axis } = data;
-  if (!long_axis) return;
-
-  const cacheList = new Map(list);
-
-  if (long_axis < 6) {
-    const minList = list.get("min") || [];
-    const nextMinList: LungNoduleI[] = [...minList, data];
-    cacheList.set("min", nextMinList);
-  } else if (long_axis <= 8 && long_axis >= 6) {
-    const midList = list.get("mid") || [];
-    const nextMidList: LungNoduleI[] = [...midList, data];
-    cacheList.set("mid", nextMidList);
-  } else {
-    const maxList = list.get("max") || [];
-    const nextMaxList: LungNoduleI[] = [...maxList, data];
-    cacheList.set("max", nextMaxList);
-  }
-
-  return cacheList;
-};
 
 /**
  * 按长轴大小过滤
@@ -104,45 +69,78 @@ export const filterNoduleType = (
 };
 
 /**
- * 根据真实结节可信度分类
+ *  过滤相对真实的结节
+ *
+ *  概率 >= .6  体积 >= 7
  *
  * @param {LungNoduleI[]} data
- * @returns {{
- *   max: LungNoduleI[];
- *   min: LungNoduleI[];
- * }}
+ * @returns {{real: LungNoduleI[], fake: LungNoduleI[]}}
  */
-export const filterNoduleProbable = (
-  data: LungNoduleI[],
-): {
-  [key: string]: any;
-  max: LungNoduleI[];
-  min: LungNoduleI[];
-} => {
-  const max: LungNoduleI[] = [],
-    min: LungNoduleI[] = [];
+export const filterNodulesTruth = (data: LungNoduleI[]) => {
+  const real: LungNoduleI[] = [],
+    fake: LungNoduleI[] = [];
 
-  data.forEach((item) => {
-    const { score } = item;
+  data.forEach((nodule) => {
+    const { score, vol } = nodule;
 
-    if (score > 0.7) max.push(item);
-    else min.push(item);
+    if (score >= 0.6 && vol >= 7) real.push(nodule);
+    else fake.push(nodule);
   });
 
-  return { max, min };
+  return { real, fake };
 };
 
-export const isEmptyGroup = (data?: NodulesGroupI): boolean => {
-  if (!data) return true;
+/**
+ * 分析并返回结节不同材质的数量
+ *
+ * @param {LungNoduleI[]} data
+ * @returns
+ */
+export const getCountWithNoduleType = (data: LungNoduleI[]) => {
+  let solid = 0,
+    subSolid = 0,
+    groundGlass = 0;
 
-  for (const key of Object.keys(data)) {
-    const item = data[key] as NodulesGroupItemI;
-
-    for (const itemKey of Object.keys(item)) {
-      const nodules = item[itemKey] as LungNoduleI[];
-      if (nodules && nodules.length) return false;
+  data.forEach((nodule) => {
+    const { tex } = nodule;
+    switch (tex) {
+      case 0:
+        groundGlass++;
+        break;
+      case 1:
+        subSolid++;
+        break;
+      case 2:
+        solid++;
+        break;
+      default:
+        break;
     }
+  });
+
+  return { solid, subSolid, groundGlass };
+};
+
+/**
+ * 获取渲染Data
+ * @param data
+ */
+export const getRenderData = (data?: LungNoduleI[]): RenderDataI | undefined => {
+  if (!data) return;
+
+  const renderData: RenderDataI = {};
+
+  /* 依结节性质分类 */
+  const typeRes = filterNoduleType(data);
+  for (const typeKey of Object.keys(typeRes)) {
+    const data = typeRes[typeKey] || [];
+
+    /* 依结节长轴尺寸分类 */
+    const sizeRes = filterNoduleSize(data);
+    const groupItem: NoduleItemsI = sizeRes;
+
+    renderData[typeKey] = groupItem;
   }
 
-  return true;
+  return renderData;
 };

@@ -1,15 +1,15 @@
 import React, { FunctionComponent } from "react";
+import { Collapse } from "antd";
 import { LungNoduleI } from "_types/ai";
 
-import { NodulesGroupItemI } from "./../../types";
+import { NoduleItemsI } from "./../../types";
 import VariableCard from "../VariableCard";
-import { Collapse } from "antd";
-
-import "./style.less";
 import Header from "./header";
 
+import "./style.less";
+
 interface TypeGroupPropsI {
-  data?: NodulesGroupItemI;
+  data?: NoduleItemsI;
   examId: string;
   seriesId: string;
 }
