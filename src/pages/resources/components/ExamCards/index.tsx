@@ -9,6 +9,7 @@ import useAccount from "_hooks/useAccount";
 import useResources from "_hooks/useResources";
 import { GetSearchQueryPropsI, SearchQueryResI } from "_types/api";
 import { ExamIndexI } from "_types/resources";
+import Empty from "../Empty";
 
 import "./style.less";
 
@@ -32,8 +33,6 @@ const ExamCards: FunctionComponent<ExamCardsPropsI> = (props) => {
     onChangePagination,
     onUpdateDescSuccess,
   } = props;
-
-  const { account } = useAccount();
 
   const [onPending, setOnPending] = useState(false); // 是否在发送请求
   const history = useHistory();
@@ -102,54 +101,56 @@ const ExamCards: FunctionComponent<ExamCardsPropsI> = (props) => {
       .catch(() => message.error("更新描述失败！"));
   };
 
-  if (data) {
-    const { results } = data;
-    let count = 0;
+  if (!data) return null;
 
-    results.forEach((item) => {
-      const { id, patient_name, study_date, desc, thumbnail, modality, lung_nodule_flag } = item;
-      if (count >= 4) {
-        count = 0;
-        rows.push(
-          <Row key={rows.length} gutter={gutter} align="middle">
-            {cols}
-          </Row>,
-        );
-        cols = [];
-      }
+  const { results } = data;
+  if (!results) return <Empty></Empty>;
 
-      cols.push(
-        <Col key={id} xs={24} md={12} lg={8} xl={6}>
-          <DicomCard
-            id={id}
-            patientName={patient_name}
-            studyDate={study_date}
-            desc={desc}
-            thumbnail={thumbnail}
-            modality={modality}
-            checkbox={isSelectable}
-            checked={selected.indexOf(id) > -1}
-            onClick={(): void => onClickItem(id)}
-            updateDesc={(value: string): void => updateDesc(id, value)}
-          ></DicomCard>
-          {lung_nodule_flag ? (
-            <div>
-              <span>AI功能：</span>
-              <Button
-                onClick={(e): void => {
-                  e.stopPropagation();
-                  generateReport(id);
-                }}
-                key="lung-nodules"
-              >
-                肺结节AI筛查
-              </Button>
-            </div>
-          ) : null}
-        </Col>,
+  let count = 0;
+
+  results.forEach((item) => {
+    const { id, patient_name, study_date, desc, thumbnail, modality, lung_nodule_flag } = item;
+    if (count >= 4) {
+      count = 0;
+      rows.push(
+        <Row key={rows.length} gutter={gutter} align="middle">
+          {cols}
+        </Row>,
       );
-    });
-  }
+      cols = [];
+    }
+
+    cols.push(
+      <Col key={id} xs={24} md={12} lg={8} xl={6}>
+        <DicomCard
+          id={id}
+          patientName={patient_name}
+          studyDate={study_date}
+          desc={desc}
+          thumbnail={thumbnail}
+          modality={modality}
+          checkbox={isSelectable}
+          checked={selected.indexOf(id) > -1}
+          onClick={(): void => onClickItem(id)}
+          updateDesc={(value: string): void => updateDesc(id, value)}
+        ></DicomCard>
+        {lung_nodule_flag ? (
+          <div>
+            <span>AI功能：</span>
+            <Button
+              onClick={(e): void => {
+                e.stopPropagation();
+                generateReport(id);
+              }}
+              key="lung-nodules"
+            >
+              肺结节AI筛查
+            </Button>
+          </div>
+        ) : null}
+      </Col>,
+    );
+  });
 
   rows.push(
     <Row key={rows.length} gutter={gutter} align="top">
@@ -170,7 +171,7 @@ const ExamCards: FunctionComponent<ExamCardsPropsI> = (props) => {
           hideOnSinglePage={true}
           current={current}
           pageSize={size}
-          total={data ? data.count : 0}
+          total={data.count}
           onChange={(page): void => {
             onChangePagination && onChangePagination(page);
           }}

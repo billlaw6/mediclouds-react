@@ -31,9 +31,10 @@ const ImgCards: FunctionComponent<ImgCardsPropsI> = (props) => {
     onSelected && onSelected(list);
   };
 
-  if (!data) {
-    return <Empty />;
-  }
+  if (!data) return null;
+  const { results } = data;
+
+  if (!results.length) return <Empty />;
 
   return (
     <div className="resources-img-cards">
@@ -46,13 +47,11 @@ const ImgCards: FunctionComponent<ImgCardsPropsI> = (props) => {
             imgName = "NA",
             createDate = "NA";
 
-          if (data) {
-            const item = data.results[index];
+          const img = results[index];
 
-            imgId = `${item.id}`;
-            imgName = `${item.filename}`;
-            createDate = `${formatDate(item.created_at, true)}`;
-          }
+          imgId = `${img.id}`;
+          imgName = `${img.filename}`;
+          createDate = `${formatDate(img.created_at, true)}`;
 
           return (
             <div

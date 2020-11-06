@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { Modal, Tabs } from "antd";
+import { Modal, Spin, Tabs } from "antd";
 
 import useResources from "_hooks/useResources";
 import { ResourcesTypeE } from "_types/resources";
@@ -199,7 +199,11 @@ const Resources: FunctionComponent = () => {
       centered: true,
       className: "del-confirm",
       title: "确认删除",
-      content: `确认删除所选【${typeName}】吗？`,
+      content: `确认删除所选【${typeName}】吗？${
+        tabType === ResourcesTypeE.EXAM
+          ? "已选检查如有做过AI分析，则相关联的AI分析报告将一并删除"
+          : ""
+      }`,
       cancelText: "取消",
       okText: "确定",
       onOk: async (): Promise<void> => {
@@ -245,6 +249,24 @@ const Resources: FunctionComponent = () => {
 
   const currentResources = getCurrentResources(tabType);
   const showDelBtn = currentResources ? !!currentResources.results.length : false;
+  let isPending = false;
+
+  switch (tabType) {
+    case ResourcesTypeE.EXAM:
+      isPending = !examList;
+      break;
+    case ResourcesTypeE.IMG:
+      isPending = !imgList;
+      break;
+    case ResourcesTypeE.PDF:
+      isPending = !pdfList;
+      break;
+    case ResourcesTypeE.LUNG_NODULES_REPORT:
+      isPending = !lungNodulesReportList;
+      break;
+    default:
+      break;
+  }
 
   return (
     <section className="resources">
@@ -285,15 +307,15 @@ const Resources: FunctionComponent = () => {
           );
         }}
       ></Controller>
-      <Tabs
-        className="resources-tabs"
-        type="card"
-        activeKey={tabType}
-        onChange={(val): void => switchTabType(val as ResourcesTypeE)}
-      >
-        <TabPane tab="检查" key={ResourcesTypeE.EXAM}>
-          {examList ? (
-            viewMode === ViewTypeEnum.LIST ? (
+      <Spin spinning={isPending} tip="加载资源...">
+        <Tabs
+          className="resources-tabs"
+          type="card"
+          activeKey={tabType}
+          onChange={(val): void => switchTabType(val as ResourcesTypeE)}
+        >
+          <TabPane className="resources-tabs-item" tab="检查" key={ResourcesTypeE.EXAM}>
+            {viewMode === ViewTypeEnum.LIST ? (
               <ExamTable
                 data={examList}
                 isSelectable={selectMode}
@@ -319,49 +341,50 @@ const Resources: FunctionComponent = () => {
                 onSelected={(vals): void => updateSelected(ResourcesTypeE.EXAM, vals)}
                 onUpdateDescSuccess={(): void => fetchResources(tabType)}
               ></ExamCards>
-            )
-          ) : (
-            <Empty />
-          )}
-        </TabPane>
-        <TabPane tab="图片" key={ResourcesTypeE.IMG}>
-          <ImgCards
-            data={imgList}
-            isSelectable={selectMode}
-            selected={flattenArr(selected[ResourcesTypeE.IMG])}
-            searchQuery={searchQuery[ResourcesTypeE.IMG]}
-            onSelected={(vals): void => updateSelected(ResourcesTypeE.IMG, vals)}
-            onChangePagination={(current): void => {
-              onChangePagination(ResourcesTypeE.IMG, current);
-            }}
-          ></ImgCards>
-        </TabPane>
-        <TabPane tab="PDF" key={ResourcesTypeE.PDF}>
-          <PdfTable
-            data={pdfList}
-            isSelectable={selectMode}
-            selected={flattenArr(selected[ResourcesTypeE.PDF])}
-            searchQuery={searchQuery[ResourcesTypeE.PDF]}
-            onSelected={(vals): void => updateSelected(ResourcesTypeE.PDF, vals)}
-            onChangePagination={(current): void => {
-              onChangePagination(ResourcesTypeE.PDF, current);
-            }}
-          ></PdfTable>
-        </TabPane>
-        <TabPane tab="肺结节AI筛查报告" key={ResourcesTypeE.LUNG_NODULES_REPORT}>
-          <LungNodulesReportCards
-            data={lungNodulesReportList}
-            searchQuery={searchQuery[ResourcesTypeE.PDF]}
-            onSelected={(vals): void => updateSelected(ResourcesTypeE.LUNG_NODULES_REPORT, vals)}
-            selected={flattenArr(selected[ResourcesTypeE.LUNG_NODULES_REPORT])}
-            isSelectable={selectMode}
-            onChangePagination={(current): void => {
-              onChangePagination(ResourcesTypeE.LUNG_NODULES_REPORT, current);
-            }}
-          ></LungNodulesReportCards>
-        </TabPane>
-      </Tabs>
-
+            )}
+          </TabPane>
+          <TabPane className="resources-tabs-item" tab="图片" key={ResourcesTypeE.IMG}>
+            <ImgCards
+              data={imgList}
+              isSelectable={selectMode}
+              selected={flattenArr(selected[ResourcesTypeE.IMG])}
+              searchQuery={searchQuery[ResourcesTypeE.IMG]}
+              onSelected={(vals): void => updateSelected(ResourcesTypeE.IMG, vals)}
+              onChangePagination={(current): void => {
+                onChangePagination(ResourcesTypeE.IMG, current);
+              }}
+            ></ImgCards>
+          </TabPane>
+          <TabPane className="resources-tabs-item" tab="PDF" key={ResourcesTypeE.PDF}>
+            <PdfTable
+              data={pdfList}
+              isSelectable={selectMode}
+              selected={flattenArr(selected[ResourcesTypeE.PDF])}
+              searchQuery={searchQuery[ResourcesTypeE.PDF]}
+              onSelected={(vals): void => updateSelected(ResourcesTypeE.PDF, vals)}
+              onChangePagination={(current): void => {
+                onChangePagination(ResourcesTypeE.PDF, current);
+              }}
+            ></PdfTable>
+          </TabPane>
+          <TabPane
+            className="resources-tabs-item"
+            tab="肺结节AI筛查报告"
+            key={ResourcesTypeE.LUNG_NODULES_REPORT}
+          >
+            <LungNodulesReportCards
+              data={lungNodulesReportList}
+              searchQuery={searchQuery[ResourcesTypeE.PDF]}
+              onSelected={(vals): void => updateSelected(ResourcesTypeE.LUNG_NODULES_REPORT, vals)}
+              selected={flattenArr(selected[ResourcesTypeE.LUNG_NODULES_REPORT])}
+              isSelectable={selectMode}
+              onChangePagination={(current): void => {
+                onChangePagination(ResourcesTypeE.LUNG_NODULES_REPORT, current);
+              }}
+            ></LungNodulesReportCards>
+          </TabPane>
+        </Tabs>
+      </Spin>
       <PrivacyNotice></PrivacyNotice>
     </section>
   );

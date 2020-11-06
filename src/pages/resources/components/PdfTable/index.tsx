@@ -35,11 +35,13 @@ const PdfTable: FunctionComponent<PdfTablePropsI> = (props) => {
     },
   ];
 
+  if (!data) return null;
+
   return (
     <>
       <Table
         rowKey="id"
-        dataSource={data ? data.results : []}
+        dataSource={data.results}
         columns={columns}
         onRow={(item) => ({
           onClick: (): void => {
@@ -58,7 +60,7 @@ const PdfTable: FunctionComponent<PdfTablePropsI> = (props) => {
           position: ["bottomLeft"],
           current,
           pageSize: size,
-          total: data ? data.count : 0,
+          total: data.count,
           onChange: (current): void => {
             onChangePagination && onChangePagination(current);
           },

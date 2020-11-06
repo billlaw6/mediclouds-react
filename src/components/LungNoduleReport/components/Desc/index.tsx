@@ -44,9 +44,6 @@ const Desc: FunctionComponent<DescPropsI> = (props) => {
     });
   }
 
-  console.log("tabContents", tabContents);
-  console.log("extraResult", extraResult);
-
   const [solid, subSolid, groundGlass] = tabContents;
 
   return (

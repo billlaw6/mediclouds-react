@@ -38,13 +38,7 @@ import React, {
 import LinkButton from "_components/LinkButton/LinkButton";
 import { Scrollbars } from "react-custom-scrollbars";
 
-import {
-  PatientI,
-  SeriesImgCacheListT,
-  ImgDrawInfoI,
-  MprImgClientRects,
-  MprImgAndSizeI,
-} from "./type";
+import { SeriesImgCacheListT, ImgDrawInfoI, MprImgClientRects, MprImgAndSizeI } from "./type";
 import "./Player.less";
 import { Slider, Progress } from "antd";
 import { ImageI, SeriesListI, SeriesI, PatientExamI } from "_types/api";
@@ -69,6 +63,7 @@ import {
 import PatientInfo from "./components/PatientInfo";
 import { getSeriesList, getSeries, getMprSeries } from "./actions";
 import getQueryString from "_helper";
+import useReport from "_hooks/useReport";
 
 const VIEWPORT_WIDTH_DEFAULT = 890; // 视图默认宽
 const VIEWPORT_HEIGHT_DEFAULT = 550; // 视图默认高
@@ -114,11 +109,18 @@ let showPanelsTimer: number | undefined = undefined;
 
 const Player: FunctionComponent = (props) => {
   // let ctx: CanvasRenderingContext2D | null = null;
-  const { exam: id, series: originSeriesId, index: originImgIndex } = getQueryString<{
+  const {
+    exam: id,
+    series: originSeriesId,
+    index: originImgIndex,
+    lungnodule: showLungNodules,
+  } = getQueryString<{
     exam: string;
     series?: string;
     index?: string;
+    lungnodule?: "0" | "1";
   }>();
+  const { lungNodule } = useReport();
   /* =============== use ref =============== */
   const $player = useRef<CustomHTMLDivElement>(null);
   const $viewport = useRef<HTMLCanvasElement>(null);
@@ -157,6 +159,63 @@ const Player: FunctionComponent = (props) => {
 
   const [showShortcut, setShowShortcut] = useState(false); // 是否显示快捷键
   /* =============== methods =============== */
+
+  /**
+   * 初始化 拉取数据
+   *
+   * 1. 拉取seriesList
+   * 2. 初始化 当前的序列索引、当前的图片索引
+   * 3. 拉取所有的series内容
+   * 4. 设置 病人信息、序列索引、图片索引、当前的序列
+   */
+  const init = async (examId: string) => {
+    if (!examId) return;
+
+    let _seriesIndex = 1,
+      _imgIndex = 1;
+
+    /* 获取series 列表 */
+    try {
+      const seriesListRes = await getSeriesList(id);
+      if (!seriesListRes) return;
+
+      const { children, ...args } = seriesListRes;
+
+      const _imgIndexsArr = new Array<number>(children.length).fill(1);
+
+      if (originSeriesId) {
+        _seriesIndex = children.findIndex((item) => item.id === originSeriesId) + 1 || 1;
+      }
+      if (originImgIndex) {
+        _imgIndex = parseInt(originImgIndex, 10) + 1;
+        _imgIndexsArr[_seriesIndex - 1] = _imgIndex;
+      }
+
+      /* 获取所有series内容 */
+      const _seriesMap = new Map<string, SeriesI>();
+      const getSeriesArr: Promise<SeriesI>[] = [];
+
+      children.forEach((series) => {
+        const { id } = series;
+        getSeriesArr.push(getSeries(id));
+      });
+
+      const seriesArrRes = await Promise.all(getSeriesArr);
+      seriesArrRes.forEach((item) => {
+        const { id } = item;
+        _seriesMap.set(id, item);
+      });
+
+      setPatient(args); // 病人信息
+      setSeriesIndex(_seriesIndex); // 序列索引
+      setSeriesList(seriesListRes); // 序列列表
+      setImgIndexs(_imgIndexsArr); // 图片索引
+      setSeriesMap(_seriesMap); // 序列详情信息
+      setCurrentSeries(seriesArrRes[_seriesIndex - 1]); // 当前的序列
+    } catch (err) {
+      throw new Error(err);
+    }
+  };
 
   // 获取当前series信息
   // const getCurrentSerie = useCallback((): SeriesI | undefined => {
@@ -497,7 +556,6 @@ const Player: FunctionComponent = (props) => {
   const drawNormal = useCallback(
     (ctx: CanvasRenderingContext2D): void => {
       if (!cache) return;
-
       const currentCache = cache[seriesIndex - 1];
       if (!currentCache) return;
       const currentImg = currentCache[imgIndexs[seriesIndex - 1] - 1];
@@ -518,6 +576,42 @@ const Player: FunctionComponent = (props) => {
         drawInfo.width,
         drawInfo.height,
       );
+
+      if (
+        showLungNodules === "1" &&
+        lungNodule &&
+        lungNodule.flag > 0 &&
+        lungNodule.nodule_details &&
+        currentSeries
+      ) {
+        const { nodule_details, series_id } = lungNodule;
+
+        if (currentSeries.id !== series_id) return;
+
+        const imgIndex = imgIndexs[seriesIndex - 1];
+
+        nodule_details.forEach((nodule) => {
+          const { disp_z, img_x, img_y, rad_pixel } = nodule;
+
+          if (disp_z + 1 === imgIndex) {
+            const drawX = (drawInfo.width / currentImg.width) * img_x + drawInfo.x;
+            const drawY = (drawInfo.height / currentImg.height) * img_y + drawInfo.y;
+
+            ctx.beginPath();
+            ctx.strokeStyle = "red";
+            ctx.lineWidth = devicePixelRatio;
+            ctx.arc(
+              drawX,
+              drawY,
+              Math.max(6 * devicePixelRatio, (rad_pixel + 2) * devicePixelRatio),
+              0,
+              Math.PI * 2,
+            );
+            ctx.stroke();
+            ctx.closePath();
+          }
+        });
+      }
     },
     [cache, imgIndexs, seriesIndex, viewportSize],
   );
@@ -687,54 +781,18 @@ const Player: FunctionComponent = (props) => {
     }
   }, [wheelChange]);
   useEffect(() => {
-    // 获取seriesList 执行一次
-    if (id) {
-      getSeriesList(id).then((result) => {
-        const { children, ...args } = result;
-
-        setPatient({ ...args });
-        setSeriesList(result);
-
-        const _seriesIndexArr = new Array<number>(children.length).fill(1);
-
-        if (originSeriesId) {
-          const _seriesIndex = result.children.findIndex((item) => item.id === originSeriesId);
-          setSeriesIndex(_seriesIndex + 1);
-          if (originImgIndex) {
-            _seriesIndexArr[_seriesIndex] = parseInt(originImgIndex, 10) + 1;
-          }
-        }
-        setImgIndexs(_seriesIndexArr);
-      });
-    }
+    init(id)
+      .then(() => console.log("init successed"))
+      .catch((err) => console.error(err));
   }, [id]);
-  useEffect(() => {
-    // 获取所有series  执行一次
-    if (!seriesList) return;
-    const { children } = seriesList;
-    const _seriesMap = new Map<string, SeriesI>();
-    let count = 0;
 
-    children.forEach((series, index) => {
-      const { id } = series;
-      getSeries(id)
-        .then((series) => {
-          _seriesMap.set(id, series);
-          index === seriesIndex - 1 && setCurrentSeries(series);
-          count += 1;
-          if (count === children.length) {
-            setSeriesMap(_seriesMap);
-          }
-        })
-        .catch((error) => console.error(error));
-    });
-  }, [seriesList]);
   useEffect(() => {
     // 更新当前序列的图片缓存
     if (!seriesList || !seriesMap) return;
     if (!currentSeries || !currentSeries.pictures) return;
     if (seriesMap.size !== seriesList.children.length) return;
     const currentCache = cache[seriesIndex - 1];
+
     if (currentCache && currentCache.length === currentSeries.pictures.length) {
       setCacheDone(true);
       return;
@@ -1015,9 +1073,6 @@ const Player: FunctionComponent = (props) => {
   let className = "player";
   if (isFullscreen) className += " player-fullscreen";
   if (isShowPanels) className += " player-show-panels";
-
-  console.log("series", seriesIndex);
-  console.log("img index", imgIndexs);
 
   return (
     <section className={className}>

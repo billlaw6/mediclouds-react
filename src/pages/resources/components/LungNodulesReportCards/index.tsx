@@ -20,9 +20,9 @@ import LungNoduleReport from "_components/LungNoduleReport";
 
 import Desc from "_components/LungNoduleReport/components/Desc";
 import imgFail from "_assets/images/img-fail.png";
+import useReport from "_hooks/useReport";
 
 import "./style.less";
-import useReport from "_hooks/useReport";
 
 const { Meta } = Card;
 const { useBreakpoint } = Grid;
@@ -58,7 +58,7 @@ const CardMeta: FunctionComponent<{ data: LungNoduleReportI }> = (props) => {
       <span>检查日期: {formatDate(study_date)}</span>
       <br />
       {err ? (
-        <span style={{ color: "red" }}>此报告出错</span>
+        <span style={{ color: "red" }}>AI检测失败</span>
       ) : (
         <span>
           分析结果: <Desc>{desc}</Desc>
@@ -128,7 +128,7 @@ const LungNodulesReportCards: FunctionComponent<LungNodulesReportCardsPropsI> = 
                 .catch(() => {
                   setOnPending(false);
                   message.error({
-                    content: "报告创建失败，请重试",
+                    content: "AI检测失败，请重试",
                   });
                 });
             }}
@@ -189,7 +189,9 @@ const LungNodulesReportCards: FunctionComponent<LungNodulesReportCardsPropsI> = 
     return res;
   };
 
-  if (!data || !data.results.length)
+  if (!data) return null;
+
+  if (!data.results.length)
     return (
       <div className="resources-lung-nodules-report-cards">
         <Empty></Empty>
@@ -211,7 +213,7 @@ const LungNodulesReportCards: FunctionComponent<LungNodulesReportCardsPropsI> = 
             onSelected && onSelected(res as string[]);
           }}
         >
-          {getContent(data.results)}
+          {data ? getContent(data.results) : null}
         </Checkbox.Group>
         <Pagination
           style={{ marginTop: `${20}px` }}

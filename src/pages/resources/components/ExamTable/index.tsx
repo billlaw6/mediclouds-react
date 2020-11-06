@@ -8,6 +8,7 @@ import useAccount from "_hooks/useAccount";
 import useResources from "_hooks/useResources";
 import { GetSearchQueryPropsI, SearchQueryResI } from "_types/api";
 import { ExamIndexI } from "_types/resources";
+import Empty from "../Empty";
 import ListDesc from "../ListDesc";
 
 import "./style.less";
@@ -24,7 +25,6 @@ interface ExamTablePropsI {
 
 const ExamTable: FunctionComponent<ExamTablePropsI> = (props) => {
   const history = useHistory();
-  const { account } = useAccount();
   const {
     isSelectable,
     selected,
@@ -123,6 +123,9 @@ const ExamTable: FunctionComponent<ExamTablePropsI> = (props) => {
     },
   ];
 
+  if (!data) return null;
+  if (!data.results.length) return <Empty></Empty>;
+
   return (
     <Spin
       delay={200}
@@ -132,7 +135,7 @@ const ExamTable: FunctionComponent<ExamTablePropsI> = (props) => {
     >
       <Table
         rowKey="id"
-        dataSource={data ? data.results : []}
+        dataSource={data.results}
         columns={columns}
         onRow={(item) => ({
           onClick: (): void => {
