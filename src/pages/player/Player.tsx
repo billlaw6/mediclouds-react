@@ -40,7 +40,7 @@ import { Scrollbars } from "react-custom-scrollbars";
 
 import { SeriesImgCacheListT, ImgDrawInfoI, MprImgClientRects, MprImgAndSizeI } from "./type";
 import "./Player.less";
-import { Slider, Progress } from "antd";
+import { Slider, Progress, Tooltip } from "antd";
 import { ImageI, SeriesListI, SeriesI, PatientExamI } from "_types/api";
 import { CustomHTMLDivElement } from "_types/core";
 
@@ -62,8 +62,10 @@ import {
 } from "@ant-design/icons";
 import PatientInfo from "./components/PatientInfo";
 import { getSeriesList, getSeries, getMprSeries } from "./actions";
-import getQueryString from "_helper";
+import getQueryString, { getTexVal } from "_helper";
 import useReport from "_hooks/useReport";
+import LungNoduleReport from "_components/LungNoduleReport";
+import { SliderMarks } from "antd/lib/slider";
 
 const VIEWPORT_WIDTH_DEFAULT = 890; // 视图默认宽
 const VIEWPORT_HEIGHT_DEFAULT = 550; // 视图默认高
@@ -992,6 +994,35 @@ const Player: FunctionComponent = (props) => {
     );
   };
 
+  const getMarks = (max: number) => {
+    if (!showLungNodules || !lungNodule) return null;
+    const { nodule_details } = lungNodule;
+    if (!nodule_details || !nodule_details.length) return null;
+
+    return (
+      <div className="marks">
+        {nodule_details.map((nodule) => {
+          const { id, tex, disp_z } = nodule;
+          return (
+            <Tooltip title={getTexVal(tex)} key={id}>
+              <span
+                className="marks-item"
+                style={{
+                  left: `${Math.round(((disp_z + 1) / max) * 100)}%`,
+                }}
+                onClick={(): void => {
+                  const next = [...imgIndexs];
+                  next[seriesIndex - 1] = disp_z + 1;
+                  setImgIndexs(next);
+                }}
+              ></span>
+            </Tooltip>
+          );
+        })}
+      </div>
+    );
+  };
+
   const slider = (): ReactElement => {
     let max = 1;
     if (currentSeries) {
@@ -1007,28 +1038,31 @@ const Player: FunctionComponent = (props) => {
     }
 
     return (
-      <Slider
-        value={isMpr ? mprImgIndexs[mprSeriesIndex - 1] : imgIndexs[seriesIndex - 1]}
-        min={1}
-        step={1}
-        max={max}
-        disabled={!cacheDone}
-        className="player-ctl-slider"
-        getTooltipPopupContainer={(): HTMLElement => $player.current || document.body}
-        onChange={(value: number): void => {
-          let _indexs = imgIndexs,
-            _seriesIndex = seriesIndex,
-            _updateImgIndexs = setImgIndexs;
-          if (isMpr) {
-            _indexs = mprImgIndexs;
-            _seriesIndex = mprSeriesIndex;
-            _updateImgIndexs = setMprImgIndexs;
-          }
-          const next = [..._indexs];
-          next[_seriesIndex - 1] = value;
-          _updateImgIndexs(next);
-        }}
-      ></Slider>
+      <div className="player-ctl-slider">
+        {/* {getMarks(max)} */}
+        <Slider
+          value={isMpr ? mprImgIndexs[mprSeriesIndex - 1] : imgIndexs[seriesIndex - 1]}
+          min={1}
+          step={1}
+          max={max}
+          disabled={!cacheDone}
+          // marks={marks}
+          getTooltipPopupContainer={(): HTMLElement => $player.current || document.body}
+          onChange={(value: number): void => {
+            let _indexs = imgIndexs,
+              _seriesIndex = seriesIndex,
+              _updateImgIndexs = setImgIndexs;
+            if (isMpr) {
+              _indexs = mprImgIndexs;
+              _seriesIndex = mprSeriesIndex;
+              _updateImgIndexs = setMprImgIndexs;
+            }
+            const next = [..._indexs];
+            next[_seriesIndex - 1] = value;
+            _updateImgIndexs(next);
+          }}
+        ></Slider>
+      </div>
     );
   };
   const ctlbtns = (isShowInfo: boolean, mpr: boolean): ReactElement => {
@@ -1120,6 +1154,7 @@ const Player: FunctionComponent = (props) => {
             currentSeries={currentSeries}
             show={isShowInfo}
             patientInfo={patient}
+            lungNodulesReport={lungNodule}
           ></PatientInfo>
         </div>
         <div className={`player-ctl ${cacheDone ? "" : "player-disabled"}`}>

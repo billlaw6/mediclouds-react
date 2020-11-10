@@ -28,4 +28,21 @@
     filter: blur(5px);
     user-select: none;
   }
+
+  &-row {
+    > span {
+      display: inline-block;
+    }
+    &.lung-nodule-report {
+      box-sizing: border-box;
+      padding: 4px;
+      border-radius: 8px;
+      background-color: rgb(110, 115, 121);
+      overflow: auto;
+      .title {
+        font-size: 16px;
+        font-weight: 400;
+      }
+    }
+  }
 }

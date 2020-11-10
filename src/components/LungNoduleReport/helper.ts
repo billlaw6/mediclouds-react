@@ -47,7 +47,7 @@ export const filterNoduleType = (
 } => {
   const groundGlass: LungNoduleI[] = [], // 磨玻璃
     solid: LungNoduleI[] = [], // 实性
-    subSolid: LungNoduleI[] = []; // 亚实性
+    subSolid: LungNoduleI[] = []; // 部分实性
 
   data.forEach((item) => {
     switch (item.tex) {

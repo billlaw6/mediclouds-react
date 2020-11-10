@@ -178,6 +178,7 @@
   }
 
   &-ctl {
+    position: relative;
     display: flex;
     width: 1152px;
     min-width: 1152px;
@@ -203,8 +204,11 @@
     }
 
     &-slider {
+      position: relative;
       flex-grow: 1;
-      &.ant-slider {
+      margin-right: 30px;
+      .ant-slider {
+        margin: 0;
         & .ant-slider-track,
         &:hover .ant-slider-track {
           background-color: @primaryColor;
@@ -215,6 +219,33 @@
           border-color: @primaryColor;
         }
       }
+
+      .marks {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background-color: lightsteelblue;
+
+        &-item {
+          display: inline-block;
+          position: absolute;
+          border: 5px solid transparent;
+          border-top-color: lightpink;
+          cursor: pointer;
+          top: 0;
+          transform: translate(-50%, -100%);
+        }
+      }
+    }
+
+    &-nails {
+      position: absolute;
+      width: 100%;
+      height: 10px;
+      top: 0;
+      left: 0;
+      background-color: lightsteelblue;
     }
 
     &-playbtns {

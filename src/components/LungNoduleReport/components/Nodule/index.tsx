@@ -1,5 +1,6 @@
 import { Button, Descriptions, Space } from "antd";
 import React, { FunctionComponent, useEffect, useRef, useState } from "react";
+import { getTexVal } from "_helper";
 import { LungNoduleI } from "_types/ai";
 
 import "./style.less";
@@ -44,19 +45,6 @@ const Nodule: FunctionComponent<NodulePropsI> = (props) => {
     rad_pixel,
     description,
   } = data;
-
-  const getTexVal = (tex: 0 | 1 | 2): string => {
-    switch (tex) {
-      case 0:
-        return "磨玻璃";
-      case 1:
-        return "亚实性";
-      case 2:
-        return "实性";
-      default:
-        return "";
-    }
-  };
 
   useEffect(() => {
     if ($canvas.current) {

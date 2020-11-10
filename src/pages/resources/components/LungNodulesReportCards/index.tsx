@@ -61,7 +61,7 @@ const CardMeta: FunctionComponent<{ data: LungNoduleReportI }> = (props) => {
         <span style={{ color: "red" }}>AI检测失败</span>
       ) : (
         <span>
-          分析结果: <Desc>{desc}</Desc>
+          分析结果: <Desc extra>{desc}</Desc>
         </span>
       )}
     </div>
@@ -109,43 +109,43 @@ const LungNodulesReportCards: FunctionComponent<LungNodulesReportCardsPropsI> = 
       }
       const { id, thumbnail = "", err, exam_id } = item;
 
-      let actions: ReactNode[] = [];
-      if (err)
-        actions = [
-          <Popconfirm
-            key={`${id}_recreate`}
-            title="确定重新获取报告吗？"
-            onConfirm={(e): void => {
-              e && e.stopPropagation();
-              setOnPending(true);
-              generateLungNodule(exam_id)
-                .then(() => {
-                  setOnPending(false);
-                  message.success({
-                    content: "报告创建中，请3-5分钟后刷新页面查看",
-                  });
-                })
-                .catch(() => {
-                  setOnPending(false);
-                  message.error({
-                    content: "AI检测失败，请重试",
-                  });
-                });
-            }}
-            onCancel={(e): void => {
-              e && e.stopPropagation();
-            }}
-          >
-            <span
-              onClick={(e): void => {
-                e.stopPropagation();
-              }}
-              key="lung-nodules"
-            >
-              重新获取
-            </span>
-          </Popconfirm>,
-        ];
+      // let actions: ReactNode[] = [];
+      // if (err)
+      //   actions = [
+      //     <Popconfirm
+      //       key={`${id}_recreate`}
+      //       title="确定重新获取报告吗？"
+      //       onConfirm={(e): void => {
+      //         e && e.stopPropagation();
+      //         setOnPending(true);
+      //         generateLungNodule(exam_id)
+      //           .then(() => {
+      //             setOnPending(false);
+      //             message.success({
+      //               content: "AI筛查请求已经发送成功，请您耐心等待短信通知",
+      //             });
+      //           })
+      //           .catch(() => {
+      //             setOnPending(false);
+      //             message.error({
+      //               content: "AI检测失败，请重试",
+      //             });
+      //           });
+      //       }}
+      //       onCancel={(e): void => {
+      //         e && e.stopPropagation();
+      //       }}
+      //     >
+      //       <span
+      //         onClick={(e): void => {
+      //           e.stopPropagation();
+      //         }}
+      //         key="lung-nodules"
+      //       >
+      //         重新获取
+      //       </span>
+      //     </Popconfirm>,
+      //   ];
 
       cols.push(
         <Col
@@ -165,7 +165,7 @@ const LungNodulesReportCards: FunctionComponent<LungNodulesReportCardsPropsI> = 
                 if (isSelectable || err) return;
                 updateLungNodule(item);
               }}
-              actions={actions}
+              // actions={actions}
               hoverable
               cover={<img src={thumbnail || imgFail}></img>}
               style={{ cursor: !isSelectable && !!err ? "not-allowed" : "pointer" }}

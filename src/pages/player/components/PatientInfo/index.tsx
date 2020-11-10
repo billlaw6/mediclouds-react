@@ -1,10 +1,10 @@
 import React, { FunctionComponent } from "react";
 import { DEFAULT_SERIES } from "_constants/index";
-import { getSexName, isIE } from "_helper";
+import { getTexVal, isIE } from "_helper";
 
 import { PatientInfoPropsI } from "./type";
 import "./style.less";
-import { PartitionOutlined } from "@ant-design/icons";
+import Scrollbars from "react-custom-scrollbars";
 
 const PatientInfo: FunctionComponent<PatientInfoPropsI> = (props) => {
   const {
@@ -14,7 +14,52 @@ const PatientInfo: FunctionComponent<PatientInfoPropsI> = (props) => {
     seriesIndex = 1,
     imageIndex = 1,
     imageIndexMax = 1,
+    lungNodulesReport,
   } = props;
+
+  const getLungNoduleReport = () => {
+    if (!lungNodulesReport) return null;
+    const { nodule_details } = lungNodulesReport;
+    if (!nodule_details) return null;
+
+    const nodule = nodule_details.find((item) => item.disp_z === imageIndex - 1);
+    if (!nodule) return null;
+    const {
+      vol,
+      tex,
+      long_axis,
+      short_axis,
+      solid_axis,
+      solid_ratio,
+      cal_ratio,
+      gg_ratio,
+      max_hu,
+      mean_hu,
+      min_hu,
+      description,
+    } = nodule;
+
+    return (
+      <Scrollbars autoHide>
+        <div className="player-info-row lung-nodule-report">
+          <span className="title">肺结节</span>
+          <span>体积(mm3): {vol}</span>
+          <span>材质: {getTexVal(tex)}</span>
+          <span>
+            尺寸(mm x mm): {long_axis} x {short_axis}
+          </span>
+          <span>实行部分长轴(mm): {solid_axis || "-"}</span>
+          <span>实行部分比例(%): {Math.round(solid_ratio * 100)}</span>
+          <span>钙化比例(%): {Math.round(cal_ratio * 100)}</span>
+          <span>磨玻璃比例(%): {Math.round(gg_ratio * 100)}</span>
+          <span>最大CT值: {max_hu}</span>
+          <span>最小CT值: {min_hu}</span>
+          <span>平均CT值: {mean_hu}</span>
+          <span>结节位置:{description}</span>
+        </div>
+      </Scrollbars>
+    );
+  };
 
   const {
     patient_name,
@@ -55,6 +100,8 @@ const PatientInfo: FunctionComponent<PatientInfoPropsI> = (props) => {
       <div className="player-info-row">
         <span title="类型">{modality}</span>
       </div>
+
+      {getLungNoduleReport()}
     </div>
   );
 };

@@ -1,22 +1,27 @@
-import { Badge, Button, Col, Descriptions, Empty, Image, Modal, Row, Tabs } from "antd";
+import { Badge, Button, Col, Descriptions, Empty, Image, Modal, Result, Row, Tabs } from "antd";
 import React, { FunctionComponent, useState } from "react";
 import { formatDate } from "_helper";
 import imgFail from "_images/img-fail.png";
+import useAccount from "_hooks/useAccount";
+import useReport from "_hooks/useReport";
+import { FULL_LUNG_NODULES_REPORT, GET_SCORE } from "_constants/index";
+
 import { filterNodulesTruth, getCountWithNoduleType, getRenderData } from "./helper";
 import VariableCard from "./components/VariableCard";
-
 import Desc from "./components/Desc";
 import GroupItem from "./components/GroupItem";
-import useReport from "_hooks/useReport";
 
 import "./style.less";
 
 const { TabPane } = Tabs;
 
 const LungNoduleReport: FunctionComponent = () => {
+  const { account } = useAccount();
   const { lungNodule: data, generateFullLungNodule } = useReport();
 
   const [pending, setPending] = useState(false);
+  const [showImg, setShowImg] = useState(false); // 显示完整版示意图
+  const [err, setErr] = useState(false); // 显示错误信息
 
   if (!data) return <Empty></Empty>;
 
@@ -27,18 +32,23 @@ const LungNoduleReport: FunctionComponent = () => {
   const onGetFull = (id: string): void => {
     Modal.confirm({
       title: "确认获取完整版报告",
-      content: "是否消费2000积分获取完整报告？",
+      content: "是否消费3000积分获取完整报告？",
       okText: "确定",
       cancelText: "取消",
       centered: true,
       onOk: () => {
-        setPending(true);
-        generateFullLungNodule(id)
-          .then((res) => {
-            // console.log(res);
-          })
-          .catch((err) => console.error(err))
-          .finally(() => setPending(false));
+        console.log("account.score ", account.score);
+        if (account.score >= 3000) {
+          setPending(true);
+          generateFullLungNodule(id)
+            .then((res) => {
+              // console.log(res);
+            })
+            .catch((err) => console.error(err))
+            .finally(() => setPending(false));
+        } else {
+          setErr(true);
+        }
       },
     });
   };
@@ -47,6 +57,23 @@ const LungNoduleReport: FunctionComponent = () => {
 
   const renderData = getRenderData(realNodules);
   const noduleTypeCount = getCountWithNoduleType(realNodules);
+
+  if (err) {
+    return (
+      <Result
+        status="warning"
+        title="积分不足"
+        subTitle="请邀请好友赚取积分或充值积分后重试"
+        extra={[
+          <Button key="go_back" type="primary" onClick={(): void => setErr(false)}>
+            返回
+          </Button>,
+        ]}
+      >
+        <img src={GET_SCORE} style={{ width: "100%" }}></img>
+      </Result>
+    );
+  }
 
   return (
     <section className="report">
@@ -87,9 +114,24 @@ const LungNoduleReport: FunctionComponent = () => {
         </Row>
       </header>
       {flag < 1 ? (
-        <Button type="primary" block loading={pending} onClick={(): void => onGetFull(exam_id)}>
-          获取完整版
-        </Button>
+        <div className="report-review">
+          <Button
+            className="report-review-btn"
+            type="primary"
+            block
+            loading={pending}
+            onClick={(): void => onGetFull(exam_id)}
+          >
+            获取完整版
+          </Button>
+          <a onClick={(): void => setShowImg(!showImg)}>
+            {showImg ? "隐藏" : "显示"}完整版AI筛查报告示意图
+          </a>
+          <img
+            style={{ width: "100%", display: showImg ? "inline-block" : "none" }}
+            src={FULL_LUNG_NODULES_REPORT}
+          ></img>
+        </div>
       ) : (
         <div className="report-full">
           <Tabs defaultActiveKey="0">
@@ -112,7 +154,7 @@ const LungNoduleReport: FunctionComponent = () => {
             <TabPane
               tab={
                 <Badge size="small" count={noduleTypeCount.subSolid || 0} offset={[6, -4]}>
-                  亚实性
+                  部分实性
                 </Badge>
               }
               key="1"
@@ -120,7 +162,7 @@ const LungNoduleReport: FunctionComponent = () => {
               <GroupItem
                 key="1"
                 data={renderData ? renderData.subSolid : undefined}
-                // type="亚实性"
+                // type="部分实性"
                 seriesId={series_id}
                 examId={exam_id}
               ></GroupItem>

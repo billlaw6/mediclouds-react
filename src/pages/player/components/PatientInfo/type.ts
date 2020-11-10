@@ -1,3 +1,4 @@
+import { LungNoduleReportI } from "_types/ai";
 import { PatientExamI, SeriesI, SeriesBasicI } from "_types/api";
 
 export interface PatientInfoPropsI {
@@ -7,4 +8,5 @@ export interface PatientInfoPropsI {
   seriesIndex: number; // 序列索引
   imageIndex: number; // 图片索引
   imageIndexMax: number; // 图片索引最大值
+  lungNodulesReport?: LungNoduleReportI; // 肺结节AI筛查报告
 }

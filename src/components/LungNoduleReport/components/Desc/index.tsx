@@ -30,14 +30,13 @@ const Desc: FunctionComponent<DescPropsI> = (props) => {
   let tabContents: string[][] = [];
 
   if (details && tab) {
-    console.log("content", content);
     const solid: string[] = [],
       subSolid: string[] = [],
       groundGlass: string[] = [];
 
     content.forEach((item) => {
       if (item.indexOf("实性") > -1) solid.push(item);
-      else if (item.indexOf("亚实性") > -1) subSolid.push(item);
+      else if (item.indexOf("部分实性") > -1) subSolid.push(item);
       else if (item.indexOf("磨玻璃") > -1) groundGlass.push(item);
 
       tabContents = [solid, subSolid, groundGlass];
@@ -69,7 +68,7 @@ const Desc: FunctionComponent<DescPropsI> = (props) => {
             <TabPane
               tab={
                 <Badge size="small" count={subSolid ? subSolid.length : 0} offset={[6, 0]}>
-                  <span>亚实性</span>
+                  <span>部分实性</span>
                 </Badge>
               }
               key={1}

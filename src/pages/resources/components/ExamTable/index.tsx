@@ -60,7 +60,7 @@ const ExamTable: FunctionComponent<ExamTablePropsI> = (props) => {
           .then((res) => {
             setOnPending(false);
             message.success({
-              content: "报告创建中，请3-5分钟后刷新页面查看",
+              content: "AI筛查请求已经发送成功，请您耐心等待短信通知",
             });
           })
           .catch((err) => {

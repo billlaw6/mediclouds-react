@@ -1,13 +1,13 @@
 import React, { FunctionComponent, ReactElement } from "react";
 import { Menu, Layout, Avatar, Dropdown } from "antd";
+import { Link } from "react-router-dom";
+import { UserOutlined } from "@ant-design/icons";
 
 import logo from "_images/logo.png";
 
 import { HeaderPropsI } from "./type";
 
 import "./Header.less";
-import { Link } from "react-router-dom";
-import { UserOutlined } from "@ant-design/icons";
 
 const { Item: MenuItem, ItemGroup: MenuItemGroup, Divider, SubMenu } = Menu;
 const { Header: AntdHeader } = Layout;

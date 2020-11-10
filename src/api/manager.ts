@@ -11,7 +11,7 @@ export const getHomeResList = async () =>
 export const createHomeResList = async (data: FormData) =>
   await personalReq({
     method: "POST",
-    url: "dicom/home-resource",
+    url: "/dicom/home-resource/",
     data,
   });
 

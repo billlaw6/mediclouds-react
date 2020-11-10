@@ -4,7 +4,7 @@ import { LungNoduleI } from "_types/ai";
 export interface RenderDataI {
   [key: string]: any;
   groundGlass?: NoduleItemsI; // 磨玻璃组
-  subSolid?: NoduleItemsI; // 亚实性组
+  subSolid?: NoduleItemsI; // 部分实性组
   solid?: NoduleItemsI; // 实性组
 }
 

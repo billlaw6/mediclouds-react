@@ -353,3 +353,20 @@ export const parseLungNoduleDesc = (val: string): ParseLungNoduleDescResI => {
 
   return res;
 };
+
+/**
+ * 获取肺结节材质中文值
+ * @param tex 材质 0 ｜ 1 ｜ 2
+ */
+export const getTexVal = (tex: 0 | 1 | 2): string => {
+  switch (tex) {
+    case 0:
+      return "磨玻璃";
+    case 1:
+      return "部分实性";
+    case 2:
+      return "实性";
+    default:
+      return "";
+  }
+};

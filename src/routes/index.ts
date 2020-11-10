@@ -27,6 +27,7 @@ import ManagerLayout from "_layout/Manager";
 import AccountRole from "_components/AccountRole";
 import Register from "_pages/register";
 import Pay from "_pages/pay/index";
+import PublicCT from "_pages/publicCT";
 // import AILayout from "_layout/AI";
 
 const IS_MOBILE = /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent);
@@ -169,6 +170,7 @@ const routes: RoutesI[] = [
     component: Register,
   },
   { name: "pay", path: "/pay", component: Pay },
+  { name: "public-ct", path: "/public-ct", component: PublicCT, layout: DefaultLayout },
 ];
 
 export default routes;

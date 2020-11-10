@@ -22,7 +22,7 @@ export interface LungNoduleI {
   img_y: number; // y轴坐标
   img_x: number; // x轴坐标
   vol: number; // 结节体积
-  tex: 0 | 1 | 2; // 结节材质 0：磨玻璃 1：亚实性 2：实性
+  tex: 0 | 1 | 2; // 结节材质 0：磨玻璃 1：部分实性 2：实性
   score: number; // 真结节置信度 range: 0 - 1
   disp_z: number; // 图片索引坐标
   rad_frame: number; // 索引前后延伸的图片张数 用于描绘目标框
