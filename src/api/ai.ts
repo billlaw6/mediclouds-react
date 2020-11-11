@@ -24,10 +24,7 @@ export const getLungNoduleReport = async (examId: string): Promise<LungNoduleRep
  * @param {ReportTypeT} [type] 生成报告的类型
  * @returns {Promise<LungNoduleReportI>}
  */
-export const generateLungNodule = async (
-  examId: string,
-  type?: ReportTypeT,
-): Promise<LungNoduleReportI> =>
+export const generateLungNodule = async (examId: string, type?: ReportTypeT): Promise<0 | 1> =>
   await publicReq({
     url: "/ai/lung-nodules/generate/",
     method: "POST",
