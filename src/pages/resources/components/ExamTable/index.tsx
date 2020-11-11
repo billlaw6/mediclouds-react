@@ -59,9 +59,15 @@ const ExamTable: FunctionComponent<ExamTablePropsI> = (props) => {
         generateLungNodule(id)
           .then((res) => {
             setOnPending(false);
-            message.success({
-              content: "AI筛查请求已经发送成功，请您耐心等待短信通知",
-            });
+            if (res === 1) {
+              message.success({
+                content: "AI筛查请求已经发送成功，请您耐心等待短信通知",
+              });
+            } else {
+              message.error({
+                content: "此检查已生成过肺结节AI筛查",
+              });
+            }
           })
           .catch((err) => {
             setOnPending(false);
