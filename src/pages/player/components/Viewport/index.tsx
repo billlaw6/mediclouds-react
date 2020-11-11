@@ -3,6 +3,7 @@ import React, { FunctionComponent, useEffect, useRef, useState } from "react";
 
 /** relative import */
 import { ViewportPropsI } from "./types";
+import "./style.less";
 
 const Viewport: FunctionComponent<ViewportPropsI> = (props) => {
   /** parse props */

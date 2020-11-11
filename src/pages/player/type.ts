@@ -1,5 +1,11 @@
 import { ImageI, SeriesI, SeriesListI } from "_types/api";
 
+export interface QueryDataI {
+  exam: string; // 检查 id
+  series?: string; // 序列 id
+  index?: string; // 图片 索引值
+}
+
 export interface PatientI {
   patient_name: string;
   patient_id: string;

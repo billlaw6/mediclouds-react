@@ -1,9 +1,12 @@
 /**
  * 获取url内传递的参数
- * @return {object} params
+ *
+ * @template T 返回的值类型
+ * @param {string} [url] 解析的地址 如果不填则为当前页面url
+ * @returns {*}
  */
-export default <T = any>(): any => {
-  const search = window.location.search.substring(1);
+export const useUrlQuery = <T = any>(url?: string): any => {
+  const search = url ? url.split("?")[1] : window.location.search.substring(1);
   const param: { [key: string]: any } = {};
   const arr = search.split("&");
 

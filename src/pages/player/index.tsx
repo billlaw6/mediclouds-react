@@ -1,54 +1,57 @@
-import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from "react";
+import React, { FunctionComponent, useCallback, useEffect, useState } from "react";
 import dicomParser from "dicom-parser";
 import cornerstone from "cornerstone-core";
 import cornerstoneWADOImageLoader from "cornerstone-wado-image-loader";
-import { getDicomSeries } from "_api/dicom";
-import { useHistory, useLocation } from "react-router-dom";
-import { PatientExamI, SeriesI, SeriesListI } from "_types/api";
+import { PatientExamI } from "_types/api";
 import { Button, Space, Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 
+import SeriesView from "./components/SeriesView";
+import { PatientI, PlayerDataI, PlayerDataMapT, QueryDataI } from "./type";
+import Viewport from "./components/Viewport";
+import { useUrlQuery } from "./hooks";
+import initialization from "./methods/initialization";
+
 import "./style.less";
+import cacheDicoms from "./methods/cacheDicoms";
 
 const IS_MOBILE = /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent);
 
-let count = 0,
-  total = 1;
+/** 全局计数 */
+let count = 0, // 当前缓存个数
+  total = 1; // 总数
 
-interface PlayerDataI extends SeriesI {
-  cache?: any[]; // 当前序列的缓存
-  frame: number; // 当前series在第几帧（图片索引）
-}
+let playTimer = 0;
 
 const Player: FunctionComponent = (props) => {
-  const localton = useLocation<{ id: string }>();
-  const { id = "" } = localton.state;
-  const $viewer = useRef<HTMLDivElement>(null);
+  /** 获取url中的query */
+  const { exam: id, series: originSeriesId, frame: originImgIndex } = useUrlQuery<QueryDataI>();
 
   /* series */
   const [patientInfo, setPatientInfo] = useState<PatientExamI>(); // 病人信息
-  const [data, setData] = useState<Map<number, PlayerDataI>>(); // 播放器的数据Map
+  const [data, setData] = useState<PlayerDataMapT>(); // 播放器的数据Map
   const [seriesIndex, setSeriesIndex] = useState(0); // 当前series的索引
   const [onCaching, setOnCaching] = useState(true); // 是否在缓存
   const [cacheCount, setCacheCount] = useState(0); // 正在缓存的个数
+  const [isPlaying, setIsPlayer] = useState(false); // 是否正在播放
 
-  /* 缓存dicom数据 */
-  const cacheDicoms = async (dicoms: string[]) => {
-    count = 0;
-    setCacheCount(count);
-    total = dicoms.length;
-    setOnCaching(true);
+  // /* 缓存dicom数据 */
+  // const cacheDicoms = async (dicoms: string[]): Promise<any> => {
+  //   count = 0;
+  //   setCacheCount(count);
+  //   total = dicoms.length;
+  //   setOnCaching(true);
 
-    const processes: Promise<any>[] = [];
+  //   const processes: Promise<any>[] = [];
 
-    dicoms.forEach((url) => {
-      processes.push(cornerstone.loadImage(`wadouri:${url}`));
-    });
+  //   dicoms.forEach((url) => {
+  //     processes.push(cornerstone.loadImage(`wadouri:${url}`));
+  //   });
 
-    console.log("PROCESS LEN", processes.length);
+  //   console.log("PROCESS LEN", processes.length);
 
-    return await Promise.all(processes);
-  };
+  //   return await Promise.all(processes);
+  // };
 
   // const cacheSeriesDataByIndex = (index: number) => {};
 
@@ -64,7 +67,6 @@ const Player: FunctionComponent = (props) => {
 
   /* 获取当前PlayerData */
   const getCurrentData = useCallback(() => {
-    console.log("getCurrentData", data);
     if (!data) return undefined;
     return data.get(seriesIndex);
   }, [data, seriesIndex]);
@@ -77,16 +79,16 @@ const Player: FunctionComponent = (props) => {
   };
 
   /* 绘制当前的图像 */
-  const draw = (current?: PlayerDataI): void => {
-    if (!$viewer.current) return;
-    const currentData = current || getCurrentData();
-    if (!currentData) return;
-    const { cache, frame } = currentData;
-    if (!cache) return;
+  // const draw = (current?: PlayerDataI): void => {
+  //   if (!$viewer.current) return;
+  //   const currentData = current || getCurrentData();
+  //   if (!currentData) return;
+  //   const { cache, frame } = currentData;
+  //   if (!cache) return;
 
-    const currentImg = cache[frame];
-    cornerstone.displayImage($viewer.current, currentImg);
-  };
+  //   const currentImg = cache[frame];
+  //   cornerstone.displayImage($viewer.current, currentImg);
+  // };
 
   /* 第一个图像 */
   const first = (): void => {
@@ -111,6 +113,11 @@ const Player: FunctionComponent = (props) => {
   /* 最后一个序列 */
   const lastSeries = (): void => data && setSeriesIndex(data.size - 1);
 
+  const pause = (): void => {
+    if (playTimer) window.clearInterval(playTimer);
+    setIsPlayer(false);
+  };
+
   /* 下一个图像 */
   const next = useCallback((): void => {
     const currentData = getCurrentData();
@@ -122,10 +129,11 @@ const Player: FunctionComponent = (props) => {
     if (!cache) return;
 
     const maxIndex = cache.length - 1;
-    updateDataByIndex(
-      seriesIndex,
-      Object.assign({}, currentData, { frame: Math.min(maxIndex, frame + 1) }),
-    );
+
+    if (frame + 1 > maxIndex) pause();
+    else {
+      updateDataByIndex(seriesIndex, Object.assign({}, currentData, { frame: frame + 1 }));
+    }
   }, [getCurrentData, seriesIndex, updateDataByIndex]);
 
   /* 上一个图像 */
@@ -154,72 +162,40 @@ const Player: FunctionComponent = (props) => {
     setSeriesIndex(Math.max(0, seriesIndex - 1));
   };
 
-  const wheelChange = useCallback(
-    (event: WheelEvent): void => {
-      const { deltaY } = event;
-      console.log("deltaY", deltaY);
-
-      // if (isPlay) pause();
-      if (deltaY > 0) next();
-      if (deltaY < 0) prev();
-
-      event.preventDefault();
-    },
-    [next, prev],
-  );
+  const play = (): void => {
+    playTimer = window.setInterval((): void => next(), 500);
+    setIsPlayer(true);
+  };
 
   useEffect(() => {
-    if (!id) return;
-
-    // 初始化cs相关
-    cornerstoneWADOImageLoader.external.dicomParser = dicomParser;
-    cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
-    cornerstoneWADOImageLoader.configure({
-      useWebWorkers: false,
-      onloadend: () => {
-        count += 1;
+    initialization({
+      cs: cornerstone,
+      imgLoader: cornerstoneWADOImageLoader,
+      dicomParser,
+      examId: id,
+      defaultFrame: originImgIndex,
+      defaultSeriesId: originSeriesId,
+      onProgress: () => {
+        count++;
         setCacheCount(count);
       },
-    });
-
-    cornerstone.enable($viewer.current);
-
-    getDicomSeries(id)
+      onBeforeCache: (val) => {
+        total = val;
+        setOnCaching(true);
+      },
+    })
       .then((res) => {
-        console.log("res", res);
-        const { children, ...others } = res;
+        if (res) {
+          const { data, patientInfo } = res;
 
-        // 更新病人信息
-        setPatientInfo(others);
-
-        // 初始化不含缓存的PlayerData Map
-        const _data = new Map<number, PlayerDataI>();
-        children.forEach((item, index) => {
-          _data.set(
-            index,
-            Object.assign({}, item, {
-              frame: 0,
-            }),
-          );
-        });
-
-        setData(_data);
+          setPatientInfo(patientInfo);
+          setData(data);
+          setOnCaching(false);
+          count = 0;
+        }
       })
       .catch((err) => console.error(err));
-
-    if (IS_MOBILE) {
-      // 移动端事件绑定
-    } else {
-      // web端事件绑定
-      if ($viewer.current) {
-        $viewer.current.addEventListener("wheel", wheelChange, { passive: false });
-
-        return (): void => {
-          $viewer.current && $viewer.current.removeEventListener("wheel", wheelChange);
-        };
-      }
-    }
-  }, [id]);
+  }, []);
 
   useEffect(() => {
     if (!data) return;
@@ -229,16 +205,15 @@ const Player: FunctionComponent = (props) => {
     if (!dicoms.length) return;
 
     if (!cache) {
-      cacheDicoms(dicoms)
-        .then((res) => {
-          setOnCaching(false);
-          updateDataByIndex(seriesIndex, Object.assign({}, currentData, { cache: res }));
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    } else {
-      draw(currentData);
+      cacheDicoms(cornerstone, dicoms, (val) => {
+        count = 0;
+        total = val;
+        setCacheCount(count);
+        setOnCaching(true);
+      }).then((res) => {
+        setOnCaching(false);
+        updateDataByIndex(seriesIndex, Object.assign({}, currentData, { cache: res }));
+      });
     }
   }, [seriesIndex, data]);
 
@@ -252,8 +227,12 @@ const Player: FunctionComponent = (props) => {
             indicator={<LoadingOutlined />}
             tip={`正在加载${Math.round((cacheCount / total) * 100)}%`}
           ></Spin>
-          <div className="player-viewer" ref={$viewer}></div>
+          {/* <div className="player-viewer" ref={$viewer}></div> */}
+          <Viewport cs={cornerstone} data={getCurrentData()}></Viewport>
           <Space>
+            {/* <Button onClick={(): void => (isPlaying ? pause() : play())}>
+              {isPlaying ? "暂停" : "播放"}
+            </Button> */}
             <Button onClick={firstSeries}>第一个序列</Button>
             <Button onClick={lastSeries}>最后一个序列</Button>
 
@@ -266,6 +245,7 @@ const Player: FunctionComponent = (props) => {
             <Button onClick={next}>下一个</Button>
             <Button onClick={prev}>上一个</Button>
           </Space>
+          <SeriesView data={data} current={seriesIndex}></SeriesView>
         </>
       ) : (
         <div className="err">找不到检查ID 请从资源列表选择检查</div>
