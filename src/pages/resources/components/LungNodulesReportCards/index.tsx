@@ -1,21 +1,8 @@
-import {
-  Card,
-  Checkbox,
-  Col,
-  Empty,
-  Grid,
-  Row,
-  Modal,
-  Pagination,
-  Popconfirm,
-  message,
-  Spin,
-} from "antd";
+import { Card, Checkbox, Col, Empty, Grid, Row, Modal, Pagination, Spin } from "antd";
 import React, { FunctionComponent, ReactNode, useState } from "react";
 import { formatDate } from "_helper";
 import { LungNoduleReportI } from "_types/ai";
 import { GetSearchQueryPropsI, SearchQueryResI } from "_types/api";
-import { generateLungNodule } from "_api/ai";
 import LungNoduleReport from "_components/LungNoduleReport";
 
 import Desc from "_components/LungNoduleReport/components/Desc";
@@ -76,7 +63,7 @@ const LungNodulesReportCards: FunctionComponent<LungNodulesReportCardsPropsI> = 
 
   const { lungNodule, updateLungNodule } = useReport();
   const screen = useBreakpoint();
-  const [onPending, setOnPending] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
 
   // const [currentReport, setCurrentReport] = useState<LungNoduleReportI>();
 
@@ -108,45 +95,6 @@ const LungNodulesReportCards: FunctionComponent<LungNodulesReportCardsPropsI> = 
         count = 0;
       }
       const { id, thumbnail = "", err, exam_id } = item;
-
-      // let actions: ReactNode[] = [];
-      // if (err)
-      //   actions = [
-      //     <Popconfirm
-      //       key={`${id}_recreate`}
-      //       title="确定重新获取报告吗？"
-      //       onConfirm={(e): void => {
-      //         e && e.stopPropagation();
-      //         setOnPending(true);
-      //         generateLungNodule(exam_id)
-      //           .then(() => {
-      //             setOnPending(false);
-      //             message.success({
-      //               content: "AI筛查请求已经发送成功，请您耐心等待短信通知",
-      //             });
-      //           })
-      //           .catch(() => {
-      //             setOnPending(false);
-      //             message.error({
-      //               content: "AI检测失败，请重试",
-      //             });
-      //           });
-      //       }}
-      //       onCancel={(e): void => {
-      //         e && e.stopPropagation();
-      //       }}
-      //     >
-      //       <span
-      //         onClick={(e): void => {
-      //           e.stopPropagation();
-      //         }}
-      //         key="lung-nodules"
-      //       >
-      //         重新获取
-      //       </span>
-      //     </Popconfirm>,
-      //   ];
-
       cols.push(
         <Col
           className={`resources-lung-nodules-report-cards-item`}
@@ -163,9 +111,12 @@ const LungNodulesReportCards: FunctionComponent<LungNodulesReportCardsPropsI> = 
             <Card
               onClick={(): void => {
                 if (isSelectable || err) return;
-                updateLungNodule(item);
+                if (!lungNodule || item.id !== lungNodule.id) {
+                  updateLungNodule(item);
+                }
+
+                setOpenModal(true);
               }}
-              // actions={actions}
               hoverable
               cover={<img src={thumbnail || imgFail}></img>}
               style={{ cursor: !isSelectable && !!err ? "not-allowed" : "pointer" }}
@@ -199,43 +150,36 @@ const LungNodulesReportCards: FunctionComponent<LungNodulesReportCardsPropsI> = 
     );
 
   return (
-    <Spin
-      spinning={onPending}
-      delay={200}
-      className="resources-lung-nodules-report-cards-spin"
-      tip="重建肺结节AI筛查"
-    >
-      <div className="resources-lung-nodules-report-cards">
-        <Checkbox.Group
-          style={{ width: "100%" }}
-          value={selected}
-          onChange={(res): void => {
-            onSelected && onSelected(res as string[]);
-          }}
-        >
-          {data ? getContent(data.results) : null}
-        </Checkbox.Group>
-        <Pagination
-          style={{ marginTop: `${20}px` }}
-          current={current}
-          pageSize={size}
-          total={data ? data.count : 0}
-          onChange={(page): void => {
-            onChangePagination && onChangePagination(page);
-          }}
-        ></Pagination>
-        <Modal
-          title={lungNodule ? `${lungNodule.patient_name}的肺结节AI筛查报告` : null}
-          destroyOnClose
-          width={1000}
-          visible={!!lungNodule}
-          onCancel={(): void => updateLungNodule()}
-          footer={null}
-        >
-          <LungNoduleReport></LungNoduleReport>
-        </Modal>
-      </div>
-    </Spin>
+    <div className="resources-lung-nodules-report-cards">
+      <Checkbox.Group
+        style={{ width: "100%" }}
+        value={selected}
+        onChange={(res): void => {
+          onSelected && onSelected(res as string[]);
+        }}
+      >
+        {data ? getContent(data.results) : null}
+      </Checkbox.Group>
+      <Pagination
+        style={{ marginTop: `${20}px` }}
+        current={current}
+        pageSize={size}
+        total={data ? data.count : 0}
+        onChange={(page): void => {
+          onChangePagination && onChangePagination(page);
+        }}
+      ></Pagination>
+      <Modal
+        title={lungNodule ? `${lungNodule.patient_name}的肺结节AI筛查报告` : null}
+        destroyOnClose
+        width={1000}
+        visible={openModal}
+        onCancel={(): void => setOpenModal(false)}
+        footer={null}
+      >
+        <LungNoduleReport></LungNoduleReport>
+      </Modal>
+    </div>
   );
 };
 

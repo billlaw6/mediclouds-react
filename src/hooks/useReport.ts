@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { generateLungNodule } from "_api/ai";
+import { generateLungNodule, getLungNoduleReport } from "_api/ai";
 import { AiReportActionE, LungNoduleReportI } from "_types/ai";
 import { StoreStateI } from "_types/core";
 
@@ -17,7 +17,8 @@ export default () => {
   /** 生成完整版肺结节筛查报告 */
   const generateFullLungNodule = async (examId: string): Promise<void> => {
     try {
-      const res = await generateLungNodule(examId, "full");
+      await generateLungNodule(examId, "full");
+      const res = await getLungNoduleReport(examId);
       updateLungNodule(res);
     } catch (error) {
       throw new Error(error);
