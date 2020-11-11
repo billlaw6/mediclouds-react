@@ -2,12 +2,15 @@
 import React, { FunctionComponent, useEffect, useRef, useState } from "react";
 
 /** relative import */
+import draw from "_pages/player/methods/draw";
+
 import { ViewportPropsI } from "./types";
+
 import "./style.less";
 
 const Viewport: FunctionComponent<ViewportPropsI> = (props) => {
   /** parse props */
-  const { cs, data, className } = props;
+  const { cs, cst, cstArr, data, className } = props;
   /** init hooks */
   const $viewport = useRef<HTMLDivElement>(null);
   const [enabled, setEnabled] = useState(false); // 是否已经启用视图
@@ -22,15 +25,20 @@ const Viewport: FunctionComponent<ViewportPropsI> = (props) => {
       cs.enable($viewport.current);
       isEnabled = true;
       setEnabled(isEnabled);
+    } else {
+      /* 添加并激活工具 */
+      cstArr.forEach((tool): void => {
+        cst.addTool(tool);
+        cst.setToolActive(tool.name, { mouseButtonMask: 1 });
+        console.log("cst.store", cst.store);
+      });
     }
 
-    if (!data) return;
-
-    const { cache, frame } = data;
-    if (!cache) return;
-
-    const currentImg = cache[frame];
-    cs.displayImage($viewport.current, currentImg);
+    draw({
+      cs,
+      data,
+      el: $viewport.current,
+    });
   }, [cs, data, enabled]);
 
   const _className = className ? `viewport ${className}` : "viewport";
