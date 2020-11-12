@@ -3,10 +3,15 @@
   &.player-show-panels {
     cursor: default !important;
     .player {
+      &-marks,
       &-ctl,
       &-list,
       &-info {
         transition: transform 300ms;
+      }
+
+      &-marks {
+        transform: translateY(0);
       }
 
       &-ctl {
@@ -45,6 +50,7 @@
       background-color: #ccc;
     }
 
+    &-marks,
     &-ctl,
     &-info,
     &-list {
@@ -53,6 +59,12 @@
       z-index: 100;
       transition: transform 300ms;
     }
+
+    &-marks {
+      top: 0;
+      transform: translateY(-100%);
+    }
+
     &-list {
       width: 100px !important;
       min-width: 100px !important;
@@ -90,7 +102,7 @@
       &-slider {
         width: 100%;
         position: absolute;
-        top: -22px;
+        top: -8px;
         left: 0px;
       }
     }

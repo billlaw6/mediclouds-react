@@ -61,11 +61,10 @@ import {
   RightOutlined,
 } from "@ant-design/icons";
 import PatientInfo from "./components/PatientInfo";
-import { getSeriesList, getSeries, getMprSeries } from "./actions";
 import getQueryString, { getTexVal } from "_helper";
 import useReport from "_hooks/useReport";
-import LungNoduleReport from "_components/LungNoduleReport";
-import { SliderMarks } from "antd/lib/slider";
+import { getLungSeries, getMprSeries, getSeries } from "_api/resources";
+import { getSeriesList } from "./actions";
 
 const VIEWPORT_WIDTH_DEFAULT = 890; // 视图默认宽
 const VIEWPORT_HEIGHT_DEFAULT = 550; // 视图默认高
@@ -160,6 +159,7 @@ const Player: FunctionComponent = (props) => {
   const [currentSeries, setCurrentSeries] = useState<SeriesI>(); // 当前的序列
 
   const [showShortcut, setShowShortcut] = useState(false); // 是否显示快捷键
+
   /* =============== methods =============== */
 
   /**
@@ -197,9 +197,20 @@ const Player: FunctionComponent = (props) => {
       const _seriesMap = new Map<string, SeriesI>();
       const getSeriesArr: Promise<SeriesI>[] = [];
 
+      let _getSeries = getSeries;
+
       children.forEach((series) => {
         const { id } = series;
-        getSeriesArr.push(getSeries(id));
+
+        if (showLungNodules === "1" && lungNodule) {
+          const { series_id, flag, nodule_details } = lungNodule;
+
+          if (flag > 0 && nodule_details && id === series_id) {
+            _getSeries = getLungSeries;
+          }
+        }
+
+        getSeriesArr.push(_getSeries(id));
       });
 
       const seriesArrRes = await Promise.all(getSeriesArr);
@@ -994,34 +1005,70 @@ const Player: FunctionComponent = (props) => {
     );
   };
 
-  const getMarks = (max: number) => {
-    if (!showLungNodules || !lungNodule) return null;
-    const { nodule_details } = lungNodule;
-    if (!nodule_details || !nodule_details.length) return null;
+  const getMarks = () => {
+    if (!showLungNodules || !lungNodule || !currentSeries) return null;
+    const { nodule_details, series_id } = lungNodule;
+    if (series_id !== currentSeries.id || !nodule_details || !nodule_details.length) return null;
+
+    const data = [...nodule_details].reverse();
 
     return (
-      <div className="marks">
-        {nodule_details.map((nodule) => {
-          const { id, tex, disp_z } = nodule;
-          return (
-            <Tooltip title={getTexVal(tex)} key={id}>
-              <span
-                className="marks-item"
-                style={{
-                  left: `${Math.round(((disp_z + 1) / max) * 100)}%`,
-                }}
-                onClick={(): void => {
-                  const next = [...imgIndexs];
-                  next[seriesIndex - 1] = disp_z + 1;
-                  setImgIndexs(next);
-                }}
-              ></span>
-            </Tooltip>
-          );
-        })}
+      <div className="player-marks">
+        <div className="player-marks-title">肺结节：</div>
+        <Scrollbars>
+          <div className="player-marks-content">
+            {data.map((nodule) => {
+              const { id, image_details, disp_z } = nodule;
+
+              return (
+                <div
+                  className={`player-marks-item${
+                    disp_z + 1 === imgIndexs[seriesIndex - 1] ? " active" : ""
+                  }`}
+                  key={id}
+                  style={{ backgroundImage: `url(${image_details.z_image_tag})` }}
+                  onClick={(): void => {
+                    const next = [...imgIndexs];
+                    next[seriesIndex - 1] = disp_z + 1;
+                    setImgIndexs(next);
+                  }}
+                ></div>
+              );
+            })}
+          </div>
+        </Scrollbars>
       </div>
     );
   };
+
+  // const getMarks = (max: number) => {
+  //   if (!showLungNodules || !lungNodule) return null;
+  //   const { nodule_details } = lungNodule;
+  //   if (!nodule_details || !nodule_details.length) return null;
+
+  //   return (
+  //     <div className="marks">
+  //       {nodule_details.map((nodule) => {
+  //         const { id, tex, disp_z } = nodule;
+  //         return (
+  //           <Tooltip title={getTexVal(tex)} key={id}>
+  //             <span
+  //               className="marks-item"
+  //               style={{
+  //                 left: `${Math.round(((disp_z + 1) / max) * 100)}%`,
+  //               }}
+  //               onClick={(): void => {
+  //                 const next = [...imgIndexs];
+  //                 next[seriesIndex - 1] = disp_z + 1;
+  //                 setImgIndexs(next);
+  //               }}
+  //             ></span>
+  //           </Tooltip>
+  //         );
+  //       })}
+  //     </div>
+  //   );
+  // };
 
   const slider = (): ReactElement => {
     let max = 1;
@@ -1157,6 +1204,7 @@ const Player: FunctionComponent = (props) => {
             lungNodulesReport={lungNodule}
           ></PatientInfo>
         </div>
+        {getMarks()}
         <div className={`player-ctl ${cacheDone ? "" : "player-disabled"}`}>
           <div className="player-ctl-playbtns">
             {isPlay ? (

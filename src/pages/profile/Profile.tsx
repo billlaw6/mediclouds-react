@@ -65,7 +65,6 @@ const Profile: FunctionComponent = (props) => {
 
     // updateUserAction(formData);
 
-    console.log("editedInfo", editedInfo);
     setIsEdit(false);
   };
 
@@ -76,7 +75,6 @@ const Profile: FunctionComponent = (props) => {
 
     const avatarData = files[0];
 
-    console.log("avatarData", avatarData);
     if (!avatarData) return;
     // const url = URL.createObjectURL(avatarData);
     // console.log("url", url);
@@ -112,8 +110,6 @@ const Profile: FunctionComponent = (props) => {
       (err) => console.error(err),
     );
   }, []);
-
-  console.log("AVATAR", getInfo("avatar"));
 
   /* render */
   return (
@@ -217,7 +213,6 @@ const Profile: FunctionComponent = (props) => {
                     className="profile-form-birthday"
                     disabled={!isEdit}
                     disabledDate={(date): boolean => {
-                      console.log("date", date.toString());
                       if (date && moment(date as any).isBetween("1900-01-01", moment()))
                         return false;
                       return true;

@@ -89,6 +89,56 @@
     }
   }
 
+  &-marks {
+    display: flex;
+    padding: 6px 12px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    background-color: #000;
+    width: 1152px;
+    min-width: 1152px;
+    height: 62px;
+    min-height: 62px;
+    margin-bottom: 12px;
+    &-title {
+      display: flex;
+      align-items: center;
+      margin-right: 12px;
+      width: 60px;
+    }
+    &-content {
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      height: 100%;
+    }
+    &-item {
+      width: 42px;
+      height: 42px;
+      margin-right: 10px;
+      border: 2px solid #5b5b5b;
+      border-radius: 4px;
+      box-sizing: border-box;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      cursor: pointer;
+      transition: border-color 200ms;
+
+      &.active {
+        border-color: #799afe;
+      }
+
+      &:hover {
+        border-color: #799afe;
+        transition: border-color 200ms;
+      }
+      &::last-child {
+        margin-right: 0;
+      }
+    }
+  }
+
   &-viewport {
     width: 890px;
     min-width: 890px;
@@ -220,23 +270,23 @@
         }
       }
 
-      .marks {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        background-color: lightsteelblue;
+      // .marks {
+      //   position: absolute;
+      //   top: 0;
+      //   left: 0;
+      //   width: 100%;
+      //   background-color: lightsteelblue;
 
-        &-item {
-          display: inline-block;
-          position: absolute;
-          border: 5px solid transparent;
-          border-top-color: lightpink;
-          cursor: pointer;
-          top: 0;
-          transform: translate(-50%, -100%);
-        }
-      }
+      //   &-item {
+      //     display: inline-block;
+      //     position: absolute;
+      //     border: 5px solid transparent;
+      //     border-top-color: lightpink;
+      //     cursor: pointer;
+      //     top: 0;
+      //     transform: translate(-50%, -100%);
+      //   }
+      // }
     }
 
     &-nails {

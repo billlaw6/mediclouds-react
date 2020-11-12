@@ -1,6 +1,12 @@
 import { personalReq, publicReq } from "_axios";
 import { LungNoduleReportI } from "_types/ai";
-import { GetSearchQueryPropsI, SearchQueryResI, SeriesListI } from "_types/api";
+import {
+  GetSearchQueryPropsI,
+  SearchQueryResI,
+  SeriesI,
+  SeriesListI,
+  SeriesMprI,
+} from "_types/api";
 import { ExamIndexListI } from "_types/core";
 import { ImgI, PdfI, ResourcesDelDataI, ResourcesTypeE } from "_types/resources";
 
@@ -35,7 +41,7 @@ export const delExamList = async (type: ResourcesTypeE, id: string[]): Promise<R
     },
   });
 
-/* 获取dicom检查列表 */
+/* 获取检查列表 */
 export const getExamList = async (
   id: string,
   searchQuery?: GetSearchQueryPropsI,
@@ -46,13 +52,34 @@ export const getExamList = async (
     data: searchQuery,
   });
 
-/* 获取dicom检查列表 */
+/* 获取序列列表 */
 export const getSeriesList = async (
   id: string, // exam id
 ): Promise<SeriesListI> =>
   await publicReq({
     method: "GET",
     url: `/resources/series-list/${id}/`,
+  });
+
+/* 获取单个series信息 */
+export const getSeries = async (id: string): Promise<SeriesI> =>
+  await personalReq({
+    method: "GET",
+    url: `/dicom/dicom-series/${id}/`,
+  });
+
+/* 获取肺窗单个series信息 */
+export const getLungSeries = async (id: string): Promise<SeriesI> =>
+  await personalReq({
+    method: "GET",
+    url: `/dicom/dicom-series/${id}/?lung_pictures=1`,
+  });
+
+/* 获取单个mpr series信息 */
+export const getMprSeries = async (id: string): Promise<SeriesMprI> =>
+  await personalReq({
+    method: "GET",
+    url: `/dicom/dicom-series/${id}/?mpr=1`,
   });
 
 /* 获取pdf资源列表 */

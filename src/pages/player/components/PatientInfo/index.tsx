@@ -41,22 +41,24 @@ const PatientInfo: FunctionComponent<PatientInfoPropsI> = (props) => {
 
     return (
       <Scrollbars autoHide>
-        <div className="player-info-row lung-nodule-report">
-          <span className="title">肺结节</span>
-          <span>体积(mm3): {vol}</span>
-          <span>材质: {getTexVal(tex)}</span>
-          <span>
-            尺寸(mm x mm): {long_axis} x {short_axis}
-          </span>
-          <span>实行部分长轴(mm): {solid_axis || "-"}</span>
-          <span>实行部分比例(%): {Math.round(solid_ratio * 100)}</span>
-          <span>钙化比例(%): {Math.round(cal_ratio * 100)}</span>
-          <span>磨玻璃比例(%): {Math.round(gg_ratio * 100)}</span>
-          <span>最大CT值: {max_hu}</span>
-          <span>最小CT值: {min_hu}</span>
-          <span>平均CT值: {mean_hu}</span>
-          <span>结节位置:{description}</span>
-        </div>
+        <article className="player-info-row lung-nodule-report">
+          <header className="title">肺结节</header>
+          <ul className="content">
+            <li>体积(mm3): {vol}</li>
+            <li>材质: {getTexVal(tex)}</li>
+            <li>
+              尺寸(mm x mm): {long_axis} x {short_axis}
+            </li>
+            <li>实行部分长轴(mm): {solid_axis || "-"}</li>
+            <li>实行部分比例(%): {Math.round(solid_ratio * 100)}</li>
+            <li>钙化比例(%): {Math.round(cal_ratio * 100)}</li>
+            <li>磨玻璃比例(%): {Math.round(gg_ratio * 100)}</li>
+            <li>最大CT值: {max_hu}</li>
+            <li>最小CT值: {min_hu}</li>
+            <li>平均CT值: {mean_hu}</li>
+            <li>结节位置:{description}</li>
+          </ul>
+        </article>
       </Scrollbars>
     );
   };

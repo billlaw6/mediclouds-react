@@ -141,13 +141,6 @@ export interface SeriesMprI extends SeriesBasicI {
 
 // 影像序列列表
 export interface SeriesListI extends PatientExamI {
-  // patient_name: string;
-  // patient_id: string;
-  // sex: string;
-  // birthday: string;
-  // institution_name: string;
-  // study_date: string;
-  // modality: string;
   children: SeriesI[];
 }
 
@@ -177,14 +170,6 @@ export interface FeedbackTypeI {
   code: string;
   title: string;
 }
-
-// 用户反馈回复
-// export interface FeedbackReplyI {
-//   owner: string;
-//   title: string;
-//   content: string;
-//   created_at: string;
-// }
 
 // 用户反馈
 export interface FeedbackI {
@@ -273,10 +258,12 @@ export interface PatientBasicI {
   modality: string; //	检查类型
 }
 
+/** 仅用于DICOM的病人信息展示 */
 export interface PatientExamI extends PatientBasicI {
   sex: string; //	病人性别
 }
 
+/** 用于其他的病人信息展示 */
 export interface PatientI extends PatientBasicI {
   sex: 0 | 1 | 2; //	病人性别 0: 保密 1: 男 2: 女
 }

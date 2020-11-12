@@ -37,7 +37,6 @@ const LungNoduleReport: FunctionComponent = () => {
       cancelText: "取消",
       centered: true,
       onOk: () => {
-        console.log("account.score ", account.score);
         if (account.score >= 3000) {
           setPending(true);
           generateFullLungNodule(id)
