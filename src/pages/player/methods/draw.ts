@@ -17,6 +17,7 @@ export default (props: DrawPropsI): void => {
   const { cache, frame } = data;
   if (!cache) return;
 
+  console.log("draw");
   const currentImg = cache[frame];
   cs.displayImage(el, currentImg);
 };

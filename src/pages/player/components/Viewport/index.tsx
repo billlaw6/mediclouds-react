@@ -10,36 +10,34 @@ import "./style.less";
 
 const Viewport: FunctionComponent<ViewportPropsI> = (props) => {
   /** parse props */
-  const { cs, cst, cstArr, data, className } = props;
+  const { cs, cst, data, className } = props;
   /** init hooks */
   const $viewport = useRef<HTMLDivElement>(null);
-  const [enabled, setEnabled] = useState(false); // 是否已经启用视图
 
   useEffect(() => {
     if (!$viewport.current) return;
+    cs.enable($viewport.current);
 
-    let isEnabled = enabled;
+    const { LengthTool, WwwcTool, PanTool } = cst;
 
-    if (!isEnabled) {
-      // 初始化视图
-      cs.enable($viewport.current);
-      isEnabled = true;
-      setEnabled(isEnabled);
-    } else {
-      /* 添加并激活工具 */
-      cstArr.forEach((tool): void => {
-        cst.addTool(tool);
-        cst.setToolActive(tool.name, { mouseButtonMask: 1 });
-        console.log("cst.store", cst.store);
+    // cst.addTool(LengthTool);
+    cst.addTool(WwwcTool);
+    cst.addTool(PanTool);
+
+    // cst.setToolActive("Length", { mouseButtonMask: 1 });
+    cst.setToolActive("Wwwc", { mouseButtonMask: 1 });
+    // cst.setToolActive("Pan", { mouseButtonMask: 1 });
+  }, [cs, cst]);
+
+  useEffect(() => {
+    if ($viewport.current) {
+      draw({
+        cs,
+        data,
+        el: $viewport.current,
       });
     }
-
-    draw({
-      cs,
-      data,
-      el: $viewport.current,
-    });
-  }, [cs, data, enabled]);
+  }, [data]);
 
   const _className = className ? `viewport ${className}` : "viewport";
 
