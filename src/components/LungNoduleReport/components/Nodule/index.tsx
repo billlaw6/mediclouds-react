@@ -158,7 +158,15 @@ const Nodule: FunctionComponent<NodulePropsI> = (props) => {
             <Space className="lung-nodule-report-info" direction="vertical">
               <Descriptions bordered size="small" column={2}>
                 <Descriptions.Item label="位置(帧)">{disp_z + 1}</Descriptions.Item>
-                <Descriptions.Item label="体积(立方毫米)">{vol}</Descriptions.Item>
+                <Descriptions.Item
+                  label={
+                    <span>
+                      体积(mm<sup>3</sup>)
+                    </span>
+                  }
+                >
+                  {vol}
+                </Descriptions.Item>
                 <Descriptions.Item label="结节材质">{getTexVal(tex)}</Descriptions.Item>
                 <Descriptions.Item label="尺寸(mm x mm)">{`${long_axis} x ${short_axis}`}</Descriptions.Item>
                 <Descriptions.Item label="实性部分长轴(mm)">

@@ -44,7 +44,9 @@ const PatientInfo: FunctionComponent<PatientInfoPropsI> = (props) => {
         <article className="player-info-row lung-nodule-report">
           <header className="title">肺结节</header>
           <ul className="content">
-            <li>体积(mm3): {vol}</li>
+            <li>
+              体积(mm<sup>3</sup>): {vol}
+            </li>
             <li>材质: {getTexVal(tex)}</li>
             <li>
               尺寸(mm x mm): {long_axis} x {short_axis}
