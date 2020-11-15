@@ -63,3 +63,7 @@ export interface PlayerStateI {
   seriesList: SeriesListI;
   imageList: ImageI[];
 }
+
+export interface ViewportElsI {
+  $main?: HTMLElement; // 主视图的html元素
+}

@@ -11,6 +11,7 @@ interface CellPhoneCodePropsI extends FormItemProps {
 }
 
 let timer = -1;
+const DEFAULT_SEC = 60; // 默认倒数秒数
 
 const SmsCode: FunctionComponent<CellPhoneCodePropsI> = (props) => {
   const { loginType, captcha, cell_phone, className, ...others } = props;
@@ -18,13 +19,19 @@ const SmsCode: FunctionComponent<CellPhoneCodePropsI> = (props) => {
 
   useEffect(() => {
     if (countdown < 0 && timer) {
-      return window.clearTimeout(timer);
+      return (): void => {
+        window.clearTimeout(timer);
+      };
     }
 
     const _tempCountdown = countdown;
     timer = window.setTimeout(() => {
       setCountdown(_tempCountdown - 1);
     }, 1000);
+
+    return (): void => {
+      window.clearTimeout(timer);
+    };
   }, [countdown]);
 
   return (
@@ -43,7 +50,7 @@ const SmsCode: FunctionComponent<CellPhoneCodePropsI> = (props) => {
               if (countdown >= 0 || !cell_phone) return;
               getSmsCode({ cell_phone, captcha })
                 .then((res) => {
-                  setCountdown(60);
+                  setCountdown(DEFAULT_SEC);
                 })
                 .catch((err) => console.error(err));
             }}

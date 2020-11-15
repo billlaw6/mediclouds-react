@@ -10,7 +10,7 @@ import "./style.less";
 
 const Viewport: FunctionComponent<ViewportPropsI> = (props) => {
   /** parse props */
-  const { cs, cst, data, className } = props;
+  const { cs, cst, data, className, onLoad } = props;
   /** init hooks */
   const $viewport = useRef<HTMLDivElement>(null);
 
@@ -27,7 +27,9 @@ const Viewport: FunctionComponent<ViewportPropsI> = (props) => {
     // cst.setToolActive("Length", { mouseButtonMask: 1 });
     cst.setToolActive("Wwwc", { mouseButtonMask: 1 });
     // cst.setToolActive("Pan", { mouseButtonMask: 1 });
-  }, [cs, cst]);
+
+    onLoad && onLoad($viewport.current);
+  }, []);
 
   useEffect(() => {
     if ($viewport.current) {

@@ -1,9 +1,9 @@
-import React, { FunctionComponent, useEffect, useState } from "react";
+import React, { FunctionComponent, useEffect, useRef, useState } from "react";
 import { Button, Space, Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 
 import SeriesView from "./components/SeriesView";
-import { PlayerDataI, QueryDataI } from "./type";
+import { PlayerDataI, QueryDataI, ViewportElsI } from "./type";
 import Viewport from "./components/Viewport";
 import { useCornerstone, useData, usePlayController, useUrlQuery } from "./hooks";
 
@@ -41,6 +41,7 @@ const Player: FunctionComponent = (props) => {
   const [onCaching, setOnCaching] = useState(true); // 是否在缓存
   const [cacheCount, setCacheCount] = useState(0); // 正在缓存的个数
   const [isPlaying, setIsPlayer] = useState(false); // 是否正在播放
+  const [viewportEls, setViewportEls] = useState<ViewportElsI>({}); // 可用视图的html元素
 
   const { cornerstone, cornerstoneTools } = useCornerstone({
     onLoadProgress: () => {
@@ -103,7 +104,18 @@ const Player: FunctionComponent = (props) => {
             indicator={<LoadingOutlined />}
             tip={`正在加载${Math.round((cacheCount / total) * 100)}%`}
           ></Spin>
-          <Viewport cs={cornerstone} cst={cornerstoneTools} data={getCurrentData()}></Viewport>
+          <Viewport
+            cs={cornerstone}
+            cst={cornerstoneTools}
+            data={getCurrentData()}
+            onLoad={($el): void => {
+              setViewportEls(
+                Object.assign({}, viewportEls, {
+                  $main: $el,
+                }),
+              );
+            }}
+          ></Viewport>
           <Space>
             {/* <Button onClick={(): void => (isPlaying ? pause() : play())}>
               {isPlaying ? "暂停" : "播放"}
@@ -123,9 +135,10 @@ const Player: FunctionComponent = (props) => {
             <Button
               onClick={(): void => {
                 if (!cornerstone) return;
-                const enabledEls = cornerstone.getEnabledElements();
-                if (!enabledEls || !enabledEls.length) return;
-                const mainEl = enabledEls[0];
+                const { $main } = viewportEls;
+                if (!$main) return;
+
+                const mainEl = cornerstone.getEnabledElement($main);
 
                 console.log("mainEl.viewport, ", mainEl);
                 const { viewport, image } = mainEl;

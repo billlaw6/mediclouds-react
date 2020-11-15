@@ -50,14 +50,6 @@ const AuthorizedRoute: FunctionComponent<AuthorizedRoutePropsI> = (props) => {
   //   }
   // }
 
-  // if (customer.login) {
-  //   const { role } = customer;
-
-  //   if (permission.length && !hasPermission(role, permission)) {
-  //     return <Redirect to="/login"></Redirect>;
-  //   }
-  // }
-
   return <Route {...args}>{children}</Route>;
 };
 

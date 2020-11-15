@@ -21,7 +21,6 @@ const DefalutLayout: FunctionComponent = (props) => {
   const { children } = props;
   const { logoutPersonal } = useAccount();
 
-  // const user = useSelector<StoreStateI, UserI>((state) => state.user);
   const { account } = useAccount();
 
   const { avatar, nickname, role } = account;
