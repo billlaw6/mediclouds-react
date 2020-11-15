@@ -315,7 +315,18 @@ const Resources: FunctionComponent = () => {
           onChange={(val): void => switchTabType(val as ResourcesTypeE)}
         >
           <TabPane className="resources-tabs-item" tab="检查" key={ResourcesTypeE.EXAM}>
-            {viewMode === ViewTypeEnum.LIST ? (
+            <ExamCards
+              data={examList}
+              isSelectable={selectMode}
+              searchQuery={searchQuery[ResourcesTypeE.EXAM]}
+              onChangePagination={(current): void => {
+                onChangePagination(ResourcesTypeE.EXAM, current);
+              }}
+              selected={flattenArr(selected[ResourcesTypeE.EXAM])}
+              onSelected={(vals): void => updateSelected(ResourcesTypeE.EXAM, vals)}
+              onUpdateDescSuccess={(): void => fetchResources(tabType)}
+            ></ExamCards>
+            {/* {viewMode === ViewTypeEnum.LIST ? (
               <ExamTable
                 data={examList}
                 isSelectable={selectMode}
@@ -341,7 +352,7 @@ const Resources: FunctionComponent = () => {
                 onSelected={(vals): void => updateSelected(ResourcesTypeE.EXAM, vals)}
                 onUpdateDescSuccess={(): void => fetchResources(tabType)}
               ></ExamCards>
-            )}
+            )} */}
           </TabPane>
           <TabPane className="resources-tabs-item" tab="图片" key={ResourcesTypeE.IMG}>
             <ImgCards

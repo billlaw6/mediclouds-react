@@ -51,6 +51,7 @@ const UserList: FunctionComponent = () => {
       size: pageSize,
       keyword: searchVal,
       filters: filters,
+      sort: "date_joined",
     })
       .then((res) => {
         setList(res.results);

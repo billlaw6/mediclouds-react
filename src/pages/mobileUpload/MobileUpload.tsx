@@ -47,7 +47,6 @@ const MobileUpload: FunctionComponent = () => {
           "Content-Type": "multipart/form-data",
         },
         onUploadProgress: function (progressEvent: any) {
-          // console.log("progressEvent: ", progressEvent);
           const { loaded, total } = progressEvent;
           updateCurrentLoad(
             Object.assign({}, progressInfo, {

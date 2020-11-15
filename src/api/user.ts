@@ -202,7 +202,9 @@ export const register: ApiFuncI<{ token: string; user_info: UserI }> = async (
   );
 
 /* 获取全部账户、用户 */
-export const getAllUser: ApiFuncI = async (searchQuery?: GetSearchQueryPropsI) =>
+export const getAllUser = async (
+  searchQuery?: GetSearchQueryPropsI<"date_joined" | "last_login">,
+): Promise<SearchQueryResI<UserI>> =>
   await publicReq({
     method: "POST",
     url: "/user/all/",

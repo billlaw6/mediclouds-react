@@ -1,10 +1,11 @@
 import { RoleE } from "./account";
+import { ProdI } from "./product";
 
 /* 订单结构 */
 export interface OrderI {
   id: string; // 订单id
   order_number: string; // 订单号
-  order_type?: string; // 订单类型
+  products: OrderProdI[]; // 此订单的商品信息列表
   owner_id: string; // 订单拥有者id
   order_price: number; // 订单金额 单位：分
   owner_username: string; // 订单拥有者用户名
@@ -25,9 +26,18 @@ export interface OrderI {
 
 /* 创建订单Data */
 export interface CreateOrderDataI {
-  owner_id: string;
-  order_type?: string;
-  comment?: string;
+  owner_id: string; // 订单所有者id
+  products: CreateOrderProdDataI[]; // 创建订单的商品列表
+  comment?: string; // 备注
+}
+
+export interface CreateOrderProdDataI {
+  id: number; // 商品ID
+  amount: number; // 商品数量
+}
+
+export interface OrderProdI extends ProdI {
+  amount: number; // 商品数量
 }
 
 /* 更新订单Data */

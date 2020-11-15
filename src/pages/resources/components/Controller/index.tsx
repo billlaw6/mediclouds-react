@@ -66,25 +66,6 @@ const Controller: FunctionComponent<ControllerPropsI> = (props) => {
         );
         break;
       }
-      case ResourcesTypeE.LUNG_NODULES_REPORT: {
-        items = (
-          <>
-            <Menu.Item
-              disabled={sortBy[resourcesType] === ReportSortKeyE.STUDY_DATE}
-              key={ExamSortKeyE.STUDY_DATE}
-            >
-              时间排序
-            </Menu.Item>
-            <Menu.Item
-              disabled={sortBy[resourcesType] === ReportSortKeyE.MODALITY}
-              key={ExamSortKeyE.MODALITY}
-            >
-              种类排序
-            </Menu.Item>
-          </>
-        );
-        break;
-      }
       case ResourcesTypeE.IMG: {
         items = (
           <>
@@ -170,10 +151,12 @@ const Controller: FunctionComponent<ControllerPropsI> = (props) => {
         ) : null}
       </div>
       <div className={`resources-controller-item${showDelBtn ? "" : " hidden"}`}>
-        <Dropdown overlay={sortContent()} placement="bottomRight">
-          <SortAscendingOutlined className="resources-controller-select-sort iconfont"></SortAscendingOutlined>
-        </Dropdown>
-        {resourcesType === ResourcesTypeE.EXAM ? (
+        {resourcesType === ResourcesTypeE.LUNG_NODULES_REPORT ? null : (
+          <Dropdown overlay={sortContent()} placement="bottomRight">
+            <SortAscendingOutlined className="resources-controller-select-sort iconfont"></SortAscendingOutlined>
+          </Dropdown>
+        )}
+        {/* {resourcesType === ResourcesTypeE.EXAM ? (
           viewMode === ViewTypeEnum.GRID ? (
             <MenuOutlined
               className="resources-controller-select-view iconfont"
@@ -185,7 +168,7 @@ const Controller: FunctionComponent<ControllerPropsI> = (props) => {
               onClick={onChangeViewMode}
             ></AppstoreOutlined>
           )
-        ) : null}
+        ) : null} */}
       </div>
     </div>
   );

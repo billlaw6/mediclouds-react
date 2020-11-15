@@ -10,7 +10,7 @@ import Uploader from "_components/Uploader";
 import { RoleE } from "_types/account";
 import { updateOrder } from "_api/order";
 import QrcodeGenerator from "qrcode.react";
-import { getWechatPayQrcode } from "_api/pay";
+import { getOrderWechatPayQrcode } from "_api/pay";
 
 import "./style.less";
 import { formatDate } from "_helper";
@@ -31,7 +31,7 @@ const OrderInfo: FunctionComponent<OrderInfoPropsI> = (props) => {
 
   useEffect(() => {
     if (info && info.flag < 2) {
-      getWechatPayQrcode(info.order_number)
+      getOrderWechatPayQrcode(info.order_number)
         .then((res) => setWechatQrcodeUrl(res))
         .catch((err) => console.error(err));
     }

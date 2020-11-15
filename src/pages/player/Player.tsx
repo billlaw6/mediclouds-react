@@ -607,8 +607,11 @@ const Player: FunctionComponent = (props) => {
           const { disp_z, img_x, img_y, rad_pixel } = nodule;
 
           if (disp_z + 1 === imgIndex) {
-            const drawX = (drawInfo.width / currentImg.width) * img_x + drawInfo.x;
-            const drawY = (drawInfo.height / currentImg.height) * img_y + drawInfo.y;
+            const widthRatio = drawInfo.width / currentImg.width;
+            const heightRatio = drawInfo.height / currentImg.height;
+
+            const drawX = widthRatio * img_x + drawInfo.x;
+            const drawY = heightRatio * img_y + drawInfo.y;
 
             ctx.beginPath();
             ctx.strokeStyle = "red";
@@ -616,7 +619,7 @@ const Player: FunctionComponent = (props) => {
             ctx.arc(
               drawX,
               drawY,
-              Math.max(6 * devicePixelRatio, (rad_pixel + 2) * devicePixelRatio),
+              Math.max(6 * devicePixelRatio, (rad_pixel + 2) * widthRatio),
               0,
               Math.PI * 2,
             );
@@ -1015,7 +1018,25 @@ const Player: FunctionComponent = (props) => {
     return (
       <div className="player-marks">
         <div className="player-marks-title">肺结节：</div>
-        <Scrollbars>
+        <Scrollbars
+          autoHide
+          autoHeight
+          renderThumbHorizontal={(props) => {
+            const { style, ...args } = props;
+
+            return (
+              <div
+                style={{
+                  ...style,
+                  ...{
+                    backgroundColor: "rgba(255,255,255,.3)",
+                  },
+                }}
+                {...args}
+              ></div>
+            );
+          }}
+        >
           <div className="player-marks-content">
             {data.map((nodule) => {
               const { id, image_details, disp_z } = nodule;

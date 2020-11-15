@@ -81,7 +81,14 @@ const CreateOrder: FunctionComponent<CreateOrderPropsI> = (props) => {
       title="创建订单"
       onOk={(): void => {
         setConfirmLoading(true);
-        createOrder({ owner_id: ownerId, comment })
+        createOrder({
+          owner_id: ownerId,
+          comment,
+          products: [
+            { id: 1, amount: 1 },
+            { id: 2, amount: 1 },
+          ],
+        })
           .then((res) => {
             onSuccessed && onSuccessed(res);
           })

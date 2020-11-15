@@ -39,8 +39,7 @@ export enum ImgAndPdfSortKeyE {
 
 /* 报告排序字段 */
 export enum ReportSortKeyE {
-  STUDY_DATE = "study_date",
-  MODALITY = "modality",
+  CREATED_AT = "created_at",
 }
 
 /* 检查结构 */

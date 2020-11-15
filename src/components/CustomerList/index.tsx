@@ -18,6 +18,7 @@ import { ResultStatusType } from "antd/lib/result";
 import ListControlBar from "_components/ListControlBar";
 import AccountStatus from "_components/AccountStatus";
 import { formatDate } from "_helper";
+import useProd from "_hooks/useProd";
 
 interface CustomerListPropsI {
   id?: string;
@@ -25,6 +26,8 @@ interface CustomerListPropsI {
 
 const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
   const { account } = useAccount();
+  const { prods, getProdList } = useProd();
+
   const id = useRef<string>(props.id || account.id);
   const [list, setList] = useState<{ total: number; arr: UserI[] }>();
   const [createOrderId, setCreateOrderId] = useState<string | null>(null);
@@ -145,6 +148,11 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
       });
     getCustomerList(id.current, searchQuery)
       .then((res) => setList({ total: res.count, arr: res.results }))
+      .catch((err) => console.error(err));
+    getProdList()
+      .then((res) => {
+        // console.log("prods", res);
+      })
       .catch((err) => console.error(err));
   }, [dateRange, pagination.current, pagination.pageSize, searchVal, filters]);
 
