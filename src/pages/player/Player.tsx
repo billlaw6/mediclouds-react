@@ -604,43 +604,34 @@ const Player: FunctionComponent = (props) => {
         drawInfo.height,
       );
 
-      if (
-        showLungNodules === "1" &&
-        lungNodule &&
-        lungNodule.flag > 0 &&
-        lungNodule.nodule_details &&
-        currentSeries
-      ) {
-        const { nodule_details, series_id } = lungNodule;
+      if (showLungNodules === "1" && lungNodule && currentNodule && currentSeries) {
+        const { series_id } = lungNodule;
 
         if (currentSeries.id !== series_id) return;
 
         const imgIndex = imgIndexs[seriesIndex - 1];
+        const { disp_z, img_x, img_y, rad_pixel } = currentNodule;
 
-        nodule_details.forEach((nodule) => {
-          const { disp_z, img_x, img_y, rad_pixel } = nodule;
+        if (disp_z + 1 === imgIndex) {
+          const widthRatio = drawInfo.width / currentImg.width;
+          const heightRatio = drawInfo.height / currentImg.height;
 
-          if (disp_z + 1 === imgIndex) {
-            const widthRatio = drawInfo.width / currentImg.width;
-            const heightRatio = drawInfo.height / currentImg.height;
+          const drawX = widthRatio * img_x + drawInfo.x;
+          const drawY = heightRatio * img_y + drawInfo.y;
 
-            const drawX = widthRatio * img_x + drawInfo.x;
-            const drawY = heightRatio * img_y + drawInfo.y;
-
-            ctx.beginPath();
-            ctx.strokeStyle = "red";
-            ctx.lineWidth = devicePixelRatio;
-            ctx.arc(
-              drawX,
-              drawY,
-              Math.max(6 * devicePixelRatio, (rad_pixel + 2) * widthRatio),
-              0,
-              Math.PI * 2,
-            );
-            ctx.stroke();
-            ctx.closePath();
-          }
-        });
+          ctx.beginPath();
+          ctx.strokeStyle = "red";
+          ctx.lineWidth = devicePixelRatio;
+          ctx.arc(
+            drawX,
+            drawY,
+            Math.max(6 * devicePixelRatio, (rad_pixel + 2) * widthRatio),
+            0,
+            Math.PI * 2,
+          );
+          ctx.stroke();
+          ctx.closePath();
+        }
       }
     },
     [cache, imgIndexs, seriesIndex, viewportSize],
@@ -1079,7 +1070,7 @@ const Player: FunctionComponent = (props) => {
               return (
                 <div
                   className={`player-marks-item${
-                    disp_z + 1 === imgIndexs[seriesIndex - 1] ? " active" : ""
+                    currentNodule && currentNodule.id === id ? " active" : ""
                   }`}
                   key={id}
                   style={{ backgroundImage: `url(${image_details.z_image_tag})` }}
