@@ -31,8 +31,13 @@ const LungNoduleReport: FunctionComponent = () => {
   /* 获取完整版 */
   const onGetFull = (id: string): void => {
     Modal.confirm({
-      title: "确认获取完整版报告",
-      content: "是否消费3000积分获取完整报告？",
+      title: "获取完整版报告",
+      content: (
+        <span>
+          <b style={{ color: "red" }}>限时优惠</b>仅需<b style={{ color: "red" }}>3000</b>
+          积分获取完整版报告
+        </span>
+      ),
       okText: "确定",
       cancelText: "取消",
       centered: true,

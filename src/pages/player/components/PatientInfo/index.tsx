@@ -1,10 +1,10 @@
 import React, { FunctionComponent } from "react";
 import { DEFAULT_SERIES } from "_constants/index";
 import { getTexVal, isIE } from "_helper";
+import Scrollbars from "react-custom-scrollbars";
 
 import { PatientInfoPropsI } from "./type";
 import "./style.less";
-import Scrollbars from "react-custom-scrollbars";
 
 const PatientInfo: FunctionComponent<PatientInfoPropsI> = (props) => {
   const {
@@ -14,15 +14,10 @@ const PatientInfo: FunctionComponent<PatientInfoPropsI> = (props) => {
     seriesIndex = 1,
     imageIndex = 1,
     imageIndexMax = 1,
-    lungNodulesReport,
+    nodule,
   } = props;
 
   const getLungNoduleReport = () => {
-    if (!lungNodulesReport) return null;
-    const { nodule_details } = lungNodulesReport;
-    if (!nodule_details) return null;
-
-    const nodule = nodule_details.find((item) => item.disp_z === imageIndex - 1);
     if (!nodule) return null;
     const {
       vol,

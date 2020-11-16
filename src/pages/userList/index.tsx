@@ -140,6 +140,7 @@ const UserList: FunctionComponent = () => {
   return (
     <div className="manager-users">
       <ListControlBar
+        searchPlaceholder="搜索用户名或手机号"
         selectedList={selected}
         onSearch={(val): void => {
           setPagination(Object.assign({}, pagination, { current: 1 }));

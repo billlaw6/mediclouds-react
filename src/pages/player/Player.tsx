@@ -65,6 +65,7 @@ import getQueryString, { getTexVal } from "_helper";
 import useReport from "_hooks/useReport";
 import { getLungSeries, getMprSeries, getSeries } from "_api/resources";
 import { getSeriesList } from "./actions";
+import { LungNoduleI } from "_types/ai";
 
 const VIEWPORT_WIDTH_DEFAULT = 890; // 视图默认宽
 const VIEWPORT_HEIGHT_DEFAULT = 550; // 视图默认高
@@ -157,6 +158,7 @@ const Player: FunctionComponent = (props) => {
   const [mprImgRange, setMprImgRange] = useState<ImgDrawInfoI[]>([]); // 保存当前mpr每个img在视图区域的范围
   const [mprImgIndexs, setMprImgIndexs] = useState<number[]>([1, 1, 1]); // mpr每个序列当前图片的索引
   const [currentSeries, setCurrentSeries] = useState<SeriesI>(); // 当前的序列
+  const [currentNodule, setCurrentNodule] = useState<LungNoduleI>(); // 当前选择的结节
 
   const [showShortcut, setShowShortcut] = useState(false); // 是否显示快捷键
 
@@ -219,12 +221,24 @@ const Player: FunctionComponent = (props) => {
         _seriesMap.set(id, item);
       });
 
+      let _currentNodule: LungNoduleI | undefined = undefined;
+
+      if (showLungNodules === "1" && lungNodule) {
+        const { nodule_details } = lungNodule;
+        if (nodule_details) {
+          _currentNodule = nodule_details.find(
+            (item) => item.disp_z + 1 === _imgIndexsArr[_seriesIndex - 1],
+          );
+        }
+      }
+
       setPatient(args); // 病人信息
       setSeriesIndex(_seriesIndex); // 序列索引
       setSeriesList(seriesListRes); // 序列列表
       setImgIndexs(_imgIndexsArr); // 图片索引
       setSeriesMap(_seriesMap); // 序列详情信息
       setCurrentSeries(seriesArrRes[_seriesIndex - 1]); // 当前的序列
+      if (_currentNodule) setCurrentNodule(_currentNodule);
     } catch (err) {
       throw new Error(err);
     }
@@ -916,6 +930,25 @@ const Player: FunctionComponent = (props) => {
       );
     }
 
+    if (showLungNodules === "1" && lungNodule) {
+      if (currentNodule) {
+        const { disp_z } = currentNodule;
+
+        if (disp_z + 1 !== imgIndexs[seriesIndex - 1]) {
+          setCurrentNodule(undefined);
+        }
+      } else {
+        const { nodule_details } = lungNodule;
+        if (nodule_details) {
+          const _currentNodule = nodule_details.find(
+            (item) => item.disp_z + 1 === imgIndexs[seriesIndex - 1],
+          );
+
+          setCurrentNodule(_currentNodule);
+        }
+      }
+    }
+
     updateViewport();
   }, [
     imgIndexs,
@@ -928,6 +961,9 @@ const Player: FunctionComponent = (props) => {
     currentSeries,
     isMpr,
     nextMpr,
+    currentNodule,
+    showLungNodules,
+    lungNodule,
   ]);
   useEffect(() => {
     // 重新计算canvas的width height
@@ -1019,8 +1055,6 @@ const Player: FunctionComponent = (props) => {
       <div className="player-marks">
         <div className="player-marks-title">肺结节：</div>
         <Scrollbars
-          autoHide
-          autoHeight
           renderThumbHorizontal={(props) => {
             const { style, ...args } = props;
 
@@ -1029,7 +1063,8 @@ const Player: FunctionComponent = (props) => {
                 style={{
                   ...style,
                   ...{
-                    backgroundColor: "rgba(255,255,255,.3)",
+                    backgroundColor: "rgba(255,255,255,.6)",
+                    borderRadius: "4px",
                   },
                 }}
                 {...args}
@@ -1052,6 +1087,7 @@ const Player: FunctionComponent = (props) => {
                     const next = [...imgIndexs];
                     next[seriesIndex - 1] = disp_z + 1;
                     setImgIndexs(next);
+                    setCurrentNodule(nodule);
                   }}
                 ></div>
               );
@@ -1222,7 +1258,7 @@ const Player: FunctionComponent = (props) => {
             currentSeries={currentSeries}
             show={isShowInfo}
             patientInfo={patient}
-            lungNodulesReport={lungNodule}
+            nodule={currentNodule}
           ></PatientInfo>
         </div>
         {getMarks()}
