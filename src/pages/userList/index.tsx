@@ -43,7 +43,7 @@ const UserList: FunctionComponent = () => {
    */
   const onSelectChange = (selectedRowKeys: Key[]): void => setSelected(selectedRowKeys as string[]);
 
-  const fetchList = () => {
+  const fetchList = (): void => {
     const { pageSize, current } = pagination;
 
     getAllUser({
@@ -95,13 +95,13 @@ const UserList: FunctionComponent = () => {
       title: "创建日期",
       key: "date_joined",
       dataIndex: "date_joined",
-      render: (val) => formatDate(val, true),
+      render: (val): string => formatDate(val, true),
     },
     {
       title: "最后登录日期",
       key: "last_login",
       dataIndex: "last_login",
-      render: (val) => (val ? formatDate(val, true) : "NULL"),
+      render: (val): string => (val ? formatDate(val, true) : "NULL"),
     },
     {
       title: "状态",
@@ -111,7 +111,7 @@ const UserList: FunctionComponent = () => {
         { text: "已启用", value: "1" },
         { text: "已禁用", value: "0" },
       ],
-      render: (val) => {
+      render: (val): ReactNode => {
         return (
           <Nail
             target={`${val}`}
@@ -141,13 +141,13 @@ const UserList: FunctionComponent = () => {
     <div className="manager-users">
       <ListControlBar
         selectedList={selected}
-        onSearch={(val) => {
+        onSearch={(val): void => {
           setPagination(Object.assign({}, pagination, { current: 1 }));
           setSearchVal(val);
         }}
         onDel={(ids): void => {
           delAccount(ids)
-            .then((res) => {
+            .then(() => {
               fetchList();
             })
             .catch((err) => console.error(err));
@@ -173,7 +173,7 @@ const UserList: FunctionComponent = () => {
             setCurrentAccount(record);
           },
         })}
-        onChange={(pagination, filters, sorter) => {
+        onChange={(pagination, filters): void => {
           const _filters: any = {};
 
           for (const key in filters) {

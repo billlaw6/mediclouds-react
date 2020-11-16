@@ -9,7 +9,6 @@ import Login from "_pages/login";
 // import LoginForm from "_pages/login_form/Login";
 import Upload from "_pages/upload/Upload";
 import Profile from "_pages/profile/Profile";
-// import UserManage from "_pages/users/UserManage";
 import Feedback from "_pages/feedback/Feedback";
 import Dashboard from "_pages/dashboard/Dashboard";
 import MdEditor from "_pages/mdEditor/MdEditor";
@@ -124,12 +123,6 @@ const routes: RoutesI[] = [
   //   path: "/ai/:type/:id",
   //   layout: AILayout,
   //   permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN, RoleE.PATIENT],
-  // },
-  // {
-  //   name: "user_manage",
-  //   path: "/users",
-  //   component: UserManage,
-  //   permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN],
   // },
   // {
   //   name: "homeRes",
