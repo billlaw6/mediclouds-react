@@ -12,45 +12,6 @@ import "./Header.less";
 const { Item: MenuItem, ItemGroup: MenuItemGroup, Divider, SubMenu } = Menu;
 const { Header: AntdHeader } = Layout;
 
-// const AvatarMenu: FunctionComponent<HeaderPropsI> = (props): ReactElement => {
-//   const { nickname, logout, isSuperuser } = props;
-
-//   // const onClick = (e: { key: any }): void => {
-//   //   const { key } = e;
-//   //   if (key === "logout" && logout) logout();
-//   // };
-
-//   return (
-//     <Menu
-//       className="header-avatar-menu"
-//       onClick={(info): void => {
-//         const { key } = info;
-//         if (key === "logout" && logout) logout();
-//       }}
-//     >
-//       <MenuItemGroup title={nickname || "匿名"}>
-//         <Divider></Divider>
-//         <MenuItem className="edit-user-info" key="editUserInfo">
-//           <Link to="/profile">个人信息</Link>
-//         </MenuItem>
-//         <MenuItem className="user-feedback" key="feedback">
-//           <Link to="/feedback">意见反馈</Link>
-//         </MenuItem>
-//         {isSuperuser ? (
-//           <MenuItem className="dashboard" key="dashboard">
-//             <Link to="/manager">管理后台</Link>
-//           </MenuItem>
-//         ) : (
-//           <div></div>
-//         )}
-//         <MenuItem className="logout" key="logout">
-//           退出
-//         </MenuItem>
-//       </MenuItemGroup>
-//     </Menu>
-//   );
-// };
-
 const Header: FunctionComponent<HeaderPropsI> = (props): ReactElement => {
   const { avatar, isSuperuser, logout, nickname } = props;
 
@@ -68,11 +29,6 @@ const Header: FunctionComponent<HeaderPropsI> = (props): ReactElement => {
             if (key === "logout" && logout) logout();
           }}
         >
-          {/* <SubMenu popupClassName="header-menu-sub" title="AI功能" key="ai">
-            <MenuItem className="header-menu-item" key="lungNodules">
-              <Link to="/ai/lung-nodules">肺结节筛查</Link>
-            </MenuItem>
-          </SubMenu> */}
           <SubMenu
             key="user"
             popupClassName="header-menu-sub"
