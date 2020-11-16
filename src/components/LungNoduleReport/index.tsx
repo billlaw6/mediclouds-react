@@ -34,8 +34,8 @@ const LungNoduleReport: FunctionComponent = () => {
       title: "获取完整版报告",
       content: (
         <span>
-          <b style={{ color: "red" }}>限时优惠</b>仅需<b style={{ color: "red" }}>3000</b>
-          积分获取完整版报告
+          <b style={{ color: "red" }}>限时优惠</b>：仅需<b style={{ color: "red" }}>3000</b>
+          积分即可获得完整版报告
         </span>
       ),
       okText: "确定",

@@ -634,7 +634,7 @@ const Player: FunctionComponent = (props) => {
         }
       }
     },
-    [cache, imgIndexs, seriesIndex, viewportSize],
+    [cache, imgIndexs, seriesIndex, viewportSize, currentNodule],
   );
 
   // 绘制MPR模式下的图片
