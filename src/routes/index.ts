@@ -10,14 +10,10 @@ import Login from "_pages/login";
 import Upload from "_pages/upload/Upload";
 import Profile from "_pages/profile/Profile";
 import Feedback from "_pages/feedback/Feedback";
-import Dashboard from "_pages/dashboard/Dashboard";
-import MdEditor from "_pages/mdEditor/MdEditor";
 import MobileUpload from "_pages/mobileUpload/MobileUpload";
 import Oauth from "_pages/oauth/Oauth";
-import Gallery from "_pages/gallery/Gallery";
 import LoginAffiliate from "_pages/login_affiliate/LoginAffiliate";
 // import OauthAffilate from "_pages/oauth/OauthAffilate";
-import HomeResource from "_pages/homeResource/HomeResource";
 import Home from "_pages/home";
 import { RoutesI } from "_types/router";
 import { AccountStatusE, RoleE } from "_types/account";
@@ -27,6 +23,7 @@ import AccountRole from "_components/AccountRole";
 import Register from "_pages/register";
 import Pay from "_pages/pay/index";
 import PublicCT from "_pages/publicCT";
+import ErrMsg from "_pages/errMsg";
 // import AILayout from "_layout/AI";
 
 const IS_MOBILE = /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent);
@@ -49,11 +46,6 @@ const routes: RoutesI[] = [
     layout: DefaultLayout,
     permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN, RoleE.DOCTOR, RoleE.PATIENT],
   },
-  // {
-  //   name: "login_form",
-  //   path: "/login_form",
-  //   component: LoginForm,
-  // },
   {
     name: "login",
     path: "/login",
@@ -79,11 +71,6 @@ const routes: RoutesI[] = [
     path: "/oauth",
     component: Oauth,
   },
-  // {
-  //   name: "oauthAffiliate",
-  //   path: "/oauth-affiliate",
-  //   component: OauthAffilate,
-  // },
   {
     name: "profile",
     path: "/profile",
@@ -98,13 +85,6 @@ const routes: RoutesI[] = [
     layout: DefaultLayout,
     permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN, RoleE.PATIENT, RoleE.DOCTOR],
   },
-  // {
-  //   name: "dashboard",
-  //   path: "/dashboard",
-  //   component: Dashboard,
-  //   layout: FullscreenLayout,
-  //   permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN],
-  // },
   {
     name: "manager",
     path: "/manager/:name?",
@@ -118,33 +98,6 @@ const routes: RoutesI[] = [
       RoleE.EMPLOYEE,
     ],
   },
-  // {
-  //   name: "ai",
-  //   path: "/ai/:type/:id",
-  //   layout: AILayout,
-  //   permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN, RoleE.PATIENT],
-  // },
-  // {
-  //   name: "homeRes",
-  //   path: "/home-res",
-  //   component: HomeResource,
-  //   layout: DefaultLayout,
-  //   permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN],
-  // },
-  // {
-  //   name: "mdEditor",
-  //   path: "/mdeditor",
-  //   component: MdEditor,
-  //   permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN],
-  //   layout: FullscreenLayout,
-  // },
-  // {
-  //   name: "gallery",
-  //   path: "/gallery",
-  //   component: Gallery,
-  //   permission: [AccountStatusE.LOGIN],
-  //   layout: FullscreenLayout,
-  // },
   {
     name: "mobileUpload",
     path: "/mu",
@@ -164,6 +117,7 @@ const routes: RoutesI[] = [
   },
   { name: "pay", path: "/pay", component: Pay },
   { name: "public-ct", path: "/public-ct", component: PublicCT, layout: DefaultLayout },
+  { name: "err-msg", path: "/e", component: ErrMsg, layout: FullscreenLayout },
 ];
 
 export default routes;

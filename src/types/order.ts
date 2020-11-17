@@ -38,6 +38,7 @@ export interface CreateOrderProdDataI {
 
 export interface OrderProdI extends ProdI {
   amount: number; // 商品数量
+  product_id: number; // 商品ID
 }
 
 /* 更新订单Data */

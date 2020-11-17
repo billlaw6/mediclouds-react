@@ -27,10 +27,12 @@ const Security: FunctionComponent<SecurityPropsI> = (props) => {
   return (
     <section className="profile-security">
       <article>
-        <header>手机号</header>
+        <header>
+          <h2>手机号</h2>
+        </header>
         <Space>
           <span>{value.split("").fill("*", 3, 8).join("")}</span>
-          <Button
+          {/* <Button
             size="small"
             type="primary"
             onClick={(): void => {
@@ -43,7 +45,7 @@ const Security: FunctionComponent<SecurityPropsI> = (props) => {
             }}
           >
             更新手机号
-          </Button>
+          </Button> */}
         </Space>
       </article>
 

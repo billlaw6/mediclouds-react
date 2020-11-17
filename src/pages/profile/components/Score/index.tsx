@@ -15,13 +15,13 @@ const Score: FunctionComponent<ScorePropsI> = (props) => {
   return (
     <section className="profile-score">
       <header className="header">
-        <Statistic title="积分" value={value} prefix={<WalletOutlined />}></Statistic>
+        <Statistic title="积分余额" value={value} prefix={<WalletOutlined />}></Statistic>
       </header>
       <div className="content">
-        <Space direction="vertical">
+        {/* <Space direction="vertical">
           <QrcodeGenerator value="https://www.baidu.com" size={256}></QrcodeGenerator>
           <span>扫码支付获取积分</span>
-        </Space>
+        </Space> */}
       </div>
     </section>
   );
