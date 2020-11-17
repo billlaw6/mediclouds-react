@@ -1,26 +1,10 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import qs from "qs";
-import { store } from "../index";
 import config from "_config";
 import { getToken } from "_helper";
-import { resolve } from "path";
 
 // let store = configureStore();
 let requestName: string; // 每次发起请求都会携带这个参数，用于标识这次请求，如果值相等，则取消重复请求
-
-// switch (process.env.NODE_ENV) {
-//   case "development":
-//     axios.defaults.baseURL = "http://192.168.31.252:8083/rest-api/";
-//     // axios.defaults.baseURL = "https://mi.mediclouds.cn/rest-api/";
-
-//     break;
-//   case "production":
-//     axios.defaults.baseURL = "https://mi.mediclouds.cn/rest-api/";
-//     break;
-//   default:
-//     axios.defaults.baseURL = "rest-api/";
-//     break;
-// }
 
 const axiosBaseConfig: AxiosRequestConfig = {
   // 自定义响应成功的HTTP状态码
