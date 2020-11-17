@@ -22,11 +22,27 @@ const Profile: FunctionComponent = (props) => {
 
   useEffect(() => {
     fetchAccount()
-      .then(() => console.log(account))
+      .then(() => console.log("successed fetch user info"))
       .catch((err) => console.error(err));
   }, []);
 
   const { show, ...config } = res;
+
+  const onResult = (info: { title: string; status: "success" | "error" }): void => {
+    setRes({
+      show: true,
+      title: info.title,
+      status: info.status,
+      extra: (
+        <Button
+          type="primary"
+          onClick={(): void => setRes(Object.assign({}, res, { show: false }))}
+        >
+          返回
+        </Button>
+      ),
+    });
+  };
 
   /* render */
   return (
@@ -39,31 +55,23 @@ const Profile: FunctionComponent = (props) => {
           <Tabs defaultActiveKey="info" tabPosition="left">
             <TabPane key="info" tab="个人信息">
               <Info
-                onSuccessed={() => {
-                  setRes({
-                    show: true,
-                    title: "更新个人信息成功！",
-                    status: "success",
-                    extra: (
-                      <Button
-                        type="primary"
-                        onClick={(): void => setRes(Object.assign({}, res, { show: false }))}
-                      >
-                        返回
-                      </Button>
-                    ),
-                  });
-                }}
+                onSuccessed={(): void =>
+                  onResult({ title: "更新个人信息成功！", status: "success" })
+                }
+                onFailed={(): void => onResult({ title: "更新个人信息失败！", status: "error" })}
               ></Info>
             </TabPane>
             <TabPane key="security" tab="安全">
               <Security value={account.cell_phone}></Security>
             </TabPane>
             <TabPane key="avatar" tab="头像">
-              <Avatar></Avatar>
+              <Avatar
+                onSuccessed={(): void => onResult({ title: "更新头像成功！", status: "success" })}
+                onFailed={(): void => onResult({ title: "更新头像失败！", status: "error" })}
+              ></Avatar>
             </TabPane>
             <TabPane key="score" tab="积分">
-              <Score value={account.score}></Score>
+              <Score></Score>
             </TabPane>
           </Tabs>
         </div>

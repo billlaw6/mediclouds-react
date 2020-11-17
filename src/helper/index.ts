@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 import { GetSearchQueryPropsI } from "_types/api";
 import CryptoJS from "crypto-js";
 import moment from "antd/node_modules/moment";
+import { ProdI } from "_types/product";
 
 export const isArray = (arr: any): boolean => Array.isArray(arr);
 export const isUndefined = (val: any): boolean => typeof val === "undefined";
@@ -369,4 +370,18 @@ export const getTexVal = (tex: 0 | 1 | 2): string => {
     default:
       return "";
   }
+};
+
+/**
+ * 获取真实商品价格
+ *
+ * @param {ProdI} prod
+ * @returns {number}
+ */
+export const getTrulyPrice = (prod: ProdI): number => {
+  const { price, special_price } = prod;
+  if (!special_price) return price;
+  if (special_price < 0) return price;
+
+  return special_price;
 };

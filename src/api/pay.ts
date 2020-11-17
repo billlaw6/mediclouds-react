@@ -18,13 +18,3 @@ export const getOrderWechatPayQrcode = async (order_number: string): Promise<str
       order_number,
     },
   });
-
-// /* 获取订单微信native二维码 */
-// export const getScoreWechatPayQrcode = async (order_number: string): Promise<string> =>
-//   await publicReq({
-//     method: "GET",
-//     url: "/pay/get-score-qrcode/",
-//     params: {
-//       order_number,
-//     },
-//   });

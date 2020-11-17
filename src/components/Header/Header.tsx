@@ -45,7 +45,7 @@ const Header: FunctionComponent<HeaderPropsI> = (props): ReactElement => {
             </MenuItem>
             <Divider />
             <MenuItem className="header-menu-item edit-user-info" key="editUserInfo">
-              <Link to="/profile">个人信息</Link>
+              <Link to="/profile">个人中心</Link>
             </MenuItem>
             <MenuItem className="header-menu-item user-feedback" key="feedback">
               <Link to="/feedback">意见反馈</Link>

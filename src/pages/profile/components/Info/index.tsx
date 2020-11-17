@@ -1,7 +1,6 @@
-import { Button, Col, DatePicker, Form, Input, Row, Select, Space } from "antd";
+import { Button, Col, DatePicker, Form, Input, Modal, Row, Select, Space } from "antd";
 import moment from "antd/node_modules/moment";
 import React, { FunctionComponent, useCallback, useState } from "react";
-import { UserI } from "_types/account";
 import { formatDate } from "_helper";
 import useAccount from "_hooks/useAccount";
 
@@ -18,13 +17,17 @@ interface InfoPropsI {
   onFailed?: (err: string) => void;
 }
 
+class CustomTextArea extends Input.TextArea {
+  showCount?: boolean;
+}
+
 const Info: FunctionComponent<InfoPropsI> = (props) => {
   const { onFailed, onSuccessed } = props;
 
   const { account, updateAccount } = useAccount();
   const { birthday, id } = account;
 
-  const [preInfo, setPreInfo] = useState<{ [key: string]: any }>({});
+  const [preInfo, setPreInfo] = useState<{ [key: string]: any }>({}); // 待更新的用户信息
   const [form] = Form.useForm();
 
   const getInfo = useCallback(
@@ -44,19 +47,26 @@ const Info: FunctionComponent<InfoPropsI> = (props) => {
   };
 
   const update = (): void => {
-    updateAccount(preInfo, id)
-      .then(() => onSuccessed && onSuccessed())
-      .catch((err) => onFailed && onFailed(err));
+    Modal.confirm({
+      title: "更新个人信息",
+      centered: true,
+      content: "是否更新个人信息？",
+      onOk: (): void => {
+        updateAccount(preInfo, id)
+          .then(() => onSuccessed && onSuccessed())
+          .catch((err) => onFailed && onFailed(err));
+      },
+    });
   };
 
-  const reset = () => {
+  const reset = (): void => {
     setPreInfo({});
     form.resetFields();
   };
 
   return (
     <Form
-      className="profile-form"
+      className="profile-info"
       name="profile"
       encType="multipart/form-data"
       method="post"
@@ -138,21 +148,21 @@ const Info: FunctionComponent<InfoPropsI> = (props) => {
       <Row>
         <Col span={24}>
           <FormItem label="个性签名" name="sign">
-            <Input.TextArea maxLength={20} value={getInfo("sign")}></Input.TextArea>
+            <CustomTextArea showCount maxLength={20} value={getInfo("sign")}></CustomTextArea>
           </FormItem>
         </Col>
       </Row>
       <Row>
         <Col span={24}>
-          <FormItem label="通讯地址" name="address">
-            <Input.TextArea maxLength={20} value={getInfo("address")}></Input.TextArea>
+          <FormItem label="通讯地址" name="address" style={{ width: "100%" }}>
+            <CustomTextArea showCount maxLength={20} value={getInfo("address")}></CustomTextArea>
           </FormItem>
         </Col>
       </Row>
       <Row>
         <Col span={24}>
           <FormItem label="就职单位" name="unit">
-            <Input.TextArea maxLength={40} value={getInfo("unit")}></Input.TextArea>
+            <CustomTextArea showCount maxLength={20} value={getInfo("unit")}></CustomTextArea>
           </FormItem>
         </Col>
       </Row>
@@ -165,7 +175,7 @@ const Info: FunctionComponent<InfoPropsI> = (props) => {
       >
         <Space>
           <FormItem>
-            <Button htmlType="submit" type="primary">
+            <Button htmlType="submit" type="primary" disabled={Object.keys(preInfo).length <= 0}>
               更新个人信息
             </Button>
           </FormItem>

@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useState } from "react";
-import { Avatar as AtAvatar, Button, Input, message, Upload } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
+import { Avatar as AtAvatar, Button, Input, message, Upload, Modal } from "antd";
+import { FastBackwardFilled, UploadOutlined } from "@ant-design/icons";
 import useAccount from "_hooks/useAccount";
 
 import "./style.less";
@@ -11,12 +11,15 @@ interface AvatarPropsI {
 }
 
 const Avatar: FunctionComponent<AvatarPropsI> = (props) => {
-  const { account } = useAccount();
+  const { onSuccessed, onFailed } = props;
 
-  const [img, setImg] = useState<File>();
+  const { account, updateAccount } = useAccount();
+  const [currentImg, setCurrentImg] = useState(account.avatar);
+  const [img, setImg] = useState<File | Blob>();
 
   const beforeUpload = (file: any) => {
-    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
+    const isJpgOrPng =
+      file.type === "image/jpeg" || file.type === "image/png" || file.type === "image/png";
     if (!isJpgOrPng) {
       message.error("只能上传 JPG/PNG 的图片!");
     }
@@ -27,17 +30,51 @@ const Avatar: FunctionComponent<AvatarPropsI> = (props) => {
     return isJpgOrPng && isLt2M;
   };
 
+  const update = (): void => {
+    if (!img) return;
+
+    updateAccount({ avatar: img as File })
+      .then(() => onSuccessed && onSuccessed())
+      .catch((err) => onFailed && onFailed(err));
+  };
+
   return (
     <section className="profile-avatar">
-      <AtAvatar className="preview" size={120} src={account.avatar}></AtAvatar>
-      {/* <Upload className="select" showUploadList={false} onPreview={beforeUpload}>
+      <AtAvatar className="preview" size={120} src={currentImg}></AtAvatar>
+      <Upload
+        beforeUpload={(file): boolean => {
+          const reader = new FileReader();
+          reader.addEventListener("load", () => setCurrentImg(reader.result as string));
+          reader.readAsDataURL(file);
+
+          setImg(file);
+
+          return false;
+        }}
+        className="select"
+        showUploadList={false}
+        onPreview={beforeUpload}
+        accept="image/png,image/jpg,image/jepg"
+      >
         <Button type="link" icon={<UploadOutlined />}>
           选择头像
         </Button>
       </Upload>
-      <Button className="update" type="primary">
-        保存头像
-      </Button> */}
+      <Button
+        className="update"
+        type="primary"
+        disabled={!img}
+        onClick={(): void => {
+          Modal.confirm({
+            title: "更新头像",
+            centered: true,
+            content: "是否更新头像？",
+            onOk: update,
+          });
+        }}
+      >
+        更新头像
+      </Button>
     </section>
   );
 };
