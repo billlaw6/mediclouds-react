@@ -71,18 +71,23 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
       // onFilter: (val, account): boolean => account.sex === (val as number),
     },
     {
-      title: "顾客类型",
-      key: "role",
-      dataIndex: "role",
-      render: (val): ReactNode => {
-        return <span>{val === RoleE.DOCTOR ? "医生" : "患者"}</span>;
-      },
-      filters: [
-        { text: "医生", value: RoleE.DOCTOR },
-        { text: "患者", value: RoleE.PATIENT },
-      ],
-      // onFilter: (val, account): boolean => account.role === (val as RoleE),
+      title: "手机号",
+      key: "cell_phone",
+      dataIndex: "cell_phone",
     },
+    // {
+    //   title: "顾客类型",
+    //   key: "role",
+    //   dataIndex: "role",
+    //   render: (val): ReactNode => {
+    //     return <span>{val === RoleE.DOCTOR ? "医生" : "患者"}</span>;
+    //   },
+    //   filters: [
+    //     { text: "医生", value: RoleE.DOCTOR },
+    //     { text: "患者", value: RoleE.PATIENT },
+    //   ],
+    //   // onFilter: (val, account): boolean => account.role === (val as RoleE),
+    // },
     {
       title: "注册日期",
       key: "date_joined",

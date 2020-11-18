@@ -2,7 +2,7 @@
 import React, { FunctionComponent } from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import configureStore from "./store/configureStore";
+import configureStore from "./store";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { IntlProvider } from "react-intl";

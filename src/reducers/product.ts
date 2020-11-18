@@ -12,8 +12,7 @@ const aiReport: Reducer<ProdI[], ActionI<ProdActionE, string[] | ProdI[]>> = (
 
   switch (type) {
     case ProdActionE.GET_LIST:
-      if (payload) return payload as ProdI[];
-      return state;
+      return (payload as ProdI[]) || state;
     default:
       return state;
   }

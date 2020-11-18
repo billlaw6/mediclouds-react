@@ -4,6 +4,15 @@ import React, { FunctionComponent, useCallback, useState } from "react";
 import { formatDate } from "_helper";
 import useAccount from "_hooks/useAccount";
 
+interface InfoPropsI {
+  onSuccessed?: Function;
+  onFailed?: (err: string) => void;
+}
+class CustomTextArea extends Input.TextArea {
+  showCount?: boolean;
+}
+
+const DEFAULT_BIRTHDAY = "1900-01-01";
 const { Item: FormItem } = Form;
 const { Option } = Select;
 
@@ -11,15 +20,6 @@ const layout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 16 },
 };
-
-interface InfoPropsI {
-  onSuccessed?: Function;
-  onFailed?: (err: string) => void;
-}
-
-class CustomTextArea extends Input.TextArea {
-  showCount?: boolean;
-}
 
 const Info: FunctionComponent<InfoPropsI> = (props) => {
   const { onFailed, onSuccessed } = props;
@@ -71,7 +71,7 @@ const Info: FunctionComponent<InfoPropsI> = (props) => {
       encType="multipart/form-data"
       method="post"
       initialValues={Object.assign({}, account, {
-        birthday: moment(birthday),
+        birthday: moment(birthday || DEFAULT_BIRTHDAY),
       })}
       onValuesChange={(res) => {
         const key = Object.keys(res)[0];
@@ -140,7 +140,7 @@ const Info: FunctionComponent<InfoPropsI> = (props) => {
                 if (date && moment(date as any).isBetween("1900-01-01", moment())) return false;
                 return true;
               }}
-              value={moment(getInfo("birthday"))}
+              value={moment(getInfo("birthday") || DEFAULT_BIRTHDAY)}
             ></DatePicker>
           </FormItem>
         </Col>

@@ -1,6 +1,6 @@
 import { CollectionI, SexT } from "_types/api";
-import { AnyAction } from "redux";
-import reducer from "../store/reducers";
+import { AnyAction, Reducer } from "redux";
+import reducer from "../reducers";
 
 // Store相关接口
 // 本地变量遵循js规范使用驼峰式全名，需要与后台数据库字段对应的变量使用下划线风格。

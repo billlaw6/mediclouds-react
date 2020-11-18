@@ -1,10 +1,11 @@
 import { Badge, Button, Col, Descriptions, Empty, Image, Modal, Result, Row, Tabs } from "antd";
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import { formatDate } from "_helper";
 import imgFail from "_images/img-fail.png";
 import useAccount from "_hooks/useAccount";
 import useReport from "_hooks/useReport";
 import { FULL_LUNG_NODULES_REPORT, GET_SCORE } from "_constants/index";
+import GeneratorQrcode from "qrcode.react";
 
 import { filterNodulesTruth, getCountWithNoduleType, getRenderData } from "./helper";
 import VariableCard from "./components/VariableCard";
@@ -12,16 +13,22 @@ import Desc from "./components/Desc";
 import GroupItem from "./components/GroupItem";
 
 import "./style.less";
+import useOrder from "_hooks/useOrder";
+import useProd from "_hooks/useProd";
+import { getOrderWechatPayQrcode } from "_api/pay";
+import { getProducts } from "_api/product";
 
 const { TabPane } = Tabs;
 
 const LungNoduleReport: FunctionComponent = () => {
   const { account } = useAccount();
   const { lungNodule: data, generateFullLungNodule } = useReport();
+  const { generateLungNoduleFullReportOrder } = useOrder();
 
   const [pending, setPending] = useState(false);
   const [showImg, setShowImg] = useState(false); // 显示完整版示意图
   const [err, setErr] = useState(false); // 显示错误信息
+  const [payQrcode, setPayQrcode] = useState(""); // 购买完整版二维码
 
   if (!data) return <Empty></Empty>;
 
@@ -57,6 +64,22 @@ const LungNoduleReport: FunctionComponent = () => {
     });
   };
 
+  /** 获取购买完整版的扫码支付二维码 */
+  const buyFullReportQrcode = async (): Promise<string | undefined> => {
+    try {
+      const prodsRes = await getProducts();
+      const prod = prodsRes.find((item) => item.code === "AI_LUNG_02");
+      if (!prod) return;
+
+      const orderRes = await generateLungNoduleFullReportOrder(prod.id);
+      if (!orderRes) return;
+
+      return await getOrderWechatPayQrcode(orderRes.order_number);
+    } catch (error) {
+      throw new Error(error);
+    }
+  };
+
   const { thumbnail, desc, patient_name, sex, study_date, exam_id, series_id, flag } = data;
 
   const renderData = getRenderData(realNodules);
@@ -69,12 +92,26 @@ const LungNoduleReport: FunctionComponent = () => {
         title="积分不足"
         subTitle="请邀请好友赚取积分或充值积分后重试"
         extra={[
-          <Button key="go_back" type="primary" onClick={(): void => setErr(false)}>
+          <Button key="go_back" type="ghost" onClick={(): void => setErr(false)}>
             返回
           </Button>,
+          // <Button
+          //   key="buy"
+          //   type="primary"
+          //   onClick={(): void => {
+          //     buyFullReportQrcode()
+          //       .then((res) => res && setPayQrcode(res))
+          //       .catch((err) => console.error(err));
+          //   }}
+          // >
+          //   点击扫码购买
+          // </Button>,
         ]}
       >
-        <img src={GET_SCORE} style={{ width: "100%" }}></img>
+        <div className="report-result">
+          {payQrcode ? <GeneratorQrcode value={payQrcode} size={256}></GeneratorQrcode> : null}
+          <img src={GET_SCORE} style={{ width: "100%" }}></img>
+        </div>
       </Result>
     );
   }
