@@ -14,7 +14,7 @@ interface ScorePropsI {
   onFailed?: (err: string) => void;
 }
 
-const TAGS_NUM = [50, 100, 500, 1000];
+const TAGS_NUM = [1000, 3000, 5000];
 
 const Score: FunctionComponent<ScorePropsI> = (props) => {
   const { account } = useAccount();
