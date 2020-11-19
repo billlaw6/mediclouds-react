@@ -18,5 +18,5 @@ export default {
   registerBaseUrl: `${BASE_URL}/register`,
   wechatPayBaseUrl: `${BASE_URL}/pay`,
   isMaintenance: false, // 是否在维护状态
-  scoreDiscount: 0.5, // 积分充值优惠
+  scoreDiscount: 2, // 积分充值优惠
 };
