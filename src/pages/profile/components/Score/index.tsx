@@ -72,7 +72,7 @@ const Score: FunctionComponent<ScorePropsI> = (props) => {
               <Alert
                 message={
                   <span>
-                    限时优惠：充值1000积分以上，<b style={{ color: "red" }}>5折优惠！</b>
+                    限时优惠：充值1000积分以上，<b style={{ color: "red" }}>充多少送多少！</b>
                   </span>
                 }
                 type="info"
