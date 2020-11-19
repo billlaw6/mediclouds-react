@@ -1,6 +1,6 @@
 import { Button, Descriptions, Space } from "antd";
 import React, { FunctionComponent, useEffect, useRef, useState } from "react";
-import { getTexVal } from "_helper";
+import { getMaxDimIdx, getTexVal } from "_helper";
 import { LungNoduleI } from "_types/ai";
 
 import "./style.less";
@@ -44,6 +44,7 @@ const Nodule: FunctionComponent<NodulePropsI> = (props) => {
     tex,
     rad_pixel,
     description,
+    max_dim_idx,
   } = data;
 
   useEffect(() => {
@@ -168,7 +169,9 @@ const Nodule: FunctionComponent<NodulePropsI> = (props) => {
                   {vol}
                 </Descriptions.Item>
                 <Descriptions.Item label="结节材质">{getTexVal(tex)}</Descriptions.Item>
-                <Descriptions.Item label="尺寸(mm x mm)">{`${long_axis} x ${short_axis}`}</Descriptions.Item>
+                <Descriptions.Item label="尺寸(mm x mm)">{`${long_axis} x ${short_axis}(${getMaxDimIdx(
+                  max_dim_idx,
+                )})`}</Descriptions.Item>
                 <Descriptions.Item label="实性部分长轴(mm)">
                   {solid_axis ? Math.round(solid_axis * 100) / 100 : "-"}
                 </Descriptions.Item>

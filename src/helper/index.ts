@@ -373,6 +373,23 @@ export const getTexVal = (tex: 0 | 1 | 2): string => {
 };
 
 /**
+ * 获取最大可观测的维度
+ * @param val 纬度 0 ｜ 1 ｜ 2
+ */
+export const getMaxDimIdx = (val: 0 | 1 | 2): string => {
+  switch (val) {
+    case 0:
+      return "横断面";
+    case 1:
+      return "冠状面";
+    case 2:
+      return "矢状面";
+    default:
+      return "";
+  }
+};
+
+/**
  * 获取真实商品价格
  *
  * @param {ProdI} prod

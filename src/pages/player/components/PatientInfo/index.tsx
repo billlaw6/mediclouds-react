@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
 import { DEFAULT_SERIES } from "_constants";
-import { getTexVal, isIE } from "_helper";
+import { getMaxDimIdx, getTexVal, isIE } from "_helper";
 import Scrollbars from "react-custom-scrollbars";
 
 import { PatientInfoPropsI } from "./type";
@@ -32,6 +32,7 @@ const PatientInfo: FunctionComponent<PatientInfoPropsI> = (props) => {
       mean_hu,
       min_hu,
       description,
+      max_dim_idx,
     } = nodule;
 
     return (
@@ -44,7 +45,7 @@ const PatientInfo: FunctionComponent<PatientInfoPropsI> = (props) => {
             </li>
             <li>材质: {getTexVal(tex)}</li>
             <li>
-              尺寸(mm x mm): {long_axis} x {short_axis}
+              尺寸(mm x mm): {long_axis} x {short_axis}({getMaxDimIdx(max_dim_idx)})
             </li>
             <li>实行部分长轴(mm): {solid_axis || "-"}</li>
             <li>实行部分比例(%): {Math.round(solid_ratio * 100)}</li>
