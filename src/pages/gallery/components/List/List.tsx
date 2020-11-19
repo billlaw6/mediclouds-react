@@ -3,7 +3,7 @@ import React, { FunctionComponent } from "react";
 import { GalleryListPropsI } from "_pages/gallery/type";
 import { Table } from "antd";
 import { GalleryI } from "_types/api";
-import moment from "antd/node_modules/moment";
+import moment from "moment";
 
 import "./List.less";
 /* 

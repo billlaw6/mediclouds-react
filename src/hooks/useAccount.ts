@@ -5,7 +5,7 @@ import { AccountActionTypes } from "_types/actions";
 import userApi from "_api/user";
 import { setToken, clearToken } from "_helper";
 import { useHistory } from "react-router";
-import moment from "antd/node_modules/moment";
+import moment from "moment";
 import { FormLoginDataI, PhoneLoginDataI, RegisterDataI } from "_types/api";
 import { store } from "../index";
 

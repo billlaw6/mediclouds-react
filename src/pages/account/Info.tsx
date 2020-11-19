@@ -2,7 +2,7 @@ import React, { FunctionComponent } from "react";
 import { UserI, RoleE } from "_types/account";
 import { Store } from "antd/lib/form/interface";
 import { Input, Select, DatePicker, Button, Form } from "antd";
-import moment from "antd/node_modules/moment";
+import moment from "moment";
 
 const { Item: FormItem } = Form;
 

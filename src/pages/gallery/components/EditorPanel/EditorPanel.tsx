@@ -25,7 +25,7 @@ import { uploadPublicImage, updatePublicImage } from "_api/dicom";
 import "./EditorPanel.less";
 import TextArea from "antd/lib/input/TextArea";
 import { Moment } from "moment";
-import moment from "antd/node_modules/moment";
+import moment from "moment";
 
 /* 
 

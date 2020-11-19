@@ -9,40 +9,11 @@ import { HeaderPropsI } from "./type";
 
 import "./Header.less";
 
-const { Item: MenuItem, Divider } = Menu;
+const { Item: MenuItem, ItemGroup: MenuItemGroup, Divider, SubMenu } = Menu;
 const { Header: AntdHeader } = Layout;
 
 const Header: FunctionComponent<HeaderPropsI> = (props): ReactElement => {
   const { avatar, isSuperuser, logout, nickname } = props;
-
-  const menu = (
-    <Menu
-      className="header-menu"
-      onClick={(info): void => {
-        const { key } = info;
-        if (key === "logout" && logout) logout();
-      }}
-    >
-      <MenuItem className="header-menu-item user-nickname" key="userName">
-        {nickname || "匿名"}
-      </MenuItem>
-      <Divider />
-      <MenuItem className="header-menu-item edit-user-info" key="editUserInfo">
-        <Link to="/profile">个人中心</Link>
-      </MenuItem>
-      <MenuItem className="header-menu-item user-feedback" key="feedback">
-        <Link to="/feedback">意见反馈</Link>
-      </MenuItem>
-      {isSuperuser ? (
-        <MenuItem className="header-menu-item dashboard" key="dashboard">
-          <Link to="/manager">管理后台</Link>
-        </MenuItem>
-      ) : null}
-      <MenuItem className="header-menu-item logout" key="logout">
-        退出
-      </MenuItem>
-    </Menu>
-  );
 
   return (
     <AntdHeader id="header">
@@ -50,13 +21,45 @@ const Header: FunctionComponent<HeaderPropsI> = (props): ReactElement => {
         <a className="logo" href="/">
           <img src={logo}></img>
         </a>
-        <Dropdown overlay={menu} placement="bottomRight">
-          {avatar ? (
-            <Avatar size="default" src={avatar}></Avatar>
-          ) : (
-            <Avatar size="default" icon={<UserOutlined />}></Avatar>
-          )}
-        </Dropdown>
+        <Menu
+          className="header-menu"
+          mode="horizontal"
+          onClick={(info): void => {
+            const { key } = info;
+            if (key === "logout" && logout) logout();
+          }}
+        >
+          <SubMenu
+            key="user"
+            popupClassName="header-menu-sub"
+            title={
+              avatar ? (
+                <Avatar size="default" src={avatar}></Avatar>
+              ) : (
+                <Avatar size="default" icon={<UserOutlined />}></Avatar>
+              )
+            }
+          >
+            <MenuItem className="header-menu-item user-nickname" key="userName">
+              {nickname || "匿名"}
+            </MenuItem>
+            <Divider />
+            <MenuItem className="header-menu-item edit-user-info" key="editUserInfo">
+              <Link to="/profile">个人中心</Link>
+            </MenuItem>
+            <MenuItem className="header-menu-item user-feedback" key="feedback">
+              <Link to="/feedback">意见反馈</Link>
+            </MenuItem>
+            {isSuperuser ? (
+              <MenuItem className="header-menu-item dashboard" key="dashboard">
+                <Link to="/manager">管理后台</Link>
+              </MenuItem>
+            ) : null}
+            <MenuItem className="header-menu-item logout" key="logout">
+              退出
+            </MenuItem>
+          </SubMenu>
+        </Menu>
       </div>
     </AntdHeader>
   );

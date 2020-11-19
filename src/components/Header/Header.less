@@ -1,5 +1,4 @@
 @headerHeight: 64px;
-@nicknameColor: rgba(0, 0, 0, 0.45);
 
 #header {
   position: fixed;
@@ -28,80 +27,49 @@
   }
 }
 
-.header-menu {
-  .ant-menu-submenu-open,
-  .ant-menu-submenu-active {
-    color: #7398ff !important;
-    border-bottom-color: #7398ff !important;
+.header-avatar-menu {
+  padding: 10px 22px;
+  text-align: right;
+  ul {
+    list-style: none !important;
+    padding-left: 0;
   }
-  &-sub {
-    .ant-menu-sub {
-      max-width: 244px;
-      padding: 10px 22px;
-    }
+
+  .user {
+    color: #606060;
   }
-  &-item {
+
+  .edit-user-info,
+  .user-feedback,
+  .dashboard,
+  .logout {
+    padding: 4px;
+
     &:hover a,
     &:hover {
       background-color: inherit;
       color: #7398ff;
     }
+  }
 
-    &.user-nickname {
-      font-size: 20px;
-      color: @nicknameColor;
-      cursor: default;
-      background-color: #fff !important;
-      &:hover {
-        color: @nicknameColor;
-      }
-    }
+  .ant-menu-item-group-title {
+    font-size: 20px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    margin-bottom: 8px;
   }
 }
 
-// .header-avatar-menu {
-//   padding: 10px 22px;
-//   text-align: right;
-//   ul {
-//     list-style: none !important;
-//     padding-left: 0;
-//   }
+.avatar-dropdown {
+  max-width: 244px;
 
-//   .user {
-//     color: #606060;
-//   }
+  .ant-menu-root.ant-menu-vertical {
+    box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08),
+      0 9px 28px 8px rgba(0, 0, 0, 0.05);
+  }
 
-//   .edit-user-info,
-//   .user-feedback,
-//   .dashboard,
-//   .logout {
-//     padding: 4px;
-
-//     &:hover a,
-//     &:hover {
-//       background-color: inherit;
-//       color: #7398ff;
-//     }
-//   }
-
-//   .ant-menu-item-group-title {
-//     font-size: 20px;
-//     white-space: nowrap;
-//     text-overflow: ellipsis;
-//     overflow: hidden;
-//     margin-bottom: 8px;
-//   }
-// }
-
-// .avatar-dropdown {
-//   max-width: 244px;
-
-//   .ant-menu-root.ant-menu-vertical {
-//     box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08),
-//       0 9px 28px 8px rgba(0, 0, 0, 0.05);
-//   }
-
-//   .ant-dropdown-menu-item:not(:last-child) {
-//     margin-bottom: 24px;
-//   }
-// }
+  .ant-dropdown-menu-item:not(:last-child) {
+    margin-bottom: 24px;
+  }
+}

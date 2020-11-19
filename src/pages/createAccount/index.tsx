@@ -10,7 +10,7 @@ import "./style.less";
 
 const { Item: FormItem } = Form;
 
-const ManagerCreateAccount: FunctionComponent = (props) => {
+const ManagerCreateAccount: FunctionComponent = () => {
   const history = useHistory();
   const { account } = useAccount();
   const { role } = account;
@@ -20,7 +20,7 @@ const ManagerCreateAccount: FunctionComponent = (props) => {
   );
   const [createStatus, setCreateStatus] = useState<"none" | "successed" | "error">("none");
 
-  if (role === RoleE.EMPLOYEE || role === RoleE.PATIENT || role === RoleE.DOCTOR) history.goBack();
+  if (role === RoleE.EMPLOYEE || role === RoleE.PATIENT || role === RoleE.DOCTOR) history.back();
 
   const getRadioItem = (): ReactNode => {
     const ManagerAccount = (

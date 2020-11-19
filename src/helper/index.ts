@@ -2,7 +2,7 @@ import { personalReq } from "_axios";
 import { ReactNode } from "react";
 import { GetSearchQueryPropsI } from "_types/api";
 import CryptoJS from "crypto-js";
-import moment from "antd/node_modules/moment";
+import moment from "moment";
 import { ProdI } from "_types/product";
 
 export const isArray = (arr: any): boolean => Array.isArray(arr);

@@ -1,5 +1,5 @@
 import { Button, Col, DatePicker, Form, Input, Modal, Row, Select, Space } from "antd";
-import moment from "antd/node_modules/moment";
+import moment from "moment";
 import React, { FunctionComponent, useCallback, useState } from "react";
 import { formatDate } from "_helper";
 import useAccount from "_hooks/useAccount";
