@@ -10,6 +10,7 @@ import SideBtns from "_components/SideBtns";
 import { RoleE } from "_types/account";
 
 import useAccount from "_hooks/useAccount";
+import { IS_MOBILE } from "_constants";
 
 /* style */
 import "./Default.less";
@@ -26,7 +27,7 @@ const DefalutLayout: FunctionComponent = (props) => {
   const { avatar, nickname, role } = account;
 
   return (
-    <Layout id="defaultLayout">
+    <Layout id="defaultLayout" className={`${IS_MOBILE ? "mobile" : ""}`}>
       <Header
         avatar={avatar}
         isSuperuser={role === RoleE.SUPER_ADMIN}
@@ -35,7 +36,7 @@ const DefalutLayout: FunctionComponent = (props) => {
       ></Header>
       <Content id="content">{children}</Content>
       <Footer></Footer>
-      <SideBtns></SideBtns>
+      {IS_MOBILE ? null : <SideBtns></SideBtns>}
     </Layout>
   );
 };

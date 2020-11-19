@@ -24,9 +24,8 @@ import Register from "_pages/register";
 import Pay from "_pages/pay/index";
 import PublicCT from "_pages/publicCT";
 import ErrMsg from "_pages/errMsg";
+import { IS_MOBILE } from "_constants";
 // import AILayout from "_layout/AI";
-
-const IS_MOBILE = /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent);
 
 const routes: RoutesI[] = [
   {

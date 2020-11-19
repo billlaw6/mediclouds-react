@@ -1,6 +1,7 @@
-import { Cascader, Space, Table } from "antd";
+import { Cascader, List, Space, Table } from "antd";
 import React, { FunctionComponent, useState } from "react";
 import data from "_assets/json/cts.json";
+import { IS_MOBILE } from "_constants";
 
 interface ColI {
   index: number;
@@ -110,6 +111,7 @@ const PublicCT: FunctionComponent = () => {
         <label>
           <span>搜索：</span>
           <Cascader
+            size={IS_MOBILE ? "large" : "middle"}
             options={selectOptions}
             onChange={(value): void => {
               const [province = "", city = "", area = ""] = value;
@@ -126,7 +128,52 @@ const PublicCT: FunctionComponent = () => {
             placeholder="请选择省/市/区"
           ></Cascader>
         </label>
-        <Table rowKey="index" dataSource={renderSource} columns={columns}></Table>
+        {IS_MOBILE ? (
+          <List
+            bordered
+            size="small"
+            itemLayout="vertical"
+            dataSource={renderSource}
+            split={false}
+            style={{
+              marginBottom: "24px",
+            }}
+            renderItem={(item, index) => {
+              const { city, area, province, type, office, hospital, cloudDicom } = item;
+
+              return (
+                <List.Item
+                  style={{
+                    background: index % 2 ? "#f1f1f1" : "#fff",
+                  }}
+                  actions={[
+                    <span style={{ fontSize: "12px" }} key="type">
+                      方式:{type}
+                    </span>,
+                    <span style={{ fontSize: "12px" }} key="office">
+                      地点:{office}
+                    </span>,
+                    <span style={{ fontSize: "12px" }} key="cloudDicom">
+                      云影像:{cloudDicom}
+                    </span>,
+                  ]}
+                  key={`item_${index}`}
+                >
+                  <List.Item.Meta title={hospital} />
+                  {`${province} ${city} ${area}`}
+                </List.Item>
+              );
+            }}
+            pagination={{
+              total: renderSource.length,
+              pageSize: 10,
+              responsive: true,
+              hideOnSinglePage: true,
+            }}
+          ></List>
+        ) : (
+          <Table rowKey="index" dataSource={renderSource} columns={columns}></Table>
+        )}
       </Space>
     </section>
   );

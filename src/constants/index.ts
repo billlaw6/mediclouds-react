@@ -1,5 +1,7 @@
 import { PatientExamI, SeriesBasicI } from "_types/api";
 
+export const IS_MOBILE = /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent);
+
 /* 默认病人检查信息 */
 export const DEFALUT_PATIENT_INFO: PatientExamI = {
   patient_name: "NA",

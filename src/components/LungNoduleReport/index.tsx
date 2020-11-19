@@ -1,10 +1,10 @@
 import { Badge, Button, Col, Descriptions, Empty, Image, Modal, Result, Row, Tabs } from "antd";
-import React, { FunctionComponent, useEffect, useState } from "react";
+import React, { FunctionComponent, useState } from "react";
 import { formatDate } from "_helper";
 import imgFail from "_images/img-fail.png";
 import useAccount from "_hooks/useAccount";
 import useReport from "_hooks/useReport";
-import { FULL_LUNG_NODULES_REPORT, GET_SCORE } from "_constants/index";
+import { FULL_LUNG_NODULES_REPORT, GET_SCORE } from "_constants";
 import GeneratorQrcode from "qrcode.react";
 
 import { filterNodulesTruth, getCountWithNoduleType, getRenderData } from "./helper";

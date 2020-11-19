@@ -1,7 +1,8 @@
 import React, { FunctionComponent, ReactElement } from "react";
-import { Menu, Layout, Avatar, Dropdown, Tag } from "antd";
+import { Menu, Layout, Avatar, Tag } from "antd";
 import { Link, useHistory } from "react-router-dom";
-import { UnorderedListOutlined, UserOutlined } from "@ant-design/icons";
+import { UserOutlined } from "@ant-design/icons";
+import { IS_MOBILE } from "_constants";
 
 import logo from "_images/logo.png";
 
@@ -9,7 +10,7 @@ import { HeaderPropsI } from "./type";
 
 import "./Header.less";
 
-const { Item: MenuItem, ItemGroup: MenuItemGroup, Divider, SubMenu } = Menu;
+const { Item: MenuItem, Divider, SubMenu } = Menu;
 const { Header: AntdHeader } = Layout;
 
 const Header: FunctionComponent<HeaderPropsI> = (props): ReactElement => {
@@ -17,7 +18,7 @@ const Header: FunctionComponent<HeaderPropsI> = (props): ReactElement => {
   const history = useHistory();
 
   return (
-    <AntdHeader id="header">
+    <AntdHeader id="header" className={`${IS_MOBILE ? "mobile" : ""}`}>
       <div className="header-content">
         <a className="logo" href="/">
           <img src={logo}></img>

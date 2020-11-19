@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from "react";
-import { DEFAULT_SERIES } from "_constants/index";
+import { DEFAULT_SERIES } from "_constants";
 import { getTexVal, isIE } from "_helper";
 import Scrollbars from "react-custom-scrollbars";
 

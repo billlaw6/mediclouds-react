@@ -51,7 +51,7 @@ module.exports = {
     addWebpackAlias({
       ["_components"]: path.join(SRC, "components"),
       ["_pages"]: path.join(SRC, "pages"),
-      ["_constants"]: path.join(SRC, "constants"),
+      ["_constants"]: path.join(SRC, "constants", "index.ts"),
       ["_layout"]: path.join(SRC, "Layout"),
       ["_images"]: path.join(SRC, "assets", "images"),
       ["_actions"]: path.join(SRC, "store", "actions"),

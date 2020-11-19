@@ -4,7 +4,7 @@
     "paths": {
       "_components/*": ["components/*"],
       "_pages/*": ["pages/*"],
-      "_constants/*": ["constants/*"],
+      "_constants": ["constants/index.ts"],
       "_layout/*": ["Layout/*"],
       "_images/*": ["assets/images/*"],
       "_actions/*": ["store/actions/*"],

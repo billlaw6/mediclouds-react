@@ -1,10 +1,9 @@
 import React, { FunctionComponent } from "react";
+import { IS_MOBILE } from "_constants";
 import PlayerWeb from "./Player";
 
-const IS_MOBILE = /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent);
-
 const Player: FunctionComponent = () => {
-  if (IS_MOBILE) return <div>mobile</div>;
+  if (IS_MOBILE) return <div>移动端播放器即将上线，敬请期待...</div>;
   return <PlayerWeb></PlayerWeb>;
 };
 
