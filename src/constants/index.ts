@@ -26,4 +26,4 @@ export const FULL_LUNG_NODULES_REPORT =
   "https://mediclouds-cn.oss-cn-qingdao.aliyuncs.com/%E5%AE%8C%E6%95%B4%E7%89%88%E6%8A%A5%E5%91%8A.jpg"; // 完整版肺结节筛查报告示意图
 
 export const GET_SCORE =
-  "https://mediclouds-cn.oss-cn-qingdao.aliyuncs.com/%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E7%A7%AF%E5%88%86.jpg"; // 如何获取积分图片
+  "https://mediclouds-cn.oss-cn-qingdao.aliyuncs.com/%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E7%A7%AF%E5%88%86_web.jpg"; // 如何获取积分图片
