@@ -1,7 +1,7 @@
 /* eslint-disable react/display-name */
 /* eslint-disable @typescript-eslint/camelcase */
 import React, { FunctionComponent, useEffect, useState, ReactElement, useCallback } from "react";
-import { Table, Button, Popconfirm } from "antd";
+import { Table, Button, Popconfirm, Alert, Space } from "antd";
 
 import EditPanel from "./EditPanel/EditPanel";
 import { HomeResI } from "./type";
@@ -17,7 +17,7 @@ const columns = [
     dataIndex: "img_url",
     render: (url: string): ReactElement => <img src={url || ""}></img>,
   },
-  { key: "link_url", title: "跳转地址", dataIndex: "link_url" },
+  { key: "link_url", title: "跳转地址", dataIndex: "link_url", ellipsis: true },
   {
     key: "order",
     title: "顺序",
@@ -80,6 +80,28 @@ const HomeResource: FunctionComponent = () => {
 
   return (
     <div className="home-res">
+      <Space direction="vertical">
+        <Alert
+          message={
+            <span>
+              跳转地址格式为: <b>/pages/</b>
+              <i style={{ color: "green" }}>[需要跳转的小程序页面]</i>
+              <b>/index</b>
+            </span>
+          }
+        ></Alert>
+        <Alert
+          showIcon
+          closable
+          type="warning"
+          message={
+            <span>
+              当需要跳转web页面时，请将跳转地址改为 <b>/pages/web/index?url=</b>
+              <i style={{ color: "red" }}>[需要跳转的url地址]</i>
+            </span>
+          }
+        ></Alert>
+      </Space>
       <header className="home-res-header">
         <h1 className="home-res-title">首页图片管理</h1>
         <div className="home-res-ctl">
