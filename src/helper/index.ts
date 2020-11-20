@@ -335,20 +335,26 @@ interface ParseLungNoduleDescResI {
  * @returns {ParseLungNoduleDescResI}
  */
 export const parseLungNoduleDesc = (val: string): ParseLungNoduleDescResI => {
-  const [primary, extra] = val.split("&");
-  const [title, contentVal] = primary.split(":");
+  const [primary = "", extra = ""] = val.split("&");
+  const [title = "", contentVal = ""] = primary.split(":");
 
   const res: ParseLungNoduleDescResI = {
     title: title.trim(),
-    content: contentVal.split(";").map((item) => item.trim()),
+    content: contentVal
+      .split(";")
+      .map((item) => item.trim())
+      .filter((item) => item),
   };
 
   if (extra) {
-    const [extraTitle, extraContentVal] = extra.split(":");
+    const [extraTitle = "", extraContentVal = ""] = extra.split(":");
 
     res.extra = {
       title: extraTitle.trim(),
-      content: extraContentVal.split(";").map((item) => item.trim()),
+      content: extraContentVal
+        .split(";")
+        .map((item) => item.trim())
+        .filter((item) => item),
     };
   }
 
