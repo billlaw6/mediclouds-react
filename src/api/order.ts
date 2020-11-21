@@ -37,7 +37,7 @@ export const updateOrder = async (id: string, data: UpdateOrderDataI): Promise<O
   });
 
 /* 获取订单状态 */
-export const getOrderStatus = async (orderNum: number): Promise<0 | 1 | 2 | 3 | 4> =>
+export const getOrderStatus = async (orderNum: string): Promise<0 | 1 | 2 | 3 | 4> =>
   await publicReq({
     method: "GET",
     url: `/order/status/${orderNum}/`,

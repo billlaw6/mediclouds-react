@@ -5,10 +5,11 @@ import { useHistory } from "react-router-dom";
 import { generateLungNodule } from "_api/ai";
 import DicomCard from "_components/DicomCard/DicomCard";
 import { getSelected } from "_helper";
-import useAccount from "_hooks/useAccount";
+import useOrder from "_hooks/useOrder";
 import useResources from "_hooks/useResources";
 import { GetSearchQueryPropsI, SearchQueryResI } from "_types/api";
 import { ExamIndexI } from "_types/resources";
+
 import Empty from "../Empty";
 
 import "./style.less";
@@ -33,6 +34,7 @@ const ExamCards: FunctionComponent<ExamCardsPropsI> = (props) => {
     onChangePagination,
     onUpdateDescSuccess,
   } = props;
+  const { buyLungNodulesReport } = useOrder();
 
   const [onPending, setOnPending] = useState(false); // 是否在发送请求
   const history = useHistory();
@@ -57,11 +59,6 @@ const ExamCards: FunctionComponent<ExamCardsPropsI> = (props) => {
       okText: "创建（限时免费）",
       cancelText: "取消",
       onOk: () => {
-        // if (account.score < 1000) {
-        //   message.warn({
-        //     content: "积分不足，无法创建AI报告",
-        //   });
-        // } else {
         setOnPending(true);
         generateLungNodule(id)
           .then((res) => {
@@ -77,10 +74,10 @@ const ExamCards: FunctionComponent<ExamCardsPropsI> = (props) => {
             }
           })
           .catch((err) => {
-            setOnPending(false);
             message.error({
-              content: "报告创建失败，请重试",
+              content: err === "400" ? "积分不足，无法创建AI报告" : "报告创建失败，请重试",
             });
+            setOnPending(false);
           });
         // }
       },

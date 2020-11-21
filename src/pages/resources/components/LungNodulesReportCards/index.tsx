@@ -1,4 +1,4 @@
-import { Card, Checkbox, Col, Empty, Grid, Row, Modal, Pagination, Spin } from "antd";
+import { Card, Checkbox, Col, Empty, Grid, Row, Modal, Pagination } from "antd";
 import React, { FunctionComponent, ReactNode, useState } from "react";
 import { formatDate } from "_helper";
 import { LungNoduleReportI } from "_types/ai";

@@ -18,7 +18,7 @@ export interface ProdCreateDataI {
   name: string;
   code: string;
   price: number;
-  special_price?: number;
+  special_price: number;
   comment?: string;
   flag?: 0 | 1;
 }

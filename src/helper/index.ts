@@ -403,8 +403,35 @@ export const getMaxDimIdx = (val: 0 | 1 | 2): string => {
  */
 export const getTrulyPrice = (prod: ProdI): number => {
   const { price, special_price } = prod;
-  if (!special_price) return price;
   if (special_price < 0) return price;
 
   return special_price;
 };
+
+/**
+ * 自定义错误类
+ *
+ * @export
+ * @class Err
+ * @extends {Error}
+ */
+export class Err extends Error {
+  code?: number;
+  type?: string;
+
+  constructor(msg: string, code?: number, type?: string, moreDetails?: object) {
+    super(typeof msg === "string" ? msg : JSON.stringify(msg, null, 2));
+
+    this.code = code;
+    this.type = type;
+
+    if (process.env.NODE_ENV === "development") {
+      console.group("%c=== 自定义错误信息 ===", "background: red; color: white;");
+      if (this.type) console.log(`%c错误类型: ${type}`, "color: lightcoral");
+      if (this.code !== undefined) console.log(`%c错误码: ${code}`, "color: orange");
+      console.log(`%c错误信息: ${msg}`, "color: red");
+      if (moreDetails) console.table(moreDetails);
+      console.groupEnd();
+    }
+  }
+}

@@ -1,7 +1,8 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import { stat } from "fs";
 import qs from "qs";
 import config from "_config";
-import { getToken } from "_helper";
+import { Err, getToken } from "_helper";
 
 // let store = configureStore();
 let requestName: string; // 每次发起请求都会携带这个参数，用于标识这次请求，如果值相等，则取消重复请求
@@ -78,15 +79,24 @@ const customReqErr = (err: any) => Promise.reject(err);
 const customRes = <P = any>(res: AxiosResponse<P>): P => res.data;
 const customResErr = (error: any) => {
   // 两种错误返回类型
-  const { response } = error;
-  const { status } = response;
+  const { response, message } = error;
+  const { status, data } = response;
+
+  let msg = message;
+  if (typeof data === "string") msg = data;
+  if (data.detail && typeof data.detail === "string") msg = data.detail;
+
+  const err = new Err(msg, status, "API BUG");
 
   switch (status) {
     case 401:
-      window.location.replace(`${window.location.origin}/login`);
+    case 403:
+      // 开发环境下不跳转
+      if (process.env.NODE_ENV !== "development")
+        window.location.replace(`${window.location.origin}/login`);
       break;
     default:
-      throw new Error(error);
+      throw err.code;
   }
 
   // switch(status) {

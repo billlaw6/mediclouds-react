@@ -19,6 +19,7 @@ const { TabPane } = Tabs;
 const Profile: FunctionComponent = (props) => {
   const { account, fetchAccount } = useAccount();
   const [res, setRes] = useState<ResultProps & { show: boolean }>({ show: false });
+  const [currentKey, setCurrentKey] = useState("info"); // 当前的tab key
 
   useEffect(() => {
     fetchAccount()
@@ -28,7 +29,7 @@ const Profile: FunctionComponent = (props) => {
 
   const { show, ...config } = res;
 
-  const onResult = (info: { title: string; status: "success" | "error" }): void => {
+  const onResult = (info: { title: string; status: "success" | "error"; key?: string }): void => {
     setRes({
       show: true,
       title: info.title,
@@ -36,7 +37,10 @@ const Profile: FunctionComponent = (props) => {
       extra: (
         <Button
           type="primary"
-          onClick={(): void => setRes(Object.assign({}, res, { show: false }))}
+          onClick={(): void => {
+            setRes(Object.assign({}, res, { show: false }));
+            if (info.key) setCurrentKey(info.key);
+          }}
         >
           返回
         </Button>
@@ -52,7 +56,12 @@ const Profile: FunctionComponent = (props) => {
         <Result {...config}></Result>
       ) : (
         <div className="profile-content">
-          <Tabs defaultActiveKey="info" tabPosition="left">
+          <Tabs
+            defaultActiveKey="info"
+            tabPosition="left"
+            activeKey={currentKey}
+            onChange={(key): void => setCurrentKey(key)}
+          >
             <TabPane key="info" tab="个人信息">
               <Info
                 onSuccessed={(): void =>
@@ -71,7 +80,15 @@ const Profile: FunctionComponent = (props) => {
               ></Avatar>
             </TabPane>
             <TabPane key="score" tab="积分">
-              <Score></Score>
+              <Score
+                onSuccessed={(): void => {
+                  fetchAccount()
+                    .then(() =>
+                      onResult({ title: "积分充值成功！", status: "success", key: "score" }),
+                    )
+                    .catch((err) => console.error(err));
+                }}
+              ></Score>
             </TabPane>
           </Tabs>
         </div>

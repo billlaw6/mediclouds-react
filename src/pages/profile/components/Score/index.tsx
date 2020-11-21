@@ -1,14 +1,14 @@
 import { WalletOutlined } from "@ant-design/icons";
-import { Alert, Button, Card, Input, InputNumber, Space, Statistic, Tag } from "antd";
-import React, { FunctionComponent, useState } from "react";
+import { Alert, Button, Card, InputNumber, Space, Statistic, Tag } from "antd";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import QrcodeGenerator from "qrcode.react";
-import useProd from "_hooks/useProd";
 
 import useAccount from "_hooks/useAccount";
-import { getOrderWechatPayQrcode } from "_api/pay";
 import useOrder from "_hooks/useOrder";
 
 import config from "_config";
+import { OrderI } from "_types/order";
+import { getOrderStatus } from "_api/order";
 
 import "./style.less";
 interface ScorePropsI {
@@ -16,15 +16,17 @@ interface ScorePropsI {
   onFailed?: (err: string) => void;
 }
 
+let timer = -1;
 const TAGS_NUM = [1000, 3000, 5000];
 
 const Score: FunctionComponent<ScorePropsI> = (props) => {
+  const { onSuccessed } = props;
   const { account } = useAccount();
-  const { generateScoreOrder } = useOrder();
-  const [qrcode, setQrcode] = useState<string>(""); // 支付二维码
+  const { buyScore } = useOrder();
+  const [qrcode, setQrcode] = useState<string>(); // 支付二维码
   const [preScore, setPreScore] = useState(""); // 待充值的积分
   const [loading, setLoading] = useState(false);
-  const { getProdList } = useProd();
+  const [currentOrder, setCurrentOrder] = useState<OrderI>(); // 当前的订单
 
   const onClick = (): void => {
     let _score = parseInt(preScore, 10);
@@ -36,25 +38,34 @@ const Score: FunctionComponent<ScorePropsI> = (props) => {
     }
 
     setLoading(true);
-    getProdList()
+    buyScore(_score)
       .then((res) => {
-        const scoreProd = res.find((item) => item.code === "SCORE");
-        if (!scoreProd) throw new Error("没有此商品");
-
-        return generateScoreOrder(scoreProd.id, _score);
-      })
-      .then((res) => {
-        const { order_number } = res;
-        return getOrderWechatPayQrcode(order_number);
-      })
-      .then((res) => {
-        setQrcode(res);
+        const { qrcode, order } = res;
+        setCurrentOrder(order);
+        setQrcode(qrcode);
+        setLoading(false);
       })
       .catch((err) => console.error(err))
-      .finally(() => {
-        setLoading(false);
-      });
+      .finally(() => setLoading(false));
   };
+
+  useEffect(() => {
+    if (currentOrder) {
+      timer = window.setInterval(() => {
+        getOrderStatus(currentOrder.order_number).then((res) => {
+          if (res > 0 && res < 3) {
+            setCurrentOrder(undefined);
+
+            onSuccessed && onSuccessed();
+          }
+        });
+      }, 3000);
+    } else {
+      window.clearInterval(timer);
+    }
+
+    return () => window.clearInterval(timer);
+  }, [currentOrder]);
 
   return (
     <section className="profile-score">
