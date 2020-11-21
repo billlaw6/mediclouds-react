@@ -29,13 +29,13 @@ const Score: FunctionComponent<ScorePropsI> = (props) => {
   const [currentOrder, setCurrentOrder] = useState<OrderI>(); // 当前的订单
 
   const onClick = (): void => {
-    let _score = parseInt(preScore, 10);
+    const _score = parseInt(preScore, 10);
     if (!_score) return;
 
     /** 大于1000积分触发充值优惠 */
-    if (_score >= 1000) {
-      _score = Math.ceil(_score * config.scoreDiscount);
-    }
+    // if (_score >= 1000) {
+    //   _score = Math.ceil(_score * config.scoreDiscount);
+    // }
 
     setLoading(true);
     buyScore(_score)
@@ -80,7 +80,7 @@ const Score: FunctionComponent<ScorePropsI> = (props) => {
             <div className="input-title">积分充值：</div>
             {/* <span>即将上线，敬请期待...</span> */}
             <Space direction="vertical">
-              <Alert
+              {/* <Alert
                 message={
                   <span>
                     限时优惠：充值1000积分以上，<b style={{ color: "red" }}>充多少送多少！</b>
@@ -88,7 +88,7 @@ const Score: FunctionComponent<ScorePropsI> = (props) => {
                 }
                 type="info"
                 showIcon
-              ></Alert>
+              ></Alert> */}
               <InputNumber
                 type="number"
                 value={parseInt(preScore, 10) || 0}
@@ -122,7 +122,7 @@ const Score: FunctionComponent<ScorePropsI> = (props) => {
           {qrcode ? (
             <Space direction="vertical">
               <QrcodeGenerator value={qrcode} size={256}></QrcodeGenerator>
-              <span style={{ color: "red" }}>扫码支付获取积分，支付完成请刷新页面查看积分变动</span>
+              {/* <span style={{ color: "red" }}>扫码支付获取积分，支付完成请刷新页面查看积分变动</span> */}
             </Space>
           ) : null}
         </Space>
