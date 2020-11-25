@@ -45,7 +45,13 @@ const CardMeta: FunctionComponent<{ data: LungNoduleReportI }> = (props) => {
       <span>检查日期: {formatDate(study_date)}</span>
       <br />
       {err ? (
-        <span style={{ color: "red" }}>AI检测失败</span>
+        <>
+          <span style={{ color: "red" }}>
+            AI检测失败
+            <br />
+            <i>{desc}</i>
+          </span>
+        </>
       ) : (
         <span>
           分析结果: <Desc extra>{desc}</Desc>

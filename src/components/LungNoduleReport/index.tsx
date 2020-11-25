@@ -38,8 +38,7 @@ const LungNoduleReport: FunctionComponent = () => {
         setErr(false);
       })
       .catch((err) => {
-        if (err.message === "400") {
-          console.log("err", err.message);
+        if (err.message === "402") {
           setErr(true);
         }
       })

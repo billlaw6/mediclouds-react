@@ -75,7 +75,7 @@ const ExamCards: FunctionComponent<ExamCardsPropsI> = (props) => {
           })
           .catch((err) => {
             message.error({
-              content: err.message === "400" ? "积分不足，无法创建AI报告" : "报告创建失败，请重试",
+              content: err.message === "402" ? "积分不足，无法创建AI报告" : "报告创建失败，请重试",
             });
             setOnPending(false);
           });
