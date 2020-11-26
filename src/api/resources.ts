@@ -45,7 +45,7 @@ export const delExamList = async (type: ResourcesTypeE, id: string[]): Promise<R
 export const getExamList = async (
   id: string,
   searchQuery?: GetSearchQueryPropsI,
-): Promise<SearchQueryResI<ExamIndexListI[]>> =>
+): Promise<SearchQueryResI<ExamIndexListI>> =>
   await publicReq({
     method: "POST",
     url: `/resources/exam-list/${id}/`,
@@ -86,7 +86,7 @@ export const getMprSeries = async (id: string): Promise<SeriesMprI> =>
 export const getPdfList = async (
   id: string,
   searchQuery?: GetSearchQueryPropsI,
-): Promise<SearchQueryResI<PdfI[]>> =>
+): Promise<SearchQueryResI<PdfI>> =>
   await publicReq({
     method: "POST",
     url: `/resources/pdf-list/${id}/`,
@@ -97,7 +97,7 @@ export const getPdfList = async (
 export const getImgList = async (
   id: string,
   searchQuery?: GetSearchQueryPropsI,
-): Promise<SearchQueryResI<ImgI[]>> =>
+): Promise<SearchQueryResI<ImgI>> =>
   await publicReq({
     method: "POST",
     url: `/resources/img-list/${id}/`,
@@ -108,7 +108,7 @@ export const getImgList = async (
 export const getLungNodulesReportList = async (
   id: string,
   searchQuery?: GetSearchQueryPropsI,
-): Promise<SearchQueryResI<LungNoduleReportI[]>> =>
+): Promise<SearchQueryResI<LungNoduleReportI>> =>
   await publicReq({
     method: "POST",
     url: `/resources/lung-nodules-list/${id}/`,

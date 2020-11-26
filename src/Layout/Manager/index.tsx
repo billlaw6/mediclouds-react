@@ -60,8 +60,6 @@ const ManagerLayout: FunctionComponent = () => {
     }
   };
 
-  // console.log("account", account);
-
   return (
     <Layout id="managerLayout" className="manager-layout">
       <ManagerSider collapsible role={account.role} menuKey={name}></ManagerSider>

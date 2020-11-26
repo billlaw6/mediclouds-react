@@ -6,18 +6,14 @@ import { ResourcesTypeE } from "_types/resources";
 import Controller from "./components/Controller";
 import { GetSearchQueryPropsI } from "_types/api";
 
-import { ViewTypeEnum } from "./type";
-import ExamTable from "./components/ExamTable";
-import ExamCards from "./components/ExamCards";
 import { flattenArr } from "_helper";
-import ImgCards from "./components/ImgCards";
-import PdfTable from "./components/PdfTable";
+import ExamCards from "_components/ExamCards";
+import ImgCards from "_components/ImgCards";
+import PdfTable from "_components/PdfTable";
 import LungNodulesReportCards from "./components/LungNodulesReportCards";
 import Notify from "_components/Notify";
 import { checkDicomParseProgress } from "_api/dicom";
 import PrivacyNotice from "_components/PrivacyNotice";
-import useAccount from "_hooks/useAccount";
-import Empty from "./components/Empty";
 
 import "./style.less";
 
@@ -54,9 +50,8 @@ const Resources: FunctionComponent = () => {
     examList,
     imgList,
     pdfList,
-    sortBy,
-    viewMode,
-    tabType,
+    resourcesSortBy,
+    resourcesTabType,
     changeSortBy,
     switchTabType,
   } = useResources();
@@ -71,22 +66,22 @@ const Resources: FunctionComponent = () => {
     exam: {
       current: 1,
       size: 12,
-      sort: sortBy.exam,
+      sort: resourcesSortBy.exam,
     },
     img: {
       current: 1,
       size: 12,
-      sort: sortBy.img,
+      sort: resourcesSortBy.img,
     },
     pdf: {
       current: 1,
       size: 12,
-      sort: sortBy.pdf,
+      sort: resourcesSortBy.pdf,
     },
     lung_nodules_report: {
       current: 1,
       size: 12,
-      sort: sortBy.lung_nodules_report,
+      sort: resourcesSortBy.lung_nodules_report,
     },
   });
   const [selectMode, setSelectMode] = useState(false); // 选择模式
@@ -167,14 +162,14 @@ const Resources: FunctionComponent = () => {
    * 确认删除
    */
   const confirmDel = () => {
-    const ids = flattenArr(selected[tabType]);
+    const ids = flattenArr(selected[resourcesTabType]);
 
     if (!ids || !ids.length) return;
 
     let delFunction: Function | undefined = undefined,
       typeName = "";
 
-    switch (tabType) {
+    switch (resourcesTabType) {
       case ResourcesTypeE.EXAM:
         delFunction = delExam;
         typeName = "检查";
@@ -200,7 +195,7 @@ const Resources: FunctionComponent = () => {
       className: "del-confirm",
       title: "确认删除",
       content: `确认删除所选【${typeName}】吗？${
-        tabType === ResourcesTypeE.EXAM
+        resourcesTabType === ResourcesTypeE.EXAM
           ? "已选检查如有做过AI分析，则相关联的AI分析报告将一并删除"
           : ""
       }`,
@@ -210,8 +205,8 @@ const Resources: FunctionComponent = () => {
         try {
           if (delFunction) {
             await delFunction(ids);
-            fetchResources(tabType);
-            updateSelected(tabType, []);
+            fetchResources(resourcesTabType);
+            updateSelected(resourcesTabType, []);
           }
 
           setSelectMode(false);
@@ -244,14 +239,14 @@ const Resources: FunctionComponent = () => {
 
   useEffect(() => {
     // 根据tab页签拉取相应的资源
-    fetchResources(tabType);
-  }, [tabType, searchQuery, parsingInfo]);
+    fetchResources(resourcesTabType);
+  }, [resourcesTabType, searchQuery, parsingInfo]);
 
-  const currentResources = getCurrentResources(tabType);
+  const currentResources = getCurrentResources(resourcesTabType);
   const showDelBtn = currentResources ? !!currentResources.results.length : false;
   let isPending = false;
 
-  switch (tabType) {
+  switch (resourcesTabType) {
     case ResourcesTypeE.EXAM:
       isPending = !examList;
       break;
@@ -281,7 +276,7 @@ const Resources: FunctionComponent = () => {
         </Notify>
       ) : null}
       <Controller
-        resourcesType={tabType}
+        resourcesType={resourcesTabType}
         showDelBtn={showDelBtn}
         isSelectable={selectMode}
         onDel={confirmDel}
@@ -296,11 +291,11 @@ const Resources: FunctionComponent = () => {
           });
         }}
         onSortByChange={(val): void => {
-          changeSortBy(tabType, val);
+          changeSortBy(resourcesTabType, val);
           setSearchQuery(
             Object.assign({}, searchQuery, {
-              [tabType]: {
-                ...searchQuery[tabType],
+              [resourcesTabType]: {
+                ...searchQuery[resourcesTabType],
                 sort: val,
               },
             }),
@@ -311,7 +306,7 @@ const Resources: FunctionComponent = () => {
         <Tabs
           className="resources-tabs"
           type="card"
-          activeKey={tabType}
+          activeKey={resourcesTabType}
           onChange={(val): void => switchTabType(val as ResourcesTypeE)}
         >
           <TabPane className="resources-tabs-item" tab="检查" key={ResourcesTypeE.EXAM}>
@@ -324,35 +319,8 @@ const Resources: FunctionComponent = () => {
               }}
               selected={flattenArr(selected[ResourcesTypeE.EXAM])}
               onSelected={(vals): void => updateSelected(ResourcesTypeE.EXAM, vals)}
-              onUpdateDescSuccess={(): void => fetchResources(tabType)}
+              onUpdateDescSuccess={(): void => fetchResources(resourcesTabType)}
             ></ExamCards>
-            {/* {viewMode === ViewTypeEnum.LIST ? (
-              <ExamTable
-                data={examList}
-                isSelectable={selectMode}
-                searchQuery={searchQuery[ResourcesTypeE.EXAM]}
-                onChangePagination={(current): void => {
-                  onChangePagination(ResourcesTypeE.EXAM, current);
-                }}
-                selected={flattenArr(selected[ResourcesTypeE.EXAM])}
-                onSelected={(vals): void => updateSelected(ResourcesTypeE.EXAM, vals)}
-                onUpdateDescSuccess={(): void => {
-                  fetchResources(tabType);
-                }}
-              ></ExamTable>
-            ) : (
-              <ExamCards
-                data={examList}
-                isSelectable={selectMode}
-                searchQuery={searchQuery[ResourcesTypeE.EXAM]}
-                onChangePagination={(current): void => {
-                  onChangePagination(ResourcesTypeE.EXAM, current);
-                }}
-                selected={flattenArr(selected[ResourcesTypeE.EXAM])}
-                onSelected={(vals): void => updateSelected(ResourcesTypeE.EXAM, vals)}
-                onUpdateDescSuccess={(): void => fetchResources(tabType)}
-              ></ExamCards>
-            )} */}
           </TabPane>
           <TabPane className="resources-tabs-item" tab="图片" key={ResourcesTypeE.IMG}>
             <ImgCards

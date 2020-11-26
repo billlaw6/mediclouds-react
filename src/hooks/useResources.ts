@@ -7,7 +7,6 @@ import {
   getPdfList,
   updateExamDesc,
 } from "_api/resources";
-import { ViewTypeEnum } from "_pages/resources/type";
 import { GetSearchQueryPropsI } from "_types/api";
 import { StoreStateI } from "_types/core";
 import {
@@ -26,12 +25,12 @@ export default () => {
     pdfList,
     imgList,
     lungNodulesReportList,
-    sortBy,
-    viewMode,
-    tabType,
-  } = useSelector<StoreStateI, StoreStateI["resources"] & StoreStateI["resourcesSettings"]>(
-    (state) => ({ ...state.resources, ...state.resourcesSettings }),
-  );
+    resourcesSortBy,
+    resourcesTabType,
+  } = useSelector<StoreStateI, StoreStateI["resources"] & StoreStateI["settings"]>((state) => ({
+    ...state.resources,
+    ...state.settings,
+  }));
 
   const { id = "" } = account;
 
@@ -53,11 +52,6 @@ export default () => {
   const fetchLungNodulesReportList = async (searchQuery?: GetSearchQueryPropsI): Promise<void> => {
     const res = await getLungNodulesReportList(id, searchQuery);
     dispatch({ type: ResourcesActionE.GET_LUNG_NODULES_REPORT, payload: res });
-  };
-
-  /** 切换检查视图模式 */
-  const changeViewMode = (type: ViewTypeEnum): void => {
-    dispatch({ type: ResourcesActionE.SET_VIEW_MODE, payload: type });
   };
 
   /** 切换排序 */
@@ -103,9 +97,8 @@ export default () => {
     pdfList,
     imgList,
     lungNodulesReportList,
-    sortBy,
-    viewMode,
-    tabType,
+    resourcesSortBy,
+    resourcesTabType,
     fetchExamList,
     delExam,
     fetchImgList,
@@ -114,7 +107,6 @@ export default () => {
     delPdf,
     fetchLungNodulesReportList,
     delLungNodulesReport,
-    changeViewMode,
     changeSortBy,
     updateExamDesc: _updateExamDesc,
     switchTabType,

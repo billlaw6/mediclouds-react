@@ -1,17 +1,14 @@
 import {
-  AppstoreOutlined,
   ArrowLeftOutlined,
   CloudUploadOutlined,
   DeleteOutlined,
-  MenuOutlined,
   SortAscendingOutlined,
 } from "@ant-design/icons";
 import { Dropdown, Menu } from "antd";
 import React, { FunctionComponent, ReactElement, ReactNode } from "react";
 import LinkButton from "_components/LinkButton/LinkButton";
 import useResources from "_hooks/useResources";
-import { ViewTypeEnum } from "_pages/resources/type";
-import { ExamSortKeyE, ImgAndPdfSortKeyE, ReportSortKeyE, ResourcesTypeE } from "_types/resources";
+import { ExamSortKeyE, ImgAndPdfSortKeyE, ResourcesTypeE } from "_types/resources";
 
 import "./style.less";
 
@@ -36,7 +33,7 @@ const Controller: FunctionComponent<ControllerPropsI> = (props) => {
     onSortByChange,
   } = props;
 
-  const { viewMode, sortBy, changeViewMode } = useResources();
+  const { resourcesSortBy } = useResources();
 
   /**
    * 返回Exam排序的内容部分
@@ -51,13 +48,13 @@ const Controller: FunctionComponent<ControllerPropsI> = (props) => {
         items = (
           <>
             <Menu.Item
-              disabled={sortBy[resourcesType] === ExamSortKeyE.STUDY_DATE}
+              disabled={resourcesSortBy[resourcesType] === ExamSortKeyE.STUDY_DATE}
               key={ExamSortKeyE.STUDY_DATE}
             >
               时间排序
             </Menu.Item>
             <Menu.Item
-              disabled={sortBy[resourcesType] === ExamSortKeyE.MODALITY}
+              disabled={resourcesSortBy[resourcesType] === ExamSortKeyE.MODALITY}
               key={ExamSortKeyE.MODALITY}
             >
               种类排序
@@ -70,13 +67,13 @@ const Controller: FunctionComponent<ControllerPropsI> = (props) => {
         items = (
           <>
             <Menu.Item
-              disabled={sortBy[resourcesType] === ImgAndPdfSortKeyE.CREATED_AT}
+              disabled={resourcesSortBy[resourcesType] === ImgAndPdfSortKeyE.CREATED_AT}
               key={ImgAndPdfSortKeyE.CREATED_AT}
             >
               时间排序
             </Menu.Item>
             <Menu.Item
-              disabled={sortBy[resourcesType] === ImgAndPdfSortKeyE.FILENAME}
+              disabled={resourcesSortBy[resourcesType] === ImgAndPdfSortKeyE.FILENAME}
               key={ImgAndPdfSortKeyE.FILENAME}
             >
               文件名排序
@@ -89,13 +86,13 @@ const Controller: FunctionComponent<ControllerPropsI> = (props) => {
         items = (
           <>
             <Menu.Item
-              disabled={sortBy[resourcesType] === ImgAndPdfSortKeyE.CREATED_AT}
+              disabled={resourcesSortBy[resourcesType] === ImgAndPdfSortKeyE.CREATED_AT}
               key={ImgAndPdfSortKeyE.CREATED_AT}
             >
               时间排序
             </Menu.Item>
             <Menu.Item
-              disabled={sortBy[resourcesType] === ImgAndPdfSortKeyE.FILENAME}
+              disabled={resourcesSortBy[resourcesType] === ImgAndPdfSortKeyE.FILENAME}
               key={ImgAndPdfSortKeyE.FILENAME}
             >
               文件名排序
@@ -116,10 +113,6 @@ const Controller: FunctionComponent<ControllerPropsI> = (props) => {
         {items}
       </Menu>
     );
-  };
-
-  const onChangeViewMode = (): void => {
-    changeViewMode(viewMode === ViewTypeEnum.GRID ? ViewTypeEnum.LIST : ViewTypeEnum.GRID);
   };
 
   return (

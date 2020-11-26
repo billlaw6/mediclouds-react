@@ -8,9 +8,8 @@ interface InfoPropsI {
   onSuccessed?: Function;
   onFailed?: (err: string) => void;
 }
-class CustomTextArea extends Input.TextArea {
-  showCount?: boolean;
-}
+
+const { TextArea } = Input;
 
 const DEFAULT_BIRTHDAY = "1900-01-01";
 const { Item: FormItem } = Form;
@@ -148,21 +147,21 @@ const Info: FunctionComponent<InfoPropsI> = (props) => {
       <Row>
         <Col span={24}>
           <FormItem label="个性签名" name="sign">
-            <CustomTextArea showCount maxLength={20} value={getInfo("sign")}></CustomTextArea>
+            <TextArea showCount maxLength={20} value={getInfo("sign")}></TextArea>
           </FormItem>
         </Col>
       </Row>
       <Row>
         <Col span={24}>
           <FormItem label="通讯地址" name="address" style={{ width: "100%" }}>
-            <CustomTextArea showCount maxLength={20} value={getInfo("address")}></CustomTextArea>
+            <TextArea showCount maxLength={20} value={getInfo("address")}></TextArea>
           </FormItem>
         </Col>
       </Row>
       <Row>
         <Col span={24}>
           <FormItem label="就职单位" name="unit">
-            <CustomTextArea showCount maxLength={20} value={getInfo("unit")}></CustomTextArea>
+            <TextArea showCount maxLength={20} value={getInfo("unit")}></TextArea>
           </FormItem>
         </Col>
       </Row>

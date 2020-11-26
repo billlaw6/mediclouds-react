@@ -1,4 +1,4 @@
-import { Row, Col, Pagination, message, Button, Spin, Modal } from "antd";
+import { Row, Col, Pagination, message, Button, Spin, Modal, Empty as AntdEmpty } from "antd";
 import { Gutter } from "antd/lib/grid/row";
 import React, { FunctionComponent, ReactElement, useState } from "react";
 import { useHistory } from "react-router-dom";
@@ -10,7 +10,7 @@ import useResources from "_hooks/useResources";
 import { GetSearchQueryPropsI, SearchQueryResI } from "_types/api";
 import { ExamIndexI } from "_types/resources";
 
-import Empty from "../Empty";
+import Empty from "_pages/resources/components/Empty";
 
 import "./style.less";
 
@@ -22,6 +22,9 @@ interface ExamCardsPropsI {
   onSelected?: (selected: string[]) => void; //  当选择时触发
   onChangePagination?: (current: number) => void; // 当页码更新时触发
   onUpdateDescSuccess?: Function; // 当更新描述成功时
+  disabledDesc?: boolean; // 不显示备注
+  disabledAi?: boolean; // 不显示AI功能
+  disabledEmptyTip?: boolean; // 不显示空的情况下提醒用户上传DICOM
 }
 
 const ExamCards: FunctionComponent<ExamCardsPropsI> = (props) => {
@@ -33,6 +36,9 @@ const ExamCards: FunctionComponent<ExamCardsPropsI> = (props) => {
     onSelected,
     onChangePagination,
     onUpdateDescSuccess,
+    disabledDesc,
+    disabledAi,
+    disabledEmptyTip,
   } = props;
   const { buyLungNodulesReport } = useOrder();
 
@@ -107,7 +113,12 @@ const ExamCards: FunctionComponent<ExamCardsPropsI> = (props) => {
   if (!data) return null;
 
   const { results } = data;
-  if (!results) return <Empty></Empty>;
+  if (!results || !results.length)
+    return disabledEmptyTip ? (
+      <AntdEmpty image={AntdEmpty.PRESENTED_IMAGE_SIMPLE} description="没有相关检查资料" />
+    ) : (
+      <Empty></Empty>
+    );
 
   let count = 0;
 
@@ -136,8 +147,9 @@ const ExamCards: FunctionComponent<ExamCardsPropsI> = (props) => {
           checked={selected.indexOf(id) > -1}
           onClick={(): void => onClickItem(id)}
           updateDesc={(value: string): void => updateDesc(id, value)}
+          disabledDesc={disabledDesc}
         ></DicomCard>
-        {lung_nodule_flag ? (
+        {lung_nodule_flag && !disabledAi ? (
           <div>
             <span>AI功能：</span>
             <Button

@@ -20,7 +20,7 @@ const ManagerCreateAccount: FunctionComponent = () => {
   );
   const [createStatus, setCreateStatus] = useState<"none" | "successed" | "error">("none");
 
-  if (role === RoleE.EMPLOYEE || role === RoleE.PATIENT || role === RoleE.DOCTOR) history.back();
+  if (role === RoleE.EMPLOYEE || role === RoleE.PATIENT || role === RoleE.DOCTOR) history.goBack();
 
   const getRadioItem = (): ReactNode => {
     const ManagerAccount = (

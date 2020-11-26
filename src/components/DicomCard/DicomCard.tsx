@@ -17,6 +17,8 @@ interface DicomCardPropsI {
 
   updateDesc?: Function;
   onClick?: Function;
+
+  disabledDesc?: boolean; // 禁用描述
 }
 
 const DicomCard: FunctionComponent<DicomCardPropsI & RouteComponentProps> = (
@@ -32,6 +34,8 @@ const DicomCard: FunctionComponent<DicomCardPropsI & RouteComponentProps> = (
     updateDesc,
     checkbox,
     onClick,
+
+    disabledDesc,
   } = props;
   const [inputValue, changeInputValue] = useState(desc || "");
   const [showEditor, editDesc] = useState(false);
@@ -70,37 +74,39 @@ const DicomCard: FunctionComponent<DicomCardPropsI & RouteComponentProps> = (
         </div>
         <div className="dicom-card-type">{modality}</div>
       </Card>
-      <div className={`dicom-card-desc ${showEditor ? "dicom-card-desc-editing" : ""}`}>
-        <div className="dicom-card-desc-text">
-          <div>{desc || "备注"}</div>
-          <EditOutlined
-            className="dicom-card-desc-edit iconfont icon_ic-edit"
-            onClick={(): void => editDesc(true)}
-          />
+      {disabledDesc ? null : (
+        <div className={`dicom-card-desc ${showEditor ? "dicom-card-desc-editing" : ""}`}>
+          <div className="dicom-card-desc-text">
+            <div>{desc || "备注"}</div>
+            <EditOutlined
+              className="dicom-card-desc-edit iconfont icon_ic-edit"
+              onClick={(): void => editDesc(true)}
+            />
+          </div>
+          <Input
+            className="dicom-card-desc-editor"
+            value={inputValue || ""}
+            placeholder="备注上限20个字"
+            onInput={(value): void => changeInputValue(value.currentTarget.value)}
+            maxLength={20}
+            addonAfter={
+              <div className="dicom-card-desc-ctl">
+                <CheckCircleOutlined
+                  className="iconfont icon_ic-complete"
+                  onClick={(): void => {
+                    updateDesc && updateDesc(inputValue);
+                    editDesc(false);
+                  }}
+                ></CheckCircleOutlined>
+                <CloseCircleOutlined
+                  className="iconfont icon_ic-close"
+                  onClick={(): void => editDesc(false)}
+                ></CloseCircleOutlined>
+              </div>
+            }
+          ></Input>
         </div>
-        <Input
-          className="dicom-card-desc-editor"
-          value={inputValue || ""}
-          placeholder="备注上限20个字"
-          onInput={(value): void => changeInputValue(value.currentTarget.value)}
-          maxLength={20}
-          addonAfter={
-            <div className="dicom-card-desc-ctl">
-              <CheckCircleOutlined
-                className="iconfont icon_ic-complete"
-                onClick={(): void => {
-                  updateDesc && updateDesc(inputValue);
-                  editDesc(false);
-                }}
-              ></CheckCircleOutlined>
-              <CloseCircleOutlined
-                className="iconfont icon_ic-close"
-                onClick={(): void => editDesc(false)}
-              ></CloseCircleOutlined>
-            </div>
-          }
-        ></Input>
-      </div>
+      )}
     </article>
   );
 };

@@ -2,7 +2,6 @@
 import { Table } from "antd";
 import { ColumnsType } from "antd/es/table";
 import React, { FunctionComponent, ReactNode, useState } from "react";
-import { useHistory } from "react-router-dom";
 import { formatDate } from "_helper";
 import { GetSearchQueryPropsI, SearchQueryResI } from "_types/api";
 import { PdfI } from "_types/resources";

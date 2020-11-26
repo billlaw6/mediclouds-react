@@ -2,14 +2,16 @@ import { combineReducers } from "redux";
 // import user from "./user";
 import account from "./account";
 import resources from "./resources";
-import dicomSettings from "./dicomSettings";
+import settings from "./settings";
 import aiReport from "./aiReport";
 import prod from "./product";
+import cases from "./case";
 
 export default combineReducers({
   resources,
-  resourcesSettings: dicomSettings,
+  settings,
   account,
   aiReport,
   prod,
+  cases,
 });

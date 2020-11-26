@@ -11,7 +11,6 @@ export enum ResourcesActionE {
   GET_LUNG_NODULES_REPORT = "get_lung_nodules_report", // 获取肺结节筛查报告
   DEL_LUNG_NODULES_REPORT = "del_lung_nodules_report", // 删除肺结节筛查报告
 
-  SET_VIEW_MODE = "set_view_mode", // 切换exam视图模式
   SET_SORT_BY_KEY = "set_sort_by_key", // 切换排序字段
 
   SWITCH_RESOURCES_TYPE = "switch_resources_type", // 切换资料tab类型

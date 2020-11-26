@@ -25,6 +25,8 @@ import Pay from "_pages/pay/index";
 import PublicCT from "_pages/publicCT";
 import ErrMsg from "_pages/errMsg";
 import { IS_MOBILE } from "_constants";
+import CaseList from "_pages/caseList";
+import Case from "_pages/case";
 // import AILayout from "_layout/AI";
 
 const routes: RoutesI[] = [
@@ -42,6 +44,21 @@ const routes: RoutesI[] = [
     name: "resources",
     path: "/resources",
     component: Resources,
+    layout: DefaultLayout,
+    permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN, RoleE.DOCTOR, RoleE.PATIENT],
+  },
+  {
+    name: "caseList",
+    path: "/case",
+    component: CaseList,
+    layout: DefaultLayout,
+    exact: true,
+    permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN, RoleE.DOCTOR, RoleE.PATIENT],
+  },
+  {
+    name: "case",
+    path: "/case/:id",
+    component: Case,
     layout: DefaultLayout,
     permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN, RoleE.DOCTOR, RoleE.PATIENT],
   },

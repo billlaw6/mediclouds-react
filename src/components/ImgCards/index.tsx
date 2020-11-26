@@ -3,9 +3,9 @@ import React, { FunctionComponent, ReactElement } from "react";
 import { GetSearchQueryPropsI, SearchQueryResI } from "_types/api";
 import Gallery from "react-photo-gallery";
 import { ImgI } from "_types/resources";
+import { formatDate, getSelected } from "_helper";
 
 import "./style.less";
-import { formatDate, getSelected } from "_helper";
 
 interface ImgCardsPropsI {
   searchQuery: GetSearchQueryPropsI;
@@ -34,7 +34,7 @@ const ImgCards: FunctionComponent<ImgCardsPropsI> = (props) => {
   if (!data) return null;
   const { results } = data;
 
-  if (!results.length) return <Empty />;
+  if (!results.length) return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />;
 
   return (
     <div className="resources-img-cards">
