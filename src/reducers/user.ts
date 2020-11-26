@@ -36,6 +36,9 @@ const DEFAULT_USER: CustomerStateI = {
   business_name: "",
   register_qrcode: "",
   pay_qrcode: "",
+  my_dicom_files: 0,
+  my_case_files: 0,
+  my_ai_reports: 0,
 };
 
 const userReducer: Reducer<CustomerStateI, ActionI<AccountActionTypes, UserI>> = (

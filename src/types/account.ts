@@ -69,6 +69,9 @@ export interface CustomerI extends AccountBaseI {
   recommended_users: RecommendedUserI[];
   score: number; // 积分
   privacy_notice: number; // 隐私政策版本 0：没有同意过
+  my_ai_reports: number; // 用户AI筛查报告数量
+  my_case_files: number; // 用户病例数量
+  my_dicom_files: number; // 用户dicom数量
 }
 
 /* 用户 包含 账户和顾客 用于全局的路由、权限判断 */

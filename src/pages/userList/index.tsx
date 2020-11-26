@@ -104,6 +104,21 @@ const UserList: FunctionComponent = () => {
       render: (val): string => (val ? formatDate(val, true) : "NULL"),
     },
     {
+      title: "DICOM数量",
+      key: "my_dicom_files",
+      dataIndex: "my_dicom_files",
+    },
+    {
+      title: "病例数量",
+      key: "my_case_files",
+      dataIndex: "my_case_files",
+    },
+    {
+      title: "AI报告数量",
+      key: "my_ai_reports",
+      dataIndex: "my_ai_reports",
+    },
+    {
       title: "状态",
       key: "is_active",
       dataIndex: "is_active",

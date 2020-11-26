@@ -35,6 +35,9 @@ const DEFAULT_ACCOUNT: AccountStateI = {
   unionid: "",
   score: 0,
   privacy_notice: -1,
+  my_ai_reports: 0,
+  my_case_files: 0,
+  my_dicom_files: 0,
 };
 
 const accountReducer: Reducer<AccountStateI, ActionI<AccountActionTypes, UserI>> = (
