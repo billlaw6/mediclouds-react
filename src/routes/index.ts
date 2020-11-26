@@ -19,7 +19,6 @@ import { RoutesI } from "_types/router";
 import { AccountStatusE, RoleE } from "_types/account";
 import Manager from "_pages/manager";
 import ManagerLayout from "_layout/Manager";
-import AccountRole from "_components/AccountRole";
 import Register from "_pages/register";
 import Pay from "_pages/pay/index";
 import PublicCT from "_pages/publicCT";
@@ -72,7 +71,7 @@ const routes: RoutesI[] = [
     name: "player",
     path: "/player",
     component: Player,
-    layout: IS_MOBILE ? FullscreenLayout : DefaultLayout,
+    layout: FullscreenLayout,
     permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN, RoleE.PATIENT, RoleE.DOCTOR],
   },
   {

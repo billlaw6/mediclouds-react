@@ -1,0 +1,32 @@
+#player .header {
+  display: flex;
+  width: 100%;
+  min-height: 4rem;
+  background-color: #c1c1c1;
+  color: #fff;
+  padding: 0.5rem 2rem;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+
+  .title {
+    font-size: 2rem;
+    color: #fff;
+    margin-bottom: 0;
+
+    sub {
+      margin-left: 0.5rem;
+      font-size: 1rem;
+    }
+  }
+
+  .back {
+    cursor: pointer;
+    font-size: 1.5rem;
+    transition: opacity 200ms;
+    &:hover {
+      opacity: 0.6;
+      transition: opacity 200ms;
+    }
+  }
+}
