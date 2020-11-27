@@ -111,7 +111,7 @@ const LungNodulesReportCards: FunctionComponent<LungNodulesReportCardsPropsI> = 
             {isSelectable ? (
               <Checkbox
                 className="resources-lung-nodules-report-cards-checkbox"
-                value={id}
+                value={`${id}`}
               ></Checkbox>
             ) : null}
             <Card
@@ -161,7 +161,7 @@ const LungNodulesReportCards: FunctionComponent<LungNodulesReportCardsPropsI> = 
         style={{ width: "100%" }}
         value={selected}
         onChange={(res): void => {
-          onSelected && onSelected(res as string[]);
+          onSelected && onSelected(res.map((item) => `${item}`));
         }}
       >
         {data ? getContent(data.results) : null}

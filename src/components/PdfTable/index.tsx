@@ -50,8 +50,8 @@ const PdfTable: FunctionComponent<PdfTablePropsI> = (props) => {
         rowSelection={
           isSelectable
             ? {
-                selectedRowKeys: selected,
-                onChange: (vals): void => onSelected && onSelected(vals as string[]),
+                selectedRowKeys: selected?.map((item) => parseInt(item, 10)),
+                onChange: (vals): void => onSelected && onSelected(vals.map((item) => `${item}`)),
               }
             : undefined
         }

@@ -98,7 +98,7 @@ const Case: FunctionComponent = () => {
             </Descriptions>
 
             <Tabs activeKey={tabKey} onChange={(val): void => setTabKey(val as ResourcesTypeE)}>
-              <Tabs.TabPane key={ResourcesTypeE.EXAM} tab="检查列表">
+              <Tabs.TabPane key={ResourcesTypeE.EXAM} tab="检查">
                 <ExamCards
                   data={{ count: current.exam_objs.length, results: current.exam_objs }}
                   searchQuery={searchQuery[tabKey]}
@@ -108,14 +108,14 @@ const Case: FunctionComponent = () => {
                   onChangePagination={(num): void => updateSearchQuery(ResourcesTypeE.EXAM, num)}
                 ></ExamCards>
               </Tabs.TabPane>
-              <Tabs.TabPane key={ResourcesTypeE.IMG} tab="图片列表">
+              <Tabs.TabPane key={ResourcesTypeE.IMG} tab="图片">
                 <ImgCards
                   data={{ count: current.image_objs.length, results: current.image_objs }}
                   searchQuery={searchQuery[tabKey]}
                   onChangePagination={(num): void => updateSearchQuery(ResourcesTypeE.IMG, num)}
                 ></ImgCards>
               </Tabs.TabPane>
-              <Tabs.TabPane key={ResourcesTypeE.PDF} tab="pdf列表">
+              <Tabs.TabPane key={ResourcesTypeE.PDF} tab="PDF">
                 <PdfTable
                   data={{ count: current.pdf_objs.length, results: current.pdf_objs }}
                   searchQuery={searchQuery[tabKey]}

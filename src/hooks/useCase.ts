@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
-import { getCase, getMineCaseList, getSharedCaseList } from "_api/case";
-import { CaseActionE, CaseI, CaseTypeE } from "_types/case";
+import { createCase, getCase, getMineCaseList, getSharedCaseList } from "_api/case";
+import { CaseActionE, CaseI, CaseTypeE, CreateCaseDataI } from "_types/case";
 import { StoreStateI } from "_types/core";
 
 export default () => {
@@ -19,6 +19,8 @@ export default () => {
       .catch((err) => console.error(err));
   };
 
+  const _createCase = async (info: CreateCaseDataI): Promise<CaseI> => await createCase(info);
+
   /** 获取查看过的其他人分享的病例列表 */
   const fetchReadRecordCaseList = (): void => {
     getSharedCaseList()
@@ -28,7 +30,13 @@ export default () => {
       .catch((err) => console.error(err));
   };
 
-  const _getCase = async (id: string): Promise<CaseI> => await getCase(id);
+  const _getCase = async (id: string): Promise<CaseI> => {
+    try {
+      return await getCase(id);
+    } catch (error) {
+      throw new Error(error);
+    }
+  };
 
   /** 更新case tab */
   const updateCaseTabType = (type: CaseTypeE): void => {
@@ -42,6 +50,7 @@ export default () => {
   return {
     cases,
     settings,
+    createCase: _createCase,
     fetchMineCaseList,
     fetchReadRecordCaseList,
     getCase: _getCase,

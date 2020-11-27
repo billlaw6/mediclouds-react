@@ -1,12 +1,20 @@
 import { personalReq, publicReq } from "_axios";
 import { GetSearchQueryPropsI, SearchQueryResI } from "_types/api";
-import { CaseI } from "_types/case";
+import { CaseActionE, CaseI, CreateCaseDataI } from "_types/case";
 
 // export const getMineCaseList = async (): Promise<SearchQueryResI<CaseI>> =>
 //   await publicReq({
 //     method: "GET",
 //     url: "/case/list/",
 //   });
+
+/* 新建病例 */
+export const createCase = async (info: CreateCaseDataI): Promise<CaseI> =>
+  await personalReq({
+    url: "/dicom/case/",
+    method: "POST",
+    data: info,
+  });
 
 /** 获取病例列表 */
 export const getMineCaseList = async (): Promise<CaseI[]> =>

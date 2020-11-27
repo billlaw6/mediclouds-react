@@ -10,6 +10,8 @@ export enum CaseTypeE {
 
 /** 病例Actions */
 export enum CaseActionE {
+  CREATE_CASE = "create_case", // 创建病例
+
   GET_MINE_LIST = "get_mine_list", // 获取本人的病例列表
   DEL_MINE_LIST = "del_mine_list", // 删除本人的病例列表
 
@@ -49,4 +51,15 @@ export interface CaseI {
   owner: string; // 病例所有人的ID
   flag: 0 | 1; // 是否开启分享
   editable: 0 | 1; // 是否可编辑
+}
+
+export interface CreateCaseDataI {
+  name: string; // 病人姓名
+  exams?: string[]; // dicom id
+  imgs?: string[]; // 图片 id
+  pdfs?: string[]; // pdf id
+  ai_reports?: string[]; // 肺结节AI筛查报告 id
+  sex: SexT; // 病人性别
+  birthday: string; // 生日
+  description: string; // 病例描述
 }

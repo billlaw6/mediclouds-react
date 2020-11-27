@@ -5,6 +5,7 @@ import {
   SortAscendingOutlined,
 } from "@ant-design/icons";
 import { Dropdown, Menu } from "antd";
+import { spawn } from "child_process";
 import React, { FunctionComponent, ReactElement, ReactNode } from "react";
 import LinkButton from "_components/LinkButton/LinkButton";
 import useResources from "_hooks/useResources";
@@ -13,11 +14,12 @@ import { ExamSortKeyE, ImgAndPdfSortKeyE, ResourcesTypeE } from "_types/resource
 import "./style.less";
 
 interface ControllerPropsI {
-  showDelBtn?: boolean; // 显示删除按钮
+  showSelectBtn?: boolean; // 显示删除按钮
   isSelectable?: boolean; // 是否开启选择模式
-  onClickDelBtn?: Function; // 当点击删除按钮时
+  onSelectBtn?: Function; // 当点击删除按钮时
   onClickCancelBtn?: Function; // 当点击后退按钮时
   onDel?: Function; // 触发删除动作
+  onCreateCase?: Function; // 触发创建病例动作
   onSortByChange?: (val: ExamSortKeyE | ImgAndPdfSortKeyE) => void; // 当排序规则改变时触发
   resourcesType: ResourcesTypeE; // 当前的资源类型
 }
@@ -25,10 +27,11 @@ interface ControllerPropsI {
 const Controller: FunctionComponent<ControllerPropsI> = (props) => {
   const {
     resourcesType,
-    showDelBtn,
+    showSelectBtn,
     isSelectable,
     onDel,
-    onClickDelBtn,
+    onCreateCase,
+    onSelectBtn,
     onClickCancelBtn,
     onSortByChange,
   } = props;
@@ -115,6 +118,23 @@ const Controller: FunctionComponent<ControllerPropsI> = (props) => {
     );
   };
 
+  const selectBtns = (): ReactNode => {
+    return (
+      <div className={`resources-controller-select${isSelectable ? " active" : ""}`}>
+        {isSelectable ? (
+          <ArrowLeftOutlined
+            className="iconfont"
+            onClick={(): void => onClickCancelBtn && onClickCancelBtn()}
+          ></ArrowLeftOutlined>
+        ) : (
+          <span onClick={(): void => onSelectBtn && onSelectBtn()}>选择资源</span>
+        )}
+        <span onClick={(): void => onDel && onDel()}>删除</span>
+        <span onClick={(): void => onCreateCase && onCreateCase()}>创建病例</span>
+      </div>
+    );
+  };
+
   return (
     <div className="resources-controller">
       <div className="resources-controller-item">
@@ -126,42 +146,14 @@ const Controller: FunctionComponent<ControllerPropsI> = (props) => {
         >
           上传
         </LinkButton>
-        {showDelBtn ? (
-          <div className={`resources-controller-del${isSelectable ? " active" : ""}`}>
-            {isSelectable ? (
-              <ArrowLeftOutlined
-                className="iconfont"
-                onClick={(): void => onClickCancelBtn && onClickCancelBtn()}
-              ></ArrowLeftOutlined>
-            ) : (
-              <DeleteOutlined
-                className="iconfont"
-                onClick={(): void => onClickDelBtn && onClickDelBtn()}
-              ></DeleteOutlined>
-            )}
-            <span onClick={(): void => onDel && onDel()}>删除</span>
-          </div>
-        ) : null}
+        {showSelectBtn ? selectBtns() : null}
       </div>
-      <div className={`resources-controller-item${showDelBtn ? "" : " hidden"}`}>
+      <div className={`resources-controller-item${showSelectBtn ? "" : " hidden"}`}>
         {resourcesType === ResourcesTypeE.LUNG_NODULES_REPORT ? null : (
           <Dropdown overlay={sortContent()} placement="bottomRight">
             <SortAscendingOutlined className="resources-controller-select-sort iconfont"></SortAscendingOutlined>
           </Dropdown>
         )}
-        {/* {resourcesType === ResourcesTypeE.EXAM ? (
-          viewMode === ViewTypeEnum.GRID ? (
-            <MenuOutlined
-              className="resources-controller-select-view iconfont"
-              onClick={onChangeViewMode}
-            ></MenuOutlined>
-          ) : (
-            <AppstoreOutlined
-              className="resources-controller-select-view iconfont"
-              onClick={onChangeViewMode}
-            ></AppstoreOutlined>
-          )
-        ) : null} */}
       </div>
     </div>
   );

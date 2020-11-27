@@ -1,10 +1,10 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { Modal, Spin, Tabs } from "antd";
+import { message, Modal, Spin, Tabs } from "antd";
 
 import useResources from "_hooks/useResources";
-import { ResourcesTypeE } from "_types/resources";
+import { ExamIndexI, ImgI, PdfI, ResourcesTypeE } from "_types/resources";
 import Controller from "./components/Controller";
-import { GetSearchQueryPropsI } from "_types/api";
+import { GetSearchQueryPropsI, SearchQueryResI } from "_types/api";
 
 import { flattenArr } from "_helper";
 import ExamCards from "_components/ExamCards";
@@ -16,8 +16,12 @@ import { checkDicomParseProgress } from "_api/dicom";
 import PrivacyNotice from "_components/PrivacyNotice";
 
 import "./style.less";
+import { useHistory } from "react-router";
+import CreateCase from "./components/CreateCase";
+import { LungNoduleReportI } from "_types/ai";
 
 interface SelectedI {
+  [key: string]: any;
   exam: string[][];
   img: string[][];
   pdf: string[][];
@@ -37,6 +41,7 @@ const { TabPane } = Tabs;
 let timer: number | null = null;
 
 const Resources: FunctionComponent = () => {
+  const history = useHistory();
   const {
     fetchExamList,
     delExam,
@@ -91,6 +96,40 @@ const Resources: FunctionComponent = () => {
     parsing: number;
     total: number;
   } | null>(null); // 解析进度
+  const [showCreateCase, setShowCreateCase] = useState(false);
+
+  /** 获取已选的实例列表 */
+  const getResourceInstances = (
+    type: ResourcesTypeE,
+  ): SearchQueryResI<ExamIndexI | ImgI | PdfI | LungNoduleReportI> | undefined => {
+    const ids = flattenArr(selected[type]);
+    let instance: SearchQueryResI<ExamIndexI | ImgI | PdfI | LungNoduleReportI> | undefined;
+
+    switch (type) {
+      case ResourcesTypeE.EXAM:
+        instance = examList;
+        break;
+      case ResourcesTypeE.IMG:
+        instance = imgList;
+        break;
+      case ResourcesTypeE.PDF:
+        instance = pdfList;
+        break;
+      case ResourcesTypeE.LUNG_NODULES_REPORT:
+        instance = lungNodulesReportList;
+        break;
+      default:
+        break;
+    }
+
+    if (instance) {
+      const res = instance.results.filter((item) => ids.indexOf(`${item.id}`) > -1);
+      if (!res.length) return;
+      return { count: res.length, results: res };
+    }
+
+    return;
+  };
 
   /**
    * 更新所选tab页的已选id列表
@@ -156,6 +195,21 @@ const Resources: FunctionComponent = () => {
     const nextData = Object.assign({}, searchQuery[type], { current });
     setSearchQuery(Object.assign({}, searchQuery, { [type]: nextData }));
     switchTabType(type);
+  };
+
+  /** 创建病例 */
+  const onCreateCase = () => {
+    const ids: any = {};
+
+    for (const key of Object.keys(selected)) {
+      const data = selected[key];
+      const val = flattenArr(data);
+      if (val.length) ids[key] = val;
+    }
+
+    if (!Object.keys(ids).length) return;
+
+    setShowCreateCase(true);
   };
 
   /**
@@ -243,7 +297,7 @@ const Resources: FunctionComponent = () => {
   }, [resourcesTabType, searchQuery, parsingInfo]);
 
   const currentResources = getCurrentResources(resourcesTabType);
-  const showDelBtn = currentResources ? !!currentResources.results.length : false;
+  const showSelectBtn = currentResources ? !!currentResources.results.length : false;
   let isPending = false;
 
   switch (resourcesTabType) {
@@ -277,10 +331,11 @@ const Resources: FunctionComponent = () => {
       ) : null}
       <Controller
         resourcesType={resourcesTabType}
-        showDelBtn={showDelBtn}
+        showSelectBtn={showSelectBtn}
         isSelectable={selectMode}
         onDel={confirmDel}
-        onClickDelBtn={(): void => setSelectMode(true)}
+        onCreateCase={onCreateCase}
+        onSelectBtn={(): void => setSelectMode(true)}
         onClickCancelBtn={(): void => {
           setSelectMode(false);
           setSelected({
@@ -365,6 +420,27 @@ const Resources: FunctionComponent = () => {
         </Tabs>
       </Spin>
       <PrivacyNotice></PrivacyNotice>
+      <CreateCase
+        show={showCreateCase}
+        exam={getResourceInstances(ResourcesTypeE.EXAM) as SearchQueryResI<ExamIndexI>}
+        pdf={getResourceInstances(ResourcesTypeE.PDF) as SearchQueryResI<PdfI>}
+        img={getResourceInstances(ResourcesTypeE.IMG) as SearchQueryResI<ImgI>}
+        lung_nodules_report={
+          getResourceInstances(
+            ResourcesTypeE.LUNG_NODULES_REPORT,
+          ) as SearchQueryResI<LungNoduleReportI>
+        }
+        onCreateCase={(): void => {
+          setShowCreateCase(false);
+          updateSelected(resourcesTabType, []);
+          setSelectMode(false);
+        }}
+        onCancel={(): void => {
+          setShowCreateCase(false);
+          updateSelected(resourcesTabType, []);
+          setSelectMode(false);
+        }}
+      ></CreateCase>
     </section>
   );
 };
