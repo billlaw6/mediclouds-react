@@ -1,3 +1,4 @@
+import { LungNoduleReportI } from "./ai";
 import { SexT } from "./api";
 import { ExamIndexI, ImgI, PdfI } from "./resources";
 
@@ -35,6 +36,7 @@ export interface CaseI {
   exam_objs: ExamIndexI[];
   image_objs: ImgI[];
   pdf_objs: PdfI[];
+  ai_report_objs: LungNoduleReportI[];
   case_read_record_objs: CaseShareI[];
   name: string; // 病人姓名
   sex: SexT; // 病人性别

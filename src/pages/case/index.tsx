@@ -5,12 +5,13 @@ import { getAgeByBirthday, getSexName } from "_helper";
 import useCase from "_hooks/useCase";
 import { CaseI } from "_types/case";
 import { GetSearchQueryPropsI } from "_types/api";
-import { ExamSortKeyE, ImgAndPdfSortKeyE, ResourcesTypeE } from "_types/resources";
+import { ExamSortKeyE, ImgAndPdfSortKeyE, ReportSortKeyE, ResourcesTypeE } from "_types/resources";
 import ExamCards from "_components/ExamCards";
 import ImgCards from "_components/ImgCards";
 import PdfTable from "_components/PdfTable";
 
 import "./style.less";
+import LungNodulesReportCards from "_pages/resources/components/LungNodulesReportCards";
 
 /* 资源当前的页码 */
 interface SearchQueryI {
@@ -18,6 +19,7 @@ interface SearchQueryI {
   [ResourcesTypeE.EXAM]: GetSearchQueryPropsI<"study_date" | "modality">;
   [ResourcesTypeE.IMG]: GetSearchQueryPropsI<"created_at" | "filename">;
   [ResourcesTypeE.PDF]: GetSearchQueryPropsI<"created_at" | "filename">;
+  [ResourcesTypeE.LUNG_NODULES_REPORT]: GetSearchQueryPropsI<"created_at">;
 }
 
 const Case: FunctionComponent = () => {
@@ -42,6 +44,11 @@ const Case: FunctionComponent = () => {
       current: 1,
       size: 12,
       sort: ImgAndPdfSortKeyE.CREATED_AT,
+    },
+    [ResourcesTypeE.LUNG_NODULES_REPORT]: {
+      current: 1,
+      size: 12,
+      sort: ReportSortKeyE.CREATED_AT,
     },
   });
 
@@ -114,6 +121,15 @@ const Case: FunctionComponent = () => {
                   searchQuery={searchQuery[tabKey]}
                   onChangePagination={(num): void => updateSearchQuery(ResourcesTypeE.PDF, num)}
                 ></PdfTable>
+              </Tabs.TabPane>
+              <Tabs.TabPane key={ResourcesTypeE.LUNG_NODULES_REPORT} tab="肺结节AI筛查报告">
+                <LungNodulesReportCards
+                  data={{ count: current.ai_report_objs.length, results: current.ai_report_objs }}
+                  searchQuery={searchQuery[tabKey]}
+                  onChangePagination={(num): void =>
+                    updateSearchQuery(ResourcesTypeE.LUNG_NODULES_REPORT, num)
+                  }
+                ></LungNodulesReportCards>
               </Tabs.TabPane>
             </Tabs>
           </div>
