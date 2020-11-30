@@ -87,10 +87,10 @@ const CreateCase: FunctionComponent<CreateCasePropsI> = (props) => {
     const info = form.getFieldsValue();
     info.birthday = formatDate(info.birthday.toString());
     const createCaseData: CreateCaseDataI = Object.assign({}, info);
-    if (exam) createCaseData.exams = exam;
-    if (pdf) createCaseData.pdfs = pdf;
-    if (imgs) createCaseData.imgs = imgs;
-    if (lung_nodules_report) createCaseData.ai_reports = lung_nodules_report;
+    if (exam) createCaseData.exams = exam.map((item) => item.id);
+    if (pdf) createCaseData.pdfs = pdf.map((item) => item.id);
+    if (imgs) createCaseData.imgs = imgs.map((item) => item.id);
+    if (lung_nodules_report) createCaseData.ai_reports = lung_nodules_report.map((item) => item.id);
 
     createCaseFunction(createCaseData)
       .then((res) => {

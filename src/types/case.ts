@@ -55,10 +55,10 @@ export interface CaseI {
 
 export interface CreateCaseDataI {
   name: string; // 病人姓名
-  exams?: ExamIndexI[]; // dicom id
-  imgs?: ImgI[]; // 图片 id
-  pdfs?: PdfI[]; // pdf id
-  ai_reports?: LungNoduleReportI[]; // 肺结节AI筛查报告 id
+  exams?: string[]; // dicom id
+  imgs?: number[]; // 图片 id
+  pdfs?: number[]; // pdf id
+  ai_reports?: number[]; // 肺结节AI筛查报告 id
   sex: SexT; // 病人性别
   birthday: string; // 生日
   description: string; // 病例描述

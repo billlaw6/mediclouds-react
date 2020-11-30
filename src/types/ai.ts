@@ -4,7 +4,7 @@ import { PatientExamI } from "./api";
 
 // 筛查报告
 export interface LungNoduleReportI extends PatientExamI {
-  id: string; // 报告ID
+  id: number; // 报告ID
   desc: string; // 报告描述
   flag: 0 | 1 | 2; // 报告状态 0：基础版 1:完整报告 2:带三维重建的完整报告
   exam_id: string; // 关联的exam id

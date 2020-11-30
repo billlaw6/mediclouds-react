@@ -131,6 +131,7 @@ const CaseList: FunctionComponent = () => {
         >
           <TabPane tab="我的病例" key={CaseTypeE.MINE}>
             <Table
+              loading={!mineList}
               rowSelection={{
                 selectedRowKeys: selected,
                 onChange: (vals) => setSelected(vals as number[]),
@@ -153,6 +154,7 @@ const CaseList: FunctionComponent = () => {
           <TabPane tab="已查看的分享病例" key={CaseTypeE.READ_RECORD}>
             <Table
               rowKey="id"
+              loading={!readRecordList}
               dataSource={readRecordList}
               columns={columns}
               rowClassName="case-list-item"
