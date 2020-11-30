@@ -38,9 +38,10 @@ export default () => {
     }
   };
 
-  const _delCase = async (ids: number[]): Promise<number[]> => {
+  const _delCase = async (ids: number[]): Promise<void> => {
     try {
-      return await delCase(ids);
+      await delCase(ids);
+      await fetchMineCaseList();
     } catch (error) {
       throw new Error(error);
     }
