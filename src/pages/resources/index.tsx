@@ -1,10 +1,10 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { message, Modal, Spin, Tabs } from "antd";
+import { Modal, Spin, Tabs } from "antd";
 
 import useResources from "_hooks/useResources";
 import { ExamIndexI, ImgI, PdfI, ResourcesTypeE } from "_types/resources";
 import Controller from "./components/Controller";
-import { GetSearchQueryPropsI, SearchQueryResI } from "_types/api";
+import { GetSearchQueryPropsI } from "_types/api";
 
 import { flattenArr } from "_helper";
 import ExamCards from "_components/ExamCards";
@@ -14,26 +14,27 @@ import LungNodulesReportCards from "./components/LungNodulesReportCards";
 import Notify from "_components/Notify";
 import { checkDicomParseProgress } from "_api/dicom";
 import PrivacyNotice from "_components/PrivacyNotice";
-
-import "./style.less";
 import { useHistory } from "react-router";
 import CreateCase from "./components/CreateCase";
 import { LungNoduleReportI } from "_types/ai";
 
+import "./style.less";
+
+/** 已选列表 */
 interface SelectedI {
   [key: string]: any;
-  exam: string[][];
-  img: string[][];
-  pdf: string[][];
-  lung_nodules_report: string[][];
+  [ResourcesTypeE.EXAM]: ExamIndexI[];
+  [ResourcesTypeE.IMG]: ImgI[];
+  [ResourcesTypeE.PDF]: PdfI[];
+  [ResourcesTypeE.LUNG_NODULES_REPORT]: LungNoduleReportI[];
 }
 
 /* 资源当前的页码 */
 interface SearchQueryI {
-  exam: GetSearchQueryPropsI<"study_date" | "modality">;
-  img: GetSearchQueryPropsI<"created_at" | "filename">;
-  pdf: GetSearchQueryPropsI<"created_at" | "filename">;
-  lung_nodules_report: GetSearchQueryPropsI<"study_date" | "modality">;
+  [ResourcesTypeE.EXAM]: GetSearchQueryPropsI<"study_date" | "modality">;
+  [ResourcesTypeE.IMG]: GetSearchQueryPropsI<"created_at" | "filename">;
+  [ResourcesTypeE.PDF]: GetSearchQueryPropsI<"created_at" | "filename">;
+  [ResourcesTypeE.LUNG_NODULES_REPORT]: GetSearchQueryPropsI<"study_date" | "modality">;
 }
 
 const { TabPane } = Tabs;
@@ -41,7 +42,6 @@ const { TabPane } = Tabs;
 let timer: number | null = null;
 
 const Resources: FunctionComponent = () => {
-  const history = useHistory();
   const {
     fetchExamList,
     delExam,
@@ -68,22 +68,22 @@ const Resources: FunctionComponent = () => {
     lung_nodules_report: [],
   }); // 已选择的
   const [searchQuery, setSearchQuery] = useState<SearchQueryI>({
-    exam: {
+    [ResourcesTypeE.EXAM]: {
       current: 1,
       size: 12,
       sort: resourcesSortBy.exam,
     },
-    img: {
+    [ResourcesTypeE.IMG]: {
       current: 1,
       size: 12,
       sort: resourcesSortBy.img,
     },
-    pdf: {
+    [ResourcesTypeE.PDF]: {
       current: 1,
       size: 12,
       sort: resourcesSortBy.pdf,
     },
-    lung_nodules_report: {
+    [ResourcesTypeE.LUNG_NODULES_REPORT]: {
       current: 1,
       size: 12,
       sort: resourcesSortBy.lung_nodules_report,
@@ -96,47 +96,14 @@ const Resources: FunctionComponent = () => {
     parsing: number;
     total: number;
   } | null>(null); // 解析进度
-  const [showCreateCase, setShowCreateCase] = useState(false);
-
-  /** 获取已选的实例列表 */
-  const getResourceInstances = (
-    type: ResourcesTypeE,
-  ): SearchQueryResI<ExamIndexI | ImgI | PdfI | LungNoduleReportI> | undefined => {
-    const ids = flattenArr(selected[type]);
-    let instance: SearchQueryResI<ExamIndexI | ImgI | PdfI | LungNoduleReportI> | undefined;
-
-    switch (type) {
-      case ResourcesTypeE.EXAM:
-        instance = examList;
-        break;
-      case ResourcesTypeE.IMG:
-        instance = imgList;
-        break;
-      case ResourcesTypeE.PDF:
-        instance = pdfList;
-        break;
-      case ResourcesTypeE.LUNG_NODULES_REPORT:
-        instance = lungNodulesReportList;
-        break;
-      default:
-        break;
-    }
-
-    if (instance) {
-      const res = instance.results.filter((item) => ids.indexOf(`${item.id}`) > -1);
-      if (!res.length) return;
-      return { count: res.length, results: res };
-    }
-
-    return;
-  };
+  const [showCreateCase, setShowCreateCase] = useState(false); // 显示创建病例
 
   /**
    * 更新所选tab页的已选id列表
    * @param type
    * @param vals
    */
-  const updateSelected = (type: ResourcesTypeE, vals: string[]): void => {
+  const updateSelected = (type: ResourcesTypeE, vals: any[]): void => {
     setSelected(Object.assign({}, selected, { [type]: vals }));
   };
 
@@ -204,6 +171,7 @@ const Resources: FunctionComponent = () => {
     for (const key of Object.keys(selected)) {
       const data = selected[key];
       const val = flattenArr(data);
+
       if (val.length) ids[key] = val;
     }
 
@@ -216,7 +184,7 @@ const Resources: FunctionComponent = () => {
    * 确认删除
    */
   const confirmDel = () => {
-    const ids = flattenArr(selected[resourcesTabType]);
+    const ids = (selected[resourcesTabType] as any).map((item: any) => item.id);
 
     if (!ids || !ids.length) return;
 
@@ -372,7 +340,7 @@ const Resources: FunctionComponent = () => {
               onChangePagination={(current): void => {
                 onChangePagination(ResourcesTypeE.EXAM, current);
               }}
-              selected={flattenArr(selected[ResourcesTypeE.EXAM])}
+              selected={selected[ResourcesTypeE.EXAM]}
               onSelected={(vals): void => updateSelected(ResourcesTypeE.EXAM, vals)}
               onUpdateDescSuccess={(): void => fetchResources(resourcesTabType)}
             ></ExamCards>
@@ -381,7 +349,7 @@ const Resources: FunctionComponent = () => {
             <ImgCards
               data={imgList}
               isSelectable={selectMode}
-              selected={flattenArr(selected[ResourcesTypeE.IMG])}
+              selected={selected[ResourcesTypeE.IMG]}
               searchQuery={searchQuery[ResourcesTypeE.IMG]}
               onSelected={(vals): void => updateSelected(ResourcesTypeE.IMG, vals)}
               onChangePagination={(current): void => {
@@ -393,7 +361,7 @@ const Resources: FunctionComponent = () => {
             <PdfTable
               data={pdfList}
               isSelectable={selectMode}
-              selected={flattenArr(selected[ResourcesTypeE.PDF])}
+              selected={selected[ResourcesTypeE.PDF]}
               searchQuery={searchQuery[ResourcesTypeE.PDF]}
               onSelected={(vals): void => updateSelected(ResourcesTypeE.PDF, vals)}
               onChangePagination={(current): void => {
@@ -408,9 +376,9 @@ const Resources: FunctionComponent = () => {
           >
             <LungNodulesReportCards
               data={lungNodulesReportList}
-              searchQuery={searchQuery[ResourcesTypeE.PDF]}
+              searchQuery={searchQuery[ResourcesTypeE.LUNG_NODULES_REPORT]}
               onSelected={(vals): void => updateSelected(ResourcesTypeE.LUNG_NODULES_REPORT, vals)}
-              selected={flattenArr(selected[ResourcesTypeE.LUNG_NODULES_REPORT])}
+              selected={selected[ResourcesTypeE.LUNG_NODULES_REPORT]}
               isSelectable={selectMode}
               onChangePagination={(current): void => {
                 onChangePagination(ResourcesTypeE.LUNG_NODULES_REPORT, current);
@@ -422,14 +390,10 @@ const Resources: FunctionComponent = () => {
       <PrivacyNotice></PrivacyNotice>
       <CreateCase
         show={showCreateCase}
-        exam={getResourceInstances(ResourcesTypeE.EXAM) as SearchQueryResI<ExamIndexI>}
-        pdf={getResourceInstances(ResourcesTypeE.PDF) as SearchQueryResI<PdfI>}
-        img={getResourceInstances(ResourcesTypeE.IMG) as SearchQueryResI<ImgI>}
-        lung_nodules_report={
-          getResourceInstances(
-            ResourcesTypeE.LUNG_NODULES_REPORT,
-          ) as SearchQueryResI<LungNoduleReportI>
-        }
+        exam={selected[ResourcesTypeE.EXAM]}
+        pdf={selected[ResourcesTypeE.PDF]}
+        img={selected[ResourcesTypeE.IMG]}
+        lung_nodules_report={selected[ResourcesTypeE.LUNG_NODULES_REPORT]}
         onCreateCase={(): void => {
           setShowCreateCase(false);
           updateSelected(resourcesTabType, []);

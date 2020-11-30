@@ -224,15 +224,15 @@ export const ImageFileToBase64 = (image: File): Promise<string> => {
 /**
  * 手动更新已选择的列表
  *
- * @param {string[]} data 当前已选择的列表
- * @param {string} id 当前选择的id
- * @returns {string[]}
+ * @param {any[]} data 当前已选择的列表
+ * @param {any} id 当前选择
+ * @returns {any[]}
  */
-export const getSelected = (data: string[], id: string): string[] => {
-  const index = data.indexOf(id);
+export const getSelected = (data: any[], current: any): any[] => {
+  const index = data.findIndex((item) => item.id === current.id);
 
-  if (index < 0) return [...data, id];
-  return [...data, id].filter((item) => item !== id);
+  if (index < 0) return [...data, current];
+  return [...data, current].filter((item) => item.id !== current.id);
 };
 
 /**

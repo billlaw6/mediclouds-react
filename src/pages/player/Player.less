@@ -46,6 +46,7 @@
     align-items: center;
     margin-bottom: 8px;
     &-inner {
+      display: inline-flex;
       position: relative;
       margin-right: 8px;
     }
@@ -100,6 +101,7 @@
     height: 62px;
     min-height: 62px;
     margin-bottom: 12px;
+    user-select: none;
     &-title {
       display: flex;
       align-items: center;
@@ -143,6 +145,10 @@
     min-width: 890px;
     height: 550px;
     min-height: 550px;
+
+    &.move-mode {
+      cursor: move;
+    }
   }
 
   &-list {
@@ -214,6 +220,7 @@
     }
 
     &-inner {
+      position: relative;
       margin: 0;
       padding: 0;
       overflow-x: hidden !important;

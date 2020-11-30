@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { createCase, getCase, getMineCaseList, getSharedCaseList } from "_api/case";
+import { createCase, delCase, getCase, getMineCaseList, getSharedCaseList } from "_api/case";
 import { CaseActionE, CaseI, CaseTypeE, CreateCaseDataI } from "_types/case";
 import { StoreStateI } from "_types/core";
 
@@ -38,6 +38,14 @@ export default () => {
     }
   };
 
+  const _delCase = async (ids: number[]): Promise<number[]> => {
+    try {
+      return await delCase(ids);
+    } catch (error) {
+      throw new Error(error);
+    }
+  };
+
   /** 更新case tab */
   const updateCaseTabType = (type: CaseTypeE): void => {
     dispatch({ type: CaseActionE.SWITCH_CASE_TAB_TYPE, payload: type });
@@ -51,6 +59,7 @@ export default () => {
     cases,
     settings,
     createCase: _createCase,
+    delCase: _delCase,
     fetchMineCaseList,
     fetchReadRecordCaseList,
     getCase: _getCase,

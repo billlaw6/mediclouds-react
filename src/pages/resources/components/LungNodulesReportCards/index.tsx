@@ -1,6 +1,6 @@
 import { Card, Checkbox, Col, Empty, Grid, Row, Modal, Pagination } from "antd";
 import React, { FunctionComponent, ReactNode, useState } from "react";
-import { formatDate } from "_helper";
+import { formatDate, getSelected } from "_helper";
 import { LungNoduleReportI } from "_types/ai";
 import { GetSearchQueryPropsI, SearchQueryResI } from "_types/api";
 import LungNoduleReport from "_components/LungNoduleReport";
@@ -17,9 +17,9 @@ const { useBreakpoint } = Grid;
 interface LungNodulesReportCardsPropsI {
   searchQuery: GetSearchQueryPropsI;
   isSelectable?: boolean; // 是否选择模式
-  selected?: string[]; // 已选择的id
+  selected?: LungNoduleReportI[]; // 已选择的id
   data?: SearchQueryResI<LungNoduleReportI>; // 数据
-  onSelected?: (vals: string[]) => void;
+  onSelected?: (vals: LungNoduleReportI[]) => void;
   onChangePagination?: (current: number) => void; // 当页码更新时触发
 }
 
@@ -71,8 +71,6 @@ const LungNodulesReportCards: FunctionComponent<LungNodulesReportCardsPropsI> = 
   const screen = useBreakpoint();
   const [openModal, setOpenModal] = useState(false);
 
-  // const [currentReport, setCurrentReport] = useState<LungNoduleReportI>();
-
   const getColCount = (): number => {
     const { xs, sm, xl, lg } = screen;
 
@@ -100,7 +98,7 @@ const LungNodulesReportCards: FunctionComponent<LungNodulesReportCardsPropsI> = 
         cols = [];
         count = 0;
       }
-      const { id, thumbnail = "", err, exam_id } = item;
+      const { id, thumbnail = "", err } = item;
       cols.push(
         <Col
           className={`resources-lung-nodules-report-cards-item`}
@@ -111,7 +109,11 @@ const LungNodulesReportCards: FunctionComponent<LungNodulesReportCardsPropsI> = 
             {isSelectable ? (
               <Checkbox
                 className="resources-lung-nodules-report-cards-checkbox"
-                value={`${id}`}
+                value={id}
+                onClick={(): void => {
+                  const arr = getSelected(selected || [], item);
+                  onSelected && onSelected(arr);
+                }}
               ></Checkbox>
             ) : null}
             <Card
@@ -159,10 +161,7 @@ const LungNodulesReportCards: FunctionComponent<LungNodulesReportCardsPropsI> = 
     <div className="resources-lung-nodules-report-cards">
       <Checkbox.Group
         style={{ width: "100%" }}
-        value={selected}
-        onChange={(res): void => {
-          onSelected && onSelected(res.map((item) => `${item}`));
-        }}
+        value={selected ? selected.map((item) => item.id) : undefined}
       >
         {data ? getContent(data.results) : null}
       </Checkbox.Group>

@@ -1,17 +1,4 @@
-import {
-  Alert,
-  Button,
-  Col,
-  DatePicker,
-  Form,
-  Input,
-  message,
-  Modal,
-  Popconfirm,
-  Row,
-  Select,
-  Tabs,
-} from "antd";
+import { Button, DatePicker, Form, Input, message, Modal, Popconfirm, Select, Tabs } from "antd";
 import moment from "moment";
 import React, { FunctionComponent, useState } from "react";
 import ExamCards from "_components/ExamCards";
@@ -19,9 +6,9 @@ import ImgCards from "_components/ImgCards";
 import PdfTable from "_components/PdfTable";
 import { formatDate } from "_helper";
 import useCase from "_hooks/useCase";
-import useResources from "_hooks/useResources";
+
 import { LungNoduleReportI } from "_types/ai";
-import { GetSearchQueryPropsI, SearchQueryResI } from "_types/api";
+import { GetSearchQueryPropsI } from "_types/api";
 import { CreateCaseDataI } from "_types/case";
 import {
   ExamIndexI,
@@ -36,10 +23,10 @@ import LungNodulesReportCards from "../LungNodulesReportCards";
 
 interface CreateCasePropsI {
   show: boolean; // 是否显示
-  [ResourcesTypeE.EXAM]?: SearchQueryResI<ExamIndexI>;
-  [ResourcesTypeE.IMG]?: SearchQueryResI<ImgI>;
-  [ResourcesTypeE.PDF]?: SearchQueryResI<PdfI>;
-  [ResourcesTypeE.LUNG_NODULES_REPORT]?: SearchQueryResI<LungNoduleReportI>;
+  [ResourcesTypeE.EXAM]?: ExamIndexI[];
+  [ResourcesTypeE.IMG]?: ImgI[];
+  [ResourcesTypeE.PDF]?: PdfI[];
+  [ResourcesTypeE.LUNG_NODULES_REPORT]?: LungNoduleReportI[];
   onCreateCase?: Function;
   onCancel?: Function;
 }
@@ -55,10 +42,6 @@ interface SearchQueryI {
 
 const { Item: FormItem } = Form;
 const { TabPane } = Tabs;
-
-const tailLayout = {
-  wrapperCol: { offset: 8, span: 16 },
-};
 
 const CreateCase: FunctionComponent<CreateCasePropsI> = (props) => {
   const { createCase: createCaseFunction } = useCase();
@@ -104,11 +87,10 @@ const CreateCase: FunctionComponent<CreateCasePropsI> = (props) => {
     const info = form.getFieldsValue();
     info.birthday = formatDate(info.birthday.toString());
     const createCaseData: CreateCaseDataI = Object.assign({}, info);
-    if (exam) createCaseData.exams = exam.results.map((item) => item.id);
-    if (pdf) createCaseData.pdfs = pdf.results.map((item) => `${item.id}`);
-    if (imgs) createCaseData.imgs = imgs.results.map((item) => `${item.id}`);
-    if (lung_nodules_report)
-      createCaseData.ai_reports = lung_nodules_report.results.map((item) => item.id);
+    if (exam) createCaseData.exams = exam;
+    if (pdf) createCaseData.pdfs = pdf;
+    if (imgs) createCaseData.imgs = imgs;
+    if (lung_nodules_report) createCaseData.ai_reports = lung_nodules_report;
 
     createCaseFunction(createCaseData)
       .then((res) => {
@@ -174,7 +156,7 @@ const CreateCase: FunctionComponent<CreateCasePropsI> = (props) => {
       <Tabs activeKey={tabKey} onChange={(key): void => setTabKey(key as ResourcesTypeE)}>
         <TabPane key={ResourcesTypeE.EXAM} tab="检查">
           <ExamCards
-            data={exam}
+            data={{ count: exam ? exam.length : 0, results: exam || [] }}
             searchQuery={searchQuery[tabKey]}
             disabledDesc
             disabledAi
@@ -184,21 +166,24 @@ const CreateCase: FunctionComponent<CreateCasePropsI> = (props) => {
         </TabPane>
         <TabPane key={ResourcesTypeE.IMG} tab="图片">
           <ImgCards
-            data={imgs}
+            data={{ count: imgs ? imgs.length : 0, results: imgs || [] }}
             searchQuery={searchQuery[tabKey]}
             onChangePagination={(num): void => updateSearchQuery(ResourcesTypeE.IMG, num)}
           ></ImgCards>
         </TabPane>
         <TabPane key={ResourcesTypeE.PDF} tab="PDF">
           <PdfTable
-            data={pdf}
+            data={{ count: pdf ? pdf.length : 0, results: pdf || [] }}
             searchQuery={searchQuery[tabKey]}
             onChangePagination={(num): void => updateSearchQuery(ResourcesTypeE.PDF, num)}
           ></PdfTable>
         </TabPane>
         <TabPane key={ResourcesTypeE.LUNG_NODULES_REPORT} tab="肺结节AI筛查报告">
           <LungNodulesReportCards
-            data={lung_nodules_report}
+            data={{
+              count: lung_nodules_report ? lung_nodules_report.length : 0,
+              results: lung_nodules_report || [],
+            }}
             searchQuery={searchQuery[tabKey]}
             onChangePagination={(num): void =>
               updateSearchQuery(ResourcesTypeE.LUNG_NODULES_REPORT, num)

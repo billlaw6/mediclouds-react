@@ -1,9 +1,7 @@
 /* eslint-disable react/display-name */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import { PageHeader, Table, Tabs } from "antd";
+import { Button, Modal, PageHeader, Table, Tabs } from "antd";
 import { ColumnsType } from "antd/es/table";
-import { PaginationConfig } from "antd/lib/pagination";
-import { TablePaginationConfig } from "antd/lib/table";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { formatDate, getAgeByBirthday, getSexName } from "_helper";
@@ -22,7 +20,9 @@ const CaseList: FunctionComponent = () => {
     fetchMineCaseList,
     fetchReadRecordCaseList,
     updateCaseTabType,
+    delCase,
   } = useCase();
+  const [selected, setSelected] = useState<number[]>([]);
   const [pagination, setPagination] = useState<{
     [key: string]: any;
     [CaseTypeE.MINE]: { current: number; pageSize: number };
@@ -95,6 +95,17 @@ const CaseList: FunctionComponent = () => {
     );
   };
 
+  const comfirmDel = () => {
+    Modal.confirm({
+      title: "删除病例",
+      content: "确认删除病例吗？",
+      onOk: () =>
+        delCase(selected)
+          .then(() => setSelected([]))
+          .catch((err) => console.error(err)),
+    });
+  };
+
   return (
     <section className="case-list">
       <PageHeader
@@ -103,12 +114,27 @@ const CaseList: FunctionComponent = () => {
         subTitle="查看和管理病例"
         onBack={(): void => history.push("/resources")}
       >
+        <Button
+          danger
+          disabled={!selected.length || caseTabType === CaseTypeE.READ_RECORD}
+          onClick={(): void => comfirmDel()}
+        >
+          删除
+        </Button>
+      </PageHeader>
+      <div>
         <Tabs
           activeKey={caseTabType}
-          onChange={(item): void => updateCaseTabType(item as CaseTypeE)}
+          onChange={(item): void => {
+            updateCaseTabType(item as CaseTypeE);
+          }}
         >
           <TabPane tab="我的病例" key={CaseTypeE.MINE}>
             <Table
+              rowSelection={{
+                selectedRowKeys: selected,
+                onChange: (vals) => setSelected(vals as number[]),
+              }}
               rowKey="id"
               dataSource={mineList}
               columns={columns}
@@ -142,7 +168,7 @@ const CaseList: FunctionComponent = () => {
             ></Table>
           </TabPane>
         </Tabs>
-      </PageHeader>
+      </div>
     </section>
   );
 };

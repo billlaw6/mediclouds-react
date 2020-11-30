@@ -2,9 +2,10 @@ import {
   ArrowLeftOutlined,
   CloudUploadOutlined,
   DeleteOutlined,
+  SelectOutlined,
   SortAscendingOutlined,
 } from "@ant-design/icons";
-import { Dropdown, Menu } from "antd";
+import { Dropdown, Menu, Space } from "antd";
 import { spawn } from "child_process";
 import React, { FunctionComponent, ReactElement, ReactNode } from "react";
 import LinkButton from "_components/LinkButton/LinkButton";
@@ -127,7 +128,12 @@ const Controller: FunctionComponent<ControllerPropsI> = (props) => {
             onClick={(): void => onClickCancelBtn && onClickCancelBtn()}
           ></ArrowLeftOutlined>
         ) : (
-          <span onClick={(): void => onSelectBtn && onSelectBtn()}>选择资源</span>
+          <span onClick={(): void => onSelectBtn && onSelectBtn()}>
+            <Space>
+              <SelectOutlined />
+              <span>选择资源</span>
+            </Space>
+          </span>
         )}
         <span onClick={(): void => onDel && onDel()}>删除</span>
         <span onClick={(): void => onCreateCase && onCreateCase()}>创建病例</span>

@@ -39,7 +39,6 @@ import LinkButton from "_components/LinkButton/LinkButton";
 import { Scrollbars } from "react-custom-scrollbars";
 
 import { SeriesImgCacheListT, ImgDrawInfoI, MprImgClientRects, MprImgAndSizeI } from "./type";
-import "./Player.less";
 import { Slider, Progress, Tooltip } from "antd";
 import { ImageI, SeriesListI, SeriesI, PatientExamI } from "_types/api";
 import { CustomHTMLDivElement } from "_types/core";
@@ -67,6 +66,9 @@ import { getLungSeries, getMprSeries, getSeries } from "_api/resources";
 import { getSeriesList } from "./actions";
 import { LungNoduleI } from "_types/ai";
 
+import Fns from "./components/Fns";
+import "./Player.less";
+
 const VIEWPORT_WIDTH_DEFAULT = 890; // 视图默认宽
 const VIEWPORT_HEIGHT_DEFAULT = 550; // 视图默认高
 const MPR_VIEWPORT_WIDTH_DEFAULT = 1152; // mpr 视图默认宽
@@ -85,6 +87,7 @@ const getDrawInfo = (
   viewHeight: number,
   width: number,
   height: number,
+  scale = 1,
 ): MprImgClientRects => {
   let drawW = 0,
     drawH = 0,
@@ -103,11 +106,41 @@ const getDrawInfo = (
     x = (viewWidth - drawW) / 2;
   }
 
+  if (scale !== 1) {
+    const _dw = drawW,
+      _dh = drawH;
+
+    drawW = _dw * scale;
+    drawH = _dh * scale;
+
+    x = x - (drawW - _dw) * 0.5;
+    y = y - (drawH - _dh) * 0.5;
+  }
+
   return { x, y, width: drawW, height: drawH };
 };
 
 let playTimer: number | undefined = undefined;
 let showPanelsTimer: number | undefined = undefined;
+const DEFAULT_FNS_STATUS = {
+  move: false,
+  offset: [0, 0],
+  scale: 1,
+};
+// 监听键盘事件
+const LEFT = 37,
+  RIGHT = 39,
+  UP = 38,
+  DOWN = 40,
+  PLAY_PAUSE = 32,
+  MOVE = 17, // control
+  ZOOM_IN = 65, // A
+  ZOOM_OUT = 90, // Z
+  RESET = 82; // R
+
+let isMoving = false; // 是否在移动
+let cacheOffset: number[] = [0, 0]; // 缓存位置信息
+let mouseStartPoint: number[] = [0, 0]; // 鼠标起始点位置坐标
 
 const Player: FunctionComponent = (props) => {
   // let ctx: CanvasRenderingContext2D | null = null;
@@ -159,6 +192,12 @@ const Player: FunctionComponent = (props) => {
   const [mprImgIndexs, setMprImgIndexs] = useState<number[]>([1, 1, 1]); // mpr每个序列当前图片的索引
   const [currentSeries, setCurrentSeries] = useState<SeriesI>(); // 当前的序列
   const [currentNodule, setCurrentNodule] = useState<LungNoduleI>(); // 当前选择的结节
+  const [fns, setFns] = useState<{
+    [key: string]: any;
+    move: boolean;
+    offset: number[];
+    scale: number;
+  }>(DEFAULT_FNS_STATUS);
 
   const [showShortcut, setShowShortcut] = useState(false); // 是否显示快捷键
 
@@ -242,6 +281,18 @@ const Player: FunctionComponent = (props) => {
     } catch (err) {
       throw new Error(err);
     }
+  };
+
+  /** 更新功能状态 */
+  const updateFnStatus = (key: string, val: any) => {
+    setFns(Object.assign({}, fns, { [key]: val }));
+  };
+
+  const resetFns = (): void => {
+    setFns(DEFAULT_FNS_STATUS);
+    cacheOffset = [0, 0];
+    mouseStartPoint = [0, 0];
+    isMoving = false;
   };
 
   // 获取当前series信息
@@ -588,8 +639,10 @@ const Player: FunctionComponent = (props) => {
       const currentImg = currentCache[imgIndexs[seriesIndex - 1] - 1];
       if (!currentImg) return;
 
+      const { scale, offset } = fns;
+
       const { width, height } = currentImg;
-      const drawInfo = getDrawInfo(viewportSize[0], viewportSize[1], width, height);
+      const drawInfo = getDrawInfo(viewportSize[0], viewportSize[1], width, height, scale);
 
       ctx.clearRect(0, 0, viewportSize[0], viewportSize[1]);
       ctx.drawImage(
@@ -598,8 +651,8 @@ const Player: FunctionComponent = (props) => {
         0,
         width,
         height,
-        drawInfo.x,
-        drawInfo.y,
+        drawInfo.x + offset[0] * devicePixelRatio,
+        drawInfo.y + offset[1] * devicePixelRatio,
         drawInfo.width,
         drawInfo.height,
       );
@@ -616,8 +669,8 @@ const Player: FunctionComponent = (props) => {
           const widthRatio = drawInfo.width / currentImg.width;
           const heightRatio = drawInfo.height / currentImg.height;
 
-          const drawX = widthRatio * img_x + drawInfo.x;
-          const drawY = heightRatio * img_y + drawInfo.y;
+          const drawX = widthRatio * img_x + drawInfo.x + offset[0] * devicePixelRatio;
+          const drawY = heightRatio * img_y + drawInfo.y + offset[1] * devicePixelRatio;
 
           ctx.beginPath();
           ctx.strokeStyle = "red";
@@ -634,7 +687,7 @@ const Player: FunctionComponent = (props) => {
         }
       }
     },
-    [cache, imgIndexs, seriesIndex, viewportSize, currentNodule],
+    [cache, imgIndexs, seriesIndex, viewportSize, currentNodule, fns],
   );
 
   // 绘制MPR模式下的图片
@@ -870,14 +923,9 @@ const Player: FunctionComponent = (props) => {
     }
   }, [isFullscreen]);
   useEffect(() => {
-    // 监听键盘事件
-    const LEFT = 37,
-      RIGHT = 39,
-      UP = 38,
-      DOWN = 40,
-      PLAY_PAUSE = 32;
-
     const onKeydown = (e: KeyboardEvent): void => {
+      if (!cacheDone) return;
+
       switch (e.keyCode) {
         case LEFT:
           isPlay && pause();
@@ -897,18 +945,52 @@ const Player: FunctionComponent = (props) => {
           isPlay ? pause() : play();
           // setPlay(!isPlay);
           break;
+        case ZOOM_IN:
+          isPlay && pause();
+          updateFnStatus("scale", fns.scale + 0.1);
+          break;
+        case ZOOM_OUT:
+          isPlay && pause();
+          updateFnStatus("scale", fns.scale - 0.1);
+          break;
+        case MOVE:
+          isPlay && pause();
+          updateFnStatus("move", true);
+          break;
+        case RESET:
+          isPlay && pause();
+          resetFns();
+          break;
         default:
           return;
       }
 
       e.preventDefault();
     };
+
+    const onKeyup = (e: KeyboardEvent) => {
+      if (!cacheDone) return;
+
+      switch (e.keyCode) {
+        case MOVE:
+          isPlay && pause();
+          updateFnStatus("move", false);
+          break;
+        default:
+          break;
+      }
+
+      e.preventDefault();
+    };
+
     document.addEventListener("keydown", onKeydown, { passive: false });
+    document.addEventListener("keyup", onKeyup, { passive: false });
 
     return (): void => {
       document.removeEventListener("keydown", onKeydown);
+      document.removeEventListener("keyup", onKeyup);
     };
-  }, [isPlay, isMpr, next, nextSeries, prev, prevSeries, prevMpr, nextMpr, pause, play]);
+  }, [isPlay, isMpr, next, nextSeries, prev, prevSeries, prevMpr, nextMpr, pause, play, fns]);
   useEffect(() => {
     // 更新 canvas 视图
     playTimer !== undefined && window.clearTimeout(playTimer);
@@ -983,6 +1065,50 @@ const Player: FunctionComponent = (props) => {
       _ctx && setCtx(_ctx);
     }
   }, [ctx]);
+
+  const listenMouseStart = (e: globalThis.MouseEvent) => {
+    if ($viewport.current) {
+      mouseStartPoint = [e.offsetX, e.offsetY];
+      isMoving = true;
+    }
+  };
+
+  const listenMouseMove = (e: globalThis.MouseEvent) => {
+    if (isMoving) {
+      const { offsetX, offsetY } = e;
+      const [startX, startY] = mouseStartPoint;
+      const [cacheX, cacheY] = cacheOffset;
+
+      updateFnStatus("offset", [offsetX - startX + cacheX, offsetY - startY + cacheY]);
+    }
+  };
+
+  const listenMouseEnd = (e: globalThis.MouseEvent) => {
+    isMoving = false;
+    cacheOffset = fns.offset;
+  };
+
+  useEffect(() => {
+    if (!$viewport.current) return;
+
+    if (fns.move) {
+      $viewport.current.addEventListener("mousedown", listenMouseStart);
+      $viewport.current.addEventListener("mousemove", listenMouseMove);
+      $viewport.current.addEventListener("mouseup", listenMouseEnd);
+    } else {
+      $viewport.current.removeEventListener("mousedown", listenMouseStart);
+      $viewport.current.removeEventListener("mousemove", listenMouseMove);
+      $viewport.current.removeEventListener("mouseup", listenMouseEnd);
+    }
+
+    return (): void => {
+      if ($viewport.current) {
+        $viewport.current.removeEventListener("mousedown", listenMouseStart);
+        $viewport.current.removeEventListener("mousemove", listenMouseMove);
+        $viewport.current.removeEventListener("mouseup", listenMouseEnd);
+      }
+    };
+  }, [fns]);
   useEffect(() => {
     document.oncontextmenu = (): boolean => false;
     document.oncopy = (): boolean => false;
@@ -996,11 +1122,7 @@ const Player: FunctionComponent = (props) => {
         </div>
       );
 
-    const renderList: SeriesI[] = [];
     const { children } = list;
-    // children.forEach(item => {
-    //   renderList[item.series_number - 1] = item;
-    // });
 
     return (
       <div className="player-list">
@@ -1014,7 +1136,7 @@ const Player: FunctionComponent = (props) => {
           renderView={(props): ReactElement => <ul {...props} className="player-list-inner"></ul>}
         >
           {children.map((item, index) => {
-            const { id, thumbnail, series_number, mpr_flag } = item;
+            const { id, thumbnail, mpr_flag } = item;
 
             return (
               <li
@@ -1088,35 +1210,6 @@ const Player: FunctionComponent = (props) => {
       </div>
     );
   };
-
-  // const getMarks = (max: number) => {
-  //   if (!showLungNodules || !lungNodule) return null;
-  //   const { nodule_details } = lungNodule;
-  //   if (!nodule_details || !nodule_details.length) return null;
-
-  //   return (
-  //     <div className="marks">
-  //       {nodule_details.map((nodule) => {
-  //         const { id, tex, disp_z } = nodule;
-  //         return (
-  //           <Tooltip title={getTexVal(tex)} key={id}>
-  //             <span
-  //               className="marks-item"
-  //               style={{
-  //                 left: `${Math.round(((disp_z + 1) / max) * 100)}%`,
-  //               }}
-  //               onClick={(): void => {
-  //                 const next = [...imgIndexs];
-  //                 next[seriesIndex - 1] = disp_z + 1;
-  //                 setImgIndexs(next);
-  //               }}
-  //             ></span>
-  //           </Tooltip>
-  //         );
-  //       })}
-  //     </div>
-  //   );
-  // };
 
   const slider = (): ReactElement => {
     let max = 1;
@@ -1203,6 +1296,8 @@ const Player: FunctionComponent = (props) => {
   if (isFullscreen) className += " player-fullscreen";
   if (isShowPanels) className += " player-show-panels";
 
+  const { scale, move } = fns;
+
   return (
     <section className={className}>
       <div className="player-header">
@@ -1226,7 +1321,7 @@ const Player: FunctionComponent = (props) => {
           <div className="player-view-inner">
             <Shortcut show={showShortcut} onClose={(): void => setShowShortcut(false)}></Shortcut>
             <canvas
-              className="player-viewport"
+              className={`player-viewport${fns.move ? " move-mode" : ""}`}
               ref={$viewport}
               // onWheel={wheelChange}
               onMouseOut={(): void => window.clearTimeout(showPanelsTimer)}
@@ -1236,6 +1331,25 @@ const Player: FunctionComponent = (props) => {
               width={viewportSize[0]}
               height={viewportSize[1]}
             ></canvas>
+            <Fns
+              isMove={move}
+              onMove={(): void => {
+                if (!cacheDone) return;
+                updateFnStatus("move", !move);
+              }}
+              onZoomIn={(): void => {
+                if (!cacheDone) return;
+                updateFnStatus("scale", scale + 0.1);
+              }}
+              onZoomOut={(): void => {
+                if (!cacheDone) return;
+                updateFnStatus("scale", scale - 0.1);
+              }}
+              onReset={(): void => {
+                if (!cacheDone) return;
+                resetFns();
+              }}
+            ></Fns>
             <div className="player-progress" style={{ display: cacheDone ? "none" : "flex" }}>
               <span>{Math.ceil(progress)}%</span>
               <Progress percent={progress} strokeColor="#7594FF"></Progress>

@@ -11,8 +11,8 @@ interface ImgCardsPropsI {
   searchQuery: GetSearchQueryPropsI;
   data?: SearchQueryResI<ImgI>;
   isSelectable?: boolean; // 是否选择模式
-  selected?: string[]; // 已选择的id
-  onSelected?: (selected: string[]) => void; //  当选择时触发
+  selected?: ImgI[]; // 已选择的id
+  onSelected?: (selected: ImgI[]) => void; //  当选择时触发
   onChangePagination?: (current: number) => void; // 当页码更新时触发
 }
 
@@ -26,8 +26,8 @@ const ImgCards: FunctionComponent<ImgCardsPropsI> = (props) => {
     results.forEach((item) => imgs.push({ src: item.url, width: 1, height: 1 }));
   }
 
-  const onClickImg = (id: string): void => {
-    const list = getSelected(selected || [], id);
+  const onClickImg = (current: ImgI): void => {
+    const list = getSelected(selected || [], current);
     onSelected && onSelected(list);
   };
 
@@ -59,20 +59,16 @@ const ImgCards: FunctionComponent<ImgCardsPropsI> = (props) => {
               className="resources-img-cards-item"
               style={{ margin: `${margin}px` }}
               onClick={(): void => {
-                isSelectable && onClickImg(imgId);
+                isSelectable && onClickImg(img);
               }}
             >
-              {/* <div
-                className="resources-img-cards-item-mask"
-                onClick={(): void => {
-                  isSelectable && onClickImg(imgId);
-                }}
-              ></div> */}
               <Checkbox
                 className={`resources-img-cards-checkbox${isSelectable ? " show" : ""}`}
-                checked={data && selected ? selected.indexOf(imgId) > -1 : false}
+                checked={
+                  data && selected ? selected.findIndex((item) => item.id === img.id) > -1 : false
+                }
                 onClick={(): void => {
-                  isSelectable && onClickImg(imgId);
+                  isSelectable && onClickImg(img);
                 }}
               ></Checkbox>
               <Image

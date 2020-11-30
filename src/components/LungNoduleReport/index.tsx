@@ -8,10 +8,12 @@ import GeneratorQrcode from "qrcode.react";
 import useOrder from "_hooks/useOrder";
 
 import { filterNodulesTruth, getCountWithNoduleType, getRenderData } from "./helper";
+import { OrderI } from "_types/order";
+
 import VariableCard from "./components/VariableCard";
 import Desc from "./components/Desc";
 import GroupItem from "./components/GroupItem";
-import { OrderI } from "_types/order";
+import Doctors from "./components/Doctors";
 
 import "./style.less";
 
@@ -257,6 +259,7 @@ const LungNoduleReport: FunctionComponent = () => {
           </Tabs>
         </div>
       )}
+      <Doctors></Doctors>
     </section>
   );
 };

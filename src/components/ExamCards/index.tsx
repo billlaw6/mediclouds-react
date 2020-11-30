@@ -18,8 +18,8 @@ interface ExamCardsPropsI {
   data?: SearchQueryResI<ExamIndexI>;
   searchQuery: GetSearchQueryPropsI;
   isSelectable?: boolean; // 是否选择模式
-  selected?: string[]; // 已选择的id
-  onSelected?: (selected: string[]) => void; //  当选择时触发
+  selected?: ExamIndexI[]; // 已选择的id
+  onSelected?: (selected: ExamIndexI[]) => void; //  当选择时触发
   onChangePagination?: (current: number) => void; // 当页码更新时触发
   onUpdateDescSuccess?: Function; // 当更新描述成功时
   disabledDesc?: boolean; // 不显示备注
@@ -90,12 +90,12 @@ const ExamCards: FunctionComponent<ExamCardsPropsI> = (props) => {
     });
   };
 
-  const onClickItem = (id: string): void => {
+  const onClickItem = (exam: ExamIndexI): void => {
     if (!isSelectable) {
-      history.push(`/player/?exam=${id}`);
+      history.push(`/player/?exam=${exam.id}`);
     } else {
       // 点击单个时触发
-      const list = getSelected(selected, id);
+      const list = getSelected(selected, exam) as ExamIndexI[];
       onSelected && onSelected(list);
     }
   };
@@ -144,8 +144,8 @@ const ExamCards: FunctionComponent<ExamCardsPropsI> = (props) => {
           thumbnail={thumbnail}
           modality={modality}
           checkbox={isSelectable}
-          checked={selected.indexOf(id) > -1}
-          onClick={(): void => onClickItem(id)}
+          checked={selected.findIndex((item) => item.id === id) > -1}
+          onClick={(): void => onClickItem(item)}
           updateDesc={(value: string): void => updateDesc(id, value)}
           disabledDesc={disabledDesc}
         ></DicomCard>

@@ -36,3 +36,13 @@ export const getSharedCaseList = async (): Promise<CaseI[]> =>
     method: "POST",
     url: `/dicom/case/shared/`,
   });
+
+/** 删除病例 */
+export const delCase = async (ids: number[]): Promise<number[]> =>
+  await personalReq({
+    method: "POST",
+    url: "/dicom/case/del/",
+    data: {
+      id: ids,
+    },
+  });

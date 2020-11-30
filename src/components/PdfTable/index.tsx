@@ -10,9 +10,9 @@ import PdfViewer from "./PdfViewer";
 interface PdfTablePropsI {
   searchQuery: GetSearchQueryPropsI;
   isSelectable?: boolean; // 是否选择模式
-  selected?: string[]; // 已选择的id
+  selected?: PdfI[]; // 已选择的id
   data?: SearchQueryResI<PdfI>; // 数据
-  onSelected?: (vals: string[]) => void;
+  onSelected?: (vals: PdfI[]) => void;
   onChangePagination?: (current: number) => void; // 当页码更新时触发
 }
 
@@ -50,8 +50,11 @@ const PdfTable: FunctionComponent<PdfTablePropsI> = (props) => {
         rowSelection={
           isSelectable
             ? {
-                selectedRowKeys: selected?.map((item) => parseInt(item, 10)),
-                onChange: (vals): void => onSelected && onSelected(vals.map((item) => `${item}`)),
+                selectedRowKeys: selected?.map((item) => item.id),
+                onChange: (vals): void => {
+                  const res = data.results.filter((item) => vals.indexOf(item.id) > -1);
+                  onSelected && onSelected(res);
+                },
               }
             : undefined
         }
