@@ -48,8 +48,8 @@ if (module.hot) {
 
 const Loading = () => <div>loading</div>;
 
-const IS_MOBILE = false;
-// const IS_MOBILE = /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent);
+// const IS_MOBILE = false;
+const IS_MOBILE = /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent);
 const MobileHome: FunctionComponent = () => (
   <div className="mobile-tip">
     <div className="mobile-tip-content">
@@ -59,7 +59,7 @@ const MobileHome: FunctionComponent = () => (
   </div>
 );
 
-const ignoreArr: string[] = ["register"];
+const ignoreArr: string[] = ["register", "public-ct", "e"];
 // const ignoreArr = ["affiliate", "player"];
 const { pathname } = window.location;
 const showMobilePage = ignoreArr.every((item) => pathname.indexOf(item) < 0);

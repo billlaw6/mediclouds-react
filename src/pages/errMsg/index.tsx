@@ -13,7 +13,7 @@ const ErrMsg: FunctionComponent = () => {
         title="报告解析失败"
         subTitle={
           <span>
-            一般发生AI检测失败的原因有多种，您可以加客服微信号：{" "}
+            一般发生AI检测失败的原因有多种，您可以加客服微信号：
             <b style={{ color: "#000" }}>Medimages</b> 进一步咨询！
           </span>
         }

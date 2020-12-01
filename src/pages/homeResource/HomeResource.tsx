@@ -96,7 +96,18 @@ const HomeResource: FunctionComponent = () => {
           type="warning"
           message={
             <span>
-              当需要跳转web页面时，请将跳转地址改为 <b>/pages/web/index?url=</b>
+              当需要跳转微信公众号页面时，请将跳转地址改为 <b>/pages/web/index?url=</b>
+              <i style={{ color: "red" }}>[需要跳转的url地址]</i>
+            </span>
+          }
+        ></Alert>
+        <Alert
+          showIcon
+          closable
+          type="warning"
+          message={
+            <span>
+              当需要跳转web页面时，请将跳转地址改为 <b>/pages/web/index?mi=</b>
               <i style={{ color: "red" }}>[需要跳转的url地址]</i>
             </span>
           }
