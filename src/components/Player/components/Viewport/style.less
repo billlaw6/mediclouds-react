@@ -1,7 +1,20 @@
 #viewport {
-  flex-wrap: 1;
+  position: relative;
+  display: flex;
+  flex-grow: 1;
   height: 100%;
   width: 100%;
   box-sizing: border-box;
-  background-color: #111;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+
+  .viewport {
+    &-windows {
+      flex-grow: 1;
+      background-color: #111;
+      height: 100%;
+      width: 100%;
+    }
+  }
 }

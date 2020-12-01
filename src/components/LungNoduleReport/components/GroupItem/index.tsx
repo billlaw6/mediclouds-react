@@ -36,13 +36,25 @@ const GroupItem: FunctionComponent<TypeGroupPropsI> = (props) => {
 
   return (
     <Collapse accordion defaultActiveKey={[`${defaultIndex}`]}>
-      <Panel key="0" header={<Header title="大于8mm的结节" count={data.max.length}></Header>}>
+      <Panel
+        collapsible="header"
+        key="0"
+        header={<Header title="大于8mm的结节" count={data.max.length}></Header>}
+      >
         <VariableCard data={data.max} examId={examId} seriesId={seriesId}></VariableCard>
       </Panel>
-      <Panel key="1" header={<Header title="6～8mm的结节" count={data.mid.length}></Header>}>
+      <Panel
+        collapsible="header"
+        key="1"
+        header={<Header title="6～8mm的结节" count={data.mid.length}></Header>}
+      >
         <VariableCard data={data.mid} examId={examId} seriesId={seriesId}></VariableCard>
       </Panel>
-      <Panel key="2" header={<Header title="小于6mm的结节" count={data.min.length}></Header>}>
+      <Panel
+        collapsible="header"
+        key="2"
+        header={<Header title="小于6mm的结节" count={data.min.length}></Header>}
+      >
         <VariableCard data={data.min} examId={examId} seriesId={seriesId}></VariableCard>
       </Panel>
     </Collapse>

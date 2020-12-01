@@ -6,6 +6,9 @@ import settings from "./settings";
 import aiReport from "./aiReport";
 import prod from "./product";
 import cases from "./case";
+import player from "./player";
+import playerSettings from "./playerSettings";
+import playerStatus from "./playerStatus";
 
 export default combineReducers({
   resources,
@@ -14,4 +17,7 @@ export default combineReducers({
   aiReport,
   prod,
   cases,
+  player,
+  playerStatus,
+  playerSettings,
 });

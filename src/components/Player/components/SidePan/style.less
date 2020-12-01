@@ -1,3 +1,62 @@
 #player .side-pan {
   position: relative;
+  background-color: #fff;
+  height: 100%;
+  transition: all 300ms;
+
+  &-trigger {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 50%;
+    height: 100px;
+    width: 10px;
+    background-color: gray;
+    cursor: pointer;
+    transition: all 300ms;
+
+    &:hover {
+      transition: all 300ms;
+    }
+  }
+
+  &.float {
+    position: absolute;
+  }
+
+  &.show {
+    transform: translateX(0) !important;
+    transition: transform 300ms;
+  }
+
+  &.left {
+    left: 0;
+    transform: translateX(-100%);
+
+    & .side-pan-trigger {
+      right: 0;
+      transform: translate(100%, -50%);
+      box-shadow: 1px 1px 6px rgba(255, 255, 255, 0.1);
+
+      &:hover {
+        box-shadow: 2px 2px 12px rgba(255, 255, 255, 0.3);
+      }
+    }
+  }
+
+  &.right {
+    right: 0;
+    transform: translateX(100%);
+
+    & .side-pan-trigger {
+      left: 0;
+      transform: translate(-100%, -50%);
+      box-shadow: -1px 1px 6px rgba(255, 255, 255, 0.1);
+
+      &:hover {
+        box-shadow: -2px 2px 12px rgba(255, 255, 255, 0.3);
+      }
+    }
+  }
 }

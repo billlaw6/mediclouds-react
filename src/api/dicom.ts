@@ -1,5 +1,5 @@
 import { personalReq } from ".";
-import { GalleryI, GalleryStatsI, SeriesListI } from "_types/api";
+import { GalleryI, GalleryStatsI, SeriesI, SeriesListI } from "_types/api";
 import { ExamIndexListI } from "_types/core";
 
 export const getExamIndex = async (params?: any): Promise<ExamIndexListI[]> => {
@@ -22,7 +22,7 @@ export const getExamIndexDetail = async (params: any) =>
     params,
   });
 
-export const getDicomSeriesDetail = async (params: any) =>
+export const getDicomSeriesDetail = async (params: any): Promise<SeriesI[]> =>
   await personalReq({
     method: "GET",
     url: `dicom/dicom-series/${params.id}/`,
