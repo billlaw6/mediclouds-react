@@ -1,4 +1,4 @@
-import { Cascader, List, Space, Table } from "antd";
+import { Alert, Cascader, List, Space, Table } from "antd";
 import React, { FunctionComponent, useState } from "react";
 import data from "_assets/json/cts.json";
 import { IS_MOBILE } from "_constants";
@@ -107,6 +107,15 @@ const PublicCT: FunctionComponent = () => {
       <Space direction="vertical">
         <header>
           <h1>支持CT检查结果刻光盘或用U盘拷贝的医院目录</h1>
+          <Alert
+            type="info"
+            message={
+              <div>
+                ★★公益活动-举手之劳★★ 医院信息采集:请大家各自贡献一份力量，方便后续患者使用！
+                <a href="https://jinshuju.net/f/VV2Cal">https://jinshuju.net/f/VV2Cal</a>
+              </div>
+            }
+          ></Alert>
         </header>
         <label>
           <span>搜索：</span>
