@@ -1,29 +1,37 @@
 import { useDispatch, useSelector } from "react-redux";
 import { StoreStateI } from "_types/core";
-import { PlayerDataI, PlayerDataMapT, PlayerStateI } from "../type";
-import { PlayerActionE } from "../types";
+import {
+  getActiveCollections,
+  getCollection,
+  getDataByCollection,
+  setDataToCollection,
+} from "../helpers";
+import { CollectionMapT, DataI, PlayerActionE } from "../types";
 
-const {
-  INIT_CST,
-  INIT_CS,
-  UPDATE,
-  UPDATE_DATA_ITEM,
-  UPDATE_DATA,
-  UPDATE_SERIES_INDEX,
-} = PlayerActionE;
+const { INIT_CST, INIT_CS, INIT_CS_IMGLOADER, UPDATE_COLLECTION_MAP } = PlayerActionE;
 
 export default () => {
   const playerReducerData = useSelector<StoreStateI, StoreStateI["player"]>(
     (state) => state.player,
   );
 
+  const { collectionMap } = playerReducerData;
+
   const dispaych = useDispatch();
 
-  const getCurrentData = (): PlayerDataI | undefined => {
-    const { seriesIndex = 0, data } = playerReducerData;
+  /** 获取所有激活的检查的当前资源 */
+  const getCurrentDatas = (): DataI[] | undefined => {
+    if (!collectionMap) return;
+    const res: DataI[] = [];
+    const activeCollections = getActiveCollections(collectionMap);
 
-    if (!data) return;
-    return data.get(seriesIndex);
+    activeCollections.forEach((collection) => {
+      const { seriesIndex, dataMap } = collection;
+      const currentData = dataMap.get(seriesIndex);
+      if (currentData) res.push(currentData);
+    });
+
+    return res;
   };
 
   const initCs = (cs: any): void => {
@@ -32,43 +40,39 @@ export default () => {
   const initCst = (cst: any): void => {
     dispaych({ type: INIT_CST, payload: cst });
   };
+  const initCsImgLoader = (csImgloader: any): void => {
+    dispaych({ type: INIT_CS_IMGLOADER, payload: csImgloader });
+  };
 
-  const updateReducer = (data: any): void => {
+  const updateCollectionMap = (data: CollectionMapT): void => {
     dispaych({
-      type: UPDATE,
+      type: UPDATE_COLLECTION_MAP,
       payload: data,
     });
   };
-  const updateData = (data: PlayerDataMapT): void => {
-    dispaych({
-      type: UPDATE_DATA,
-      payload: data,
+
+  /** 更新多个检查的数据 */
+  const updateDatas = (datas: DataI[]): void => {
+    if (!collectionMap) return;
+
+    const nextCollectionMap = new Map(collectionMap);
+    datas.forEach((data) => {
+      const { examIndex, seriesIndex } = data;
+      const nextCollection = setDataToCollection(collectionMap, examIndex, seriesIndex, data);
+      nextCollectionMap.set(examIndex, nextCollection);
     });
-  };
-  const updateSeriesIndex = (seriesIndex: number): void => {
-    dispaych({
-      type: UPDATE_SERIES_INDEX,
-      payload: seriesIndex,
-    });
-  };
-  const updateDataItem = (index: number, value: PlayerDataI): void => {
-    dispaych({
-      type: UPDATE_DATA_ITEM,
-      payload: {
-        index,
-        value,
-      },
-    });
+
+    updateCollectionMap(nextCollectionMap);
   };
 
   return {
     ...playerReducerData,
-    currentData: getCurrentData(),
+    currentDatas: getCurrentDatas(),
     initCs,
     initCst,
-    updateDataItem,
-    updateData,
-    updateReducer,
-    updateSeriesIndex,
+    initCsImgLoader,
+    updateDatas,
+    updateCollectionMap,
+    getCurrentDatas,
   };
 };

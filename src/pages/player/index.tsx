@@ -5,9 +5,13 @@ import { QueryDataI } from "./type";
 
 const PlayerPage: FunctionComponent = () => {
   /** 获取url中的query */
-  const { exam: id, series: originSeriesId, frame: originImgIndex } = useUrlQuery<QueryDataI>();
+  const { exam: id, series: originSeriesId, frame: originImgIndex = 0 } = useUrlQuery<QueryDataI>();
 
-  return <Player id={id} defaultFrame={originImgIndex} defaultSeries={originSeriesId}></Player>;
+  return (
+    <Player
+      exams={[{ id, defaultFrame: originImgIndex, defaultSeriesId: originSeriesId, active: true }]}
+    ></Player>
+  );
 };
 
 export default PlayerPage;

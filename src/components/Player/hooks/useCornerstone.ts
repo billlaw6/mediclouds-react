@@ -36,5 +36,6 @@ export const useCornerstone = (props: UserCornerstonePropsI = {}) => {
   return {
     cornerstone,
     cornerstoneTools,
+    cornerstoneWADOImageLoader,
   };
 };

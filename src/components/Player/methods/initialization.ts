@@ -3,77 +3,72 @@
  *
  */
 
-import { getDicomSeries } from "_api/dicom";
-import { SeriesListI } from "_types/api";
-
-import { PlayerDataI, PlayerDataMapT } from "../type";
+import { getCollection, setDataToCollection } from "../helpers";
+import { CollectionI, CollectionMapT, DataMapT, PlayerExamPropsI } from "../types";
 import cacheDicoms from "./cacheDicoms";
+import fetchSeriesList from "./fetchSeriesList";
 
 interface InitPropsI {
   cs: any; // cornerstone
-  examId: string; // 检查id
-  defaultSeriesId?: string; // 初始化序列id
-  defaultFrame?: number; // 初始化当前序列帧数
-  onBeforeCache?: (total: number) => void; // 缓存前触发 total: 当前缓存的总个数
-  onInitCornerstoneTools?: () => void; // 启用cornerstone tools 后触发
+  csImgLoader: any; // cornerstone img Loader
+  exams: PlayerExamPropsI[];
 }
 
-interface InitResI {
-  examInfo: SeriesListI;
-  data: PlayerDataMapT;
-  seriesIndex: number;
-}
+export default async (props: InitPropsI): Promise<CollectionMapT> => {
+  const { cs, csImgLoader, exams } = props;
+  if (!cs || !exams) throw new Error("must have both of cornerstone and exams.");
 
-export default async (props: InitPropsI): Promise<InitResI | undefined> => {
-  const { cs, examId, defaultSeriesId, defaultFrame = 0, onBeforeCache } = props;
+  const seriesListRes = await fetchSeriesList(exams);
+  const collectionMap: CollectionMapT = new Map();
+  const cacheArr: (Promise<any> | undefined)[] = [];
 
-  let examInfo;
-  let defaultSeriesIndex = 0; // 默认序列索引
-  const data = new Map<number, PlayerDataI>(); // 默认data
+  exams.forEach((exam, examIndex) => {
+    const { id, active, defaultSeriesId, defaultFrame = 0 } = exam;
+    const currentSeriesList = seriesListRes[examIndex];
+    const { children, ...patientInfo } = currentSeriesList;
+    const seriesIndex = Math.max(
+      0,
+      children.findIndex((item) => item.id === defaultSeriesId),
+    );
+    const dataMap: DataMapT = new Map();
 
-  /** 获取序列信息列表 */
-  try {
-    const dicomSeriesRes = await getDicomSeries(examId);
-    examInfo = dicomSeriesRes;
-    const { children } = dicomSeriesRes;
-
-    /** 初始化不含缓存的PlayerData Map */
-    children.forEach((item, index) => {
-      data.set(
-        index,
+    children.forEach((item, seriesIndex) => {
+      dataMap.set(
+        seriesIndex,
         Object.assign({}, item, {
-          frame: 0,
+          frame: defaultFrame,
+          examIndex,
+          seriesIndex,
         }),
       );
     });
-    /** 获得初始化序列索引 */
-    if (defaultSeriesId) {
-      const _seriesIndex = children.findIndex((item) => item.id === defaultSeriesId);
-      defaultSeriesIndex = Math.max(_seriesIndex, defaultSeriesIndex);
+
+    const collection: CollectionI = {
+      examId: id,
+      active,
+      dataMap,
+      seriesIndex,
+      patientInfo,
+    };
+    collectionMap.set(examIndex, collection);
+
+    if (active) {
+      const currentDicomUrls = children[seriesIndex].dicoms;
+      cacheArr.push(cacheDicoms(currentDicomUrls, cs, csImgLoader));
+    } else {
+      cacheArr.push(undefined);
     }
-  } catch (error) {
-    throw new Error(error);
-  }
+  });
 
-  /** 缓存前 */
-  const defaultSeries = data.get(defaultSeriesIndex);
-  if (!defaultSeries) return;
-  onBeforeCache && onBeforeCache(defaultSeries.dicoms.length);
+  const cachedArr = await Promise.all(cacheArr);
 
-  try {
-    /** 缓存当前序列 */
-    const cacheRes = await cacheDicoms(cs, defaultSeries.dicoms);
-    defaultSeries.cache = cacheRes;
-    defaultSeries.frame = defaultFrame;
-  } catch (error) {
-    throw new Error(error);
-  }
+  exams.forEach((_item, examIndex) => {
+    const collection = getCollection(collectionMap, examIndex);
+    if (collection && cachedArr[examIndex])
+      setDataToCollection(collectionMap, examIndex, collection.seriesIndex, {
+        cache: cachedArr[examIndex],
+      });
+  });
 
-  data.set(defaultSeriesIndex, defaultSeries);
-
-  return {
-    examInfo,
-    data,
-    seriesIndex: defaultSeriesIndex,
-  };
+  return collectionMap;
 };

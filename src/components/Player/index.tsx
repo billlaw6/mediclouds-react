@@ -1,6 +1,6 @@
-import React, { FunctionComponent, useEffect } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 
-import { PlayerPropsI } from "./types";
+import { CollectionMapT, PlayerPropsI } from "./types";
 
 import Tools from "./components/Tools";
 import Viewport from "./components/Viewport";
@@ -13,22 +13,18 @@ import useData from "./hooks/useData";
 import "./style.less";
 
 const Player: FunctionComponent<PlayerPropsI> = (props) => {
-  const { id, defaultSeries, defaultFrame = 0 } = props;
-  const { initCs, initCst, updateReducer } = useData();
-  const { cornerstone, cornerstoneTools } = useCornerstone();
+  const { exams } = props;
+  const { initCs, initCst, collectionMap, initCsImgLoader, updateCollectionMap } = useData();
+  const { cornerstone, cornerstoneTools, cornerstoneWADOImageLoader } = useCornerstone();
 
-  /** 初始化 */
   useEffect(() => {
     initCs(cornerstone);
-    initCst(cornerstoneTools);
-    initialization({
-      examId: id,
-      cs: cornerstone,
-      defaultFrame,
-      defaultSeriesId: defaultSeries,
-    })
+    initCsImgLoader(cornerstoneWADOImageLoader);
+
+    initialization({ cs: cornerstone, csImgLoader: cornerstoneWADOImageLoader, exams })
       .then((res) => {
-        updateReducer(res);
+        console.log("res", res);
+        updateCollectionMap(res);
       })
       .catch((err) => console.error(err));
   }, []);
@@ -37,7 +33,7 @@ const Player: FunctionComponent<PlayerPropsI> = (props) => {
     <div id="player">
       <Header></Header>
       <div className="player-content">
-        <Viewport></Viewport>
+        <Viewport collectionMap={collectionMap}></Viewport>
       </div>
       <Tools></Tools>
     </div>
