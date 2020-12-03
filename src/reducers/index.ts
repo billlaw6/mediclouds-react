@@ -9,6 +9,7 @@ import cases from "./case";
 import player from "./player";
 import playerSettings from "./playerSettings";
 import playerStatus from "./playerStatus";
+import playerWindows from "./playerWindows";
 
 export default combineReducers({
   resources,
@@ -18,6 +19,7 @@ export default combineReducers({
   prod,
   cases,
   player,
+  playerWindows,
   playerStatus,
   playerSettings,
 });

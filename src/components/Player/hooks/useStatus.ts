@@ -3,6 +3,8 @@ import { PlayerStatusActionE } from "../../../reducers/playerStatus";
 import { StoreStateI } from "_types/core";
 import useData from "./useData";
 import { useCallback } from "react";
+import useWindows from "./useWindows";
+import { WindowMapT } from "../types";
 
 let timer = -1; // window 计时器
 
@@ -12,6 +14,7 @@ export default () => {
   );
   const { isPlay } = status;
   const { getCurrentDatas, updateDatas } = useData();
+  const { getCurrentWindows, updateWins } = useWindows();
   const dispatch = useDispatch();
   const { ENABLE_VIEWPORT, PLAY, PAUSE } = PlayerStatusActionE;
 
@@ -25,23 +28,30 @@ export default () => {
   };
 
   const next = (): void => {
-    const currentDatas = getCurrentDatas();
-    if (!currentDatas) return;
+    const currentWins = getCurrentWindows();
+    if (!currentWins) return;
     let tip = 0; // 是否暂停 当所有的序列都播放完成时变为1 则停止播放
+    const nextWins: WindowMapT = new Map();
 
-    const nextDatas = currentDatas.map((data) => {
-      const { frame, cache } = data;
-      if (cache && cache.length <= frame + 1) tip = 1;
+    currentWins.forEach((win, index) => {
+      const { frame: frameInWindow = 0, data } = win;
+      if (!data) return;
+      const { cache } = data;
+      if (cache && cache.length <= frameInWindow + 1) tip = 1;
       else tip = 0;
 
-      const nextFrame = Math.min(cache ? cache.length - 1 : 0, frame + 1);
+      const nextFrame = Math.min(cache ? cache.length - 1 : 0, frameInWindow + 1);
 
-      return Object.assign({}, data, {
-        frame: nextFrame,
-      });
+      nextWins.set(
+        index,
+        Object.assign({}, win, {
+          frame: nextFrame,
+        }),
+      );
     });
 
-    updateDatas(nextDatas);
+    console.log("next wins", nextWins);
+    updateWins(nextWins);
     if (tip) pause();
   };
 
@@ -51,17 +61,25 @@ export default () => {
   };
 
   const prev = (): void => {
-    const currentDatas = getCurrentDatas();
-    if (!currentDatas) return;
+    const currentWins = getCurrentWindows();
+    if (!currentWins) return;
+    const nextWins: WindowMapT = new Map();
 
-    const nextDatas = currentDatas.map((data) => {
-      const { frame } = data;
-      return Object.assign({}, data, {
-        frame: Math.max(0, frame - 1),
-      });
+    currentWins.forEach((win, index) => {
+      const { frame: frameInWindow = 0, data } = win;
+      if (!data) return;
+
+      const nextFrame = Math.max(0, frameInWindow - 1);
+
+      nextWins.set(
+        index,
+        Object.assign({}, win, {
+          frame: nextFrame,
+        }),
+      );
     });
 
-    updateDatas(nextDatas);
+    updateWins(nextWins);
   };
 
   return {

@@ -1,9 +1,11 @@
-import React, { FunctionComponent, useEffect, useRef } from "react";
+import React, { FunctionComponent, ReactNode, useEffect, useRef } from "react";
 import useData from "_components/Player/hooks/useData";
 import useStatus from "_components/Player/hooks/useStatus";
+import useWindows from "_components/Player/hooks/useWindows";
 import draw from "_components/Player/methods/draw";
 import { CollectionMapT } from "_components/Player/types";
 import SidePan from "../SidePan";
+import Win from "../Win";
 
 import "./style.less";
 
@@ -11,40 +13,27 @@ interface ViewportPropsI {
   collectionMap?: CollectionMapT;
 }
 
-const Viewport: FunctionComponent<ViewportPropsI> = (props) => {
-  const { collectionMap } = props;
+const Viewport: FunctionComponent = () => {
+  const { windowsMap } = useWindows();
 
-  const { cs } = useData();
-  const { enabledViewport, enableViewport } = useStatus();
+  const getWindows = (): ReactNode => {
+    if (!windowsMap) return null;
 
-  const $windows = useRef<HTMLDivElement>(null);
+    const renderArr: ReactNode[] = [];
+    windowsMap.forEach((item, index) => {
+      const { data } = item;
+      const key = data ? `${data.id}` : `${Date.now()}`;
 
-  useEffect(() => {
-    if (!$windows.current || !cs) return;
-    if (!enabledViewport) {
-      cs.enable($windows.current);
-      enableViewport();
-    }
-  }, [cs]);
+      return renderArr.push(<Win key={key} index={index} data={item}></Win>);
+    });
 
-  useEffect(() => {
-    const _data = collectionMap ? collectionMap.get(0)?.dataMap.get(0) : undefined;
-
-    console.log("data >>>", _data);
-
-    if ($windows.current && _data && enabledViewport) {
-      draw({
-        cs,
-        data: _data,
-        el: $windows.current,
-      });
-    }
-  }, [collectionMap, cs, enabledViewport]);
+    return renderArr;
+  };
 
   return (
     <div id="viewport">
       <SidePan location="left"></SidePan>
-      <div className="viewport-windows" ref={$windows}></div>
+      {getWindows()}
       <SidePan location="right"></SidePan>
     </div>
   );

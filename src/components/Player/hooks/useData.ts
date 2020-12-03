@@ -1,11 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { StoreStateI } from "_types/core";
-import {
-  getActiveCollections,
-  getCollection,
-  getDataByCollection,
-  setDataToCollection,
-} from "../helpers";
+import { getActiveCollections, setDataToCollection } from "../helpers";
 import { CollectionMapT, DataI, PlayerActionE } from "../types";
 
 const { INIT_CST, INIT_CS, INIT_CS_IMGLOADER, UPDATE_COLLECTION_MAP } = PlayerActionE;
@@ -20,10 +15,12 @@ export default () => {
   const dispaych = useDispatch();
 
   /** 获取所有激活的检查的当前资源 */
-  const getCurrentDatas = (): DataI[] | undefined => {
-    if (!collectionMap) return;
+  const getCurrentDatas = (data?: CollectionMapT): DataI[] | undefined => {
+    const _map = data || collectionMap;
+
+    if (!_map) return;
     const res: DataI[] = [];
-    const activeCollections = getActiveCollections(collectionMap);
+    const activeCollections = getActiveCollections(_map);
 
     activeCollections.forEach((collection) => {
       const { seriesIndex, dataMap } = collection;

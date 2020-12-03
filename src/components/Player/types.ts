@@ -54,9 +54,10 @@ export type CollectionMapT = Map<CollectionIndexT, CollectionI>;
  * 窗口结构 渲染相关
  */
 export interface WindowI {
-  data: DataI; // 当前窗口的数据
+  data?: DataI; // 当前窗口的数据
   frame?: number; // 当前窗口的帧索引，优先级高于数据内的帧索引，当没有或小于0时，使用data内部的frame
   element?: HTMLElement; // 当前窗口的HTML元素
+  active?: boolean; // 是否被激活
 }
 
 /** 窗口映射集合 */
@@ -69,4 +70,13 @@ export enum PlayerActionE {
   INIT_CST = "init_cst", // 全局cornerstone tools
   INIT_CS_IMGLOADER = "init_cs_imgloader", // 全局 cornerstone WADO Imageloader
   UPDATE_COLLECTION_MAP = "update_collection_map", // 更新检查映射集合
+}
+
+/* 窗口动作 */
+export enum PlayerWindowsActionE {
+  OPEN_WINDOW = "open_window", // 打开窗口
+  COLSE_WINDOW = "close_window", // 关闭窗口
+  UPDATE_WINDOW = "update_window", // 更新窗口
+  ACTIVE_WINDOW = "active_window", // 激活某个窗口
+  UPDATE = "update", // 更新整个windows
 }
