@@ -4,7 +4,7 @@ import SmsCode from "_components/SmsCode";
 
 import wechatScan from "_images/wechat-scan.png";
 import useAccount from "_hooks/useAccount";
-import { clearLocalStorage } from "_helper";
+import { clearLocalStorage, encrypt, getLocalStorage } from "_helper";
 
 import "./personal.less";
 
@@ -14,25 +14,6 @@ const APPID = "wxed42db352deaa115";
 const WECHAT_URL = "https://open.weixin.qq.com/connect/qrconnect";
 const REDIRECT_URL = "https://mi.mediclouds.cn/oauth/";
 const STYLE_URL = "https://mi.mediclouds.cn/web/static/css/qrcode.css";
-
-const QRCODE_URL =
-  WECHAT_URL +
-  `?appid=${APPID}&` +
-  `scope=snsapi_login&` +
-  `redirect_uri=${encodeURI(REDIRECT_URL)}&` +
-  `state=STATUS&` + // 替换用户ID
-  `login_type=jssdk&` +
-  `self_redirect=false&` +
-  `styletype=&` +
-  `sizetype=L&` +
-  `bgcolor=black&` +
-  `rst=&` +
-  `style=&` +
-  `href=` +
-  STYLE_URL +
-  "&" +
-  `response_type=code&` +
-  `#wechat_redirect`;
 
 interface PersonalPropsI {
   loginType?: "form" | "qrcode"; // 是否以表单登录触发
@@ -47,8 +28,31 @@ const Personal: FunctionComponent<PersonalPropsI> = (props) => {
   const [loginType, setLoginType] = useState<"form" | "qrcode">();
   const [loginFormData, setLoginFormData] = useState<any>({});
   const [captchaVal, setCaptchaVal] = useState<string>("");
+  const [oauthState, setOauthState] = useState("STATE");
+
+  const QRCODE_URL =
+    WECHAT_URL +
+    `?appid=${APPID}&` +
+    `scope=snsapi_login&` +
+    `redirect_uri=${encodeURI(REDIRECT_URL)}&` +
+    `state=${oauthState}&` + // 替换用户ID
+    `login_type=jssdk&` +
+    `self_redirect=false&` +
+    `styletype=&` +
+    `sizetype=L&` +
+    `bgcolor=black&` +
+    `rst=&` +
+    `style=&` +
+    `href=` +
+    STYLE_URL +
+    "&" +
+    `response_type=code&` +
+    `#wechat_redirect`;
 
   useEffect(() => {
+    const isShare = getLocalStorage("s");
+    if (isShare) setOauthState(encrypt(isShare));
+
     const timer = setTimeout(() => {
       setHiddenScan(true);
     }, 3000);
