@@ -29,10 +29,12 @@ const AuthorizedRoute: FunctionComponent<AuthorizedRoutePropsI> = (props) => {
     (hasPermission(AccountStatusE.LOGIN, permission) && !account.login) ||
     (account.login && permission.length && !hasPermission(account.role, permission));
 
+  console.log("pathname", pathname);
+
   if (s) {
     setSessionStorage("s", JSON.stringify({ nav: pathname, search }));
   } else {
-    if (pathname !== ("/login" && "/oauth")) clearSessionStorage("s");
+    if (pathname !== "/login" && pathname !== "/oauth") clearSessionStorage("s");
   }
 
   if (goLogin) return <Redirect to="/login"></Redirect>;
