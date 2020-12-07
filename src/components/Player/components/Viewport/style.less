@@ -1,7 +1,6 @@
 #viewport {
   position: relative;
   display: flex;
-  flex-grow: 1;
   height: 100%;
   width: 100%;
   box-sizing: border-box;
@@ -11,10 +10,11 @@
 
   .viewport {
     &-windows {
-      flex-grow: 1;
+      flex: 1;
       background-color: #111;
       height: 100%;
       width: 100%;
+      box-sizing: border-box;
     }
   }
 }

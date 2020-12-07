@@ -1,62 +1,45 @@
 #player .side-pan {
   position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
   background-color: #fff;
   height: 100%;
   transition: all 300ms;
+  width: 0;
+  max-width: 0;
+  overflow: hidden;
+  box-sizing: border-box;
 
-  &-trigger {
-    position: absolute;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    top: 50%;
-    height: 100px;
-    width: 10px;
-    background-color: gray;
-    cursor: pointer;
-    transition: all 300ms;
-
-    &:hover {
-      transition: all 300ms;
-    }
+  &-scrollbar {
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
   }
 
-  &.float {
-    position: absolute;
+  &-header {
+    height: 2.5rem;
+    background-color: #9e9e9e;
+    color: #fff;
+  }
+
+  &-content {
+    padding: 0.8rem;
+    box-sizing: border-box;
   }
 
   &.show {
-    transform: translateX(0) !important;
-    transition: transform 300ms;
+    // margin-left: 0;
+    // margin-right: 0;
+    width: 25rem;
+    max-width: 25rem;
+    min-width: 25rem;
   }
 
-  &.left {
-    left: 0;
-    transform: translateX(-100%);
-
-    & .side-pan-trigger {
-      right: 0;
-      transform: translate(100%, -50%);
-      box-shadow: 1px 1px 6px rgba(255, 255, 255, 0.1);
-
-      &:hover {
-        box-shadow: 2px 2px 12px rgba(255, 255, 255, 0.3);
-      }
-    }
-  }
-
-  &.right {
-    right: 0;
-    transform: translateX(100%);
-
-    & .side-pan-trigger {
-      left: 0;
-      transform: translate(-100%, -50%);
-      box-shadow: -1px 1px 6px rgba(255, 255, 255, 0.1);
-
-      &:hover {
-        box-shadow: -2px 2px 12px rgba(255, 255, 255, 0.3);
-      }
-    }
+  .series-card {
+    width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
   }
 }

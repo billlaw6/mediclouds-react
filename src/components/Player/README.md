@@ -18,7 +18,7 @@
 # 概念
 ## 原子
 
-播放器内的数据最小单位是一个序列对象（DataI），内定义了一些参数表示当前序列的状态 * 首先，DataI继承了SeriesI的信息*
+播放器内的数据最小单位是一个序列对象（PlayerSeriesI），内定义了一些参数表示当前序列的状态 * 首先，DataI继承了SeriesI的信息*
 
 | Name | Type | Default | Desc |
 | -- | -- | -- | -- |
@@ -29,13 +29,13 @@
 
 ## 原子集
 
-许多原子组合为一个原子集合（CollectionI），内定义了一些当前原子集合的状态
+许多原子组合为一个原子集合（PlayerExamI），内定义了一些当前原子集合的状态
 
 | Name | Type | Default | Desc |
 | -- | -- | -- | -- |
 | examId | string | "" | 当前原子集对应的检查id |
 | patientInfo | PatientExamI | - | 当前检查的病人信息 |
-| dataMap | DataMapT | - | 原子映射集 |
+| dataMap | PlayerSeriesMapT | - | 原子映射集 |
 | seriesIndex | number | 0 | 当前的序列索引 |
 | active | boolean | false | 当前原子集合是否被激活 |
 

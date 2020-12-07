@@ -1,8 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { PlayerStatusActionE } from "../../../reducers/playerStatus";
 import { StoreStateI } from "_types/core";
-import useData from "./useData";
-import { useCallback } from "react";
 import useWindows from "./useWindows";
 import { WindowMapT } from "../types";
 
@@ -12,11 +10,18 @@ export default () => {
   const status = useSelector<StoreStateI, StoreStateI["playerStatus"]>(
     (state) => state.playerStatus,
   );
-  const { isPlay } = status;
-  const { getCurrentDatas, updateDatas } = useData();
+
   const { getCurrentWindows, updateWins } = useWindows();
   const dispatch = useDispatch();
-  const { ENABLE_VIEWPORT, PLAY, PAUSE } = PlayerStatusActionE;
+  const {
+    ENABLE_VIEWPORT,
+    PLAY,
+    PAUSE,
+    SHOW_LEFT_PAN,
+    HIDDEN_LEFT_PAN,
+    SHOW_RIGHT_PAN,
+    HIDDEN_RIGHT_PAN,
+  } = PlayerStatusActionE;
 
   const enableViewport = () => {
     dispatch({ type: ENABLE_VIEWPORT });
@@ -34,9 +39,9 @@ export default () => {
     const nextWins: WindowMapT = new Map();
 
     currentWins.forEach((win, index) => {
-      const { frame: frameInWindow = 0, data } = win;
-      if (!data) return;
-      const { cache } = data;
+      const { frame: frameInWindow = 0, playerSeries } = win;
+      if (!playerSeries) return;
+      const { cache } = playerSeries;
       if (cache && cache.length <= frameInWindow + 1) tip = 1;
       else tip = 0;
 
@@ -50,7 +55,6 @@ export default () => {
       );
     });
 
-    console.log("next wins", nextWins);
     updateWins(nextWins);
     if (tip) pause();
   };
@@ -66,8 +70,8 @@ export default () => {
     const nextWins: WindowMapT = new Map();
 
     currentWins.forEach((win, index) => {
-      const { frame: frameInWindow = 0, data } = win;
-      if (!data) return;
+      const { frame: frameInWindow = 0, playerSeries } = win;
+      if (!playerSeries) return;
 
       const nextFrame = Math.max(0, frameInWindow - 1);
 
@@ -82,6 +86,11 @@ export default () => {
     updateWins(nextWins);
   };
 
+  const switchPan = (position: "left" | "right", show: boolean): void => {
+    if (position === "left") dispatch({ type: show ? SHOW_LEFT_PAN : HIDDEN_LEFT_PAN });
+    if (position === "right") dispatch({ type: show ? SHOW_RIGHT_PAN : HIDDEN_RIGHT_PAN });
+  };
+
   return {
     ...status,
     enableViewport,
@@ -89,5 +98,6 @@ export default () => {
     pause,
     next,
     prev,
+    switchPan,
   };
 };

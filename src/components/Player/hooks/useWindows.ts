@@ -42,7 +42,7 @@ export default () => {
     const res: WindowMapT = new Map();
 
     windowsMap.forEach((win, index) => {
-      if (win.active) res.set(index, win);
+      if (win.isActive) res.set(index, win);
     });
 
     return res;

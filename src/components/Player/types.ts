@@ -17,8 +17,8 @@ export interface PlayerPropsI {
 
 // ============== Data ================ //
 
-export type CollectionIndexT = number; // 检查映射集合 索引
-export type DataIndexT = number; // 数据映射集合 索引
+export type PlayerExamIndexT = number; // 检查映射集合 索引
+export type PlayerSeriesIndexT = number; // 数据映射集合 索引
 export type FrameT = number; // 数据帧
 export type WindowIndexT = number; // 窗口映射集合 索引
 
@@ -26,38 +26,41 @@ export type WindowIndexT = number; // 窗口映射集合 索引
  * 播放器的序列数据
  * 包含了当前序列的SeriesI基本信息，当前序列的帧数，cs缓存
  */
-export interface DataI extends SeriesI {
+export interface PlayerSeriesI extends SeriesI {
   cache?: any[]; // 当前序列的缓存
   frame: FrameT; // 当前series在第几帧（图片索引）
   examIndex: number; // 在第几个检查
   seriesIndex: number; // 在第几个序列
+  progress: number; // 加载进度 默认为 -1
 }
 
 /**
  * 数据映射集合
  */
-export type DataMapT = Map<DataIndexT, DataI>;
+export type PlayerSeriesMapT = Map<PlayerSeriesIndexT, PlayerSeriesI>;
 
-export interface CollectionI {
+export interface PlayerExamI {
+  index: number; // 检查索引
   examId: string; // 检查id
   patientInfo: PatientExamI; // 病人信息
-  dataMap: DataMapT; // 数据映射集合
+  playerSeriesMap: PlayerSeriesMapT; // 数据映射集合
   seriesIndex: number; // 当前的数据映射索引 默认0
   active: boolean; // 激活状态 激活的Collection会缓存数据并启用一个Window
 }
 /**
  * 检查映射集合
  */
-export type CollectionMapT = Map<CollectionIndexT, CollectionI>;
+export type PlayerExamMapT = Map<PlayerExamIndexT, PlayerExamI>;
 
 /**
  * 窗口结构 渲染相关
  */
 export interface WindowI {
-  data?: DataI; // 当前窗口的数据
+  playerSeries?: PlayerSeriesI; // 当前窗口的数据
   frame?: number; // 当前窗口的帧索引，优先级高于数据内的帧索引，当没有或小于0时，使用data内部的frame
   element?: HTMLElement; // 当前窗口的HTML元素
-  active?: boolean; // 是否被激活
+  isActive?: boolean; // 是否被激活
+  isPlay?: boolean; // 是否在播放
 }
 
 /** 窗口映射集合 */
@@ -66,10 +69,10 @@ export type WindowMapT = Map<WindowIndexT, WindowI>;
 // ============== actions ================ //
 /** 播放器动作 */
 export enum PlayerActionE {
-  INIT_CS = "init_cs", // 全局cornerstone
-  INIT_CST = "init_cst", // 全局cornerstone tools
-  INIT_CS_IMGLOADER = "init_cs_imgloader", // 全局 cornerstone WADO Imageloader
-  UPDATE_COLLECTION_MAP = "update_collection_map", // 更新检查映射集合
+  INIT_PLAYER = "init_player", // 初始化播放器
+  UPDATE_PLAYER = "update_player", // 更新任意值
+  INIT_CORNERSTONE = "init_cornerstone", // 初始化全局cornerstone
+  UPDATE_PLAYER_EXAM_MAP = "update_player_exam_map", // 更新检查映射集合
 }
 
 /* 窗口动作 */

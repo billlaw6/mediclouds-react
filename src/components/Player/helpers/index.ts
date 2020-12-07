@@ -1,47 +1,47 @@
 import {
-  CollectionI,
-  CollectionIndexT,
-  CollectionMapT,
-  DataI,
-  DataIndexT,
-  DataMapT,
+  PlayerExamI,
+  PlayerExamIndexT,
+  PlayerExamMapT,
+  PlayerSeriesI,
+  PlayerSeriesIndexT,
+  PlayerSeriesMapT,
 } from "../types";
 
 /** 根据索引在检查映射集合内获取检查数据 */
 export const getCollection = (
-  collectionMap: CollectionMapT,
+  playerExamMap: PlayerExamMapT,
   index: number,
-): CollectionI | undefined => collectionMap.get(index);
+): PlayerExamI | undefined => playerExamMap.get(index);
 
 /** 使用exam id获取检查数据 */
 export const getCollectionById = (
   examId: string,
-  collectionMap?: CollectionMapT,
-): CollectionI | undefined => {
-  if (!collectionMap) return;
+  playerExamMap?: PlayerExamMapT,
+): PlayerExamI | undefined => {
+  if (!playerExamMap) return;
 
-  for (const value of collectionMap.values()) {
+  for (const value of playerExamMap.values()) {
     if (value.examId === examId) return value;
   }
 };
 
 /** 获取已激活的检查数据数组 */
-export const getActiveCollections = (collectionMap: CollectionMapT): CollectionI[] => {
-  const res: CollectionI[] = [];
-  collectionMap.forEach((item) => item.active && res.push(item));
+export const getActiveCollections = (playerExamMap: PlayerExamMapT): PlayerExamI[] => {
+  const res: PlayerExamI[] = [];
+  playerExamMap.forEach((item) => item.active && res.push(item));
 
   return res;
 };
 
 /** 根据检查索引列表，获取多个检查的数据 */
 export const getDataMaps = (
-  collectionMap: CollectionMapT,
-  indexs: CollectionIndexT[],
-): (CollectionI | undefined)[] => {
-  const res: (CollectionI | undefined)[] = [];
+  playerExamMap: PlayerExamMapT,
+  indexs: PlayerExamIndexT[],
+): (PlayerExamI | undefined)[] => {
+  const res: (PlayerExamI | undefined)[] = [];
 
   indexs.forEach((item) => {
-    const collection = getCollection(collectionMap, item);
+    const collection = getCollection(playerExamMap, item);
     collection && res.push(collection);
   });
 
@@ -49,26 +49,28 @@ export const getDataMaps = (
 };
 
 /** 根据序列索引，在数据映射集内获取相应数据 */
-export const getData = (dataMap: DataMapT, index: DataIndexT): DataI | undefined =>
-  dataMap.get(index);
+export const getData = (
+  dataMap: PlayerSeriesMapT,
+  index: PlayerSeriesIndexT,
+): PlayerSeriesI | undefined => dataMap.get(index);
 
 /**
  * 根据检查索引和序列索引，在检查数据映射集内获取相应数据
  *
- * @param {CollectionMapT} collectionMap 检查映射集合
- * @param {CollectionIndexT} collectionIndex 检查索引
- * @param {DataIndexT} dataIndex 数据索引
- * @returns {(DataI | undefined)} 返回数据
+ * @param {PlayerExamMapT} playerExamMap 检查映射集合
+ * @param {PlayerExamIndexT} collectionIndex 检查索引
+ * @param {PlayerSeriesIndexT} dataIndex 数据索引
+ * @returns {(PlayerSeriesI | undefined)} 返回数据
  */
 export const getDataByCollection = (
-  collectionMap: CollectionMapT,
-  collectionIndex: CollectionIndexT,
-  dataIndex: DataIndexT,
-): DataI | undefined => {
-  const collection = getCollection(collectionMap, collectionIndex);
+  playerExamMap: PlayerExamMapT,
+  collectionIndex: PlayerExamIndexT,
+  dataIndex: PlayerSeriesIndexT,
+): PlayerSeriesI | undefined => {
+  const collection = getCollection(playerExamMap, collectionIndex);
   if (!collection) return;
 
-  return getData(collection.dataMap, dataIndex);
+  return getData(collection.playerSeriesMap, dataIndex);
 };
 
 /**
@@ -78,13 +80,17 @@ export const getDataByCollection = (
  *
  * 返回一个新数据集合
  *
- * @param {DataMapT | undefined} dataMap 当前的数据映射集合
- * @param {DataIndexT} index 目标数据索引
+ * @param {PlayerSeriesMapT | undefined} dataMap 当前的数据映射集合
+ * @param {PlayerSeriesIndexT} index 目标数据索引
  * @param {any} data 数据
- * @return {DataMapT}
+ * @return {PlayerSeriesMapT}
  */
-export const setData = (dataMap: DataMapT | undefined, index: DataIndexT, data: any): DataMapT => {
-  const nextDataMap: DataMapT = dataMap ? new Map(dataMap) : new Map();
+export const setData = (
+  dataMap: PlayerSeriesMapT | undefined,
+  index: PlayerSeriesIndexT,
+  data: any,
+): PlayerSeriesMapT => {
+  const nextDataMap: PlayerSeriesMapT = dataMap ? new Map(dataMap) : new Map();
   const currentData = getData(nextDataMap, index);
 
   nextDataMap.set(index, Object.assign({}, currentData, data));
@@ -98,17 +104,17 @@ export const setData = (dataMap: DataMapT | undefined, index: DataIndexT, data: 
  *
  * 返回一个新检查集合
  *
- * @param {(CollectionMapT | undefined)} collectionMap
- * @param {CollectionIndexT} collectionIndex
+ * @param {(PlayerExamMapT | undefined)} playerExamMap
+ * @param {PlayerExamIndexT} collectionIndex
  * @param {*} data
- * @returns {CollectionMapT}
+ * @returns {PlayerExamMapT}
  */
 export const setCollection = (
-  collectionMap: CollectionMapT | undefined,
-  collectionIndex: CollectionIndexT,
+  playerExamMap: PlayerExamMapT | undefined,
+  collectionIndex: PlayerExamIndexT,
   data: any,
-): CollectionMapT => {
-  const nextCollectionMap: CollectionMapT = collectionMap ? new Map(collectionMap) : new Map();
+): PlayerExamMapT => {
+  const nextCollectionMap: PlayerExamMapT = playerExamMap ? new Map(playerExamMap) : new Map();
   nextCollectionMap.set(collectionIndex, data);
 
   return nextCollectionMap;
@@ -122,22 +128,22 @@ export const setCollection = (
  * 返回新的CollectionI
  *
  *
- * @param {(CollectionMapT | undefined)} collectionMap
- * @param {CollectionIndexT} collectionIndex
- * @param {DataIndexT} dataIndex
+ * @param {(PlayerExamMapT | undefined)} playerExamMap
+ * @param {PlayerExamIndexT} collectionIndex
+ * @param {PlayerSeriesIndexT} dataIndex
  * @param {*} data
  */
 export const setDataToCollection = (
-  collectionMap: CollectionMapT,
-  collectionIndex: CollectionIndexT,
-  dataIndex: DataIndexT,
+  playerExamMap: PlayerExamMapT,
+  collectionIndex: PlayerExamIndexT,
+  dataIndex: PlayerSeriesIndexT,
   data: any,
-): CollectionI => {
-  if (!collectionMap) throw new Error("Collection Map not found.");
-  const collection = collectionMap.get(collectionIndex);
+): PlayerExamI => {
+  if (!playerExamMap) throw new Error("Collection Map not found.");
+  const collection = playerExamMap.get(collectionIndex);
   if (!collection) throw new Error("Collection not found.");
-  const nextDataMap = setData(collection.dataMap, dataIndex, data);
-  collection.dataMap = nextDataMap;
+  const nextDataMap = setData(collection.playerSeriesMap, dataIndex, data);
+  collection.playerSeriesMap = nextDataMap;
 
   return collection;
 };

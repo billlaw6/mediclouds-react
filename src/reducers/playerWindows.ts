@@ -54,8 +54,8 @@ const playerWindowsReducer: Reducer<
       if (typeof payload !== "number" || !windowsMap) return state;
 
       windowsMap.forEach((item, index) => {
-        if (index === payload) item.active = true;
-        else item.active = false;
+        if (index === payload) item.isActive = true;
+        else item.isActive = false;
       });
 
       return Object.assign({}, state, {

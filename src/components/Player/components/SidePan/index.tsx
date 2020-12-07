@@ -1,4 +1,6 @@
-import React, { FunctionComponent, useState } from "react";
+import { ApiOutlined } from "@ant-design/icons";
+import React, { FunctionComponent, ReactNode, useState } from "react";
+import Scrollbars from "react-custom-scrollbars";
 
 import "./style.less";
 
@@ -10,18 +12,16 @@ interface SidePanPropsI {
   onClose?: Function; // 收起时触发
   triggerWidth?: number | string; // 收起时触发器的宽度
   triggerHeight?: number | string; // 触发器的高度
-  float?: boolean; // 是否浮动
+  show?: boolean; // 是否展开
+  header?: ReactNode; // 头部
 }
 
 const SidePan: FunctionComponent<SidePanPropsI> = (props) => {
-  const { className, float = true, location = "left", children, width = "200px" } = props;
-
-  const [show, setShow] = useState(false);
+  const { className, location = "left", children, show, header } = props;
 
   const getClassName = (): string => {
     let res = "side-pan";
     if (show) res += " show";
-    if (float) res += " float";
 
     if (location === "left") res += " left";
     else res += " right";
@@ -31,30 +31,14 @@ const SidePan: FunctionComponent<SidePanPropsI> = (props) => {
     return res;
   };
 
-  const getTriggerArrow = () => {
-    let res = "<";
-    if (location === "left" && !show) {
-      res = ">";
-    }
-
-    if (location === "right" && show) {
-      res = ">";
-    }
-
-    return res;
-  };
-
   return (
-    <div
-      className={getClassName()}
-      style={{
-        width,
-      }}
-    >
-      <div className="side-pan-trigger" onClick={(): void => setShow(!show)}>
-        {getTriggerArrow()}
+    <div className={getClassName()}>
+      {header}
+      <div className="side-pan-scrollbar">
+        <Scrollbars autoHide>
+          <div className="side-pan-content">{children}</div>
+        </Scrollbars>
       </div>
-      {children}
     </div>
   );
 };
