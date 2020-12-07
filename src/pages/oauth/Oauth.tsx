@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
-import getQueryString from "_helper";
+import getQueryString, { clearSessionStorage, getSessionStorage } from "_helper";
 import useAccount from "_hooks/useAccount";
 
 const Oauth: FunctionComponent = () => {
@@ -15,7 +15,15 @@ const Oauth: FunctionComponent = () => {
     if (code) {
       wechatLogin(query)
         .then(() => {
-          history.push("/resources");
+          const isShare = getSessionStorage("s");
+          if (isShare) {
+            const { nav, search } = JSON.parse(isShare);
+            clearSessionStorage("s");
+
+            history.push(`${nav}${search}`);
+          } else {
+            history.push("/resources");
+          }
         })
         .catch((err) => console.error(err));
     } else {

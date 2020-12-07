@@ -43,8 +43,6 @@ const Login: FunctionComponent = () => {
       const { nav, search } = JSON.parse(isShare);
       setType("personal");
       setNav(`${nav}${search}`);
-
-      clearSessionStorage("s");
     }
   }, []);
 

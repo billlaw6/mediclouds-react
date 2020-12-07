@@ -6,6 +6,7 @@ import wechatScan from "_images/wechat-scan.png";
 import useAccount from "_hooks/useAccount";
 
 import "./personal.less";
+import { clearSessionStorage } from "_helper";
 
 const { Item: FormItem } = Form;
 
@@ -59,7 +60,7 @@ const Personal: FunctionComponent<PersonalPropsI> = (props) => {
 
   const onFinish = () => {
     // if (!captchaVal) return;
-
+    clearSessionStorage("s");
     personalPhoneLogin(loginFormData, nav || "/resources").then(
       () => console.log("phone login successed"),
       (err: any) => console.error(err),
