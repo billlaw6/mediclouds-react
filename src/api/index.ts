@@ -76,6 +76,7 @@ const customReqErr = (err: any) => Promise.reject(err);
 // 服务器返回了结果，有前面的validateStatus保证，这里接收的只会是2和3开着的状态
 const customRes = <P = any>(res: AxiosResponse<P>): P => res.data;
 const customResErr = (error: any) => {
+  console.log("API error", error);
   // 两种错误返回类型
   const { response, message } = error;
   const { status, data } = response;

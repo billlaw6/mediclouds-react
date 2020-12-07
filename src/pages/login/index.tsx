@@ -10,7 +10,7 @@
 
 */
 
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 
 import LoginBtn from "./LoginBtn";
 
@@ -19,11 +19,35 @@ import welcome from "_assets/videos/welcome.mp4";
 
 import Personal from "./Personal";
 import Business from "./Business";
+import useUrlQuery from "_hooks/useUrlQuery";
 
 import "./style.less";
+import { clearSessionStorage, getSessionStorage } from "_helper";
+
+interface UrlQueryI {
+  b?: 1; // 是否以企业用户登录打开
+  f?: 1; // 是否以表单登录打开
+  nav?: string; // 登录后跳转的页面
+}
 
 const Login: FunctionComponent = () => {
-  const [type, setType] = useState<"personal" | "business">("personal"); // 切换登录类型
+  const { b, f, nav: queryNav } = useUrlQuery<UrlQueryI>();
+  const defaultType = b ? "business" : "personal";
+  const [type, setType] = useState<"personal" | "business">(defaultType); // 切换登录类型
+  const [nav, setNav] = useState(queryNav);
+  const [loginType, setLoginType] = useState<"form" | "qrcode">(f ? "form" : "qrcode");
+
+  useEffect(() => {
+    const isShare = getSessionStorage("s");
+    if (isShare) {
+      const { nav, search } = JSON.parse(isShare);
+      setType("personal");
+      setNav(`${nav}${search}`);
+
+      clearSessionStorage("s");
+    }
+  }, []);
+
   const isPersonalType = type === "personal";
 
   return (
@@ -34,7 +58,11 @@ const Login: FunctionComponent = () => {
         </div>
         <div className="login-content">
           <img className="login-logo" src={logo} alt="logo" />
-          {isPersonalType ? <Personal></Personal> : <Business></Business>}
+          {isPersonalType ? (
+            <Personal loginType={loginType} nav={nav}></Personal>
+          ) : (
+            <Business></Business>
+          )}
 
           <LoginBtn onClick={(val): void => setType(val)} type={type}></LoginBtn>
         </div>

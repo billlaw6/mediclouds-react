@@ -1,5 +1,5 @@
-import { Descriptions, message, PageHeader, Spin, Tabs } from "antd";
-import React, { FunctionComponent, useEffect, useState } from "react";
+import { Button, Descriptions, Input, message, PageHeader, Spin, Tabs, Tooltip } from "antd";
+import React, { FunctionComponent, useEffect, useRef, useState } from "react";
 import { useHistory, useParams } from "react-router";
 import { getAgeByBirthday, getSexName } from "_helper";
 import useCase from "_hooks/useCase";
@@ -9,9 +9,11 @@ import { ExamSortKeyE, ImgAndPdfSortKeyE, ReportSortKeyE, ResourcesTypeE } from 
 import ExamCards from "_components/ExamCards";
 import ImgCards from "_components/ImgCards";
 import PdfTable from "_components/PdfTable";
+import LungNodulesReportCards from "_pages/resources/components/LungNodulesReportCards";
+import { ShareAltOutlined } from "@ant-design/icons";
+import ClipboardJS from "clipboard";
 
 import "./style.less";
-import LungNodulesReportCards from "_pages/resources/components/LungNodulesReportCards";
 
 /* 资源当前的页码 */
 interface SearchQueryI {
@@ -25,7 +27,7 @@ interface SearchQueryI {
 const Case: FunctionComponent = () => {
   const history = useHistory();
   const { id } = useParams<{ id: string }>();
-  const { getCase } = useCase();
+  const { getCase, updateCaseStamp } = useCase();
   const [current, setCurrent] = useState<CaseI>();
   const [loading, setLoading] = useState(true); // 是否在加载
   const [tabKey, setTabKey] = useState<ResourcesTypeE>(ResourcesTypeE.EXAM);
@@ -51,6 +53,7 @@ const Case: FunctionComponent = () => {
       sort: ReportSortKeyE.CREATED_AT,
     },
   });
+  const [showToolTip, setShowToolTip] = useState(false);
 
   const updateSearchQuery = (type: ResourcesTypeE, num: number): void => {
     const next = Object.assign({}, searchQuery[type], {
@@ -65,8 +68,20 @@ const Case: FunctionComponent = () => {
 
   useEffect(() => {
     if (id) {
+      const clipboard = new ClipboardJS(".case-share-btn", {
+        text: (): string => {
+          return `请使用电脑浏览器打开\r\nhttps://mi.mediclouds.cn/case/${id}?s=1`;
+        },
+      });
+
+      clipboard.on("success", (e) => {
+        setShowToolTip(true);
+      });
+
       getCase(id)
-        .then((res) => setCurrent(res))
+        .then((res) => {
+          setCurrent(res);
+        })
         .catch((err) => {
           console.error(err);
           message.error({
@@ -77,6 +92,14 @@ const Case: FunctionComponent = () => {
     }
   }, [id]);
 
+  const preShare = () => {
+    const caseStamp = Date.now();
+    updateCaseStamp(caseStamp, id).then(
+      (res) => console.log(res),
+      (err) => console.error(err),
+    );
+  };
+
   return (
     <section className="case">
       <PageHeader
@@ -84,6 +107,13 @@ const Case: FunctionComponent = () => {
         title="病例"
         subTitle={`${current ? `${current.name || "NA"}的病例` : ""}`}
         onBack={(): void => history.push("/case")}
+        extra={
+          <Tooltip title="复制成功！" trigger="click" arrowPointAtCenter>
+            <Button className="case-share-btn" icon={<ShareAltOutlined />} onClick={preShare}>
+              分享病例
+            </Button>
+          </Tooltip>
+        }
       ></PageHeader>
       <Spin tip="loading..." spinning={loading} delay={200}>
         {loading ? null : current ? (

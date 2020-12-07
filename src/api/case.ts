@@ -37,6 +37,14 @@ export const getSharedCaseList = async (): Promise<CaseI[]> =>
     url: `/dicom/case/shared/`,
   });
 
+/* 上传生成的分享时间戳 */
+export const updateCaseStamp = async (stamp: number, caseId: string): Promise<void> =>
+  await personalReq({
+    method: "POST",
+    url: "/dicom/case-read-record/stamp/",
+    data: { stamp, caseId },
+  });
+
 /** 删除病例 */
 export const delCase = async (ids: number[]): Promise<number[]> =>
   await personalReq({

@@ -33,10 +33,17 @@ const QRCODE_URL =
   `response_type=code&` +
   `#wechat_redirect`;
 
-const Personal: FunctionComponent = () => {
+interface PersonalPropsI {
+  loginType?: "form" | "qrcode"; // 是否以表单登录触发
+  nav?: string; //  登录后跳转的页面
+}
+
+const Personal: FunctionComponent<PersonalPropsI> = (props) => {
+  const { loginType: defaultLoginType = "qrcode", nav } = props;
+
   const { personalPhoneLogin } = useAccount();
   const [hiddenScan, setHiddenScan] = useState(false);
-  const [loginType, setLoginType] = useState<"form" | "qrcode">("qrcode");
+  const [loginType, setLoginType] = useState<"form" | "qrcode">();
   const [loginFormData, setLoginFormData] = useState<any>({});
   const [captchaVal, setCaptchaVal] = useState<string>("");
 
@@ -53,15 +60,17 @@ const Personal: FunctionComponent = () => {
   const onFinish = () => {
     // if (!captchaVal) return;
 
-    personalPhoneLogin(loginFormData, "/resources").then(
+    personalPhoneLogin(loginFormData, nav || "/resources").then(
       () => console.log("phone login successed"),
       (err: any) => console.error(err),
     );
   };
 
+  const type = loginType || defaultLoginType;
+
   return (
     <div className="login-personal">
-      {loginType === "form" ? (
+      {type === "form" ? (
         <div className="login-personal-form">
           <Form
             onValuesChange={(vals) => {
@@ -107,9 +116,9 @@ const Personal: FunctionComponent = () => {
       <Space>
         <span
           className="login-personal-switch"
-          onClick={(): void => setLoginType(loginType === "form" ? "qrcode" : "form")}
+          onClick={(): void => setLoginType(type === "form" ? "qrcode" : "form")}
         >
-          {loginType === "form" ? "微信扫码登录" : "手机号登录"}
+          {type === "form" ? "微信扫码登录" : "手机号登录"}
         </span>
       </Space>
     </div>

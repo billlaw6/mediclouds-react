@@ -103,6 +103,21 @@ export const getToken = (): string => {
   return decrypt(tokenStr, "FreMaNgo_^_T");
 };
 
+export const setSessionStorage = (key: string, value: string): void => {
+  window.sessionStorage.setItem(key, encrypt(value, "FreMaNgo_^_T"));
+};
+
+export const getSessionStorage = (key: string): string | undefined => {
+  const storageStr = window.sessionStorage.getItem(key);
+  if (!storageStr) return;
+  return decrypt(storageStr, "FreMaNgo_^_T");
+};
+
+export const clearSessionStorage = (key?: string): void => {
+  if (key) window.sessionStorage.removeItem(key);
+  else window.sessionStorage.clear();
+};
+
 /**
  *  获取查询条件拼接字符串
  *

@@ -3,7 +3,7 @@ import { StoreStateI } from "_types/core";
 import { UserI, UpdateAccountDataI, AccountI } from "_types/account";
 import { AccountActionTypes } from "_types/actions";
 import userApi from "_api/user";
-import { setToken, clearToken } from "_helper";
+import { setToken, clearToken, clearSessionStorage } from "_helper";
 import { useHistory } from "react-router";
 import moment from "moment";
 import { FormLoginDataI, PhoneLoginDataI, RegisterDataI } from "_types/api";
@@ -115,6 +115,7 @@ export default () => {
       await userApi.logout();
       clearToken();
       window.localStorage.clear();
+      clearSessionStorage();
       // await store.persistor.purge();
       history.push("/login");
     } catch (error) {
@@ -129,6 +130,7 @@ export default () => {
       clearToken();
       window.localStorage.clear();
       // await store.persistor.purge();
+      clearSessionStorage();
       history.push("/login");
     } catch (error) {
       throw new Error(error);

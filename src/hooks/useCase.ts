@@ -1,5 +1,12 @@
 import { useDispatch, useSelector } from "react-redux";
-import { createCase, delCase, getCase, getMineCaseList, getSharedCaseList } from "_api/case";
+import {
+  createCase,
+  delCase,
+  getCase,
+  getMineCaseList,
+  getSharedCaseList,
+  updateCaseStamp,
+} from "_api/case";
 import { CaseActionE, CaseI, CaseTypeE, CreateCaseDataI } from "_types/case";
 import { StoreStateI } from "_types/core";
 
@@ -65,6 +72,7 @@ export default () => {
     fetchReadRecordCaseList,
     getCase: _getCase,
     updateCaseTabType,
+    updateCaseStamp,
     selectCase,
   };
 };
