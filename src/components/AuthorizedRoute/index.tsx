@@ -5,7 +5,7 @@ import { RoleE, UserI, AccountStatusE } from "_types/account";
 import { StoreStateI } from "_types/core";
 import { PermissionT } from "_types/router";
 import useUrlQuery from "_hooks/useUrlQuery";
-import { clearSessionStorage, setSessionStorage } from "_helper";
+import { clearLocalStorage, setLocalStorage } from "_helper";
 
 interface AuthorizedRoutePropsI extends RouteProps {
   permission?: PermissionT;
@@ -29,12 +29,10 @@ const AuthorizedRoute: FunctionComponent<AuthorizedRoutePropsI> = (props) => {
     (hasPermission(AccountStatusE.LOGIN, permission) && !account.login) ||
     (account.login && permission.length && !hasPermission(account.role, permission));
 
-  console.log("pathname", pathname);
-
   if (s) {
-    setSessionStorage("s", JSON.stringify({ nav: pathname, search }));
+    setLocalStorage("s", JSON.stringify({ nav: pathname, search }));
   } else {
-    if (pathname !== "/login" && pathname !== "/oauth") clearSessionStorage("s");
+    if (pathname !== "/login" && pathname !== "/oauth") clearLocalStorage("s");
   }
 
   if (goLogin) return <Redirect to="/login"></Redirect>;

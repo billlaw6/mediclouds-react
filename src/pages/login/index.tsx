@@ -22,7 +22,7 @@ import Business from "./Business";
 import useUrlQuery from "_hooks/useUrlQuery";
 
 import "./style.less";
-import { clearSessionStorage, getSessionStorage } from "_helper";
+import { clearLocalStorage, getLocalStorage } from "_helper";
 
 interface UrlQueryI {
   b?: 1; // 是否以企业用户登录打开
@@ -38,7 +38,7 @@ const Login: FunctionComponent = () => {
   const [loginType, setLoginType] = useState<"form" | "qrcode">(f ? "form" : "qrcode");
 
   useEffect(() => {
-    const isShare = getSessionStorage("s");
+    const isShare = getLocalStorage("s");
     if (isShare) {
       const { nav, search } = JSON.parse(isShare);
       setType("personal");
