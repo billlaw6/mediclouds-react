@@ -1,6 +1,6 @@
 import { Avatar } from "antd";
 import React, { CSSProperties, FunctionComponent } from "react";
-import { PlayerSeriesI } from "_components/Player/types";
+import { PlayerSeriesI } from "_components/Player/types/series";
 
 import "./style.less";
 
@@ -14,7 +14,7 @@ interface SeriesCard {
 
 const SeriesCard: FunctionComponent<SeriesCard> = (props) => {
   const { data, className, style, active, onClick } = props;
-  const { thumbnail, seriesIndex, cache } = data;
+  const { thumbnail, key, cache } = data;
 
   return (
     <article
@@ -24,7 +24,7 @@ const SeriesCard: FunctionComponent<SeriesCard> = (props) => {
     >
       <Avatar shape="square" className="series-card-avatar" src={thumbnail}></Avatar>
       <div className="series-card-info">
-        <span>series index: {seriesIndex}</span>
+        <span>series index: {key}</span>
         <span>img total: {cache ? cache.length : "null"}</span>
       </div>
     </article>

@@ -3,7 +3,9 @@ import { getActiveCollections, setCollection } from "_components/Player/helpers"
 import useData from "_components/Player/hooks/useData";
 import useStatus from "_components/Player/hooks/useStatus";
 import useWindows from "_components/Player/hooks/useWindows";
-import { PlayerExamMapT } from "_components/Player/types";
+import { PlayerExamMapT } from "_components/Player/types/exam";
+import { PlayerSeriesI, PlayerSeriesMapT } from "_components/Player/types/series";
+import { WindowI } from "_components/Player/types/window";
 import SeriesCard from "../SeriesCard";
 import SidePan from "../SidePan";
 import Win from "../Win";
@@ -15,8 +17,9 @@ interface ViewportPropsI {
 }
 
 const Viewport: FunctionComponent = () => {
-  const { playerExamMap, getCurrentSeries } = useData();
-  const { windowsMap } = useWindows();
+  const { playerExamMap, cacheSeries, updateSeries } = useData();
+  const { windowsMap, getFocusWindow, updateWindow } = useWindows();
+
   const { showLeftPan, showRightPan } = useStatus();
   const $viewport = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
@@ -25,11 +28,12 @@ const Viewport: FunctionComponent = () => {
     if (!windowsMap) return null;
 
     const renderArr: ReactNode[] = [];
-    windowsMap.forEach((item, index) => {
-      const { playerSeries } = item;
-      const key = playerSeries ? `${playerSeries.id}` : `${Date.now()}`;
 
-      return renderArr.push(<Win key={key} index={index} data={item} viewportWidth={width}></Win>);
+    windowsMap.forEach((item, windowKey) => {
+      const { data } = item;
+      const key = data ? `${data.id}` : `${Date.now()}`;
+
+      return renderArr.push(<Win key={key} data={item} viewportWidth={width}></Win>);
     });
 
     return renderArr;
@@ -50,29 +54,62 @@ const Viewport: FunctionComponent = () => {
    *
    */
   const getSeriesList = (): ReactNode => {
-    if (!playerExamMap) return null;
-
-    console.log("getCurrentSeries", getCurrentSeries());
-    const currentCollection = getActiveCollections(playerExamMap)[0];
+    if (!windowsMap || !playerExamMap) return null;
     const res: ReactNode[] = [];
-    const { playerSeriesMap, seriesIndex } = currentCollection;
+    let currentWindow: WindowI | undefined;
 
-    playerSeriesMap.forEach((data) => {
-      const { id } = data;
+    for (const val of windowsMap.values()) {
+      if (val.isFocus) {
+        currentWindow = val;
+        break;
+      } else {
+        continue;
+      }
+    }
+
+    if (!currentWindow || !currentWindow.data) return null;
+
+    const { examKey, id } = currentWindow.data;
+    const currentExam = playerExamMap.get(examKey);
+    if (!currentExam || !currentExam.data) return null;
+
+    currentExam.data.forEach((series) => {
+      const { id: selfId } = series;
 
       res.push(
         <SeriesCard
-          data={data}
-          key={`${id}`}
-          active={seriesIndex === data.seriesIndex}
-          onClick={(data): void => {
-            console.log("click ", data);
+          key={selfId}
+          data={series}
+          active={id === selfId}
+          onClick={(result): void => {
+            const focusWindow = getFocusWindow();
+            if (!focusWindow || !focusWindow.data) return;
+            const { data, key, frame } = focusWindow;
+            if (data && data.id === result.id) return;
+
+            updateWindow(
+              key,
+              Object.assign({}, focusWindow, { data: result, frame: result.frame }),
+            );
+            updateSeries([Object.assign({}, data, { frame })]);
           }}
         ></SeriesCard>,
       );
     });
 
     return res;
+  };
+
+  const onCache = (series: PlayerSeriesI): void => {
+    cacheSeries({
+      data: series,
+      onBeforeCache: (data) => {
+        console.log("before cache", data);
+      },
+      onCaching: (progress, data) => {
+        console.log("progress", progress);
+      },
+    });
   };
 
   useEffect(() => {
@@ -86,14 +123,24 @@ const Viewport: FunctionComponent = () => {
     };
 
     window.addEventListener("resize", onResize);
-
     return () => window.removeEventListener("resize", onResize);
   }, []);
+
+  // useEffect(() => {
+  //   if (!windowsMap) return;
+  //   const currentWindow = getFocusWindow();
+  //   if (!currentWindow || !currentWindow.data) return;
+  //   const { progress, cache } = currentWindow.data;
+  //   if (!progress || progress !== 100 || !cache) {
+  //     onCache(currentWindow.data);
+  //   }
+  // }, [getFocusWindow, windowsMap]);
 
   return (
     <div id="viewport" ref={$viewport}>
       <SidePan location="left" show={showLeftPan}>
         {getSeriesList()}
+        view
       </SidePan>
       <div className="viewport-windows">{getWindows()}</div>
       <SidePan location="right" show={showRightPan}></SidePan>

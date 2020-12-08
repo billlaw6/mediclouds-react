@@ -1,4 +1,4 @@
-import { PlayerSeriesI } from "../types";
+import { PlayerSeriesI } from "../types/series";
 
 interface CachePropsI {
   cs: any;

@@ -1,6 +1,6 @@
 import { getDicomSeries } from "_api/dicom";
 import { SeriesListI } from "_types/api";
-import { PlayerExamPropsI } from "../types";
+import { PlayerExamPropsI } from "../types/common";
 
 /** 获取指定的seriesList */
 export default async (exams: PlayerExamPropsI[]): Promise<SeriesListI[]> => {

@@ -1,6 +1,7 @@
 import { Reducer } from "redux";
 import { isUndefined } from "util";
-import { PlayerWindowsActionE, WindowI, WindowMapT } from "_components/Player/types";
+import { PlayerWindowsActionE } from "_components/Player/types/actions";
+import { WindowMapT, WindowI, WindowKeyT } from "_components/Player/types/window";
 import { ActionI } from "_types/core";
 
 interface PlayerWindowsStateI {
@@ -8,13 +9,19 @@ interface PlayerWindowsStateI {
 }
 
 interface UpdateWindowPayloadI {
-  index: number;
+  key: WindowKeyT;
   data: WindowI;
 }
 
 const DEFAULT: PlayerWindowsStateI = {};
 
-const { OPEN_WINDOW, UPDATE_WINDOW, COLSE_WINDOW, ACTIVE_WINDOW, UPDATE } = PlayerWindowsActionE;
+const {
+  OPEN_WINDOW,
+  UPDATE_WINDOW,
+  COLSE_WINDOW,
+  ACTIVE_WINDOW,
+  UPDATE_WINDOWS,
+} = PlayerWindowsActionE;
 
 const playerWindowsReducer: Reducer<
   PlayerWindowsStateI,
@@ -32,7 +39,7 @@ const playerWindowsReducer: Reducer<
         windowsMap: nextWindowMap,
       });
     }
-    case UPDATE: {
+    case UPDATE_WINDOWS: {
       if (!payload) return state;
 
       return Object.assign({}, state, {
@@ -42,8 +49,8 @@ const playerWindowsReducer: Reducer<
     case UPDATE_WINDOW: {
       const { windowsMap } = state;
       if (!payload || !windowsMap) return state;
-      const { index, data } = payload as UpdateWindowPayloadI;
-      windowsMap.set(index, data);
+      const { key, data } = payload as UpdateWindowPayloadI;
+      windowsMap.set(key, data);
 
       return Object.assign({}, state, {
         windowsMap,

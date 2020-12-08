@@ -1,22 +1,17 @@
 import { useDispatch, useSelector } from "react-redux";
 import { StoreStateI } from "_types/core";
-import { getActiveCollections, setDataToCollection } from "../helpers";
+import { setDataToPlayerSeriesMap } from "../helpers";
 import fetchSeriesList from "../methods/fetchSeriesList";
 import initCornerstone from "../methods/initCornerstone";
-import {
-  PlayerExamI,
-  PlayerExamMapT,
-  PlayerSeriesI,
-  PlayerSeriesMapT,
-  PlayerActionE,
-  PlayerExamPropsI,
-} from "../types";
+
+import { PlayerActionE } from "../types/actions";
+import { PlayerExamPropsI } from "../types/common";
+import { PlayerExamI, PlayerExamMapT } from "../types/exam";
+import { PlayerSeriesI, PlayerSeriesMapT } from "../types/series";
 
 const { UPDATE_PLAYER, INIT_PLAYER } = PlayerActionE;
 
 interface CachePropsI {
-  cs: any;
-  csImgLoader: any;
   data?: PlayerSeriesI;
   onBeforeCache?: (data: PlayerSeriesI) => void; // 缓存前触发 返回当前DataI
   onCaching?: (progress: number, data: PlayerSeriesI) => void; // 缓存中触发 返回百分比进度
@@ -28,30 +23,15 @@ export default () => {
     (state) => state.player,
   );
 
-  const { playerExamMap, cs, cst } = playerReducerData;
+  const { playerExamMap, cs, cst, csImgLoader } = playerReducerData;
 
   const dispatch = useDispatch();
 
-  /** 获取所有激活的检查的当前资源 */
-  const getCurrentSeries = (data?: PlayerExamMapT): PlayerSeriesI[] | undefined => {
-    const _map = data || playerExamMap;
-
-    if (!_map) return;
-    const res: PlayerSeriesI[] = [];
-    const activeCollections = getActiveCollections(_map);
-
-    activeCollections.forEach((collection) => {
-      const { seriesIndex, playerSeriesMap } = collection;
-      const currentData = playerSeriesMap.get(seriesIndex);
-      if (currentData) res.push(currentData);
-    });
-
-    return res;
-  };
-
   /** 缓存数据 */
   const cacheSeries = async (props: CachePropsI): Promise<any[]> => {
-    const { cs, csImgLoader, data, onCached, onBeforeCache, onCaching } = props;
+    if (!cs || !csImgLoader)
+      throw new Error("not found cornerstone or cornerstoneWADOImageLoader library.");
+    const { data, onCached, onBeforeCache, onCaching } = props;
 
     const processes: Promise<any>[] = [];
     if (!data) return [];
@@ -122,7 +102,7 @@ export default () => {
   };
 
   /** 初始化播放器 */
-  const init = async (exams: PlayerExamPropsI[]) => {
+  const initPlayerExamMap = async (exams: PlayerExamPropsI[]): Promise<PlayerExamMapT> => {
     if (!exams) throw new Error("must have exams.");
 
     const { cs, cst, csImgLoader } = initCornerstone();
@@ -132,19 +112,17 @@ export default () => {
 
     /** 构建CollectionMap */
     exams.forEach((exam, examIndex) => {
-      const { id, active, defaultSeriesId, defaultFrame = 0 } = exam;
+      const { id, active, defaultFrame = 0 } = exam;
       const currentSeriesList = seriesListRes[examIndex];
       const { children, ...patientInfo } = currentSeriesList;
-      const seriesIndex = Math.max(
-        0,
-        children.findIndex((item) => item.id === defaultSeriesId),
-      ); // 初始化激活的序列索引
       const playerSeriesMap: PlayerSeriesMapT = new Map();
 
       children.forEach((item, seriesIndex) => {
         playerSeriesMap.set(
           seriesIndex,
           Object.assign({}, item, {
+            key: seriesIndex,
+            examKey: examIndex,
             frame: defaultFrame,
             examIndex,
             seriesIndex,
@@ -153,15 +131,15 @@ export default () => {
         );
       });
 
-      const collection: PlayerExamI = {
-        index: examIndex,
-        examId: id,
-        active,
-        playerSeriesMap,
-        seriesIndex,
+      const playerExam: PlayerExamI = {
+        id,
+        key: examIndex,
+        isActive: active,
+        data: playerSeriesMap,
         patientInfo,
       };
-      _playerExamMap.set(examIndex, collection);
+
+      _playerExamMap.set(examIndex, playerExam);
     });
 
     dispatch({
@@ -174,32 +152,7 @@ export default () => {
       },
     });
 
-    const currentSeriesList = getCurrentSeries(_playerExamMap);
-    if (currentSeriesList) {
-      const cacheList: Promise<any>[] = [];
-
-      currentSeriesList.forEach((series) => {
-        cacheList.push(
-          cacheSeries({
-            cs,
-            csImgLoader,
-            data: series,
-            onBeforeCache: (series) => {
-              console.log("on before", series);
-            },
-            onCaching: (progress, series) => {
-              console.log("progress", progress);
-            },
-            onCached: (series) => {
-              console.log("on cached", series);
-            },
-          }),
-        );
-      });
-
-      const res = await Promise.all(cacheList);
-      console.log("cached res", res);
-    }
+    return _playerExamMap;
   };
 
   const updatePlayerExamMap = (data: PlayerExamMapT) => {
@@ -211,29 +164,43 @@ export default () => {
     });
   };
 
+  /**
+   * 通过 序列id获取 播放器序列
+   *
+   * @param seriesMap
+   * @param id
+   */
+  const getPlayerSeriesById = (playerExam: PlayerExamI, id: string): PlayerSeriesI | undefined => {
+    const { data } = playerExam;
+    if (!data) return;
+
+    for (const item of data.values()) {
+      if (item.id === id) return item;
+    }
+  };
+
   /** 更新多个检查的序列 */
   const updateSeries = (datas: PlayerSeriesI[]): void => {
     if (!playerExamMap) return;
 
-    const nextCollectionMap = new Map(playerExamMap);
+    const nextPlayerExamMap = new Map(playerExamMap);
     datas.forEach((data) => {
-      const { examIndex, seriesIndex } = data;
-      const nextCollection = setDataToCollection(playerExamMap, examIndex, seriesIndex, data);
-      nextCollectionMap.set(examIndex, nextCollection);
+      const { examKey, key } = data;
+      const nextPlayerSeriesMap = setDataToPlayerSeriesMap(playerExamMap, examKey, key, data);
+      nextPlayerExamMap.set(examKey, nextPlayerSeriesMap);
     });
 
-    updatePlayerExamMap(nextCollectionMap);
+    updatePlayerExamMap(nextPlayerExamMap);
   };
 
   return {
     ...playerReducerData,
-    currentSeries: getCurrentSeries(),
     fetchSeriesList,
     updateSeries,
     updatePlayerExamMap,
-    getCurrentSeries,
     cacheSeries,
     initCornerstone,
-    init,
+    initPlayerExamMap,
+    getPlayerSeriesById,
   };
 };

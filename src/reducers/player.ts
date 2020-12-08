@@ -1,5 +1,6 @@
 import { Reducer } from "redux";
-import { PlayerExamMapT, PlayerActionE } from "_components/Player/types";
+import { PlayerActionE } from "_components/Player/types/actions";
+import { PlayerExamMapT } from "_components/Player/types/exam";
 import { SeriesListI } from "_types/api";
 import { ActionI } from "_types/core";
 
@@ -24,12 +25,12 @@ const playerReducer: Reducer<PlayerStateI, ActionI<PlayerActionE, PlayerPayloadT
   const { type, payload } = actions;
 
   console.log("render.", type);
+
   switch (type) {
     case UPDATE_PLAYER:
     case INIT_PLAYER:
       return payload ? Object.assign({}, state, payload) : state;
     case UPDATE_PLAYER_EXAM_MAP: {
-      console.log("update player exam map", payload);
       if (!payload) return state;
       return Object.assign({}, state, { playerExamMap: payload });
     }

@@ -5,7 +5,7 @@
  */
 
 import { Reducer } from "redux";
-import { PlayerSeriesI } from "_components/Player/types";
+import { PlayerSeriesI } from "_components/Player/types/series";
 import { ActionI } from "_types/core";
 
 interface PlayerStatusStateI {

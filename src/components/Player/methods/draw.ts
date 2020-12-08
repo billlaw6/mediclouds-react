@@ -3,7 +3,7 @@
  *
  */
 
-import { PlayerSeriesI, WindowI } from "../types";
+import { WindowI } from "../types/window";
 
 interface DrawPropsI {
   cs: any; // cornerstone
@@ -16,11 +16,11 @@ export default (props: DrawPropsI): void => {
   const { win, cs } = props;
   if (!win) return;
 
-  const { element, playerSeries, frame: frameInWindow = -1 } = win;
+  const { element, data, frame: frameInWindow = -1 } = win;
 
-  if (!playerSeries || !element) return;
+  if (!data || !element) return;
 
-  const { cache, frame } = playerSeries;
+  const { cache, frame } = data;
   if (!cache) return;
 
   const index = frameInWindow > -1 ? frameInWindow : frame;

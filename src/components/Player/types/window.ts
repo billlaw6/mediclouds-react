@@ -7,7 +7,7 @@ export interface WindowI {
   data?: PlayerSeriesI;
   element?: HTMLElement;
   frame: number;
-  isActive: boolean;
+  isActive?: boolean;
   isFocus: boolean;
   isPlay: boolean;
 }

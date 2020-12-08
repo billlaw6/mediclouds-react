@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { PlayerStatusActionE } from "../../../reducers/playerStatus";
 import { StoreStateI } from "_types/core";
 import useWindows from "./useWindows";
-import { WindowMapT } from "../types";
+import { WindowMapT } from "../types/window";
 
 let timer = -1; // window 计时器
 
@@ -39,9 +39,9 @@ export default () => {
     const nextWins: WindowMapT = new Map();
 
     currentWins.forEach((win, index) => {
-      const { frame: frameInWindow = 0, playerSeries } = win;
-      if (!playerSeries) return;
-      const { cache } = playerSeries;
+      const { frame: frameInWindow = 0, data } = win;
+      if (!data) return;
+      const { cache } = data;
       if (cache && cache.length <= frameInWindow + 1) tip = 1;
       else tip = 0;
 
@@ -70,8 +70,8 @@ export default () => {
     const nextWins: WindowMapT = new Map();
 
     currentWins.forEach((win, index) => {
-      const { frame: frameInWindow = 0, playerSeries } = win;
-      if (!playerSeries) return;
+      const { frame: frameInWindow = 0, data } = win;
+      if (!data) return;
 
       const nextFrame = Math.max(0, frameInWindow - 1);
 
