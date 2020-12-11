@@ -4,13 +4,11 @@ import { PlayerWindowsActionE } from "../types/actions";
 import { PlayerExamPropsI } from "../types/common";
 import { PlayerExamMapT } from "../types/exam";
 import { PlayerSeriesI } from "../types/series";
-import { WindowI, WindowKeyT, WindowMapT, WindowActionE } from "../types/window";
+import { WindowI, WindowMapT } from "../types/window";
 import useData from "./useData";
 import useSettings from "./useSettings";
 
 let timer = -1; // window 计时器
-
-const { PAUSE, PLAY } = WindowActionE;
 
 export default () => {
   const windows = useSelector<StoreStateI, StoreStateI["playerWindows"]>(
@@ -25,6 +23,29 @@ export default () => {
 
   const openWindow = (data?: WindowI): void => {
     dispatch({ type: OPEN_WINDOW, payload: data });
+  };
+
+  /** 获取当前焦点的窗口 */
+  const getFocusWindow = (): WindowI | undefined => {
+    if (!windowsMap) return;
+
+    for (const val of windowsMap.values()) {
+      if (val.isFocus) return val;
+    }
+  };
+
+  /**
+   * 还原 【当前焦点窗口】 或 【指定窗口】
+   *  的图像到初始状态
+   *
+   * */
+  const resetWindowImage = (win?: WindowI): void => {
+    if (!cs) return;
+
+    const currentWindow = win || getFocusWindow();
+    if (!currentWindow || !currentWindow.element) return;
+
+    cs.reset(currentWindow.element);
   };
 
   /**
@@ -60,6 +81,8 @@ export default () => {
     const { examKey, key: seriesKey } = currentSeries;
     // /** 更新窗口内的series 将窗口的frame值赋给它 */
     updateSeries(examKey, seriesKey, { frame: windowFrame });
+
+    resetWindowImage();
 
     dispatch({
       type: UPDATE_WINDOW,
@@ -112,15 +135,6 @@ export default () => {
     });
 
     dispatch({ type: UPDATE_WINDOWS, payload: res });
-  };
-
-  /** 获取当前焦点的窗口 */
-  const getFocusWindow = (): WindowI | undefined => {
-    if (!windowsMap) return;
-
-    for (const val of windowsMap.values()) {
-      if (val.isFocus) return val;
-    }
   };
 
   /**
@@ -247,5 +261,6 @@ export default () => {
     prev,
     nextSeries,
     prevSeries,
+    resetWindowImage,
   };
 };

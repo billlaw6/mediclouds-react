@@ -9,19 +9,39 @@ import draw from "_components/Player/methods/draw";
 import { WindowI } from "_components/Player/types/window";
 
 import "./style.less";
+
 interface WinPropsI {
   data: WindowI;
   viewportWidth: number; // viewport宽度
-  keyName?: string; // 当前按下的键盘值
 }
 
 const Win: FunctionComponent<WinPropsI> = (props) => {
-  const { data: win, viewportWidth, keyName } = props;
+  const { data: win, viewportWidth } = props;
 
   const { data: playerSeries, isFocus, isPlay, element, key, frame } = win;
-  const { cs, cacheSeries, updateSeries } = useData();
-  const { updateWindow, next, prev, nextSeries, prevSeries, play, pause } = useWindows();
-  const { showLeftPan, showRightPan } = useStatus();
+  const { cs, cst, cacheSeries, updateSeries } = useData();
+  const {
+    updateWindow,
+    next,
+    prev,
+    nextSeries,
+    prevSeries,
+    play,
+    pause,
+    resetWindowImage,
+  } = useWindows();
+  const {
+    showLeftPan,
+    showRightPan,
+    movingMode,
+    scaleMode,
+    wwwcMode,
+    keyName,
+    switchMovingMode,
+    switchScaleMode,
+    switchWwwcMode,
+    clearMode,
+  } = useStatus();
   const [loadingProgress, setLoadingProgress] = useState(-1); // 当前窗口加载进度
 
   const $window = useRef<HTMLDivElement>(null);
@@ -46,12 +66,22 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
     }
   };
 
+  const getCursor = (): string => {
+    let res = "default";
+    if (movingMode) res = "move";
+    else if (scaleMode) res = "zoom-in";
+    else if (wwwcMode) res = "crosshair";
+
+    return res;
+  };
+
   useEffect(() => {
     // 初始化在cs上启用窗口 并将当前窗口的HTML元素更新到当前窗口数据内
     const { element } = win;
 
-    if (cs && $window.current && !element) {
+    if (cs && cst && $window.current && !element) {
       cs.enable($window.current);
+
       updateWindow(key, { element: $window.current });
     }
   }, []);
@@ -80,7 +110,20 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
 
   useEffect(() => {
     if (!isFocus) return;
+
     switch (keyName) {
+      case "KeyX":
+        switchMovingMode(true);
+        break;
+      case "KeyZ":
+        switchScaleMode(true);
+        break;
+      case "KeyA":
+        switchWwwcMode(true);
+        break;
+      case "KeyR":
+        resetWindowImage();
+        break;
       case "ArrowRight":
         next(win);
         break;
@@ -99,6 +142,7 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
         }
         break;
       default:
+        clearMode();
         break;
     }
   }, [keyName, isFocus]);
@@ -118,7 +162,6 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
 
   const onLoading = loadingProgress > -1 && loadingProgress < 100;
 
-  console.log("isPlay", isPlay);
   return (
     <div
       className={`player-window${win && win.isFocus ? " focus" : ""}`}
@@ -145,6 +188,8 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
       <div
         className="player-window-content"
         onWheel={(e): void => {
+          if (scaleMode) return;
+
           const { deltaY } = e;
           if (deltaY > 0) {
             next(win);
@@ -152,6 +197,7 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
             prev(win);
           }
         }}
+        style={{ cursor: getCursor() }}
         ref={$window}
       ></div>
     </div>

@@ -15,7 +15,8 @@
       "_assets/*": ["assets/*"],
       "_types/*": ["types/*"],
       "_config": ["config.ts"],
-      "_hooks/*": ["hooks/*"]
+      "_hooks/*": ["hooks/*"],
+      "_reducers/*": ["reducers/*"]
     }
   }
 }

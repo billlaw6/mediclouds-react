@@ -10,13 +10,14 @@ import Win from "../Win";
 import "./style.less";
 
 const Viewport: FunctionComponent = () => {
-  const { playerExamMap, updateSeries } = useData();
+  const { playerExamMap, cs, cst } = useData();
   const { windowsMap, getFocusWindow, updateWindowSeries } = useWindows();
+  const { movingMode, scaleMode, wwwcMode } = useStatus();
 
   const { showLeftPan, showRightPan } = useStatus();
   const $viewport = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
-  const [keyName, setKeyName] = useState(""); // 当前的键盘值
+  const [currentWinKey, setCurrentWinKey] = useState<number>();
 
   const getWindows = (): ReactNode => {
     if (!windowsMap) return null;
@@ -24,9 +25,7 @@ const Viewport: FunctionComponent = () => {
     const renderArr: ReactNode[] = [];
 
     windowsMap.forEach((item, windowKey) => {
-      return renderArr.push(
-        <Win key={`win_${windowKey}`} data={item} viewportWidth={width} keyName={keyName}></Win>,
-      );
+      return renderArr.push(<Win key={`win_${windowKey}`} data={item} viewportWidth={width}></Win>);
     });
 
     return renderArr;
@@ -89,6 +88,8 @@ const Viewport: FunctionComponent = () => {
     return res;
   };
 
+  const focusWin = getFocusWindow();
+
   useEffect(() => {
     if ($viewport.current) {
       updateWidth();
@@ -99,22 +100,53 @@ const Viewport: FunctionComponent = () => {
       }
     };
 
-    const onKeydown = (e: KeyboardEvent): void => {
-      setKeyName(e.code);
-    };
-    const onKeyup = (): void => {
-      setKeyName("");
-    };
-
     window.addEventListener("resize", onResize);
-    window.addEventListener("keydown", onKeydown);
-    window.addEventListener("keyup", onKeyup);
     return () => {
       window.removeEventListener("resize", onResize);
-      window.removeEventListener("keydown", onKeydown);
-      window.removeEventListener("keyup", onKeyup);
     };
   }, []);
+
+  useEffect(() => {
+    if (!focusWin || !cs || !cst) return;
+    const { element, key } = focusWin;
+    if (element) return;
+
+    // 当当前聚焦的窗口更新时候 重新加载 因为cornerstone需要先 enable 某个element
+    if (!currentWinKey || key !== currentWinKey) {
+      /** 初始化相关cornerstone tools */
+      const { WwwcTool, PanTool, ZoomTool } = cst;
+      cst.addTool(WwwcTool); // 调窗
+      cst.addTool(PanTool); // 移动
+      cst.addTool(ZoomTool, {
+        invert: false,
+        preventZoomOutsideImage: false,
+        minScale: 0.1,
+        maxScale: 20.0,
+      });
+
+      setCurrentWinKey(key);
+    }
+  }, [focusWin, cs, cst, currentWinKey]);
+
+  useEffect(() => {
+    if (!focusWin || !cst) return;
+
+    const { element } = focusWin;
+
+    if (!element) return;
+
+    movingMode
+      ? cst.setToolActiveForElement(element, "Pan", { mouseButtonMask: 1 })
+      : cst.setToolDisabledForElement(element, "Pan");
+
+    scaleMode
+      ? cst.setToolActiveForElement(element, "Zoom", { mouseButtonMask: 1 })
+      : cst.setToolDisabledForElement(element, "Zoom");
+
+    wwwcMode
+      ? cst.setToolActiveForElement(element, "Wwwc", { mouseButtonMask: 1 })
+      : cst.setToolDisabledForElement(element, "Wwwc");
+  }, [wwwcMode, movingMode, scaleMode, focusWin]);
 
   return (
     <div id="viewport" ref={$viewport}>

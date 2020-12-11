@@ -63,6 +63,7 @@ module.exports = {
       ["_types"]: path.join(SRC, "types"),
       ["_config"]: path.join(SRC, "config.ts"),
       ["_hooks"]: path.join(SRC, "hooks"),
+      ["_reducers"]: path.join(SRC, "reducers"),
     }),
     NODE_ENV === "production" && BUILD_MODE === "analyze"
       ? addWebpackPlugin(new BundleAnalyzerPlugin())
