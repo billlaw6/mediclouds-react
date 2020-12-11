@@ -4,6 +4,7 @@ import { PlayerExamKeyT } from "./exam";
 export type PlayerSeriesKeyT = number;
 
 export interface PlayerSeriesI extends SeriesI {
+  [key: string]: any;
   key: PlayerSeriesKeyT; // series map key
   cache?: any[]; // cornerstone image array
   examKey: PlayerExamKeyT; // exam map key

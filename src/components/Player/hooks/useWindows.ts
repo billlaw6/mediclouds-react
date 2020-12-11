@@ -3,15 +3,22 @@ import { StoreStateI } from "_types/core";
 import { PlayerWindowsActionE } from "../types/actions";
 import { PlayerExamPropsI } from "../types/common";
 import { PlayerExamMapT } from "../types/exam";
-import { WindowI, WindowKeyT, WindowMapT } from "../types/window";
+import { PlayerSeriesI } from "../types/series";
+import { WindowI, WindowKeyT, WindowMapT, WindowActionE } from "../types/window";
 import useData from "./useData";
+import useSettings from "./useSettings";
+
+let timer = -1; // window 计时器
+
+const { PAUSE, PLAY } = WindowActionE;
 
 export default () => {
   const windows = useSelector<StoreStateI, StoreStateI["playerWindows"]>(
     (state) => state.playerWindows,
   );
   const dispatch = useDispatch();
-  const { getPlayerSeriesById } = useData();
+  const { getPlayerSeriesById, updateSeries, getPlayerSeries, cs } = useData();
+  const { defaultPlaySpeed } = useSettings();
 
   const { windowsMap } = windows;
   const { OPEN_WINDOW, UPDATE_WINDOW, UPDATE_WINDOWS } = PlayerWindowsActionE;
@@ -20,13 +27,43 @@ export default () => {
     dispatch({ type: OPEN_WINDOW, payload: data });
   };
 
-  const updateWindow = (key: WindowKeyT, data: WindowI): void => {
+  /**
+   * 更新除了data（PlayerSeries）以外其他字段
+   * @param key win key
+   * @param winData win data, except [data]
+   */
+  const updateWindow = (key: number, winData: any): void => {
+    if (!windowsMap) return;
+    const currentWindow = windowsMap.get(key);
+    if (!currentWindow) return;
+
     dispatch({
       type: UPDATE_WINDOW,
-      payload: {
-        key,
-        data,
-      },
+      payload: Object.assign({}, currentWindow, winData),
+    });
+  };
+
+  /** 更新窗口的 playerSeries
+   * 并且将 win内的frame更新到 ExamMap 内的相应 PlayerSeries
+   */
+  const updateWindowSeries = (key: number, series: PlayerSeriesI): void => {
+    if (!windowsMap) return;
+    const currentWindow = windowsMap.get(key);
+    if (!currentWindow) return;
+    const { frame: windowFrame, data: currentSeries, element } = currentWindow;
+    if (!currentSeries) return;
+
+    if (element) element.hidden = true;
+
+    const nextWindow = Object.assign({}, currentWindow, { data: series, frame: series.frame });
+
+    const { examKey, key: seriesKey } = currentSeries;
+    // /** 更新窗口内的series 将窗口的frame值赋给它 */
+    updateSeries(examKey, seriesKey, { frame: windowFrame });
+
+    dispatch({
+      type: UPDATE_WINDOW,
+      payload: nextWindow,
     });
   };
 
@@ -107,14 +144,108 @@ export default () => {
     return true;
   };
 
+  const getPlayerSeriesByWindow = (win?: WindowI): PlayerSeriesI | undefined => {
+    const currentWindow = win || getFocusWindow();
+    if (!currentWindow) return;
+    return currentWindow.data;
+  };
+
+  const pause = (win?: WindowI): void => {
+    const currentWindow = win || getFocusWindow();
+    if (!currentWindow || !currentWindow.isPlay) return;
+
+    window.clearInterval(timer);
+    currentWindow.isPlay = false;
+
+    dispatch({ type: UPDATE_WINDOW, payload: currentWindow });
+  };
+
+  const next = (win?: WindowI): void => {
+    const currentWindow = win || getFocusWindow();
+    if (!currentWindow) return;
+    const { frame: frameInWindow = 0, data: playerSeries, isPlay } = currentWindow;
+    if (!playerSeries) return;
+    const { cache = [] } = playerSeries;
+    const nextFrame = Math.min(cache.length - 1, frameInWindow + 1);
+    const nextWin: any = { frame: nextFrame };
+    if (isPlay && nextFrame >= cache.length - 1) pause(currentWindow);
+
+    updateWindow(currentWindow.key, nextWin);
+  };
+
+  const play = (): void => {
+    const currentWindow = getFocusWindow();
+    if (!currentWindow) return;
+
+    const { data: playerSeries, frame } = currentWindow;
+    let displayFrameRate = defaultPlaySpeed;
+
+    if (playerSeries) {
+      const { display_frame_rate, cache } = playerSeries;
+
+      if (display_frame_rate) displayFrameRate = display_frame_rate;
+      if (cache && frame >= cache.length - 1) currentWindow.frame = 0;
+    }
+
+    timer = window.setInterval(() => next(), displayFrameRate);
+    currentWindow.isPlay = true;
+
+    dispatch({ type: UPDATE_WINDOW, payload: currentWindow });
+  };
+
+  const prev = (win?: WindowI): void => {
+    const currentWindow = win || getFocusWindow();
+    if (!currentWindow) return;
+    const { frame: frameInWindow = 0, data: playerSeries, isPlay } = currentWindow;
+    if (!playerSeries) return;
+    const nextFrame = Math.max(0, frameInWindow - 1);
+
+    if (isPlay) pause(currentWindow);
+    updateWindow(currentWindow.key, { frame: nextFrame });
+  };
+
+  const nextSeries = (win?: WindowI): void => {
+    const currentWindow = win || getFocusWindow();
+    if (!currentWindow) return;
+    const { isPlay } = currentWindow;
+    const currentSeries = getPlayerSeriesByWindow(currentWindow);
+    if (!currentSeries) return;
+    const _nextSeries = getPlayerSeries(currentSeries.examKey, currentSeries.key + 1);
+    if (!_nextSeries) return;
+
+    if (isPlay) pause(currentWindow);
+    updateWindowSeries(currentWindow.key, _nextSeries);
+  };
+
+  const prevSeries = (win?: WindowI): void => {
+    const currentWindow = win || getFocusWindow();
+    if (!currentWindow) return;
+    const { isPlay } = currentWindow;
+    const currentSeries = getPlayerSeriesByWindow(currentWindow);
+    if (!currentSeries) return;
+    const _nextSeries = getPlayerSeries(currentSeries.examKey, currentSeries.key - 1);
+    if (!_nextSeries) return;
+
+    if (isPlay) pause(currentWindow);
+    updateWindowSeries(currentWindow.key, _nextSeries);
+  };
+
   return {
     ...windows,
     openWindow,
     updateWindow,
+    updateWindowSeries,
     updateWins,
     getCurrentWindows,
     initWindows,
     getFocusWindow,
+    getPlayerSeriesByWindow,
     focusWindow,
+    play,
+    pause,
+    next,
+    prev,
+    nextSeries,
+    prevSeries,
   };
 };

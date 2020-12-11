@@ -1,10 +1,7 @@
 import React, { FunctionComponent, ReactNode, useEffect, useRef, useState } from "react";
-import { getActiveCollections, setCollection } from "_components/Player/helpers";
 import useData from "_components/Player/hooks/useData";
 import useStatus from "_components/Player/hooks/useStatus";
 import useWindows from "_components/Player/hooks/useWindows";
-import { PlayerExamMapT } from "_components/Player/types/exam";
-import { PlayerSeriesI, PlayerSeriesMapT } from "_components/Player/types/series";
 import { WindowI } from "_components/Player/types/window";
 import SeriesCard from "../SeriesCard";
 import SidePan from "../SidePan";
@@ -12,17 +9,14 @@ import Win from "../Win";
 
 import "./style.less";
 
-interface ViewportPropsI {
-  playerExamMap?: PlayerExamMapT;
-}
-
 const Viewport: FunctionComponent = () => {
-  const { playerExamMap, cacheSeries, updateSeries } = useData();
-  const { windowsMap, getFocusWindow, updateWindow } = useWindows();
+  const { playerExamMap, updateSeries } = useData();
+  const { windowsMap, getFocusWindow, updateWindowSeries } = useWindows();
 
   const { showLeftPan, showRightPan } = useStatus();
   const $viewport = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
+  const [keyName, setKeyName] = useState(""); // 当前的键盘值
 
   const getWindows = (): ReactNode => {
     if (!windowsMap) return null;
@@ -30,10 +24,9 @@ const Viewport: FunctionComponent = () => {
     const renderArr: ReactNode[] = [];
 
     windowsMap.forEach((item, windowKey) => {
-      const { data } = item;
-      const key = data ? `${data.id}` : `${Date.now()}`;
-
-      return renderArr.push(<Win key={key} data={item} viewportWidth={width}></Win>);
+      return renderArr.push(
+        <Win key={`win_${windowKey}`} data={item} viewportWidth={width} keyName={keyName}></Win>,
+      );
     });
 
     return renderArr;
@@ -84,32 +77,16 @@ const Viewport: FunctionComponent = () => {
           onClick={(result): void => {
             const focusWindow = getFocusWindow();
             if (!focusWindow || !focusWindow.data) return;
-            const { data, key, frame } = focusWindow;
+            const { data } = focusWindow;
             if (data && data.id === result.id) return;
 
-            updateWindow(
-              key,
-              Object.assign({}, focusWindow, { data: result, frame: result.frame }),
-            );
-            updateSeries([Object.assign({}, data, { frame })]);
+            updateWindowSeries(focusWindow.key, result);
           }}
         ></SeriesCard>,
       );
     });
 
     return res;
-  };
-
-  const onCache = (series: PlayerSeriesI): void => {
-    cacheSeries({
-      data: series,
-      onBeforeCache: (data) => {
-        console.log("before cache", data);
-      },
-      onCaching: (progress, data) => {
-        console.log("progress", progress);
-      },
-    });
   };
 
   useEffect(() => {
@@ -122,19 +99,22 @@ const Viewport: FunctionComponent = () => {
       }
     };
 
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
+    const onKeydown = (e: KeyboardEvent): void => {
+      setKeyName(e.code);
+    };
+    const onKeyup = (): void => {
+      setKeyName("");
+    };
 
-  // useEffect(() => {
-  //   if (!windowsMap) return;
-  //   const currentWindow = getFocusWindow();
-  //   if (!currentWindow || !currentWindow.data) return;
-  //   const { progress, cache } = currentWindow.data;
-  //   if (!progress || progress !== 100 || !cache) {
-  //     onCache(currentWindow.data);
-  //   }
-  // }, [getFocusWindow, windowsMap]);
+    window.addEventListener("resize", onResize);
+    window.addEventListener("keydown", onKeydown);
+    window.addEventListener("keyup", onKeyup);
+    return () => {
+      window.removeEventListener("resize", onResize);
+      window.removeEventListener("keydown", onKeydown);
+      window.removeEventListener("keyup", onKeyup);
+    };
+  }, []);
 
   return (
     <div id="viewport" ref={$viewport}>

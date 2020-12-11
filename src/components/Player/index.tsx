@@ -7,8 +7,9 @@ import Header from "./components/Header";
 import useData from "./hooks/useData";
 import useWindows from "./hooks/useWindows";
 
-import "./style.less";
 import { PlayerPropsI } from "./types/common";
+
+import "./style.less";
 
 const Player: FunctionComponent<PlayerPropsI> = (props) => {
   const { exams } = props;

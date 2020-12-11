@@ -1,16 +1,10 @@
 import { Reducer } from "redux";
-import { isUndefined } from "util";
 import { PlayerWindowsActionE } from "_components/Player/types/actions";
 import { WindowMapT, WindowI, WindowKeyT } from "_components/Player/types/window";
 import { ActionI } from "_types/core";
 
 interface PlayerWindowsStateI {
   windowsMap?: WindowMapT;
-}
-
-interface UpdateWindowPayloadI {
-  key: WindowKeyT;
-  data: WindowI;
 }
 
 const DEFAULT: PlayerWindowsStateI = {};
@@ -25,7 +19,7 @@ const {
 
 const playerWindowsReducer: Reducer<
   PlayerWindowsStateI,
-  ActionI<PlayerWindowsActionE, WindowMapT | WindowI | WindowI[] | UpdateWindowPayloadI | number>
+  ActionI<PlayerWindowsActionE, WindowMapT | WindowI | WindowI[] | number>
 > = (state = DEFAULT, actions) => {
   const { type, payload } = actions;
 
@@ -49,8 +43,8 @@ const playerWindowsReducer: Reducer<
     case UPDATE_WINDOW: {
       const { windowsMap } = state;
       if (!payload || !windowsMap) return state;
-      const { key, data } = payload as UpdateWindowPayloadI;
-      windowsMap.set(key, data);
+      const { key } = payload as WindowI;
+      windowsMap.set(key, payload as WindowI);
 
       return Object.assign({}, state, {
         windowsMap,

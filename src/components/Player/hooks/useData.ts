@@ -9,7 +9,7 @@ import { PlayerExamPropsI } from "../types/common";
 import { PlayerExamI, PlayerExamMapT } from "../types/exam";
 import { PlayerSeriesI, PlayerSeriesMapT } from "../types/series";
 
-const { UPDATE_PLAYER, INIT_PLAYER } = PlayerActionE;
+const { UPDATE_PLAYER, INIT_PLAYER, UPDATE_PLAYER_EXAM_MAP } = PlayerActionE;
 
 interface CachePropsI {
   data?: PlayerSeriesI;
@@ -164,6 +164,14 @@ export default () => {
     });
   };
 
+  const getPlayerSeries = (examKey: number, key: number): PlayerSeriesI | undefined => {
+    if (!playerExamMap) return;
+    const currentExam = playerExamMap.get(examKey);
+    if (!currentExam || !currentExam.data) return;
+
+    return currentExam.data.get(key);
+  };
+
   /**
    * 通过 序列id获取 播放器序列
    *
@@ -179,8 +187,30 @@ export default () => {
     }
   };
 
+  /**
+   * 更新某个series
+   */
+  const updateSeries = (examkey: number, key: number, data: { [key: string]: any }): void => {
+    if (!playerExamMap) return;
+    const currentExam = playerExamMap.get(examkey);
+    if (!currentExam) return;
+
+    const targetSeries = currentExam.data.get(key);
+    if (!targetSeries) return;
+
+    for (const dataKey of Object.keys(data)) {
+      const val = data[dataKey];
+      targetSeries[dataKey] = val;
+    }
+
+    currentExam.data.set(key, targetSeries);
+    playerExamMap.set(examkey, currentExam);
+
+    dispatch({ type: UPDATE_PLAYER_EXAM_MAP, payload: playerExamMap });
+  };
+
   /** 更新多个检查的序列 */
-  const updateSeries = (datas: PlayerSeriesI[]): void => {
+  const updateSeriesArr = (datas: PlayerSeriesI[]): void => {
     if (!playerExamMap) return;
 
     const nextPlayerExamMap = new Map(playerExamMap);
@@ -197,10 +227,12 @@ export default () => {
     ...playerReducerData,
     fetchSeriesList,
     updateSeries,
+    updateSeriesArr,
     updatePlayerExamMap,
     cacheSeries,
     initCornerstone,
     initPlayerExamMap,
+    getPlayerSeries,
     getPlayerSeriesById,
   };
 };

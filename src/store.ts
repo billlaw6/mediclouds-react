@@ -26,10 +26,27 @@ const persistConfig = {
 const persistedReducer = persistReducer(persistConfig, createRootReducer);
 
 export default function configureStore(preloadedState?: any) {
-  const composeEnhancer: typeof compose =
-    (window as any)["__REDUX_DEVTOOLS_EXTENSION_COMPOSE__"] || compose;
+  const composeEnhancers =
+    ((window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ &&
+      (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+        trace: true,
+        serialize: {
+          replacer: (key: string, val: any) => {
+            if (key === "windowsMap") {
+              if (val) {
+                return Object.fromEntries(val);
+              } else {
+                return val;
+              }
+            }
 
-  const store = createStore(persistedReducer, preloadedState, composeEnhancer(applyMiddleware()));
+            return val;
+          },
+        },
+      })) ||
+    compose;
+
+  const store = createStore(persistedReducer, preloadedState, composeEnhancers(applyMiddleware()));
   const persistor = persistStore(store);
 
   return { store, persistor };

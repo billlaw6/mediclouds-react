@@ -37,6 +37,7 @@ interface PlayerSettingsStateI {
   playAndPauseKeyCode: number; // 播放/暂停快捷键
   moveKeyCode: number; // 移动快捷键
   resetKeyCode: number; // 重制快捷键
+  defaultPlaySpeed: number; // 播放速度 ms
 }
 
 const DEFAULT_SHORTCUT_KEY = {
@@ -49,6 +50,7 @@ const DEFAULT_SHORTCUT_KEY = {
   playAndPauseKeyCode: 32,
   moveKeyCode: 17,
   resetKeyCode: 82,
+  defaultPlaySpeed: 120,
 };
 
 const DEFAULT_STATE: PlayerSettingsStateI = {

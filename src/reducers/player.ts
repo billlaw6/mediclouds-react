@@ -24,8 +24,6 @@ const playerReducer: Reducer<PlayerStateI, ActionI<PlayerActionE, PlayerPayloadT
 ) => {
   const { type, payload } = actions;
 
-  console.log("render.", type);
-
   switch (type) {
     case UPDATE_PLAYER:
     case INIT_PLAYER:

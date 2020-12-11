@@ -1,5 +1,6 @@
 import React, { FunctionComponent, useEffect, useRef, useState } from "react";
 import { Progress, Slider } from "antd";
+import { SliderSingleProps } from "antd/lib/slider";
 
 import useData from "_components/Player/hooks/useData";
 import useStatus from "_components/Player/hooks/useStatus";
@@ -8,17 +9,18 @@ import draw from "_components/Player/methods/draw";
 import { WindowI } from "_components/Player/types/window";
 
 import "./style.less";
-import { SliderBaseProps, SliderSingleProps } from "antd/lib/slider";
 interface WinPropsI {
-  data?: WindowI;
+  data: WindowI;
   viewportWidth: number; // viewport宽度
+  keyName?: string; // 当前按下的键盘值
 }
 
 const Win: FunctionComponent<WinPropsI> = (props) => {
-  const { data: win, viewportWidth } = props;
+  const { data: win, viewportWidth, keyName } = props;
 
+  const { data: playerSeries, isFocus, isPlay, element, key, frame } = win;
   const { cs, cacheSeries, updateSeries } = useData();
-  const { updateWindow } = useWindows();
+  const { updateWindow, next, prev, nextSeries, prevSeries, play, pause } = useWindows();
   const { showLeftPan, showRightPan } = useStatus();
   const [loadingProgress, setLoadingProgress] = useState(-1); // 当前窗口加载进度
 
@@ -26,22 +28,19 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
 
   const onCache = async (): Promise<void> => {
     // 缓存当前窗口内的序列
-    if (!win || !win.data) return;
-    const { data } = win;
-    const { cache, progress } = data;
+    if (!playerSeries) return;
+    const { cache, progress, examKey, key } = playerSeries;
     if (cache && progress === 100) return;
 
     try {
       const cacheRes = await cacheSeries({
-        data,
+        data: playerSeries,
         onCaching: (progress) => {
           setLoadingProgress(progress);
         },
       });
 
-      const nextData = Object.assign({}, data, { progress: 100, cache: cacheRes });
-      updateWindow(win.key, Object.assign({}, win, { data: nextData }));
-      updateSeries([nextData]);
+      updateSeries(examKey, key, { progress: 100, cache: cacheRes });
     } catch (error) {
       throw new Error(error);
     }
@@ -49,44 +48,60 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
 
   useEffect(() => {
     // 初始化在cs上启用窗口 并将当前窗口的HTML元素更新到当前窗口数据内
-    if (win && cs && $window.current) {
-      cs.enable($window.current);
+    const { element } = win;
 
-      updateWindow(
-        win.key,
-        Object.assign({}, win, {
-          element: $window.current,
-        }),
-      );
+    if (cs && $window.current && !element) {
+      cs.enable($window.current);
+      updateWindow(key, { element: $window.current });
     }
   }, []);
 
   useEffect(() => {
     // 当显示左右侧边栏时，以新尺寸重新渲染窗口
-    if (!win) return;
-    const { element } = win;
     if (!element) return;
 
-    cs.resize(element, true);
+    cs.resize(element, false);
   }, [showLeftPan, showRightPan]);
 
   useEffect(() => {
     // 当当前的窗口数据改变时，重新渲染窗口
-    if (!win) return;
-    const { element } = win;
     if (!element) return;
 
     onCache()
       .then(() => {
-        cs.resize(element, true);
-
+        if (element.hidden) element.hidden = false;
         draw({
           cs,
           win,
         });
       })
       .catch((err) => console.error(err));
-  }, [win]);
+  }, [element, playerSeries, frame, isFocus]);
+
+  useEffect(() => {
+    if (!isFocus) return;
+    switch (keyName) {
+      case "ArrowRight":
+        next(win);
+        break;
+      case "ArrowLeft":
+        prev(win);
+        break;
+      case "ArrowUp":
+        prevSeries(win);
+        break;
+      case "ArrowDown":
+        nextSeries(win);
+        break;
+      case "Space":
+        if (isFocus) {
+          isPlay ? pause() : play();
+        }
+        break;
+      default:
+        break;
+    }
+  }, [keyName, isFocus]);
 
   const width = viewportWidth - (showLeftPan ? 300 : 0) - (showRightPan ? 300 : 0);
 
@@ -97,21 +112,17 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
     max: 1,
   };
 
-  if (win) {
-    const { frame, data } = win;
-    if (data && data.cache) sliderProps.max = data.cache.length - 1;
+  if (playerSeries && playerSeries.cache) sliderProps.max = playerSeries.cache.length - 1;
 
-    sliderProps.value = frame;
-  }
+  sliderProps.value = frame;
 
   const onLoading = loadingProgress > -1 && loadingProgress < 100;
 
+  console.log("isPlay", isPlay);
   return (
     <div
-      className="player-window"
-      style={{
-        width: `${width}px`,
-      }}
+      className={`player-window${win && win.isFocus ? " focus" : ""}`}
+      data-win-key={win ? win.key : ""}
     >
       {onLoading ? (
         <Progress
@@ -124,23 +135,25 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
       ) : (
         <Slider
           className="player-window-slider"
-          vertical
-          reverse
           disabled={onLoading}
           {...sliderProps}
           onChange={(val: number): void => {
-            if (!win) return;
-
-            updateWindow(
-              win.key,
-              Object.assign({}, win, {
-                frame: val,
-              }),
-            );
+            updateWindow(key, { frame: val });
           }}
         ></Slider>
       )}
-      <div className="player-window-content" ref={$window}></div>
+      <div
+        className="player-window-content"
+        onWheel={(e): void => {
+          const { deltaY } = e;
+          if (deltaY > 0) {
+            next(win);
+          } else {
+            prev(win);
+          }
+        }}
+        ref={$window}
+      ></div>
     </div>
   );
 };
