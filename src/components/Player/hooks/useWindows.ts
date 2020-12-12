@@ -15,7 +15,7 @@ export default () => {
     (state) => state.playerWindows,
   );
   const dispatch = useDispatch();
-  const { getPlayerSeriesById, updateSeries, getPlayerSeries, cs } = useData();
+  const { getPlayerSeriesById, updateSeries, getPlayerSeries, cs, cst } = useData();
   const { defaultPlaySpeed } = useSettings();
 
   const { windowsMap } = windows;
@@ -181,6 +181,7 @@ export default () => {
     if (!playerSeries) return;
     const { cache = [] } = playerSeries;
     const nextFrame = Math.min(cache.length - 1, frameInWindow + 1);
+
     const nextWin: any = { frame: nextFrame };
     if (isPlay && nextFrame >= cache.length - 1) pause(currentWindow);
 

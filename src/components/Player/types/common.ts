@@ -8,3 +8,5 @@ export interface PlayerExamPropsI {
 export interface PlayerPropsI {
   exams: PlayerExamPropsI[];
 }
+
+export type CstToolNameT = "Wwwc" | "Length" | "Pan" | "Zoom" | "";

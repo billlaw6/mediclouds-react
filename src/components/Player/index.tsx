@@ -17,21 +17,23 @@ const Player: FunctionComponent<PlayerPropsI> = (props) => {
 
   const { initPlayerExamMap, playerExamMap } = useData();
   const { initWindows, windowsMap } = useWindows();
-  const { generateKeyboard, destoryKeyboard } = useKeyboard();
+  // const { generateKeyboard, destoryKeyboard } = useKeyboard();
 
   useEffect(() => {
     initPlayerExamMap(exams)
       .then((res) => {
         initWindows(exams, res);
-        generateKeyboard();
+        // generateKeyboard();
         console.log("INIT SUCCESSED");
       })
       .catch((err) => {
         console.error("INIT FAILD", err);
       });
 
+    document.oncontextmenu = () => false;
+
     return () => {
-      destoryKeyboard();
+      // destoryKeyboard();
     };
   }, []);
 

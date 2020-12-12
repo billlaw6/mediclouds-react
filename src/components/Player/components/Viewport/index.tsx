@@ -1,4 +1,5 @@
 import React, { FunctionComponent, ReactNode, useEffect, useRef, useState } from "react";
+import { CST_TOOL_NAMES } from "_components/Player/Contents";
 import useData from "_components/Player/hooks/useData";
 import useStatus from "_components/Player/hooks/useStatus";
 import useWindows from "_components/Player/hooks/useWindows";
@@ -12,9 +13,8 @@ import "./style.less";
 const Viewport: FunctionComponent = () => {
   const { playerExamMap, cs, cst } = useData();
   const { windowsMap, getFocusWindow, updateWindowSeries } = useWindows();
-  const { movingMode, scaleMode, wwwcMode } = useStatus();
-
   const { showLeftPan, showRightPan } = useStatus();
+
   const $viewport = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
   const [currentWinKey, setCurrentWinKey] = useState<number>();
@@ -114,7 +114,7 @@ const Viewport: FunctionComponent = () => {
     // 当当前聚焦的窗口更新时候 重新加载 因为cornerstone需要先 enable 某个element
     if (!currentWinKey || key !== currentWinKey) {
       /** 初始化相关cornerstone tools */
-      const { WwwcTool, PanTool, ZoomTool } = cst;
+      const { WwwcTool, PanTool, ZoomTool, LengthTool } = cst;
       cst.addTool(WwwcTool); // 调窗
       cst.addTool(PanTool); // 移动
       cst.addTool(ZoomTool, {
@@ -123,36 +123,16 @@ const Viewport: FunctionComponent = () => {
         minScale: 0.1,
         maxScale: 20.0,
       });
+      cst.addTool(LengthTool);
 
       setCurrentWinKey(key);
     }
   }, [focusWin, cs, cst, currentWinKey]);
 
-  useEffect(() => {
-    if (!focusWin || !cst) return;
-
-    const { element } = focusWin;
-
-    if (!element) return;
-
-    movingMode
-      ? cst.setToolActiveForElement(element, "Pan", { mouseButtonMask: 1 })
-      : cst.setToolDisabledForElement(element, "Pan");
-
-    scaleMode
-      ? cst.setToolActiveForElement(element, "Zoom", { mouseButtonMask: 1 })
-      : cst.setToolDisabledForElement(element, "Zoom");
-
-    wwwcMode
-      ? cst.setToolActiveForElement(element, "Wwwc", { mouseButtonMask: 1 })
-      : cst.setToolDisabledForElement(element, "Wwwc");
-  }, [wwwcMode, movingMode, scaleMode, focusWin]);
-
   return (
     <div id="viewport" ref={$viewport}>
       <SidePan location="left" show={showLeftPan}>
         {getSeriesList()}
-        view
       </SidePan>
       <div className="viewport-windows">{getWindows()}</div>
       <SidePan location="right" show={showRightPan}></SidePan>

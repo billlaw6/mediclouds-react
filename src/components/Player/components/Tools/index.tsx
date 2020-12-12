@@ -2,6 +2,7 @@ import {
   BackwardOutlined,
   BgColorsOutlined,
   CaretRightOutlined,
+  ColumnWidthOutlined,
   DragOutlined,
   ForwardOutlined,
   MenuFoldOutlined,
@@ -10,34 +11,51 @@ import {
   QuestionCircleOutlined,
   UndoOutlined,
   ZoomInOutlined,
+  EyeOutlined,
+  EyeInvisibleOutlined,
 } from "@ant-design/icons";
 import { Modal } from "antd";
 import React, { FunctionComponent } from "react";
+import { CST_TOOL_NAMES } from "_components/Player/Contents";
+import useData from "_components/Player/hooks/useData";
 import useStatus from "_components/Player/hooks/useStatus";
 import useWindows from "_components/Player/hooks/useWindows";
+import { CstToolNameT } from "_components/Player/types/common";
 import { WindowI } from "_components/Player/types/window";
 import ToolsItem from "./Item";
 
 import "./style.less";
 
 const Tools: FunctionComponent = () => {
+  const { cst } = useData();
   const { getFocusWindow, pause, play, next, prev, resetWindowImage } = useWindows();
   const {
     showLeftPan,
     showRightPan,
     switchPan,
-    movingMode,
-    switchMovingMode,
-    scaleMode,
-    switchScaleMode,
-    wwwcMode,
-    switchWwwcMode,
+    switchTool,
+    currentToolName,
+    showExamInfo,
+    switchExamInfo,
   } = useStatus();
 
-  const { isPlay, data, frame } = getFocusWindow() || ({} as WindowI);
+  const { isPlay, data, frame, element } = getFocusWindow() || ({} as WindowI);
   const disabled = !data || !data.cache;
 
+  const isActiveMode = (name: CstToolNameT): boolean => name === currentToolName;
   const toolItemClassNameWithDisabled = `tools-item${disabled || frame < 0 ? " disabled" : ""}`;
+
+  const switchToolInToolbar = (name: CstToolNameT, status: boolean): void => {
+    if (!cst || !element) return;
+
+    if (!status) {
+      cst.setToolPassiveForElement(element, name);
+      switchTool("");
+    } else {
+      cst.setToolActiveForElement(element, name, { mouseButtonMask: 1 });
+      switchTool(name);
+    }
+  };
 
   return (
     <div id="tools" className="tools">
@@ -50,20 +68,26 @@ const Tools: FunctionComponent = () => {
         </ToolsItem>
         <ToolsItem title="移动">
           <DragOutlined
-            className={`${toolItemClassNameWithDisabled}${movingMode ? " active" : ""}`}
-            onClick={() => switchMovingMode(!movingMode)}
+            className={`${toolItemClassNameWithDisabled}${isActiveMode("Pan") ? " active" : ""}`}
+            onClick={() => switchToolInToolbar("Pan", !isActiveMode("Pan"))}
           />
         </ToolsItem>
         <ToolsItem title="缩放">
           <ZoomInOutlined
-            className={`${toolItemClassNameWithDisabled}${scaleMode ? " active" : ""}`}
-            onClick={() => switchScaleMode(!scaleMode)}
+            className={`${toolItemClassNameWithDisabled}${isActiveMode("Zoom") ? " active" : ""}`}
+            onClick={() => switchToolInToolbar("Zoom", !isActiveMode("Zoom"))}
           />
         </ToolsItem>
         <ToolsItem title="调窗">
           <BgColorsOutlined
-            className={`${toolItemClassNameWithDisabled}${wwwcMode ? " active" : ""}`}
-            onClick={() => switchWwwcMode(!wwwcMode)}
+            className={`${toolItemClassNameWithDisabled}${isActiveMode("Wwwc") ? " active" : ""}`}
+            onClick={() => switchToolInToolbar("Wwwc", !isActiveMode("Wwwc"))}
+          />
+        </ToolsItem>
+        <ToolsItem title="长度测量">
+          <ColumnWidthOutlined
+            className={`${toolItemClassNameWithDisabled}${isActiveMode("Length") ? " active" : ""}`}
+            onClick={() => switchToolInToolbar("Length", !isActiveMode("Length"))}
           />
         </ToolsItem>
         <ToolsItem title="还原">
@@ -74,6 +98,14 @@ const Tools: FunctionComponent = () => {
         </ToolsItem>
       </article>
       <article className="tools-right">
+        <ToolsItem title="隐藏信息">
+          <EyeInvisibleOutlined
+            className={`${toolItemClassNameWithDisabled}${showExamInfo ? "" : " active"}`}
+            onClick={(): void => {
+              switchExamInfo(!showExamInfo);
+            }}
+          />
+        </ToolsItem>
         <ToolsItem title="上一个图像">
           <BackwardOutlined
             className={toolItemClassNameWithDisabled}
@@ -129,8 +161,11 @@ const Tools: FunctionComponent = () => {
                     <li>鼠标滚轮： 上一个/下一个图像</li>
 
                     <li>按住Z键 + 鼠标上下拖动：缩放图像</li>
+                    <li>按住鼠标左键上下拖动：缩放图像</li>
                     <li>按住X键： 移动图像</li>
-                    <li>按住A键： 调窗</li>
+                    <li>按住鼠标中键： 移动图像</li>
+                    <li>按住C键： 调窗</li>
+                    <li>按住鼠标右键： 调窗</li>
 
                     <li>R键：还原</li>
                   </ul>

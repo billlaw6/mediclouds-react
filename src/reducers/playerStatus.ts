@@ -5,8 +5,17 @@
  */
 
 import { Reducer } from "redux";
+import { CstToolNameT } from "_components/Player/types/common";
 import { PlayerSeriesI } from "_components/Player/types/series";
 import { ActionI } from "_types/core";
+
+interface UpdateToolNamePayload {
+  name: string;
+  mouseNum: number;
+}
+
+/** payload types */
+type SwitchExamInfoPayloadT = boolean | PlayerSeriesI | UpdateToolNamePayload;
 
 interface PlayerStatusStateI {
   showExamInfo: boolean; // 显示/隐藏检查信息
@@ -14,19 +23,24 @@ interface PlayerStatusStateI {
   showRightPan: boolean; // 显示/隐藏右边栏
 
   /** modes */
-  movingMode: boolean; // 移动模式
-  scaleMode: boolean; // 缩放模式
-  wwwcMode: boolean; // 调窗模式
+  // movingMode: boolean; // 移动模式
+  // scaleMode: boolean; // 缩放模式
+  // wwwcMode: boolean; // 调窗模式
 
   keyName: string; // 当前的按键名称
+  mouseNum: number; // 当前按下的鼠标按钮
+
+  /** 功能 */
+  // measureLength: boolean; // 长度测量功能
+
+  currentToolName: CstToolNameT; // 当前的tool名
 }
 
 /** actions types */
 export enum PlayerStatusActionE {
   CLEAR_MODE = "clear_mode", // 清除所有模式
 
-  SHOW_EXAM_INFO = "show_exam_info", // 显示检查信息
-  HIDDEN_EXAM_INFO = "hidden_exam_info", // 隐藏检查信息
+  SWITCH_EXAM_INFO = "switch_exam_info", // 显示/隐藏检查信息
 
   SHOW_LEFT_PAN = "show_left_pan", // 显示左边栏
   HIDDEN_LEFT_PAN = "hidden_left_pan", // 隐藏左边栏
@@ -34,35 +48,25 @@ export enum PlayerStatusActionE {
   SHOW_RIGHT_PAN = "show_right_pan", // 显示左边栏
   HIDDEN_RIGHT_PAN = "hidden_right_pan", // 隐藏左边栏
 
-  ENABLE_MOVING_MODE = "enabled_moving_mode", // 启用移动模式
-  DISABLE_MOVING_MODE = "disabled_moving_mode", // 禁用移动模式
-
-  ENABLE_SCALE_MODE = "enabled_scale_mode", // 启用缩放模式
-  DISABLE_SCALE_MODE = "disabled_scale_mode", // 禁用缩放模式
-
-  ENABLE_WWWC_MODE = "enabled_wwwc_mode", // 启用调窗模式
-  DISABLE_WWWC_MODE = "disabled_wwwc_mode", // 禁用调窗模式
-
   UPDATE_KEYNAME = "update_keyname", // 更新按键名称
-}
+  UPDATE_MOUSE_NUM = "update_mouse_num", // 更新鼠标按下的按钮
 
-/** payload types */
-type SwitchExamInfoPayloadT = boolean | PlayerSeriesI;
+  UPDATE_CURRENT_TOOL = "update_current_tool", // 更新当前使用的工具名称
+}
 
 const DEFAULT_STATE: PlayerStatusStateI = {
   showExamInfo: true,
   showLeftPan: true,
   showRightPan: false,
-  movingMode: false,
-  scaleMode: false,
-  wwwcMode: false,
   keyName: "",
+  mouseNum: 0,
+  currentToolName: "",
 };
 
 const {
   CLEAR_MODE,
 
-  SHOW_EXAM_INFO,
+  SWITCH_EXAM_INFO,
 
   SHOW_LEFT_PAN,
   HIDDEN_LEFT_PAN,
@@ -70,16 +74,10 @@ const {
   SHOW_RIGHT_PAN,
   HIDDEN_RIGHT_PAN,
 
-  ENABLE_MOVING_MODE,
-  DISABLE_MOVING_MODE,
-
-  ENABLE_SCALE_MODE,
-  DISABLE_SCALE_MODE,
-
-  ENABLE_WWWC_MODE,
-  DISABLE_WWWC_MODE,
-
   UPDATE_KEYNAME,
+  UPDATE_MOUSE_NUM,
+
+  UPDATE_CURRENT_TOOL,
 } = PlayerStatusActionE;
 
 const playerStatusReducer: Reducer<
@@ -96,6 +94,7 @@ const playerStatusReducer: Reducer<
     movingMode: false,
     scaleMode: false,
     wwwcMode: false,
+    measureLength: false,
   });
 
   const switchMode = (key: string, status: boolean) => {
@@ -106,7 +105,7 @@ const playerStatusReducer: Reducer<
   switch (type) {
     case CLEAR_MODE:
       return Object.assign({}, state, disabledAllMode());
-    case SHOW_EXAM_INFO:
+    case SWITCH_EXAM_INFO:
       if (typeof payload === "boolean") return Object.assign({}, state, { showExamInfo: payload });
       return state;
 
@@ -120,23 +119,32 @@ const playerStatusReducer: Reducer<
     case HIDDEN_RIGHT_PAN:
       return close("showRightPan");
 
-    case ENABLE_MOVING_MODE:
-      return switchMode("movingMode", true);
-    case DISABLE_MOVING_MODE:
-      return switchMode("movingMode", false);
+    // case ENABLE_MOVING_MODE:
+    //   return switchMode("movingMode", true);
+    // case DISABLE_MOVING_MODE:
+    //   return switchMode("movingMode", false);
 
-    case ENABLE_SCALE_MODE:
-      return switchMode("scaleMode", true);
-    case DISABLE_SCALE_MODE:
-      return switchMode("scaleMode", false);
-    case ENABLE_WWWC_MODE:
-      return switchMode("wwwcMode", true);
-    case DISABLE_WWWC_MODE:
-      return switchMode("wwwcMode", false);
+    // case ENABLE_SCALE_MODE:
+    //   return switchMode("scaleMode", true);
+    // case DISABLE_SCALE_MODE:
+    //   return switchMode("scaleMode", false);
+    // case ENABLE_WWWC_MODE:
+    //   return switchMode("wwwcMode", true);
+    // case DISABLE_WWWC_MODE:
+    //   return switchMode("wwwcMode", false);
 
     case UPDATE_KEYNAME:
       return update("keyName", payload || "");
+    case UPDATE_MOUSE_NUM:
+      return update("mouseNum", payload || 0);
 
+    // case ENABLE_MEASURE_LENGTH:
+    //   return switchMode("measureLength", true);
+    // case DISABLE_MEASURE_LENGTH:
+    //   return switchMode("measureLength", false);
+
+    case UPDATE_CURRENT_TOOL:
+      return update("currentToolName", payload || "");
     default:
       return state;
   }

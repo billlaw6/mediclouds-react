@@ -141,3 +141,38 @@ export const setDataToPlayerSeriesMap = (
 
   return collection;
 };
+
+/** 获取dicom信息 */
+export const getInfoByDicom = (img: any) => {
+  const { data } = img;
+
+  return {
+    // 检查信息
+    study: {
+      id: data.string("x00200010"), // 检查id
+      date: data.string("x00080020"), // 检查日期
+      examined: data.string("x00180015"), // 扫描部位
+      desc: data.string("x00801030"), // 检查描述
+      modality: data.string("x00080060"), // 检查类型
+    },
+    /** 此序列信息 */
+    series: {
+      id: data.string("x0020000E"), // series id
+      position: data.string("x00200032"), // 图像位置
+      orientation: data.string("x00200037"), // 图像方位
+      thickness: data.string("00180050"), // 层厚
+    },
+    /** 患者信息 */
+    patient: {
+      name: data.string("x00100010"), // 姓名
+      id: data.string("x00100020"), // id
+      birthday: data.string("x00100030"), // 生日
+      six: data.string("x00100040"), // 性别
+      age: data.string("x00101010"), // 年龄
+    },
+    /** 检查机构 */
+    hospital: {
+      name: data.string("x00080080"), // 机构名称
+    },
+  };
+};

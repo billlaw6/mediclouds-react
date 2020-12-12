@@ -5,11 +5,12 @@ import { SliderSingleProps } from "antd/lib/slider";
 import useData from "_components/Player/hooks/useData";
 import useStatus from "_components/Player/hooks/useStatus";
 import useWindows from "_components/Player/hooks/useWindows";
-import draw from "_components/Player/methods/draw";
 import { WindowI } from "_components/Player/types/window";
 
-import "./style.less";
+import Information from "../Information";
+import useMouse from "_components/Player/hooks/useMouse";
 
+import "./style.less";
 interface WinPropsI {
   data: WindowI;
   viewportWidth: number; // viewport宽度
@@ -20,6 +21,9 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
 
   const { data: playerSeries, isFocus, isPlay, element, key, frame } = win;
   const { cs, cst, cacheSeries, updateSeries } = useData();
+
+  const [cstStateManager, setCstStateManager] = useState<any>();
+
   const {
     updateWindow,
     next,
@@ -33,15 +37,13 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
   const {
     showLeftPan,
     showRightPan,
-    movingMode,
-    scaleMode,
-    wwwcMode,
-    keyName,
-    switchMovingMode,
-    switchScaleMode,
-    switchWwwcMode,
-    clearMode,
+    showExamInfo,
+    mouseNum,
+    currentToolName,
+    switchTool,
   } = useStatus();
+  const { updateMouseNum } = useMouse();
+
   const [loadingProgress, setLoadingProgress] = useState(-1); // 当前窗口加载进度
 
   const $window = useRef<HTMLDivElement>(null);
@@ -67,24 +69,131 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
   };
 
   const getCursor = (): string => {
-    let res = "default";
-    if (movingMode) res = "move";
-    else if (scaleMode) res = "zoom-in";
-    else if (wwwcMode) res = "crosshair";
+    switch (currentToolName) {
+      case "Pan":
+        return "move";
+      case "Wwwc":
+        return "crosshair";
+      case "Zoom":
+        return "zoom-in";
+      default:
+        return "default";
+    }
+  };
 
-    return res;
+  const onMousedown = (e: MouseEvent): void => {
+    if (!cst || !element || currentToolName) return;
+
+    const { buttons } = e;
+
+    switch (buttons) {
+      case 4:
+        cst.setToolActiveForElement(element, "Pan", { mouseButtonMask: 4 });
+        switchTool("Pan");
+        updateMouseNum(4);
+        break;
+      case 1:
+        cst.setToolActiveForElement(element, "Zoom", { mouseButtonMask: 1 });
+        switchTool("Zoom");
+        updateMouseNum(1);
+        break;
+      case 2:
+        cst.setToolActiveForElement(element, "Wwwc", { mouseButtonMask: 2 });
+        switchTool("Wwwc");
+        updateMouseNum(2);
+        break;
+      default:
+        break;
+    }
+  };
+  const onMouseup = () => {
+    if (!mouseNum) return;
+
+    cst.setToolPassiveForElement(element, currentToolName);
+    switchTool("");
+    updateMouseNum(0);
+  };
+
+  const onKeydown = (e: KeyboardEvent) => {
+    if (!cst || !element) return;
+
+    const { code } = e;
+
+    switch (code) {
+      case "KeyX":
+        cst.setToolActiveForElement(element, "Pan", { mouseButtonMask: 1 });
+        switchTool("Pan");
+        break;
+      case "KeyZ":
+        cst.setToolActiveForElement(element, "Zoom", { mouseButtonMask: 1 });
+        switchTool("Zoom");
+        break;
+      case "KeyC":
+        cst.setToolActiveForElement(element, "Wwwc", { mouseButtonMask: 1 });
+        switchTool("Wwwc");
+        break;
+      case "KeyR":
+        resetWindowImage();
+        break;
+      case "ArrowRight":
+        next();
+        break;
+      case "ArrowLeft":
+        prev();
+        break;
+      case "ArrowUp":
+        prevSeries();
+        break;
+      case "ArrowDown":
+        nextSeries();
+        break;
+      case "Space":
+        if (isFocus) {
+          isPlay ? pause() : play();
+        }
+        break;
+      default:
+        break;
+    }
+  };
+
+  const onKeyup = () => {
+    if (currentToolName) {
+      cst.setToolPassiveForElement(element, currentToolName);
+
+      switchTool("");
+    }
+  };
+
+  const draw = (): void => {
+    if (!playerSeries || !element) return;
+    const { cache, frame: frameInSeries } = playerSeries;
+    if (!cache) return;
+
+    console.log("draw");
+    const index = frame > -1 ? frame : frameInSeries;
+    const currentImg = cache[index];
+
+    cs.displayImage(element, currentImg);
   };
 
   useEffect(() => {
-    // 初始化在cs上启用窗口 并将当前窗口的HTML元素更新到当前窗口数据内
-    const { element } = win;
+    document.addEventListener("keydown", onKeydown);
+    document.addEventListener("keyup", onKeyup);
 
+    // 初始化在cs上启用窗口 并将当前窗口的HTML元素更新到当前窗口数据内
     if (cs && cst && $window.current && !element) {
       cs.enable($window.current);
+      setCstStateManager(cst.getElementToolStateManager($window.current));
 
       updateWindow(key, { element: $window.current });
     }
-  }, []);
+
+    return () => {
+      document.removeEventListener("keydown", onKeydown);
+      document.removeEventListener("keyup", onKeyup);
+    };
+  }, [cs, cst, element]);
 
   useEffect(() => {
     // 当显示左右侧边栏时，以新尺寸重新渲染窗口
@@ -97,55 +206,15 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
     // 当当前的窗口数据改变时，重新渲染窗口
     if (!element) return;
 
+    cstStateManager && console.log("cstStateManager.get(element);", cstStateManager.get(element));
+
     onCache()
       .then(() => {
         if (element.hidden) element.hidden = false;
-        draw({
-          cs,
-          win,
-        });
+        draw();
       })
       .catch((err) => console.error(err));
   }, [element, playerSeries, frame, isFocus]);
-
-  useEffect(() => {
-    if (!isFocus) return;
-
-    switch (keyName) {
-      case "KeyX":
-        switchMovingMode(true);
-        break;
-      case "KeyZ":
-        switchScaleMode(true);
-        break;
-      case "KeyA":
-        switchWwwcMode(true);
-        break;
-      case "KeyR":
-        resetWindowImage();
-        break;
-      case "ArrowRight":
-        next(win);
-        break;
-      case "ArrowLeft":
-        prev(win);
-        break;
-      case "ArrowUp":
-        prevSeries(win);
-        break;
-      case "ArrowDown":
-        nextSeries(win);
-        break;
-      case "Space":
-        if (isFocus) {
-          isPlay ? pause() : play();
-        }
-        break;
-      default:
-        clearMode();
-        break;
-    }
-  }, [keyName, isFocus]);
 
   const width = viewportWidth - (showLeftPan ? 300 : 0) - (showRightPan ? 300 : 0);
 
@@ -188,8 +257,6 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
       <div
         className="player-window-content"
         onWheel={(e): void => {
-          if (scaleMode) return;
-
           const { deltaY } = e;
           if (deltaY > 0) {
             next(win);
@@ -197,9 +264,13 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
             prev(win);
           }
         }}
+        onMouseDown={(e) => onMousedown(e.nativeEvent)}
+        onMouseUp={onMouseup}
         style={{ cursor: getCursor() }}
         ref={$window}
-      ></div>
+      >
+        {showExamInfo ? <Information win={win}></Information> : null}
+      </div>
     </div>
   );
 };

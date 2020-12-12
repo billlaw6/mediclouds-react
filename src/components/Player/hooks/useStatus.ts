@@ -1,6 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
 import { PlayerStatusActionE } from "../../../reducers/playerStatus";
 import { StoreStateI } from "_types/core";
+import { CstToolNameT } from "../types/common";
+import { CST_TOOL_NAMES } from "../Contents";
+import useData from "./useData";
+import useWindows from "./useWindows";
 
 export default () => {
   const status = useSelector<StoreStateI, StoreStateI["playerStatus"]>(
@@ -13,13 +17,8 @@ export default () => {
     HIDDEN_LEFT_PAN,
     SHOW_RIGHT_PAN,
     HIDDEN_RIGHT_PAN,
-    ENABLE_MOVING_MODE,
-    DISABLE_MOVING_MODE,
-    ENABLE_SCALE_MODE,
-    DISABLE_SCALE_MODE,
-    ENABLE_WWWC_MODE,
-    DISABLE_WWWC_MODE,
-    CLEAR_MODE,
+    UPDATE_CURRENT_TOOL,
+    SWITCH_EXAM_INFO,
   } = PlayerStatusActionE;
 
   const switchPan = (position: "left" | "right", show: boolean): void => {
@@ -27,22 +26,13 @@ export default () => {
     if (position === "right") dispatch({ type: show ? SHOW_RIGHT_PAN : HIDDEN_RIGHT_PAN });
   };
 
-  const clearMode = (): void => {
-    dispatch({ type: CLEAR_MODE });
-  };
-  const switchMovingMode = (val: boolean) =>
-    val ? dispatch({ type: ENABLE_MOVING_MODE }) : dispatch({ type: DISABLE_MOVING_MODE });
-  const switchScaleMode = (val: boolean) =>
-    val ? dispatch({ type: ENABLE_SCALE_MODE }) : dispatch({ type: DISABLE_SCALE_MODE });
-  const switchWwwcMode = (val: boolean) =>
-    val ? dispatch({ type: ENABLE_WWWC_MODE }) : dispatch({ type: DISABLE_WWWC_MODE });
+  const switchTool = (name: CstToolNameT) => dispatch({ type: UPDATE_CURRENT_TOOL, payload: name });
+  const switchExamInfo = (val: boolean) => dispatch({ type: SWITCH_EXAM_INFO, payload: val });
 
   return {
     ...status,
     switchPan,
-    switchMovingMode,
-    switchScaleMode,
-    switchWwwcMode,
-    clearMode,
+    switchTool,
+    switchExamInfo,
   };
 };
