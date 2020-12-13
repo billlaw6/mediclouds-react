@@ -1,3 +1,4 @@
+import { CstToolNameT } from "./common";
 import { PlayerSeriesI } from "./series";
 
 export type WindowKeyT = number;

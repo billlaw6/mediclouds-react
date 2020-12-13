@@ -2,9 +2,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { PlayerStatusActionE } from "../../../reducers/playerStatus";
 import { StoreStateI } from "_types/core";
 import { CstToolNameT } from "../types/common";
-import { CST_TOOL_NAMES } from "../Contents";
-import useData from "./useData";
-import useWindows from "./useWindows";
 
 export default () => {
   const status = useSelector<StoreStateI, StoreStateI["playerStatus"]>(

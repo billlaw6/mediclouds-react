@@ -1,18 +1,22 @@
+import { Tabs } from "antd";
 import React, { FunctionComponent, ReactNode, useEffect, useRef, useState } from "react";
-import { CST_TOOL_NAMES } from "_components/Player/Contents";
 import useData from "_components/Player/hooks/useData";
 import useStatus from "_components/Player/hooks/useStatus";
 import useWindows from "_components/Player/hooks/useWindows";
 import { WindowI } from "_components/Player/types/window";
+import AiReports from "../AiReports";
+import Marks from "../Marks";
 import SeriesCard from "../SeriesCard";
 import SidePan from "../SidePan";
 import Win from "../Win";
 
 import "./style.less";
 
+const { TabPane } = Tabs;
+
 const Viewport: FunctionComponent = () => {
   const { playerExamMap, cs, cst } = useData();
-  const { windowsMap, getFocusWindow, updateWindowSeries } = useWindows();
+  const { windowsMap, getFocusWindow, updateWin } = useWindows();
   const { showLeftPan, showRightPan } = useStatus();
 
   const $viewport = useRef<HTMLDivElement>(null);
@@ -79,13 +83,26 @@ const Viewport: FunctionComponent = () => {
             const { data } = focusWindow;
             if (data && data.id === result.id) return;
 
-            updateWindowSeries(focusWindow.key, result);
+            updateWin(focusWindow.key, { data: result });
           }}
         ></SeriesCard>,
       );
     });
 
     return res;
+  };
+
+  const getExtensions = () => {
+    return (
+      <Tabs className="player-extensions">
+        <TabPane className="player-extensions-panel" key="marks" tab="标注">
+          <Marks></Marks>
+        </TabPane>
+        <TabPane className="player-extensions-panel" key="aiReport" tab="AI报告">
+          <AiReports></AiReports>
+        </TabPane>
+      </Tabs>
+    );
   };
 
   const focusWin = getFocusWindow();
@@ -135,7 +152,9 @@ const Viewport: FunctionComponent = () => {
         {getSeriesList()}
       </SidePan>
       <div className="viewport-windows">{getWindows()}</div>
-      <SidePan location="right" show={showRightPan}></SidePan>
+      <SidePan location="right" show={showRightPan}>
+        {getExtensions()}
+      </SidePan>
     </div>
   );
 };

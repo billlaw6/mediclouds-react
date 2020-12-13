@@ -10,6 +10,7 @@ import player from "./player";
 import playerSettings from "./playerSettings";
 import playerStatus from "./playerStatus";
 import playerWindows from "./playerWindows";
+import playerMarks from "./playerMarks";
 
 export default combineReducers({
   resources,
@@ -22,4 +23,5 @@ export default combineReducers({
   playerWindows,
   playerStatus,
   playerSettings,
+  playerMarks,
 });

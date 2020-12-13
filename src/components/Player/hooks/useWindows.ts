@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { StoreStateI } from "_types/core";
 import { PlayerWindowsActionE } from "../types/actions";
-import { PlayerExamPropsI } from "../types/common";
+import { CstToolNameT, PlayerExamPropsI } from "../types/common";
 import { PlayerExamMapT } from "../types/exam";
 import { PlayerSeriesI } from "../types/series";
 import { WindowI, WindowMapT } from "../types/window";
@@ -45,7 +45,40 @@ export default () => {
     const currentWindow = win || getFocusWindow();
     if (!currentWindow || !currentWindow.element) return;
 
-    cs.reset(currentWindow.element);
+    cs.fitToWindow(currentWindow.element);
+  };
+
+  const updateWin = (key: number, winData: any) => {
+    if (!windowsMap) return;
+    const currentWindow = windowsMap.get(key);
+    if (!currentWindow) return;
+
+    const { frame: windowFrame, data: currentSeries, element } = currentWindow;
+    if (!currentSeries) return;
+
+    const nextWindow = Object.assign({}, currentWindow, winData);
+
+    const { data: nextSeries, frame: nextFrame } = winData;
+    if (nextSeries) {
+      const isSameSeries = currentSeries.id === nextSeries.id;
+      nextWindow.data = nextSeries;
+
+      if (!isSameSeries) {
+        if (element) element.hidden = true;
+        /** 如果当前更新的winData内不含frame属性 则更新窗口内的series 将窗口的frame值赋给它 */
+        if (nextFrame === undefined && nextFrame < 0) {
+          nextWindow.frame = nextSeries.frame;
+          const { examKey, key: seriesKey } = currentSeries;
+          updateSeries(examKey, seriesKey, { frame: windowFrame });
+        }
+        resetWindowImage();
+      }
+    }
+
+    dispatch({
+      type: UPDATE_WINDOW,
+      payload: nextWindow,
+    });
   };
 
   /**
@@ -130,6 +163,7 @@ export default () => {
           // isActive: true,
           isFocus: index ? false : true,
           isPlay: false,
+          toolStates: {},
         });
       }
     });
@@ -248,6 +282,7 @@ export default () => {
   return {
     ...windows,
     openWindow,
+    updateWin,
     updateWindow,
     updateWindowSeries,
     updateWins,

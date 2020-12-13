@@ -6,7 +6,7 @@ export type PlayerExamKeyT = number;
 export interface PlayerExamI {
   id: string; // exam id
   key: PlayerExamKeyT; // examMap key
-  patientInfo: PatientExamI;
+  patientInfo?: PatientExamI;
   isActive: boolean;
   data: PlayerSeriesMapT; // Player Series Map
 }

@@ -23,7 +23,6 @@ const Player: FunctionComponent<PlayerPropsI> = (props) => {
     initPlayerExamMap(exams)
       .then((res) => {
         initWindows(exams, res);
-        // generateKeyboard();
         console.log("INIT SUCCESSED");
       })
       .catch((err) => {
@@ -31,10 +30,6 @@ const Player: FunctionComponent<PlayerPropsI> = (props) => {
       });
 
     document.oncontextmenu = () => false;
-
-    return () => {
-      // destoryKeyboard();
-    };
   }, []);
 
   return (

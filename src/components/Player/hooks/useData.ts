@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { StoreStateI } from "_types/core";
 import { setDataToPlayerSeriesMap } from "../helpers";
+import fetchExamList from "../methods/fetchExamList";
 import fetchSeriesList from "../methods/fetchSeriesList";
 import initCornerstone from "../methods/initCornerstone";
 
@@ -107,14 +108,13 @@ export default () => {
 
     const { cs, cst, csImgLoader } = initCornerstone();
 
-    const seriesListRes = await fetchSeriesList(exams);
+    const examListRes = await fetchExamList(exams);
     const _playerExamMap: PlayerExamMapT = new Map();
 
     /** 构建CollectionMap */
     exams.forEach((exam, examIndex) => {
       const { id, active, defaultFrame = 0 } = exam;
-      const currentSeriesList = seriesListRes[examIndex];
-      const { children, ...patientInfo } = currentSeriesList;
+      const { children } = examListRes[examIndex];
       const playerSeriesMap: PlayerSeriesMapT = new Map();
 
       children.forEach((item, seriesIndex) => {
@@ -136,11 +136,14 @@ export default () => {
         key: examIndex,
         isActive: active,
         data: playerSeriesMap,
-        patientInfo,
+        // patientInfo,
       };
 
       _playerExamMap.set(examIndex, playerExam);
     });
+
+    console.log("cs Events", cs.EVENTS);
+    console.log("cst Events", cst.EVENTS);
 
     dispatch({
       type: INIT_PLAYER,
@@ -148,6 +151,7 @@ export default () => {
         cs,
         cst,
         csImgLoader,
+        examList: examListRes,
         playerExamMap: _playerExamMap,
       },
     });

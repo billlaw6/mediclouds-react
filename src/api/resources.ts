@@ -8,7 +8,7 @@ import {
   SeriesMprI,
 } from "_types/api";
 import { ExamIndexListI } from "_types/core";
-import { ImgI, PdfI, ResourcesDelDataI, ResourcesTypeE } from "_types/resources";
+import { ExamIndexI, ImgI, PdfI, ResourcesDelDataI, ResourcesTypeE } from "_types/resources";
 
 /**
  * 上传资源
@@ -50,6 +50,13 @@ export const getExamList = async (
     method: "POST",
     url: `/resources/exam-list/${id}/`,
     data: searchQuery,
+  });
+
+/** 获取某个检查的信息 */
+export const getExam = async (id: string): Promise<ExamIndexI> =>
+  await publicReq({
+    method: "GET",
+    url: `/resources/exam/${id}/`,
   });
 
 /* 获取序列列表 */

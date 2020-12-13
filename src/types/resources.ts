@@ -1,3 +1,5 @@
+import { SeriesI } from "./api";
+
 export enum ResourcesActionE {
   GET_EXAM_LIST = "get_exam_list", // 获取检查列表
   DEL_EXAM_LIST = "del_exam_list", // 删除检查列表
@@ -50,6 +52,7 @@ export interface ExamIndexI {
   desc: string;
   study_date: string;
   lung_nodule_flag: 0 | 1; // 是否可以做肺结节筛查 0:N 1:Y
+  children: SeriesI[];
 }
 
 /* pdf结构 */

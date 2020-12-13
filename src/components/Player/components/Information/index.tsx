@@ -7,10 +7,13 @@ import "./style.less";
 
 interface InformatinPropsI {
   win: WindowI;
+  viewport: any;
 }
 
 const Information: FunctionComponent<InformatinPropsI> = (props) => {
-  const { win } = props;
+  const { win, viewport } = props;
+  if (!win || !viewport) return null;
+
   const { data: playerSeries, frame } = win;
   if (!playerSeries) return null;
   const { cache } = playerSeries;
@@ -25,6 +28,16 @@ const Information: FunctionComponent<InformatinPropsI> = (props) => {
     <section className="player-info">
       <InfoItem data={dicomInfo.study}></InfoItem>
       <InfoItem data={dicomInfo.patient} position="tr"></InfoItem>
+      <InfoItem
+        data={{
+          frame: `image: ${frame + 1}/${cache.length}`,
+          zoom: `zoom: ${Math.round(viewport.scale * 100) / 100}`,
+          wwwc: `WW:${Math.round(viewport.voi.windowWidth)} WL:${Math.round(
+            viewport.voi.windowCenter,
+          )}`,
+        }}
+        position="bl"
+      ></InfoItem>
     </section>
   );
 };

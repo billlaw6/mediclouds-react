@@ -11,12 +11,10 @@ import {
   QuestionCircleOutlined,
   UndoOutlined,
   ZoomInOutlined,
-  EyeOutlined,
   EyeInvisibleOutlined,
 } from "@ant-design/icons";
 import { Modal } from "antd";
-import React, { FunctionComponent } from "react";
-import { CST_TOOL_NAMES } from "_components/Player/Contents";
+import React, { FunctionComponent, useEffect } from "react";
 import useData from "_components/Player/hooks/useData";
 import useStatus from "_components/Player/hooks/useStatus";
 import useWindows from "_components/Player/hooks/useWindows";
@@ -27,7 +25,7 @@ import ToolsItem from "./Item";
 import "./style.less";
 
 const Tools: FunctionComponent = () => {
-  const { cst } = useData();
+  const { cst, playerExamMap } = useData();
   const { getFocusWindow, pause, play, next, prev, resetWindowImage } = useWindows();
   const {
     showLeftPan,
@@ -56,6 +54,30 @@ const Tools: FunctionComponent = () => {
       switchTool(name);
     }
   };
+
+  const onKeypress = (e: KeyboardEvent) => {
+    switch (e.code) {
+      case "KeyX":
+        switchToolInToolbar("Pan", !isActiveMode("Pan"));
+        break;
+      case "KeyZ":
+        switchToolInToolbar("Zoom", !isActiveMode("Zoom"));
+        break;
+      case "KeyC":
+        switchToolInToolbar("Wwwc", !isActiveMode("Wwwc"));
+        break;
+      default:
+        break;
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("keypress", onKeypress);
+
+    return () => {
+      document.removeEventListener("keypress", onKeypress);
+    };
+  }, [cst, element, currentToolName]);
 
   return (
     <div id="tools" className="tools">
@@ -160,14 +182,10 @@ const Tools: FunctionComponent = () => {
                     <li>方向键（右）：下一个图像</li>
                     <li>鼠标滚轮： 上一个/下一个图像</li>
 
-                    <li>按住Z键 + 鼠标上下拖动：缩放图像</li>
-                    <li>按住鼠标左键上下拖动：缩放图像</li>
-                    <li>按住X键： 移动图像</li>
-                    <li>按住鼠标中键： 移动图像</li>
-                    <li>按住C键： 调窗</li>
-                    <li>按住鼠标右键： 调窗</li>
-
-                    <li>R键：还原</li>
+                    <li>缩放图像：Z键/按住鼠标左键上下拖动</li>
+                    <li>移动图像：X键/按住鼠标中键</li>
+                    <li>调窗: C键/按住鼠标右键</li>
+                    <li>还原：R键</li>
                   </ul>
                 ),
               });

@@ -7,9 +7,10 @@ import useStatus from "_components/Player/hooks/useStatus";
 import useWindows from "_components/Player/hooks/useWindows";
 import { WindowI } from "_components/Player/types/window";
 
-import Information from "../Information";
 import useMouse from "_components/Player/hooks/useMouse";
+import useMarks from "_components/Player/hooks/useMarks";
 
+import Information from "../Information";
 import "./style.less";
 interface WinPropsI {
   data: WindowI;
@@ -19,13 +20,14 @@ interface WinPropsI {
 const Win: FunctionComponent<WinPropsI> = (props) => {
   const { data: win, viewportWidth } = props;
 
-  const { data: playerSeries, isFocus, isPlay, element, key, frame } = win;
+  const { data: playerSeries, isFocus, isPlay, element, key, frame, toolStates } = win;
   const { cs, cst, cacheSeries, updateSeries } = useData();
+  const { addMark, updateMark } = useMarks();
 
-  const [cstStateManager, setCstStateManager] = useState<any>();
+  const [viewport, setViewport] = useState<any>(); // current viewport
 
   const {
-    updateWindow,
+    updateWin,
     next,
     prev,
     nextSeries,
@@ -48,11 +50,11 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
 
   const $window = useRef<HTMLDivElement>(null);
 
-  const onCache = async (): Promise<void> => {
+  const onCache = async (): Promise<boolean> => {
     // 缓存当前窗口内的序列
-    if (!playerSeries) return;
+    if (!playerSeries) return false;
     const { cache, progress, examKey, key } = playerSeries;
-    if (cache && progress === 100) return;
+    if (cache && progress === 100) return false;
 
     try {
       const cacheRes = await cacheSeries({
@@ -63,6 +65,7 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
       });
 
       updateSeries(examKey, key, { progress: 100, cache: cacheRes });
+      return true;
     } catch (error) {
       throw new Error(error);
     }
@@ -79,6 +82,10 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
       default:
         return "default";
     }
+  };
+
+  const onMouseMove = (e: MouseEvent) => {
+    console.log("mouse move");
   };
 
   const onMousedown = (e: MouseEvent): void => {
@@ -107,7 +114,7 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
     }
   };
   const onMouseup = () => {
-    if (!mouseNum) return;
+    if (!mouseNum && currentToolName) return;
 
     cst.setToolPassiveForElement(element, currentToolName);
     switchTool("");
@@ -120,18 +127,6 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
     const { code } = e;
 
     switch (code) {
-      case "KeyX":
-        cst.setToolActiveForElement(element, "Pan", { mouseButtonMask: 1 });
-        switchTool("Pan");
-        break;
-      case "KeyZ":
-        cst.setToolActiveForElement(element, "Zoom", { mouseButtonMask: 1 });
-        switchTool("Zoom");
-        break;
-      case "KeyC":
-        cst.setToolActiveForElement(element, "Wwwc", { mouseButtonMask: 1 });
-        switchTool("Wwwc");
-        break;
       case "KeyR":
         resetWindowImage();
         break;
@@ -157,41 +152,60 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
     }
   };
 
-  const onKeyup = () => {
-    if (currentToolName) {
-      cst.setToolPassiveForElement(element, currentToolName);
-
-      switchTool("");
-    }
-  };
-
   const draw = (): void => {
     if (!playerSeries || !element) return;
     const { cache, frame: frameInSeries } = playerSeries;
     if (!cache) return;
 
-    console.log("draw");
     const index = frame > -1 ? frame : frameInSeries;
     const currentImg = cache[index];
 
-    cs.displayImage(element, currentImg);
+    cs.displayImage(element, currentImg, cs.getDefaultViewportForImage(element, currentImg));
+  };
+
+  const onMouseDrag = (e: any) => {
+    setViewport(e.detail.viewport);
+  };
+
+  const onMeasureRemove = (e: any) => {
+    cs && cs.updateImage(e.detail.element);
+  };
+  const onMeasureAdded = (e: any) => {
+    const { toolName, measurementData } = e.detail;
+
+    addMark(toolName, measurementData);
+  };
+
+  const onMeasureUpdate = (e: any): void => {
+    if (!playerSeries) return;
+    const { examKey, key } = playerSeries;
+    const { toolName, measurementData } = e.detail;
+
+    updateMark(toolName, {
+      examKey,
+      seriesKey: key,
+      frame,
+      data: Object.assign({}, measurementData),
+    });
   };
 
   useEffect(() => {
     document.addEventListener("keydown", onKeydown);
-    document.addEventListener("keyup", onKeyup);
+    // document.addEventListener("keyup", onKeyup);
 
     // 初始化在cs上启用窗口 并将当前窗口的HTML元素更新到当前窗口数据内
     if (cs && cst && $window.current && !element) {
       cs.enable($window.current);
-      setCstStateManager(cst.getElementToolStateManager($window.current));
+      updateWin(key, { element: $window.current });
 
-      updateWindow(key, { element: $window.current });
+      $window.current.addEventListener("cornerstonetoolsmousedrag", onMouseDrag);
+      $window.current.addEventListener("cornerstonetoolsmeasurementremoved", onMeasureRemove);
+      $window.current.addEventListener("cornerstonetoolsmeasurementmodified", onMeasureUpdate);
+      $window.current.addEventListener("cornerstonetoolsmeasurementcompleted", onMeasureAdded);
     }
 
     return () => {
       document.removeEventListener("keydown", onKeydown);
-      document.removeEventListener("keyup", onKeyup);
     };
   }, [cs, cst, element]);
 
@@ -206,12 +220,11 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
     // 当当前的窗口数据改变时，重新渲染窗口
     if (!element) return;
 
-    cstStateManager && console.log("cstStateManager.get(element);", cstStateManager.get(element));
-
     onCache()
-      .then(() => {
+      .then((reset) => {
         if (element.hidden) element.hidden = false;
         draw();
+        setViewport(cs.getViewport(element));
       })
       .catch((err) => console.error(err));
   }, [element, playerSeries, frame, isFocus]);
@@ -250,7 +263,7 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
           disabled={onLoading}
           {...sliderProps}
           onChange={(val: number): void => {
-            updateWindow(key, { frame: val });
+            updateWin(key, { frame: val });
           }}
         ></Slider>
       )}
@@ -269,7 +282,7 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
         style={{ cursor: getCursor() }}
         ref={$window}
       >
-        {showExamInfo ? <Information win={win}></Information> : null}
+        {showExamInfo ? <Information viewport={viewport} win={win}></Information> : null}
       </div>
     </div>
   );
