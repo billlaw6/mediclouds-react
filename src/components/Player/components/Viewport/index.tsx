@@ -148,7 +148,7 @@ const Viewport: FunctionComponent = () => {
 
   return (
     <div id="viewport" ref={$viewport}>
-      <SidePan location="left" show={showLeftPan}>
+      <SidePan location="left" show={showLeftPan} isScroll>
         {getSeriesList()}
       </SidePan>
       <div className="viewport-windows">{getWindows()}</div>

@@ -1,4 +1,4 @@
-import { Button, List } from "antd";
+import { Button, List, Input } from "antd";
 import React, { FunctionComponent } from "react";
 import useMarks from "_components/Player/hooks/useMarks";
 import useWindows from "_components/Player/hooks/useWindows";
@@ -9,7 +9,7 @@ const { Item: ListItem } = List;
 
 const Marks: FunctionComponent = (props) => {
   const { getFocusWindow } = useWindows();
-  const { Length = [], delMark, selectedMark } = useMarks();
+  const { Length = [], delMark, selectedMark, updateMark } = useMarks();
 
   const getMarks = () => {
     const currentWin = getFocusWindow();
@@ -20,7 +20,8 @@ const Marks: FunctionComponent = (props) => {
     const renderList = Length.filter((item) => item.examKey === examKey);
 
     return renderList.map((item, index) => {
-      const { length, unit, active } = item.data;
+      const { desc, data } = item;
+      const { length, unit, active } = data;
 
       return (
         <ListItem
@@ -31,6 +32,7 @@ const Marks: FunctionComponent = (props) => {
           }}
           actions={[
             <Button
+              size="small"
               key={`marks_del_btn_${index}`}
               danger
               onClick={(): void => {
@@ -42,7 +44,22 @@ const Marks: FunctionComponent = (props) => {
           ]}
         >
           <ListItem.Meta
-            title={index}
+            avatar={<div>{index}</div>}
+            title={
+              <Input
+                bordered={false}
+                value={desc}
+                placeholder="请输入备注"
+                onInput={(e): void => {
+                  updateMark(
+                    "Length",
+                    Object.assign({}, item, {
+                      desc: e.currentTarget.value,
+                    }),
+                  );
+                }}
+              ></Input>
+            }
             description={`${Math.round(length * 100) / 100}${unit}`}
           ></ListItem.Meta>
         </ListItem>

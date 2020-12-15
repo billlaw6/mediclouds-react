@@ -4,6 +4,7 @@ export enum PlayerActionE {
   UPDATE_PLAYER = "update_player", // 更新任意值
   INIT_CORNERSTONE = "init_cornerstone", // 初始化全局cornerstone
   UPDATE_PLAYER_EXAM_MAP = "update_player_exam_map", // 更新检查映射集合
+  UPDATE_CURRENT_LUNG_NODULES_REPORT = "update_current_lung_nodules_report", // 更新当前的肺结节AI筛查数据
 }
 
 /* 窗口动作 */

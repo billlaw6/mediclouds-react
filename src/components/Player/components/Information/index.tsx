@@ -38,6 +38,13 @@ const Information: FunctionComponent<InformatinPropsI> = (props) => {
         }}
         position="bl"
       ></InfoItem>
+      <InfoItem
+        data={{
+          thickness: `ST: ${dicomInfo.series.thickness ? `${dicomInfo.series.thickness}mm` : "NA"}`,
+          sliceLocation: `SL: ${dicomInfo.series.location || "NA"}`,
+        }}
+        position="br"
+      ></InfoItem>
     </section>
   );
 };

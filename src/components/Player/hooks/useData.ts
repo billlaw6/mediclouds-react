@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
+import { LungNoduleReportI } from "_types/ai";
 import { StoreStateI } from "_types/core";
 import { setDataToPlayerSeriesMap } from "../helpers";
 import fetchExamList from "../methods/fetchExamList";
@@ -10,7 +11,12 @@ import { PlayerExamPropsI } from "../types/common";
 import { PlayerExamI, PlayerExamMapT } from "../types/exam";
 import { PlayerSeriesI, PlayerSeriesMapT } from "../types/series";
 
-const { UPDATE_PLAYER, INIT_PLAYER, UPDATE_PLAYER_EXAM_MAP } = PlayerActionE;
+const {
+  UPDATE_PLAYER,
+  INIT_PLAYER,
+  UPDATE_PLAYER_EXAM_MAP,
+  UPDATE_CURRENT_LUNG_NODULES_REPORT,
+} = PlayerActionE;
 
 interface CachePropsI {
   data?: PlayerSeriesI;
@@ -227,6 +233,10 @@ export default () => {
     updatePlayerExamMap(nextPlayerExamMap);
   };
 
+  const updateLungNodulesReport = (report?: LungNoduleReportI): void => {
+    dispatch({ type: UPDATE_CURRENT_LUNG_NODULES_REPORT, payload: report });
+  };
+
   return {
     ...playerReducerData,
     fetchSeriesList,
@@ -238,5 +248,6 @@ export default () => {
     initPlayerExamMap,
     getPlayerSeries,
     getPlayerSeriesById,
+    updateLungNodulesReport,
   };
 };

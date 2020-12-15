@@ -14,10 +14,11 @@ interface SidePanPropsI {
   triggerHeight?: number | string; // 触发器的高度
   show?: boolean; // 是否展开
   header?: ReactNode; // 头部
+  isScroll?: boolean; // 是否启用滚动
 }
 
 const SidePan: FunctionComponent<SidePanPropsI> = (props) => {
-  const { className, location = "left", children, show, header } = props;
+  const { className, location = "left", children, show, header, isScroll } = props;
 
   const getClassName = (): string => {
     let res = "side-pan";
@@ -35,9 +36,13 @@ const SidePan: FunctionComponent<SidePanPropsI> = (props) => {
     <div className={getClassName()}>
       {header}
       <div className="side-pan-scrollbar">
-        <Scrollbars autoHide>
+        {isScroll ? (
+          <Scrollbars autoHide>
+            <div className="side-pan-content">{children}</div>
+          </Scrollbars>
+        ) : (
           <div className="side-pan-content">{children}</div>
-        </Scrollbars>
+        )}
       </div>
     </div>
   );

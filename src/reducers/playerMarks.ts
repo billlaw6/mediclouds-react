@@ -41,16 +41,13 @@ const playerMarksReducer: Reducer<
       if (!payload) return state;
       const { toolName, nextMark } = payload as PlayerMarksUpdateMarkPayloadI;
       const currentMarks = state[toolName] || [];
-      const targetMark = currentMarks.find((item) => item.data.uuid === nextMark.data.uuid);
-      if (!targetMark) return state;
-      const { data, examKey } = targetMark;
+      const nextMarks = currentMarks.map((mark) => {
+        if (mark.data.uuid === nextMark.data.uuid) return Object.assign({}, mark, nextMark);
+        return mark;
+      });
+
       return Object.assign({}, state, {
-        [toolName]: state[toolName].filter((item) => {
-          if (item.examKey === examKey) {
-            if (data.uuid === nextMark.data.uuid) return nextMark;
-            else return item;
-          }
-        }),
+        [toolName]: nextMarks,
       });
     }
     case PlayerMarksActionE.ACTIVE_MARK: {

@@ -7,7 +7,7 @@ import useWindows from "./useWindows";
 export default () => {
   const marks = useSelector<StoreStateI, StoreStateI["playerMarks"]>((state) => state.playerMarks);
   const dispatch = useDispatch();
-  const { cst, getPlayerSeries } = useData();
+  const { cs, cst, getPlayerSeries } = useData();
   const { getFocusWindow, updateWin, windowsMap } = useWindows();
 
   const getState = (toolName: string) => marks[toolName];
@@ -34,18 +34,36 @@ export default () => {
   };
 
   const delMark = (toolName: string, toolStateData: any): void => {
-    if (!cst) return;
+    if (!cst || !cs) return;
     const currentWindow = getFocusWindow();
     if (!currentWindow) return;
     const { element, data: playerSeries } = currentWindow;
     if (!element || !playerSeries || !playerSeries.cache) return;
 
     cst.removeToolState(element, toolName, toolStateData);
+    cs.updateImage(element);
     dispatch({
       type: PlayerMarksActionE.DEL_MARK,
       payload: {
         toolName,
         id: toolStateData.uuid,
+      },
+    });
+  };
+
+  const updateMarkByData = (toolName: string, toolStateData: any): void => {
+    const { uuid } = toolStateData;
+    const currentMarks = getState(toolName) || [];
+    const currentMark = currentMarks.find((item) => item.data.uuid === uuid);
+    if (!currentMark) return;
+
+    dispatch({
+      type: PlayerMarksActionE.UPDATE_MARK,
+      payload: {
+        toolName,
+        nextMark: Object.assign({}, currentMark, {
+          data: toolStateData,
+        }),
       },
     });
   };
@@ -85,6 +103,7 @@ export default () => {
     addMark,
     delMark,
     updateMark,
+    updateMarkByData,
     selectedMark,
   };
 };

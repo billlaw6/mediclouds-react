@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useRef, useState } from "react";
+import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from "react";
 import { Progress, Slider } from "antd";
 import { SliderSingleProps } from "antd/lib/slider";
 
@@ -9,6 +9,7 @@ import { WindowI } from "_components/Player/types/window";
 
 import useMouse from "_components/Player/hooks/useMouse";
 import useMarks from "_components/Player/hooks/useMarks";
+import { drawCircle } from "_components/Player/helpers";
 
 import Information from "../Information";
 import "./style.less";
@@ -17,12 +18,14 @@ interface WinPropsI {
   viewportWidth: number; // viewport宽度
 }
 
+let tempSeriesId = ""; // 是否与缓存的id不同
+
 const Win: FunctionComponent<WinPropsI> = (props) => {
   const { data: win, viewportWidth } = props;
 
-  const { data: playerSeries, isFocus, isPlay, element, key, frame, toolStates } = win;
-  const { cs, cst, cacheSeries, updateSeries } = useData();
-  const { addMark, updateMark } = useMarks();
+  const { data: playerSeries, isFocus, isPlay, element, key, frame } = win;
+  const { cs, cst, cacheSeries, updateSeries, lungNoduleReport } = useData();
+  const { addMark, updateMarkByData, Length = [] } = useMarks();
 
   const [viewport, setViewport] = useState<any>(); // current viewport
 
@@ -47,6 +50,7 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
   const { updateMouseNum } = useMouse();
 
   const [loadingProgress, setLoadingProgress] = useState(-1); // 当前窗口加载进度
+  const [toolState, setToolState] = useState<{ toolName: string; data: any }>(); // 当前的toolstate
 
   const $window = useRef<HTMLDivElement>(null);
 
@@ -154,13 +158,18 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
 
   const draw = (): void => {
     if (!playerSeries || !element) return;
-    const { cache, frame: frameInSeries } = playerSeries;
+    const { cache, frame: frameInSeries, id } = playerSeries;
     if (!cache) return;
 
     const index = frame > -1 ? frame : frameInSeries;
     const currentImg = cache[index];
 
-    cs.displayImage(element, currentImg, cs.getDefaultViewportForImage(element, currentImg));
+    if (tempSeriesId !== id) {
+      cs.displayImage(element, currentImg, cs.getDefaultViewportForImage(element, currentImg));
+      tempSeriesId = id;
+    } else {
+      cs.displayImage(element, currentImg, viewport);
+    }
   };
 
   const onMouseDrag = (e: any) => {
@@ -177,17 +186,27 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
   };
 
   const onMeasureUpdate = (e: any): void => {
-    if (!playerSeries) return;
-    const { examKey, key } = playerSeries;
     const { toolName, measurementData } = e.detail;
 
-    updateMark(toolName, {
-      examKey,
-      seriesKey: key,
-      frame,
-      data: Object.assign({}, measurementData),
-    });
+    setToolState({ toolName, data: measurementData });
   };
+
+  const onImageRendered = useCallback(
+    (e: any) => {
+      if (!lungNoduleReport) return;
+      const { nodule_details } = lungNoduleReport;
+      if (!nodule_details) return;
+
+      nodule_details.forEach((nodule) => {
+        const { disp_z, img_x, img_y, rad_pixel } = nodule;
+        if (win.frame === disp_z) {
+          const ctx = e.detail.canvasContext;
+          drawCircle(ctx, img_x, img_y, Math.max(6, rad_pixel + 2));
+        }
+      });
+    },
+    [lungNoduleReport, win.frame],
+  );
 
   useEffect(() => {
     document.addEventListener("keydown", onKeydown);
@@ -197,17 +216,25 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
     if (cs && cst && $window.current && !element) {
       cs.enable($window.current);
       updateWin(key, { element: $window.current });
+    }
 
-      $window.current.addEventListener("cornerstonetoolsmousedrag", onMouseDrag);
-      $window.current.addEventListener("cornerstonetoolsmeasurementremoved", onMeasureRemove);
-      $window.current.addEventListener("cornerstonetoolsmeasurementmodified", onMeasureUpdate);
-      $window.current.addEventListener("cornerstonetoolsmeasurementcompleted", onMeasureAdded);
+    if (element) {
+      element.addEventListener("cornerstoneimagerendered", onImageRendered);
+      element.addEventListener("cornerstonetoolsmeasurementremoved", onMeasureRemove);
+      element.addEventListener("cornerstonetoolsmeasurementmodified", onMeasureUpdate);
+      element.addEventListener("cornerstonetoolsmeasurementcompleted", onMeasureAdded);
     }
 
     return () => {
       document.removeEventListener("keydown", onKeydown);
+      if (element) {
+        element.removeEventListener("cornerstoneimagerendered", onImageRendered);
+        element.removeEventListener("cornerstonetoolsmeasurementremoved", onMeasureRemove);
+        element.removeEventListener("cornerstonetoolsmeasurementmodified", onMeasureUpdate);
+        element.removeEventListener("cornerstonetoolsmeasurementcompleted", onMeasureAdded);
+      }
     };
-  }, [cs, cst, element]);
+  }, [cs, cst, element, Length, onImageRendered]);
 
   useEffect(() => {
     // 当显示左右侧边栏时，以新尺寸重新渲染窗口
@@ -224,10 +251,30 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
       .then((reset) => {
         if (element.hidden) element.hidden = false;
         draw();
-        setViewport(cs.getViewport(element));
+
+        const currentViewport = cs.getViewport(element);
+        const currentElementData = cs.getEnabledElement(element);
+
+        const canvas = element.querySelector("canvas");
+        if (canvas) {
+          const ctx = canvas.getContext("2d");
+          if (ctx) {
+            drawCircle(ctx, 200, 200, 50);
+          }
+        }
+
+        setViewport(currentViewport);
       })
       .catch((err) => console.error(err));
   }, [element, playerSeries, frame, isFocus]);
+
+  useEffect(() => {
+    if (!toolState) return;
+
+    const { toolName, data } = toolState;
+
+    updateMarkByData(toolName, data);
+  }, [toolState]);
 
   const width = viewportWidth - (showLeftPan ? 300 : 0) - (showRightPan ? 300 : 0);
 

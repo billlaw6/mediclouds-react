@@ -147,6 +147,11 @@ export const getInfoByDicom = (img: any) => {
   const { data } = img;
 
   return {
+    core: {
+      pixelData: data.attributeTag("x7fe00010"),
+      rescaleIntercept: data.string("x00281052"),
+      rescaleSlope: data.string("x00281053"),
+    },
     // 检查信息
     study: {
       id: data.string("x00200010"), // 检查id
@@ -160,7 +165,8 @@ export const getInfoByDicom = (img: any) => {
       id: data.string("x0020000E"), // series id
       position: data.string("x00200032"), // 图像位置
       orientation: data.string("x00200037"), // 图像方位
-      thickness: data.string("00180050"), // 层厚
+      thickness: data.string("x00180050"), // 层厚
+      location: data.string("x00201041"), // 切片位置
     },
     /** 患者信息 */
     patient: {
@@ -175,4 +181,15 @@ export const getInfoByDicom = (img: any) => {
       name: data.string("x00080080"), // 机构名称
     },
   };
+};
+
+/** 绘制园形 */
+export const drawCircle = (ctx: any, x: number, y: number, r: number): void => {
+  ctx.save();
+  ctx.beginPath();
+  ctx.strokeStyle = "red";
+  ctx.lineWidth = 1;
+  ctx.arc(x, y, r, 0, 2 * Math.PI);
+  ctx.stroke();
+  ctx.restore();
 };

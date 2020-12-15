@@ -2,6 +2,7 @@ declare module "*.mp4";
 declare module "*.pdf";
 declare module "cornerstone-core";
 declare module "cornerstone-tools";
+declare module "cornerstone-tools/util/drawing";
 declare module "cornerstone-math";
 declare module "cornerstone-math";
 declare module "cornerstone-wado-image-loader";

@@ -45,34 +45,49 @@ export default () => {
     const currentWindow = win || getFocusWindow();
     if (!currentWindow || !currentWindow.element) return;
 
-    cs.fitToWindow(currentWindow.element);
+    // cs.fitToWindow(currentWindow.element);
+    cs.reset(currentWindow.element);
   };
 
-  const updateWin = (key: number, winData: any) => {
+  /**
+   * 更新当前窗口的信息
+   *
+   * 如果有序列，并且是新序列
+   *  - 将当前窗口的frame值赋给旧序列，并更新
+   *  - 将新序列的frame值赋给当前窗口
+   *
+   * @param key window的key值
+   * @param winData 将更新的值
+   */
+  const updateWin = (key: number, winData: any): void => {
     if (!windowsMap) return;
     const currentWindow = windowsMap.get(key);
     if (!currentWindow) return;
 
-    const { frame: windowFrame, data: currentSeries, element } = currentWindow;
-    if (!currentSeries) return;
+    const { data: nextSeries, frame: nextFrame, ...others } = winData;
+    const hasNewFrame = nextFrame !== undefined && nextFrame > -1;
 
-    const nextWindow = Object.assign({}, currentWindow, winData);
+    const nextWindow = Object.assign({}, currentWindow, { ...others });
 
-    const { data: nextSeries, frame: nextFrame } = winData;
     if (nextSeries) {
-      const isSameSeries = currentSeries.id === nextSeries.id;
+      const { data: currentSeries, frame: currentFrame, element } = currentWindow;
+      const isSameSeries = currentSeries && currentSeries.id === nextSeries.id;
       nextWindow.data = nextSeries;
 
-      if (!isSameSeries) {
+      if (isSameSeries) {
+        if (hasNewFrame) nextWindow.frame = nextFrame;
+      } else {
         if (element) element.hidden = true;
-        /** 如果当前更新的winData内不含frame属性 则更新窗口内的series 将窗口的frame值赋给它 */
-        if (nextFrame === undefined && nextFrame < 0) {
-          nextWindow.frame = nextSeries.frame;
-          const { examKey, key: seriesKey } = currentSeries;
-          updateSeries(examKey, seriesKey, { frame: windowFrame });
-        }
+        /** 更新旧序列的frame */
+        if (currentSeries)
+          updateSeries(currentSeries.examKey, currentSeries.key, { frame: currentFrame });
+        if (hasNewFrame) nextWindow.frame = nextFrame;
+        else nextWindow.frame = (nextSeries as PlayerSeriesI).frame;
+
         resetWindowImage();
       }
+    } else {
+      if (hasNewFrame) nextWindow.frame = nextFrame;
     }
 
     dispatch({
