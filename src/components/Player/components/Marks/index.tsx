@@ -1,11 +1,9 @@
-import { Button, List, Input } from "antd";
+import { Button, Input } from "antd";
 import React, { FunctionComponent } from "react";
 import useMarks from "_components/Player/hooks/useMarks";
 import useWindows from "_components/Player/hooks/useWindows";
 
 import "./style.less";
-
-const { Item: ListItem } = List;
 
 const Marks: FunctionComponent = (props) => {
   const { getFocusWindow } = useWindows();
@@ -20,32 +18,21 @@ const Marks: FunctionComponent = (props) => {
     const renderList = Length.filter((item) => item.examKey === examKey);
 
     return renderList.map((item, index) => {
-      const { desc, data } = item;
+      const { desc, data, examKey, seriesKey, frame } = item;
       const { length, unit, active } = data;
 
       return (
-        <ListItem
+        <li
           className={`player-marks-item${active ? " active" : ""}`}
           key={`marks-${index}`}
           onClick={(): void => {
             selectedMark("Length", item);
           }}
-          actions={[
-            <Button
-              size="small"
-              key={`marks_del_btn_${index}`}
-              danger
-              onClick={(): void => {
-                delMark("Length", item.data);
-              }}
-            >
-              删除
-            </Button>,
-          ]}
         >
-          <ListItem.Meta
-            avatar={<div>{index}</div>}
-            title={
+          <div className="player-marks-item-content">
+            <span className="player-marks-item-index">{index}.</span>
+            <div className="player-marks-item-content-value">
+              <span>{`${Math.round(length * 100) / 100}${unit}`}</span>
               <Input
                 bordered={false}
                 value={desc}
@@ -59,17 +46,29 @@ const Marks: FunctionComponent = (props) => {
                   );
                 }}
               ></Input>
-            }
-            description={`${Math.round(length * 100) / 100}${unit}`}
-          ></ListItem.Meta>
-        </ListItem>
+            </div>
+            <Button
+              size="small"
+              key={`marks_del_btn_${index}`}
+              danger
+              onClick={(): void => {
+                delMark("Length", item.data);
+              }}
+            >
+              删除
+            </Button>
+          </div>
+          <div className="player-marks-item-info">
+            {`检查: ${examKey} 序列: ${seriesKey} 帧: ${frame}`}
+          </div>
+        </li>
       );
     });
   };
 
   return (
     <section className="player-marks">
-      <List itemLayout="horizontal">{getMarks()}</List>
+      <ul className="player-marks-list">{getMarks()}</ul>
     </section>
   );
 };

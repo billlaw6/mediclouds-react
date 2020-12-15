@@ -231,10 +231,9 @@ export default () => {
     const { cache = [] } = playerSeries;
     const nextFrame = Math.min(cache.length - 1, frameInWindow + 1);
 
-    const nextWin: any = { frame: nextFrame };
     if (isPlay && nextFrame >= cache.length - 1) pause(currentWindow);
 
-    updateWindow(currentWindow.key, nextWin);
+    updateWin(currentWindow.key, { frame: nextFrame });
   };
 
   const play = (): void => {
@@ -265,7 +264,7 @@ export default () => {
     const nextFrame = Math.max(0, frameInWindow - 1);
 
     if (isPlay) pause(currentWindow);
-    updateWindow(currentWindow.key, { frame: nextFrame });
+    updateWin(currentWindow.key, { frame: nextFrame });
   };
 
   const nextSeries = (win?: WindowI): void => {
@@ -278,7 +277,7 @@ export default () => {
     if (!_nextSeries) return;
 
     if (isPlay) pause(currentWindow);
-    updateWindowSeries(currentWindow.key, _nextSeries);
+    updateWin(currentWindow.key, { data: _nextSeries });
   };
 
   const prevSeries = (win?: WindowI): void => {
@@ -291,7 +290,7 @@ export default () => {
     if (!_nextSeries) return;
 
     if (isPlay) pause(currentWindow);
-    updateWindowSeries(currentWindow.key, _nextSeries);
+    updateWin(currentWindow.key, { data: _nextSeries });
   };
 
   return {

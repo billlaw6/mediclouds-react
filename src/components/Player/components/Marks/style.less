@@ -1,12 +1,63 @@
 .player-marks {
+  &-list {
+    margin: 0;
+    padding: 0;
+  }
+
   &-item {
+    display: flex;
+    flex-direction: column;
     cursor: pointer;
-    padding: 0 1rem;
+    list-style: none;
+    padding: 1rem;
+    transition: all 200ms;
+    border-bottom: 1px solid #f1f1f1;
+
     &:hover {
-      background-color: rgb(233, 233, 233);
+      transition: all 200ms;
+      background-color: #f1f1f1;
     }
+
     &.active {
-      background-color: rgb(214, 214, 214);
+      transition: all 200ms;
+      background-color: #6ca5d4;
+    }
+
+    &-index {
+      color: #7e7e7e;
+      margin-right: 0.4rem;
+    }
+
+    &-info,
+    &-content {
+      display: flex;
+    }
+
+    &-content {
+      &-value {
+        span {
+          font-size: 1.25rem;
+        }
+        input {
+          color: #707070;
+          padding: 0;
+        }
+      }
+    }
+    &-info {
+      font-size: 1rem;
+      color: #aaaaaa;
     }
   }
+
+  // &-item {
+  //   cursor: pointer;
+  //   padding: 0 1rem;
+  //   &:hover {
+  //     background-color: rgb(233, 233, 233);
+  //   }
+  //   &.active {
+  //     background-color: rgb(214, 214, 214);
+  //   }
+  // }
 }

@@ -5,11 +5,24 @@ import { QueryDataI } from "./type";
 
 const PlayerPage: FunctionComponent = () => {
   /** 获取url中的query */
-  const { exam: id, series: originSeriesId, frame: originImgIndex = 0 } = useUrlQuery<QueryDataI>();
+  const {
+    exam: id,
+    series: originSeriesId,
+    frame: originImgIndex = 0,
+    lungnodule,
+  } = useUrlQuery<QueryDataI>();
 
   return (
     <Player
-      exams={[{ id, defaultFrame: originImgIndex, defaultSeriesId: originSeriesId, active: true }]}
+      exams={[
+        {
+          id,
+          defaultFrame: parseInt(originImgIndex, 10),
+          defaultSeriesId: originSeriesId,
+          active: true,
+          defaultLungNodule: !!lungnodule,
+        },
+      ]}
     ></Player>
   );
 };

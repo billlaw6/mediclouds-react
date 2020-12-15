@@ -3,6 +3,7 @@ import { LungNoduleReportI } from "_types/ai";
 import { StoreStateI } from "_types/core";
 import { setDataToPlayerSeriesMap } from "../helpers";
 import fetchExamList from "../methods/fetchExamList";
+import fetchLungNoduleReport from "../methods/fetchLungNoduleReport";
 import fetchSeriesList from "../methods/fetchSeriesList";
 import initCornerstone from "../methods/initCornerstone";
 
@@ -14,6 +15,7 @@ import { PlayerSeriesI, PlayerSeriesMapT } from "../types/series";
 const {
   UPDATE_PLAYER,
   INIT_PLAYER,
+  INIT_LUNG_NODULE_REPORT,
   UPDATE_PLAYER_EXAM_MAP,
   UPDATE_CURRENT_LUNG_NODULES_REPORT,
 } = PlayerActionE;
@@ -148,9 +150,6 @@ export default () => {
       _playerExamMap.set(examIndex, playerExam);
     });
 
-    console.log("cs Events", cs.EVENTS);
-    console.log("cst Events", cst.EVENTS);
-
     dispatch({
       type: INIT_PLAYER,
       payload: {
@@ -163,6 +162,16 @@ export default () => {
     });
 
     return _playerExamMap;
+  };
+
+  /** 初始化肺结节筛查报告 */
+  const initLungNoduleMap = async (exams: PlayerExamPropsI[]): Promise<void> => {
+    const lungNoduleReportMap = await fetchLungNoduleReport(
+      exams.filter((item) => !!item.defaultLungNodule),
+    );
+    if (lungNoduleReportMap && lungNoduleReportMap.size) {
+      dispatch({ type: INIT_LUNG_NODULE_REPORT, payload: lungNoduleReportMap });
+    }
   };
 
   const updatePlayerExamMap = (data: PlayerExamMapT) => {
@@ -233,8 +242,8 @@ export default () => {
     updatePlayerExamMap(nextPlayerExamMap);
   };
 
-  const updateLungNodulesReport = (report?: LungNoduleReportI): void => {
-    dispatch({ type: UPDATE_CURRENT_LUNG_NODULES_REPORT, payload: report });
+  const updateLungNodulesReport = (examKey: number, report?: LungNoduleReportI): void => {
+    dispatch({ type: UPDATE_CURRENT_LUNG_NODULES_REPORT, payload: { examKey, report } });
   };
 
   return {
@@ -246,6 +255,7 @@ export default () => {
     cacheSeries,
     initCornerstone,
     initPlayerExamMap,
+    initLungNoduleMap,
     getPlayerSeries,
     getPlayerSeriesById,
     updateLungNodulesReport,

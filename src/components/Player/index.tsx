@@ -15,14 +15,17 @@ import "./style.less";
 const Player: FunctionComponent<PlayerPropsI> = (props) => {
   const { exams } = props;
 
-  const { initPlayerExamMap, playerExamMap } = useData();
-  const { initWindows, windowsMap } = useWindows();
+  const { initPlayerExamMap, initLungNoduleMap } = useData();
+  const { initWindows, windowsMap, getFocusWindow } = useWindows();
   // const { generateKeyboard, destoryKeyboard } = useKeyboard();
 
   useEffect(() => {
     initPlayerExamMap(exams)
       .then((res) => {
         initWindows(exams, res);
+        return initLungNoduleMap(exams);
+      })
+      .then(() => {
         console.log("INIT SUCCESSED");
       })
       .catch((err) => {

@@ -167,6 +167,7 @@ export const getInfoByDicom = (img: any) => {
       orientation: data.string("x00200037"), // 图像方位
       thickness: data.string("x00180050"), // 层厚
       location: data.string("x00201041"), // 切片位置
+      pixelSpacing: data.string("x00280030"), // 切片位置
     },
     /** 患者信息 */
     patient: {

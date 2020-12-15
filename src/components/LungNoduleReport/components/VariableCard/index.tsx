@@ -16,7 +16,7 @@ const VariableCard: FunctionComponent<VariableCardPropsI> = (props) => {
   const { data = [], examId, seriesId } = props;
 
   const goPlayer = (imgIndex: number): void => {
-    history.push(`/player/?exam=${examId}&series=${seriesId}&index=${imgIndex}&lungnodule=1`);
+    history.push(`/player/?exam=${examId}&series=${seriesId}&frame=${imgIndex}&lungnodule=1`);
   };
 
   return (

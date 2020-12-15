@@ -24,10 +24,9 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
   const { data: win, viewportWidth } = props;
 
   const { data: playerSeries, isFocus, isPlay, element, key, frame } = win;
-  const { cs, cst, cacheSeries, updateSeries, lungNoduleReport } = useData();
+  const { cs, cst, cacheSeries, updateSeries, lungNoduleReport, getPlayerSeriesById } = useData();
   const { addMark, updateMarkByData, Length = [] } = useMarks();
-
-  const [viewport, setViewport] = useState<any>(); // current viewport
+  const [viewport, setViewport] = useState<any>();
 
   const {
     updateWin,
@@ -86,10 +85,6 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
       default:
         return "default";
     }
-  };
-
-  const onMouseMove = (e: MouseEvent) => {
-    console.log("mouse move");
   };
 
   const onMousedown = (e: MouseEvent): void => {
@@ -167,13 +162,10 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
     if (tempSeriesId !== id) {
       cs.displayImage(element, currentImg, cs.getDefaultViewportForImage(element, currentImg));
       tempSeriesId = id;
+      setViewport(cs.getViewport(element));
     } else {
-      cs.displayImage(element, currentImg, viewport);
+      cs.displayImage(element, currentImg);
     }
-  };
-
-  const onMouseDrag = (e: any) => {
-    setViewport(e.detail.viewport);
   };
 
   const onMeasureRemove = (e: any) => {
@@ -191,12 +183,23 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
     setToolState({ toolName, data: measurementData });
   };
 
+  /** 当播放器渲染时触发 */
   const onImageRendered = useCallback(
     (e: any) => {
-      if (!lungNoduleReport) return;
-      const { nodule_details } = lungNoduleReport;
-      if (!nodule_details) return;
+      if (!cs) return;
+      const { element, data: playerSeries } = win;
+      if (!element) return;
 
+      /** 更新viewport */
+      const currentViewport = cs.getViewport(element);
+      setViewport(currentViewport);
+
+      /** 如果有lungNodule渲染结节坐标 */
+      if (!lungNoduleReport || !playerSeries) return;
+      const currentLungNoduleReport = lungNoduleReport.get(win.key);
+      if (!currentLungNoduleReport) return;
+      const { nodule_details, series_id } = currentLungNoduleReport;
+      if (!nodule_details || playerSeries.id !== series_id) return;
       nodule_details.forEach((nodule) => {
         const { disp_z, img_x, img_y, rad_pixel } = nodule;
         if (win.frame === disp_z) {
@@ -205,7 +208,7 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
         }
       });
     },
-    [lungNoduleReport, win.frame],
+    [win, cs, lungNoduleReport],
   );
 
   useEffect(() => {
@@ -251,19 +254,6 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
       .then((reset) => {
         if (element.hidden) element.hidden = false;
         draw();
-
-        const currentViewport = cs.getViewport(element);
-        const currentElementData = cs.getEnabledElement(element);
-
-        const canvas = element.querySelector("canvas");
-        if (canvas) {
-          const ctx = canvas.getContext("2d");
-          if (ctx) {
-            drawCircle(ctx, 200, 200, 50);
-          }
-        }
-
-        setViewport(currentViewport);
       })
       .catch((err) => console.error(err));
   }, [element, playerSeries, frame, isFocus]);

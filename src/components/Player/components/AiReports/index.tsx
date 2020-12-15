@@ -35,8 +35,12 @@ const AiReports: FunctionComponent = () => {
   };
 
   const getContent = () => {
-    if (!lungNoduleReport) return null;
-    const { desc, nodule_details = [], err, series_id } = lungNoduleReport;
+    if (!lungNoduleReport || !currentWindow) return null;
+    const { key } = currentWindow;
+    const currentLungNoduleReport = lungNoduleReport.get(key);
+    if (!currentLungNoduleReport) return null;
+
+    const { desc, nodule_details = [], err, series_id } = currentLungNoduleReport;
     if (err) return <div className="player-ai-reports-content">{desc}</div>;
     return (
       <div className="player-ai-reports-content">
@@ -160,13 +164,14 @@ const AiReports: FunctionComponent = () => {
             type="primary"
             loading={loading}
             onClick={(): void => {
+              if (!currentWindow) return;
               const currentOriginExam = getCurrentOriginExam();
               if (!currentOriginExam) return;
               if (selectedAi === "lungNodule") {
                 setLoading(true);
                 getLungNoduleReport(currentOriginExam.id)
                   .then((res) => {
-                    updateLungNodulesReport(res);
+                    updateLungNodulesReport(currentWindow.key, res);
                   })
                   .catch((err) => {
                     if (err === 400) {

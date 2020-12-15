@@ -13,7 +13,7 @@ interface PlayerStateI {
   playerExamMap?: PlayerExamMapT; // 检查映射集合
   examList?: ExamIndexI[]; // 原始检查数据数组
   examInfos?: SeriesListI[];
-  lungNoduleReport?: LungNoduleReportI; // 当前的肺结节筛查数据
+  lungNoduleReport?: Map<number, LungNoduleReportI>; // 当前的肺结节筛查数据映射集合 对应Exam的key
 }
 
 type PlayerPayloadT = any;
@@ -21,6 +21,7 @@ type PlayerPayloadT = any;
 const {
   UPDATE_PLAYER,
   INIT_PLAYER,
+  INIT_LUNG_NODULE_REPORT,
   UPDATE_PLAYER_EXAM_MAP,
   UPDATE_CURRENT_LUNG_NODULES_REPORT,
 } = PlayerActionE;
@@ -41,9 +42,17 @@ const playerReducer: Reducer<PlayerStateI, ActionI<PlayerActionE, PlayerPayloadT
       if (!payload) return state;
       return Object.assign({}, state, { playerExamMap: payload });
     }
+    case INIT_LUNG_NODULE_REPORT: {
+      if (!payload) return;
+      return Object.assign({}, state, { lungNoduleReport: payload });
+    }
     case UPDATE_CURRENT_LUNG_NODULES_REPORT: {
       if (!payload) return state;
-      return Object.assign({}, state, { lungNoduleReport: payload });
+      const { examKey, report } = payload;
+      const nextReport = state["lungNoduleReport"] || new Map();
+      nextReport.set(examKey, report);
+
+      return Object.assign({}, state, { lungNoduleReport: nextReport });
     }
     default:
       return state;

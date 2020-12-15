@@ -12,9 +12,10 @@ import {
   UndoOutlined,
   ZoomInOutlined,
   EyeInvisibleOutlined,
+  TableOutlined,
 } from "@ant-design/icons";
 import { Modal } from "antd";
-import React, { FunctionComponent, useEffect } from "react";
+import React, { FunctionComponent, useCallback, useEffect, useState } from "react";
 import useData from "_components/Player/hooks/useData";
 import useStatus from "_components/Player/hooks/useStatus";
 import useWindows from "_components/Player/hooks/useWindows";
@@ -25,7 +26,7 @@ import ToolsItem from "./Item";
 import "./style.less";
 
 const Tools: FunctionComponent = () => {
-  const { cst, playerExamMap } = useData();
+  const { cst, cs } = useData();
   const { getFocusWindow, pause, play, next, prev, resetWindowImage } = useWindows();
   const {
     showLeftPan,
@@ -36,48 +37,64 @@ const Tools: FunctionComponent = () => {
     showExamInfo,
     switchExamInfo,
   } = useStatus();
-
   const { isPlay, data, frame, element } = getFocusWindow() || ({} as WindowI);
+
+  const [viewport, setViewport] = useState<any>();
+
   const disabled = !data || !data.cache;
 
-  const isActiveMode = (name: CstToolNameT): boolean => name === currentToolName;
+  const isActiveMode = useCallback((name: CstToolNameT): boolean => name === currentToolName, [
+    currentToolName,
+  ]);
   const toolItemClassNameWithDisabled = `tools-item${disabled || frame < 0 ? " disabled" : ""}`;
 
-  const switchToolInToolbar = (name: CstToolNameT, status: boolean): void => {
-    if (!cst || !element) return;
+  const switchToolInToolbar = useCallback(
+    (name: CstToolNameT, status: boolean): void => {
+      if (!cst || !element) return;
 
-    if (!status) {
-      cst.setToolPassiveForElement(element, name);
-      switchTool("");
-    } else {
-      cst.setToolActiveForElement(element, name, { mouseButtonMask: 1 });
-      switchTool(name);
-    }
-  };
+      if (!status) {
+        cst.setToolPassiveForElement(element, name);
+        switchTool("");
+      } else {
+        cst.setToolActiveForElement(element, name, { mouseButtonMask: 1 });
+        switchTool(name);
+      }
+    },
+    [cst, element, switchTool],
+  );
 
-  const onKeypress = (e: KeyboardEvent) => {
-    switch (e.code) {
-      case "KeyX":
-        switchToolInToolbar("Pan", !isActiveMode("Pan"));
-        break;
-      case "KeyZ":
-        switchToolInToolbar("Zoom", !isActiveMode("Zoom"));
-        break;
-      case "KeyC":
-        switchToolInToolbar("Wwwc", !isActiveMode("Wwwc"));
-        break;
-      default:
-        break;
-    }
+  const onKeypress = useCallback(
+    (e: KeyboardEvent) => {
+      switch (e.code) {
+        case "KeyX":
+          switchToolInToolbar("Pan", !isActiveMode("Pan"));
+          break;
+        case "KeyZ":
+          switchToolInToolbar("Zoom", !isActiveMode("Zoom"));
+          break;
+        case "KeyC":
+          switchToolInToolbar("Wwwc", !isActiveMode("Wwwc"));
+          break;
+        default:
+          break;
+      }
+    },
+    [isActiveMode, switchToolInToolbar],
+  );
+
+  const onImageRendered = (e: any) => {
+    setViewport(e.detail.viewport);
   };
 
   useEffect(() => {
     document.addEventListener("keypress", onKeypress);
+    if (element) element.addEventListener("cornerstoneimagerendered", onImageRendered);
 
     return () => {
       document.removeEventListener("keypress", onKeypress);
+      if (element) element.removeEventListener("cornerstoneimagerendered", onImageRendered);
     };
-  }, [cst, element, currentToolName]);
+  }, [element, onKeypress]);
 
   return (
     <div id="tools" className="tools">
@@ -110,6 +127,24 @@ const Tools: FunctionComponent = () => {
           <ColumnWidthOutlined
             className={`${toolItemClassNameWithDisabled}${isActiveMode("Length") ? " active" : ""}`}
             onClick={() => switchToolInToolbar("Length", !isActiveMode("Length"))}
+          />
+        </ToolsItem>
+        <ToolsItem title="插值渲染">
+          <TableOutlined
+            className={`${toolItemClassNameWithDisabled}${
+              viewport && viewport.pixelReplication ? " active" : ""
+            }`}
+            onClick={(): void => {
+              if (!viewport || !cs || !element) return;
+
+              const nextViewport = {
+                ...viewport,
+                pixelReplication: !viewport.pixelReplication,
+              };
+
+              cs.setViewport(element, nextViewport);
+              setViewport(nextViewport);
+            }}
           />
         </ToolsItem>
         <ToolsItem title="还原">

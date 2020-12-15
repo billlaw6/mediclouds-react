@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useCallback, useEffect, useState } from "react";
 import { getInfoByDicom } from "_components/Player/helpers";
 import { WindowI } from "_components/Player/types/window";
 import InfoItem from "./Item";
@@ -12,6 +12,7 @@ interface InformatinPropsI {
 
 const Information: FunctionComponent<InformatinPropsI> = (props) => {
   const { win, viewport } = props;
+
   if (!win || !viewport) return null;
 
   const { data: playerSeries, frame } = win;
@@ -42,6 +43,7 @@ const Information: FunctionComponent<InformatinPropsI> = (props) => {
         data={{
           thickness: `ST: ${dicomInfo.series.thickness ? `${dicomInfo.series.thickness}mm` : "NA"}`,
           sliceLocation: `SL: ${dicomInfo.series.location || "NA"}`,
+          pixelSpacing: `pixelSpace: ${dicomInfo.series.pixelSpacing || "NA"}`,
         }}
         position="br"
       ></InfoItem>
