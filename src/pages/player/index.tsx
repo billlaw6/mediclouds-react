@@ -23,6 +23,7 @@ const PlayerPage: FunctionComponent = () => {
           defaultLungNodule: !!lungnodule,
         },
       ]}
+      backTo="/resources"
     ></Player>
   );
 };

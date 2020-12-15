@@ -131,7 +131,7 @@ const Viewport: FunctionComponent = () => {
     // 当当前聚焦的窗口更新时候 重新加载 因为cornerstone需要先 enable 某个element
     if (!currentWinKey || key !== currentWinKey) {
       /** 初始化相关cornerstone tools */
-      const { WwwcTool, PanTool, ZoomTool, LengthTool } = cst;
+      const { WwwcTool, PanTool, ZoomTool, LengthTool, DragProbeTool } = cst;
       cst.addTool(WwwcTool); // 调窗
       cst.addTool(PanTool); // 移动
       cst.addTool(ZoomTool, {
@@ -141,6 +141,7 @@ const Viewport: FunctionComponent = () => {
         maxScale: 20.0,
       });
       cst.addTool(LengthTool);
+      cst.addTool(DragProbeTool);
 
       setCurrentWinKey(key);
     }

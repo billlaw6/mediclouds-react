@@ -13,6 +13,7 @@ import {
   ZoomInOutlined,
   EyeInvisibleOutlined,
   TableOutlined,
+  AimOutlined,
 } from "@ant-design/icons";
 import { Modal } from "antd";
 import React, { FunctionComponent, useCallback, useEffect, useState } from "react";
@@ -50,7 +51,7 @@ const Tools: FunctionComponent = () => {
 
   const switchToolInToolbar = useCallback(
     (name: CstToolNameT, status: boolean): void => {
-      if (!cst || !element) return;
+      if (!cst || !element || disabled) return;
 
       if (!status) {
         cst.setToolPassiveForElement(element, name);
@@ -65,6 +66,8 @@ const Tools: FunctionComponent = () => {
 
   const onKeypress = useCallback(
     (e: KeyboardEvent) => {
+      if (disabled) return;
+
       switch (e.code) {
         case "KeyX":
           switchToolInToolbar("Pan", !isActiveMode("Pan"));
@@ -75,11 +78,17 @@ const Tools: FunctionComponent = () => {
         case "KeyC":
           switchToolInToolbar("Wwwc", !isActiveMode("Wwwc"));
           break;
+        case "KeyA":
+          switchToolInToolbar("Length", !isActiveMode("Length"));
+          break;
+        case "KeyS":
+          switchToolInToolbar("DragProbe", !isActiveMode("DragProbe"));
+          break;
         default:
           break;
       }
     },
-    [isActiveMode, switchToolInToolbar],
+    [isActiveMode, switchToolInToolbar, disabled],
   );
 
   const onImageRendered = (e: any) => {
@@ -127,6 +136,14 @@ const Tools: FunctionComponent = () => {
           <ColumnWidthOutlined
             className={`${toolItemClassNameWithDisabled}${isActiveMode("Length") ? " active" : ""}`}
             onClick={() => switchToolInToolbar("Length", !isActiveMode("Length"))}
+          />
+        </ToolsItem>
+        <ToolsItem title="探针">
+          <AimOutlined
+            className={`${toolItemClassNameWithDisabled}${
+              isActiveMode("DragProbe") ? " active" : ""
+            }`}
+            onClick={() => switchToolInToolbar("DragProbe", !isActiveMode("DragProbe"))}
           />
         </ToolsItem>
         <ToolsItem title="插值渲染">
@@ -220,6 +237,10 @@ const Tools: FunctionComponent = () => {
                     <li>缩放图像：Z键/按住鼠标左键上下拖动</li>
                     <li>移动图像：X键/按住鼠标中键</li>
                     <li>调窗: C键/按住鼠标右键</li>
+
+                    <li>测量: A键</li>
+                    <li>探针: S键</li>
+
                     <li>还原：R键</li>
                   </ul>
                 ),

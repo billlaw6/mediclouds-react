@@ -8,6 +8,7 @@ export interface PlayerExamPropsI {
 
 export interface PlayerPropsI {
   exams: PlayerExamPropsI[];
+  backTo?: string; // 顶部返回键对应的返回地址
 }
 
-export type CstToolNameT = "Wwwc" | "Length" | "Pan" | "Zoom" | "";
+export type CstToolNameT = "Wwwc" | "Length" | "Pan" | "Zoom" | "DragProbe" | "";

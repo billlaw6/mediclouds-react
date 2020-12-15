@@ -13,7 +13,7 @@ import { PlayerPropsI } from "./types/common";
 import "./style.less";
 
 const Player: FunctionComponent<PlayerPropsI> = (props) => {
-  const { exams } = props;
+  const { exams, backTo } = props;
 
   const { initPlayerExamMap, initLungNoduleMap } = useData();
   const { initWindows, windowsMap, getFocusWindow } = useWindows();
@@ -37,7 +37,7 @@ const Player: FunctionComponent<PlayerPropsI> = (props) => {
 
   return (
     <div id="player">
-      <Header></Header>
+      <Header backTo={backTo}></Header>
       <Tools></Tools>
       <div className="player-content">
         <Viewport></Viewport>

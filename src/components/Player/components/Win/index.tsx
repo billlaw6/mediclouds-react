@@ -79,6 +79,8 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
       case "Pan":
         return "move";
       case "Wwwc":
+        return "all-scroll";
+      case "DragProbe":
         return "crosshair";
       case "Zoom":
         return "zoom-in";
