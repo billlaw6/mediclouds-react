@@ -30,7 +30,7 @@ const Doctors: FunctionComponent = () => {
   return (
     <List
       className="report-doctors"
-      header={<h3>名医推荐</h3>}
+      header={<h3>快速预约通道</h3>}
       itemLayout="vertical"
       dataSource={doctors}
       renderItem={(item, index): ReactNode => {
@@ -40,23 +40,23 @@ const Doctors: FunctionComponent = () => {
           <ListItem
             key={`${name}_${index}`}
             className="report-doctors-item"
-            extra={
-              <div className="report-doctors-item-extra">
-                <div>快速预约通道：</div>
-                <img src={xiaoying} style={{ width: "180px" }}></img>
-              </div>
-            }
-            actions={offices.map((item, index) => {
-              const { title, info } = item;
+            // extra={
+            //   <div className="report-doctors-item-extra">
+            //     <div>快速预约通道：</div>
+            //     <img src={xiaoying} style={{ width: "180px" }}></img>
+            //   </div>
+            // }
+            // actions={offices.map((item, index) => {
+            //   const { title, info } = item;
 
-              return (
-                <span key={`${item}_${index}`}>
-                  【{title}】 {info}
-                </span>
-              );
-            })}
+            //   return (
+            //     <span key={`${item}_${index}`}>
+            //       【{title}】 {info}
+            //     </span>
+            //   );
+            // })}
           >
-            <ListItem.Meta
+            {/* <ListItem.Meta
               avatar={
                 <Avatar
                   size="large"
@@ -70,6 +70,11 @@ const Doctors: FunctionComponent = () => {
             <div className="report-doctors-info">
               <span>擅长领域:</span>
               <span>{specialize}</span>
+            </div> */}
+
+            <div className="report-doctors-item-extra">
+              {/* <div>快速预约通道：</div> */}
+              <img src={xiaoying} style={{ width: "180px" }}></img>
             </div>
           </ListItem>
         );

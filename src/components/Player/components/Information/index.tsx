@@ -41,9 +41,10 @@ const Information: FunctionComponent<InformatinPropsI> = (props) => {
       ></InfoItem>
       <InfoItem
         data={{
-          thickness: `ST: ${dicomInfo.series.thickness ? `${dicomInfo.series.thickness}mm` : "NA"}`,
-          sliceLocation: `SL: ${dicomInfo.series.location || "NA"}`,
-          pixelSpacing: `pixelSpace: ${dicomInfo.series.pixelSpacing || "NA"}`,
+          stSl: `ST: ${dicomInfo.series.thickness ? `${dicomInfo.series.thickness}mm` : "NA"} SL: ${
+            dicomInfo.series.location || "NA"
+          }`,
+          // pixelSpacing: `pixelSpace: ${dicomInfo.series.pixelSpacing || "NA"}`,
         }}
         position="br"
       ></InfoItem>

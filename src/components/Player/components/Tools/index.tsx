@@ -167,7 +167,9 @@ const Tools: FunctionComponent = () => {
         <ToolsItem title="还原">
           <UndoOutlined
             className={toolItemClassNameWithDisabled}
-            onClick={(): void => resetWindowImage()}
+            onClick={(): void => {
+              !disabled && resetWindowImage();
+            }}
           />
         </ToolsItem>
       </article>
@@ -176,7 +178,7 @@ const Tools: FunctionComponent = () => {
           <EyeInvisibleOutlined
             className={`${toolItemClassNameWithDisabled}${showExamInfo ? "" : " active"}`}
             onClick={(): void => {
-              switchExamInfo(!showExamInfo);
+              !disabled && switchExamInfo(!showExamInfo);
             }}
           />
         </ToolsItem>
