@@ -6,7 +6,6 @@ import {
 } from "_types/resources";
 import { ActionI } from "_types/core";
 import { CaseActionE, CaseTypeE } from "_types/case";
-import { stat } from "fs";
 
 interface SettingsStateI {
   resourcesSortBy: {
@@ -17,17 +16,6 @@ interface SettingsStateI {
   };
   resourcesTabType: ResourcesTypeE;
   caseTabType: CaseTypeE;
-}
-
-interface ActionPayloadI {
-  ResourcesSortBy?: {
-    [key: string]: any;
-    [ResourcesTypeE.EXAM]?: ExamSortKeyE;
-    [ResourcesTypeE.IMG]?: ImgAndPdfSortKeyE;
-    [ResourcesTypeE.PDF]?: ImgAndPdfSortKeyE;
-  };
-  resourcesTabType?: ResourcesTypeE;
-  caseTabType?: CaseTypeE;
 }
 
 const defaultState: SettingsStateI = {
@@ -42,7 +30,7 @@ const defaultState: SettingsStateI = {
 
 export default (
   state = defaultState,
-  action: ActionI<ResourcesActionE | CaseActionE, ActionPayloadI>,
+  action: ActionI<ResourcesActionE | CaseActionE, any>,
 ): SettingsStateI => {
   const { type, payload } = action;
 

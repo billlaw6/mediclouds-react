@@ -17,9 +17,11 @@ import { ActionI } from "_types/core";
 //   ZOOM_OUT = 90, // Z
 //   RESET = 82; // R
 
-enum PlayerActionE {
+export enum PlayerActionE {
   UPDATE_SHORTCUT_KEY = "update_shortcut_key", // 更新快捷键
   RESET_SHORTCUT_KEY = "reset_shortcut_key", // 重制快捷键
+
+  SWTICH_PLAYER_VERSION = "switch_player_version", // 切换播放器版本
 }
 
 interface UpdateShortCutKeyPayloadI {
@@ -38,6 +40,8 @@ interface PlayerSettingsStateI {
   moveKeyCode: number; // 移动快捷键
   resetKeyCode: number; // 重制快捷键
   defaultPlaySpeed: number; // 播放速度 ms
+
+  isNewPlayer: boolean; // 是否为新版播放器
 }
 
 const DEFAULT_SHORTCUT_KEY = {
@@ -51,6 +55,8 @@ const DEFAULT_SHORTCUT_KEY = {
   moveKeyCode: 17,
   resetKeyCode: 82,
   defaultPlaySpeed: 120,
+
+  isNewPlayer: true,
 };
 
 const DEFAULT_STATE: PlayerSettingsStateI = {
@@ -71,6 +77,8 @@ const playerSettingsReducer: Reducer<
       const { key, value } = payload as UpdateShortCutKeyPayloadI;
       return Object.assign({}, state, { [key]: value });
     }
+    case PlayerActionE.SWTICH_PLAYER_VERSION:
+      return Object.assign({}, state, { isNewPlayer: !!payload });
     default:
       return state;
   }

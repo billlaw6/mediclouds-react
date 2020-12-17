@@ -10,6 +10,7 @@ interface PlayerWindowsStateI {
 const DEFAULT: PlayerWindowsStateI = {};
 
 const {
+  CLEAR,
   OPEN_WINDOW,
   UPDATE_WINDOW,
   COLSE_WINDOW,
@@ -24,6 +25,8 @@ const playerWindowsReducer: Reducer<
   const { type, payload } = actions;
 
   switch (type) {
+    case CLEAR:
+      return DEFAULT;
     case OPEN_WINDOW: {
       const nextWindowMap = state.windowsMap || new Map();
       if (payload) nextWindowMap.set(nextWindowMap.size, payload);

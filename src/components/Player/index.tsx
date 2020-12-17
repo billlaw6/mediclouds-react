@@ -11,12 +11,16 @@ import useKeyboard from "./hooks/useKeyboard";
 import { PlayerPropsI } from "./types/common";
 
 import "./style.less";
+import useStatus from "./hooks/useStatus";
+import useMarks from "./hooks/useMarks";
 
 const Player: FunctionComponent<PlayerPropsI> = (props) => {
   const { exams, backTo } = props;
 
-  const { initPlayerExamMap, initLungNoduleMap } = useData();
-  const { initWindows, windowsMap, getFocusWindow } = useWindows();
+  const { initPlayerExamMap, initLungNoduleMap, clearPlayerData } = useData();
+  const { initWindows, windowsMap, getFocusWindow, clearPlayerWindows } = useWindows();
+  const { clearPlayerStatus } = useStatus();
+  const { clearPlayerMarks } = useMarks();
   // const { generateKeyboard, destoryKeyboard } = useKeyboard();
 
   useEffect(() => {
@@ -33,6 +37,13 @@ const Player: FunctionComponent<PlayerPropsI> = (props) => {
       });
 
     document.oncontextmenu = () => false;
+
+    return () => {
+      clearPlayerData();
+      clearPlayerWindows();
+      clearPlayerStatus();
+      clearPlayerMarks();
+    };
   }, []);
 
   return (

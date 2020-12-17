@@ -24,6 +24,7 @@ const {
   INIT_LUNG_NODULE_REPORT,
   UPDATE_PLAYER_EXAM_MAP,
   UPDATE_CURRENT_LUNG_NODULES_REPORT,
+  CLEAR,
 } = PlayerActionE;
 
 const DEFAULT_STATE: PlayerStateI = {};
@@ -35,6 +36,8 @@ const playerReducer: Reducer<PlayerStateI, ActionI<PlayerActionE, PlayerPayloadT
   const { type, payload } = actions;
 
   switch (type) {
+    case CLEAR:
+      return DEFAULT_STATE;
     case UPDATE_PLAYER:
     case INIT_PLAYER:
       return payload ? Object.assign({}, state, payload) : state;

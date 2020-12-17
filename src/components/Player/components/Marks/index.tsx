@@ -38,6 +38,8 @@ const Marks: FunctionComponent = (props) => {
                 value={desc}
                 placeholder="请输入备注"
                 onInput={(e): void => {
+                  e.stopPropagation();
+
                   updateMark(
                     "Length",
                     Object.assign({}, item, {

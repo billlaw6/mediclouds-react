@@ -38,6 +38,8 @@ interface PlayerStatusStateI {
 
 /** actions types */
 export enum PlayerStatusActionE {
+  CLEAR = "player_status_clear", // 清除所有状态
+
   CLEAR_MODE = "clear_mode", // 清除所有模式
 
   SWITCH_EXAM_INFO = "switch_exam_info", // 显示/隐藏检查信息
@@ -64,6 +66,8 @@ const DEFAULT_STATE: PlayerStatusStateI = {
 };
 
 const {
+  CLEAR,
+
   CLEAR_MODE,
 
   SWITCH_EXAM_INFO,
@@ -103,6 +107,8 @@ const playerStatusReducer: Reducer<
   };
 
   switch (type) {
+    case CLEAR:
+      return DEFAULT_STATE;
     case CLEAR_MODE:
       return Object.assign({}, state, disabledAllMode());
     case SWITCH_EXAM_INFO:

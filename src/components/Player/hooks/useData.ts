@@ -246,6 +246,10 @@ export default () => {
     dispatch({ type: UPDATE_CURRENT_LUNG_NODULES_REPORT, payload: { examKey, report } });
   };
 
+  const clearPlayerData = (): void => {
+    dispatch({ type: PlayerActionE.CLEAR });
+  };
+
   return {
     ...playerReducerData,
     fetchSeriesList,
@@ -259,5 +263,6 @@ export default () => {
     getPlayerSeries,
     getPlayerSeriesById,
     updateLungNodulesReport,
+    clearPlayerData,
   };
 };

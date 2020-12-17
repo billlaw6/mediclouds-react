@@ -33,7 +33,6 @@ const LungNodules: FunctionComponent = () => {
   const allSuccessed = !!(
     uploaderList.length && uploaderList.every((item) => item.status === UploaderStatusE.SUCCESS)
   );
-  console.log("allSuccessed", allSuccessed);
 
   /**
    * 获取当前的检测报告

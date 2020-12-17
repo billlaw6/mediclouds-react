@@ -12,6 +12,7 @@ export interface PlayerMarksI {
 }
 
 export enum PlayerMarksActionE {
+  CLEAR = "clear_mark", // 清除所有标记
   ADD_MARK = "add_mark", // 添加一个标记
   DEL_MARK = "del_mark", // 删除一个标记
   UPDATE_MARK = "update_mark", // 修改一个标记

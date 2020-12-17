@@ -26,10 +26,15 @@ export default () => {
   const switchTool = (name: CstToolNameT) => dispatch({ type: UPDATE_CURRENT_TOOL, payload: name });
   const switchExamInfo = (val: boolean) => dispatch({ type: SWITCH_EXAM_INFO, payload: val });
 
+  const clearPlayerStatus = (): void => {
+    dispatch({ type: PlayerStatusActionE.CLEAR });
+  };
+
   return {
     ...status,
     switchPan,
     switchTool,
     switchExamInfo,
+    clearPlayerStatus,
   };
 };

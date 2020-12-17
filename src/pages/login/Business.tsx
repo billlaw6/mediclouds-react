@@ -30,11 +30,14 @@ const Business: FunctionComponent = () => {
           if (loginType === "form") {
             const { username, password, captcha: _captcha } = vals as FormLoginDataI;
 
-            formLogin({
-              username,
-              password,
-              captcha: _captcha,
-            }).then(
+            formLogin(
+              {
+                username,
+                password,
+                captcha: _captcha,
+              },
+              "/manager",
+            ).then(
               () => console.log("form login successed"),
               (err: any) => console.error(err),
             );

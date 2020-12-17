@@ -16,6 +16,17 @@
     align-items: center;
     margin-bottom: 18px;
 
+    &-info,
+    &-btns {
+      display: flex;
+      align-items: center;
+    }
+
+    .switch-new-player {
+      margin-right: 40px;
+      cursor: pointer;
+    }
+
     &-shortcut-btn.iconfont {
       font-size: 24px;
       line-height: 24px;
@@ -90,7 +101,7 @@
     }
   }
 
-  &-marks {
+  &#oldPlayer &-marks {
     display: flex;
     padding: 6px 12px;
     border-radius: 8px;

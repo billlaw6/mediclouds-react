@@ -76,10 +76,12 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
 
   const getCursor = (): string => {
     switch (currentToolName) {
+      case "Length":
+        return "copy";
       case "Pan":
         return "move";
       case "Wwwc":
-        return "all-scroll";
+        return "grabbing";
       case "DragProbe":
         return "crosshair";
       case "Zoom":
@@ -117,7 +119,7 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
   const onMouseup = () => {
     if (!mouseNum && currentToolName) return;
 
-    cst.setToolPassiveForElement(element, currentToolName);
+    cst.setToolDisabledForElement(element, currentToolName);
     switchTool("");
     updateMouseNum(0);
   };
@@ -214,13 +216,14 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
   );
 
   useEffect(() => {
-    document.addEventListener("keydown", onKeydown);
+    // document.addEventListener("keydown", onKeydown);
     // document.addEventListener("keyup", onKeyup);
 
     // 初始化在cs上启用窗口 并将当前窗口的HTML元素更新到当前窗口数据内
     if (cs && cst && $window.current && !element) {
       cs.enable($window.current);
       updateWin(key, { element: $window.current });
+      // $window.current.addEventListener("keydown", onKeydown);
     }
 
     if (element) {
@@ -320,6 +323,7 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
         onMouseUp={onMouseup}
         style={{ cursor: getCursor() }}
         ref={$window}
+        onKeyDown={(e: any) => onKeydown(e)}
       >
         {showExamInfo ? <Information viewport={viewport} win={win}></Information> : null}
       </div>

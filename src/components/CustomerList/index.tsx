@@ -19,6 +19,7 @@ import ListControlBar from "_components/ListControlBar";
 import AccountStatus from "_components/AccountStatus";
 import { formatDate } from "_helper";
 import useProd from "_hooks/useProd";
+import { SorterResult } from "antd/lib/table/interface";
 
 interface CustomerListPropsI {
   id?: string;
@@ -40,6 +41,7 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
   const [searchVal, setSearchVal] = useState(""); // 搜索的内容
   const [dateRange, setDateRange] = useState<string[]>();
   const [filters, setFilters] = useState<any>(); // 过滤条件
+  const [sort, setSort] = useState<{ sort: string; ascend: 0 | 1 }>({ sort: "", ascend: 0 });
 
   const onSelectChange = (selectedRowKeys: Key[]): void => setSelected(selectedRowKeys as string[]);
 
@@ -93,7 +95,8 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
       key: "date_joined",
       dataIndex: "date_joined",
       render: (val) => <span>{formatDate(val, true)}</span>,
-      sorter: (a, b): number => Date.parse(a.date_joined) - Date.parse(b.date_joined),
+      // sorter: (a, b): number => Date.parse(a.date_joined) - Date.parse(b.date_joined),
+      sorter: true,
     },
     {
       title: "最后登录",
@@ -145,7 +148,7 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
     if (!id.current) return;
 
     const { current, pageSize } = pagination;
-    let searchQuery = { keyword: searchVal, current, size: pageSize, filters };
+    let searchQuery = { keyword: searchVal, current, size: pageSize, filters, ...sort };
     if (dateRange)
       searchQuery = Object.assign({}, searchQuery, {
         start: dateRange[0],
@@ -159,7 +162,7 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
         // console.log("prods", res);
       })
       .catch((err) => console.error(err));
-  }, [dateRange, pagination.current, pagination.pageSize, searchVal, filters]);
+  }, [dateRange, pagination.current, pagination.pageSize, searchVal, filters, sort]);
 
   /**
    *  更新页码触发
@@ -243,8 +246,9 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
               onChange: onChangePagination,
               onShowSizeChange: onChangePagination,
             }}
-            onChange={(pagination, filters) => {
+            onChange={(pagination, filters, sorter) => {
               const _filters: any = {};
+              const { order, field = "" } = sorter as SorterResult<UserI>;
 
               for (const key in filters) {
                 const val = filters[key];
@@ -253,6 +257,8 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
               }
 
               setFilters(_filters);
+
+              setSort({ ascend: order ? (order === "ascend" ? 1 : 0) : 0, sort: field as string });
             }}
           ></Table>
         </>

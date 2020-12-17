@@ -39,7 +39,7 @@ import LinkButton from "_components/LinkButton/LinkButton";
 import { Scrollbars } from "react-custom-scrollbars";
 
 import { SeriesImgCacheListT, ImgDrawInfoI, MprImgClientRects, MprImgAndSizeI } from "./type";
-import { Slider, Progress, Tooltip } from "antd";
+import { Slider, Progress, Tooltip, Tag, message } from "antd";
 import { ImageI, SeriesListI, SeriesI, PatientExamI } from "_types/api";
 import { CustomHTMLDivElement } from "_types/core";
 
@@ -67,7 +67,11 @@ import { getSeriesList } from "./actions";
 import { LungNoduleI } from "_types/ai";
 
 import Fns from "./components/Fns";
+import useSettings from "_components/Player/hooks/useSettings";
+import useAccount from "_hooks/useAccount";
+
 import "./Player.less";
+import { RoleE } from "_types/account";
 
 const VIEWPORT_WIDTH_DEFAULT = 890; // 视图默认宽
 const VIEWPORT_HEIGHT_DEFAULT = 550; // 视图默认高
@@ -142,19 +146,24 @@ let isMoving = false; // 是否在移动
 let cacheOffset: number[] = [0, 0]; // 缓存位置信息
 let mouseStartPoint: number[] = [0, 0]; // 鼠标起始点位置坐标
 
-const Player: FunctionComponent = (props) => {
+interface PlayerPropsI {
+  exam: string;
+  series: string;
+  index: number;
+  lungnodule: 0 | 1;
+}
+
+const Player: FunctionComponent<PlayerPropsI> = (props) => {
   // let ctx: CanvasRenderingContext2D | null = null;
   const {
     exam: id,
     series: originSeriesId,
     index: originImgIndex,
     lungnodule: showLungNodules,
-  } = getQueryString<{
-    exam: string;
-    series?: string;
-    index?: string;
-    lungnodule?: "0" | "1";
-  }>();
+  } = props;
+
+  const { account } = useAccount();
+  const { switchPlayerVersion } = useSettings();
   const { lungNodule } = useReport();
   /* =============== use ref =============== */
   const $player = useRef<CustomHTMLDivElement>(null);
@@ -230,7 +239,7 @@ const Player: FunctionComponent = (props) => {
         _seriesIndex = children.findIndex((item) => item.id === originSeriesId) + 1 || 1;
       }
       if (originImgIndex) {
-        _imgIndex = parseInt(originImgIndex, 10) + 1;
+        _imgIndex = originImgIndex + 1;
         _imgIndexsArr[_seriesIndex - 1] = _imgIndex;
       }
 
@@ -243,7 +252,7 @@ const Player: FunctionComponent = (props) => {
       children.forEach((series) => {
         const { id } = series;
 
-        if (showLungNodules === "1" && lungNodule) {
+        if (showLungNodules === 1 && lungNodule) {
           const { series_id, flag, nodule_details } = lungNodule;
 
           if (flag > 0 && nodule_details && id === series_id) {
@@ -262,7 +271,7 @@ const Player: FunctionComponent = (props) => {
 
       let _currentNodule: LungNoduleI | undefined = undefined;
 
-      if (showLungNodules === "1" && lungNodule) {
+      if (showLungNodules === 1 && lungNodule) {
         const { nodule_details } = lungNodule;
         if (nodule_details) {
           _currentNodule = nodule_details.find(
@@ -657,7 +666,7 @@ const Player: FunctionComponent = (props) => {
         drawInfo.height,
       );
 
-      if (showLungNodules === "1" && lungNodule && currentNodule && currentSeries) {
+      if (showLungNodules === 1 && lungNodule && currentNodule && currentSeries) {
         const { series_id } = lungNodule;
 
         if (currentSeries.id !== series_id) return;
@@ -1003,7 +1012,7 @@ const Player: FunctionComponent = (props) => {
       );
     }
 
-    if (showLungNodules === "1" && lungNodule) {
+    if (showLungNodules === 1 && lungNodule) {
       if (currentNodule) {
         const { disp_z } = currentNodule;
 
@@ -1299,21 +1308,38 @@ const Player: FunctionComponent = (props) => {
   const { scale, move } = fns;
 
   return (
-    <section className={className}>
+    <section id="oldPlayer" className={className}>
       <div className="player-header">
-        <h1 className="player-header-title">医影浏览器</h1>
-        <i
-          className="player-header-shortcut-btn iconfont iconic_help"
-          onClick={(): void => setShowShortcut(true)}
-        ></i>
-        <LinkButton
-          className="player-header-back"
-          to="/resources"
-          icon={<ArrowLeftOutlined />}
-          type="light"
-        >
-          返回
-        </LinkButton>
+        <div className="player-header-info">
+          <h1 className="player-header-title">医影浏览器</h1>
+          <i
+            className="player-header-shortcut-btn iconfont iconic_help"
+            onClick={(): void => setShowShortcut(true)}
+          ></i>
+        </div>
+        <div className="player-header-btns">
+          <Tag
+            color="purple"
+            className="switch-new-player"
+            onClick={(): void => {
+              account.role === RoleE.DOCTOR || account.role === RoleE.PATIENT
+                ? message.warning({
+                    content: "对不起，您暂无权限体验新版播放器",
+                  })
+                : switchPlayerVersion(true);
+            }}
+          >
+            切换新版播放器alpha
+          </Tag>
+          <LinkButton
+            className="player-header-back"
+            to="/resources"
+            icon={<ArrowLeftOutlined />}
+            type="light"
+          >
+            返回
+          </LinkButton>
+        </div>
       </div>
       <div className="player-content" ref={$player}>
         <div className={`player-view ${isMpr ? "player-mpr" : ""}`}>

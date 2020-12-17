@@ -29,7 +29,7 @@ export default () => {
   };
 
   /* 表单登录 */
-  const formLogin = async (data: FormLoginDataI): Promise<void> => {
+  const formLogin = async (data: FormLoginDataI, url = "/resources"): Promise<void> => {
     try {
       const loginRes = await userApi.loginForm(data);
       window.localStorage.clear();
@@ -39,7 +39,7 @@ export default () => {
       if (token) {
         setToken(token);
         dispatch({ type: AccountActionTypes.LOGIN_FORM, payload: user_info });
-        history.replace("/manager");
+        history.replace(url);
       }
     } catch (error) {
       throw new Error(error);

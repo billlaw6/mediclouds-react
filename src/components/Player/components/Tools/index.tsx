@@ -14,14 +14,17 @@ import {
   EyeInvisibleOutlined,
   TableOutlined,
   AimOutlined,
+  DownOutlined,
 } from "@ant-design/icons";
-import { Modal } from "antd";
+import { Dropdown, Menu, Modal } from "antd";
 import React, { FunctionComponent, useCallback, useEffect, useState } from "react";
+import { WWWC_PRESETS } from "_components/Player/Contents";
 import useData from "_components/Player/hooks/useData";
 import useStatus from "_components/Player/hooks/useStatus";
 import useWindows from "_components/Player/hooks/useWindows";
 import { CstToolNameT } from "_components/Player/types/common";
 import { WindowI } from "_components/Player/types/window";
+import ToolsGroup from "./Group";
 import ToolsItem from "./Item";
 
 import "./style.less";
@@ -41,6 +44,7 @@ const Tools: FunctionComponent = () => {
   const { isPlay, data, frame, element } = getFocusWindow() || ({} as WindowI);
 
   const [viewport, setViewport] = useState<any>();
+  const [wwwcKey, setWwwcKey] = useState(""); // 当前窗宽窗位菜单key
 
   const disabled = !data || !data.cache;
 
@@ -92,6 +96,18 @@ const Tools: FunctionComponent = () => {
   );
 
   const onImageRendered = (e: any) => {
+    if (viewport) {
+      const { windowCenter, windowWidth } = viewport.voi;
+
+      const val = `${Math.round(windowCenter)}/${Math.round(windowWidth)}`;
+      const filteredItem = WWWC_PRESETS.find((item) => {
+        return item.value === val;
+      });
+
+      if (filteredItem) setWwwcKey(filteredItem.value);
+      else setWwwcKey("");
+    }
+
     setViewport(e.detail.viewport);
   };
 
@@ -114,113 +130,155 @@ const Tools: FunctionComponent = () => {
             onClick={(): void => switchPan("left", !showLeftPan)}
           />
         </ToolsItem>
-        <ToolsItem title="移动">
-          <DragOutlined
-            className={`${toolItemClassNameWithDisabled}${isActiveMode("Pan") ? " active" : ""}`}
-            onClick={() => switchToolInToolbar("Pan", !isActiveMode("Pan"))}
-          />
-        </ToolsItem>
-        <ToolsItem title="缩放">
-          <ZoomInOutlined
-            className={`${toolItemClassNameWithDisabled}${isActiveMode("Zoom") ? " active" : ""}`}
-            onClick={() => switchToolInToolbar("Zoom", !isActiveMode("Zoom"))}
-          />
-        </ToolsItem>
-        <ToolsItem title="调窗">
-          <BgColorsOutlined
-            className={`${toolItemClassNameWithDisabled}${isActiveMode("Wwwc") ? " active" : ""}`}
-            onClick={() => switchToolInToolbar("Wwwc", !isActiveMode("Wwwc"))}
-          />
-        </ToolsItem>
-        <ToolsItem title="长度测量">
-          <ColumnWidthOutlined
-            className={`${toolItemClassNameWithDisabled}${isActiveMode("Length") ? " active" : ""}`}
-            onClick={() => switchToolInToolbar("Length", !isActiveMode("Length"))}
-          />
-        </ToolsItem>
-        <ToolsItem title="探针">
-          <AimOutlined
-            className={`${toolItemClassNameWithDisabled}${
-              isActiveMode("DragProbe") ? " active" : ""
-            }`}
-            onClick={() => switchToolInToolbar("DragProbe", !isActiveMode("DragProbe"))}
-          />
-        </ToolsItem>
-        <ToolsItem title="插值渲染">
-          <TableOutlined
-            className={`${toolItemClassNameWithDisabled}${
-              viewport && viewport.pixelReplication ? " active" : ""
-            }`}
-            onClick={(): void => {
-              if (!viewport || !cs || !element) return;
 
-              const nextViewport = {
-                ...viewport,
-                pixelReplication: !viewport.pixelReplication,
-              };
-
-              cs.setViewport(element, nextViewport);
-              setViewport(nextViewport);
-            }}
-          />
-        </ToolsItem>
-        <ToolsItem title="还原">
-          <UndoOutlined
-            className={toolItemClassNameWithDisabled}
-            onClick={(): void => {
-              !disabled && resetWindowImage();
-            }}
-          />
-        </ToolsItem>
-      </article>
-      <article className="tools-right">
-        <ToolsItem title="隐藏信息">
-          <EyeInvisibleOutlined
-            className={`${toolItemClassNameWithDisabled}${showExamInfo ? "" : " active"}`}
-            onClick={(): void => {
-              !disabled && switchExamInfo(!showExamInfo);
-            }}
-          />
-        </ToolsItem>
-        <ToolsItem title="上一个图像">
-          <BackwardOutlined
-            className={toolItemClassNameWithDisabled}
-            onClick={(): void => {
-              !disabled && prev();
-            }}
-          />
-        </ToolsItem>
-        <ToolsItem title="播放/暂停">
-          {isPlay ? (
-            <PauseOutlined
-              className="tools-item active"
-              onClick={(): void => {
-                !disabled && pause();
-              }}
+        <ToolsGroup>
+          <ToolsItem title="移动">
+            <DragOutlined
+              className={`${toolItemClassNameWithDisabled}${isActiveMode("Pan") ? " active" : ""}`}
+              onClick={() => switchToolInToolbar("Pan", !isActiveMode("Pan"))}
             />
-          ) : (
-            <CaretRightOutlined
+          </ToolsItem>
+          <ToolsItem title="缩放">
+            <ZoomInOutlined
+              className={`${toolItemClassNameWithDisabled}${isActiveMode("Zoom") ? " active" : ""}`}
+              onClick={() => switchToolInToolbar("Zoom", !isActiveMode("Zoom"))}
+            />
+          </ToolsItem>
+          <ToolsItem title="调窗">
+            <span
+              className={`${toolItemClassNameWithDisabled}${isActiveMode("Wwwc") ? " active" : ""}`}
+            >
+              <BgColorsOutlined
+                onClick={() => switchToolInToolbar("Wwwc", !isActiveMode("Wwwc"))}
+              />
+              <Dropdown
+                className="tools-item-dropdown"
+                overlay={
+                  <Menu
+                    selectedKeys={[wwwcKey]}
+                    onClick={(info) => {
+                      if (!viewport || !element || !cs) return;
+                      const { key } = info;
+                      let { windowWidth, windowCenter } = viewport.voi;
+
+                      if (key === "DEFAULT") {
+                        const imgInfo = cs.getImage(element);
+                        windowWidth = imgInfo.windowWidth;
+                        windowCenter = imgInfo.windowCenter;
+                        setWwwcKey("");
+                      } else {
+                        const [_wc, _ww] = key.toString().split("/");
+                        windowWidth = parseInt(_ww, 10);
+                        windowCenter = parseInt(_wc, 10);
+                        setWwwcKey(key.toString());
+                      }
+
+                      cs.setViewport(
+                        element,
+                        Object.assign({}, viewport, { voi: { windowWidth, windowCenter } }),
+                      );
+                    }}
+                  >
+                    {WWWC_PRESETS.map((item) => {
+                      return <Menu.Item key={item.value}>{item.title}</Menu.Item>;
+                    })}
+                  </Menu>
+                }
+              >
+                <DownOutlined className="tools-item-dropdown-target" />
+              </Dropdown>
+            </span>
+          </ToolsItem>
+          <ToolsItem title="还原">
+            <UndoOutlined
               className={toolItemClassNameWithDisabled}
               onClick={(): void => {
-                !disabled && play();
+                !disabled && resetWindowImage();
+                setWwwcKey("");
               }}
             />
-          )}
-        </ToolsItem>
-        <ToolsItem title="下一个图像">
-          <ForwardOutlined
-            className={toolItemClassNameWithDisabled}
-            onClick={(): void => {
-              !disabled && next();
-            }}
-          />
-        </ToolsItem>
-        <ToolsItem title="显示/隐藏右边栏">
-          <MenuFoldOutlined
-            className={`tools-item${showRightPan ? " active reverse-right" : ""}`}
-            onClick={(): void => switchPan("right", !showRightPan)}
-          />
-        </ToolsItem>
+          </ToolsItem>
+        </ToolsGroup>
+
+        <ToolsGroup>
+          <ToolsItem title="长度测量">
+            <ColumnWidthOutlined
+              className={`${toolItemClassNameWithDisabled}${
+                isActiveMode("Length") ? " active" : ""
+              }`}
+              onClick={() => switchToolInToolbar("Length", !isActiveMode("Length"))}
+            />
+          </ToolsItem>
+          <ToolsItem title="探针">
+            <AimOutlined
+              className={`${toolItemClassNameWithDisabled}${
+                isActiveMode("DragProbe") ? " active" : ""
+              }`}
+              onClick={() => switchToolInToolbar("DragProbe", !isActiveMode("DragProbe"))}
+            />
+          </ToolsItem>
+          <ToolsItem title="插值渲染">
+            <TableOutlined
+              className={`${toolItemClassNameWithDisabled}${
+                viewport && viewport.pixelReplication ? " active" : ""
+              }`}
+              onClick={(): void => {
+                if (!viewport || !cs || !element) return;
+
+                const nextViewport = {
+                  ...viewport,
+                  pixelReplication: !viewport.pixelReplication,
+                };
+
+                cs.setViewport(element, nextViewport);
+                setViewport(nextViewport);
+              }}
+            />
+          </ToolsItem>
+          <ToolsItem title="隐藏信息">
+            <EyeInvisibleOutlined
+              className={`${toolItemClassNameWithDisabled}${showExamInfo ? "" : " active"}`}
+              onClick={(): void => {
+                !disabled && switchExamInfo(!showExamInfo);
+              }}
+            />
+          </ToolsItem>
+        </ToolsGroup>
+        <ToolsGroup>
+          <ToolsItem title="上一个图像">
+            <BackwardOutlined
+              className={toolItemClassNameWithDisabled}
+              onClick={(): void => {
+                !disabled && prev();
+              }}
+            />
+          </ToolsItem>
+          <ToolsItem title="播放/暂停">
+            {isPlay ? (
+              <PauseOutlined
+                className="tools-item active"
+                onClick={(): void => {
+                  !disabled && pause();
+                }}
+              />
+            ) : (
+              <CaretRightOutlined
+                className={toolItemClassNameWithDisabled}
+                onClick={(): void => {
+                  !disabled && play();
+                }}
+              />
+            )}
+          </ToolsItem>
+          <ToolsItem title="下一个图像">
+            <ForwardOutlined
+              className={toolItemClassNameWithDisabled}
+              onClick={(): void => {
+                !disabled && next();
+              }}
+            />
+          </ToolsItem>
+        </ToolsGroup>
         <ToolsItem title="帮助">
           <QuestionCircleOutlined
             className="tools-item"
@@ -248,6 +306,14 @@ const Tools: FunctionComponent = () => {
                 ),
               });
             }}
+          />
+        </ToolsItem>
+      </article>
+      <article className="tools-right">
+        <ToolsItem title="显示/隐藏右边栏">
+          <MenuFoldOutlined
+            className={`tools-item${showRightPan ? " active reverse-right" : ""}`}
+            onClick={(): void => switchPan("right", !showRightPan)}
           />
         </ToolsItem>
       </article>

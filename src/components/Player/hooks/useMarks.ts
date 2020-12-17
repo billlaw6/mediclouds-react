@@ -98,6 +98,10 @@ export default () => {
     });
   };
 
+  const clearPlayerMarks = (): void => {
+    dispatch({ type: PlayerMarksActionE.CLEAR });
+  };
+
   return {
     Length: getState("Length"),
     addMark,
@@ -105,5 +109,6 @@ export default () => {
     updateMark,
     updateMarkByData,
     selectedMark,
+    clearPlayerMarks,
   };
 };

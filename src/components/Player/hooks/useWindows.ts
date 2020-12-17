@@ -293,6 +293,10 @@ export default () => {
     updateWin(currentWindow.key, { data: _nextSeries });
   };
 
+  const clearPlayerWindows = (): void => {
+    dispatch({ type: PlayerWindowsActionE.CLEAR });
+  };
+
   return {
     ...windows,
     openWindow,
@@ -312,5 +316,6 @@ export default () => {
     nextSeries,
     prevSeries,
     resetWindowImage,
+    clearPlayerWindows,
   };
 };

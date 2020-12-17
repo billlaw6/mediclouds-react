@@ -35,7 +35,9 @@ const Login: FunctionComponent = () => {
   const defaultType = b ? "business" : "personal";
   const [type, setType] = useState<"personal" | "business">(defaultType); // 切换登录类型
   const [nav, setNav] = useState(queryNav);
-  const [loginType, setLoginType] = useState<"form" | "qrcode">(f ? "form" : "qrcode");
+  const [loginType, setLoginType] = useState<"authCode" | "qrcode" | "pwd">(
+    f ? "authCode" : "qrcode",
+  );
 
   useEffect(() => {
     const isShare = getLocalStorage("s");

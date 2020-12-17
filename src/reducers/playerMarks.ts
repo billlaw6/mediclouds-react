@@ -17,9 +17,10 @@ const playerMarksReducer: Reducer<
   const { type, payload } = actions;
 
   switch (type) {
+    case PlayerMarksActionE.CLEAR:
+      return {};
     case PlayerMarksActionE.ADD_MARK: {
       if (!payload) return state;
-      console.log("add", payload);
       const { toolName, data } = payload as PlayerMarksAddMarkPayloadI;
       const nextMarkList = state[toolName] || [];
 

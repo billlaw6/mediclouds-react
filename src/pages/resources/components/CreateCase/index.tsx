@@ -103,7 +103,7 @@ const CreateCase: FunctionComponent<CreateCasePropsI> = (props) => {
         message.error({
           content: "创建病例失败！",
         });
-        console.log(err);
+        console.error(err);
       });
   };
 

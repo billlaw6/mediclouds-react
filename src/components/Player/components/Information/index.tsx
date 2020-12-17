@@ -27,7 +27,7 @@ const Information: FunctionComponent<InformatinPropsI> = (props) => {
 
   return (
     <section className="player-info">
-      <InfoItem data={dicomInfo.study}></InfoItem>
+      <InfoItem data={{ ...dicomInfo.study, ...dicomInfo.hospital }}></InfoItem>
       <InfoItem data={dicomInfo.patient} position="tr"></InfoItem>
       <InfoItem
         data={{

@@ -15,8 +15,6 @@ const Oauth: FunctionComponent = () => {
     if (code && state) {
       wechatLogin(query)
         .then(() => {
-          console.log("state", state);
-
           if (state === "STATE") {
             history.push("/resources");
           } else {

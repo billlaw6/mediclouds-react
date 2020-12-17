@@ -6,10 +6,12 @@ export enum PlayerActionE {
   INIT_CORNERSTONE = "init_cornerstone", // 初始化全局cornerstone
   UPDATE_PLAYER_EXAM_MAP = "update_player_exam_map", // 更新检查映射集合
   UPDATE_CURRENT_LUNG_NODULES_REPORT = "update_current_lung_nodules_report", // 更新当前的肺结节AI筛查数据
+  CLEAR = "player_clear", // 清除数据
 }
 
 /* 窗口动作 */
 export enum PlayerWindowsActionE {
+  CLEAR = "player_windows_clear", // 清除所有窗口信息
   OPEN_WINDOW = "open_window", // 打开窗口
   COLSE_WINDOW = "close_window", // 关闭窗口
   UPDATE_WINDOW = "update_window", // 更新窗口

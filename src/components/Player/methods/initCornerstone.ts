@@ -17,7 +17,11 @@ export default () => {
   cornerstoneTools.external.cornerstone = cornerstone;
   cornerstoneTools.external.Hammer = Hammer;
   cornerstoneTools.external.cornerstoneMath = cornerstoneMath;
-  cornerstoneTools.init();
+  cornerstoneTools.init({
+    // showSVGCursors: true,
+  });
+  cornerstoneTools.toolColors.setActiveColor("#E36B00");
+  cornerstoneTools.toolColors.setToolColor("#F7E107");
   if (process.env.NODE_ENV === "development") cornerstoneTools.enableLogger();
 
   return {
