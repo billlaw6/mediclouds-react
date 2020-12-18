@@ -4,6 +4,8 @@ import cornerstoneTools from "cornerstone-tools";
 import cornerstoneWADOImageLoader from "cornerstone-wado-image-loader";
 import cornerstoneMath from "cornerstone-math";
 import Hammer from "hammerjs";
+import McDragProbeTool from "../tools/dragProbeTool";
+import { DEFAULT_SETTINGS } from "../Contents";
 
 export default () => {
   /** 初始化cs相关 */
@@ -17,13 +19,17 @@ export default () => {
   cornerstoneTools.external.cornerstone = cornerstone;
   cornerstoneTools.external.Hammer = Hammer;
   cornerstoneTools.external.cornerstoneMath = cornerstoneMath;
+
+  cornerstoneTools.register("module", "McDragProbeTool", McDragProbeTool);
+
   cornerstoneTools.init({
     // showSVGCursors: true,
   });
-  cornerstoneTools.toolColors.setActiveColor("#E36B00");
-  cornerstoneTools.toolColors.setToolColor("#F7E107");
+  cornerstoneTools.toolColors.setActiveColor(DEFAULT_SETTINGS.activeColor);
+  cornerstoneTools.toolColors.setToolColor(DEFAULT_SETTINGS.textStyle);
   if (process.env.NODE_ENV === "development") cornerstoneTools.enableLogger();
 
+  console.log("cornerstoneTools", cornerstoneTools);
   return {
     cs: cornerstone,
     cst: cornerstoneTools,

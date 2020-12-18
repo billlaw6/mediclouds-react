@@ -3,6 +3,7 @@ import React, { FunctionComponent, ReactNode, useEffect, useRef, useState } from
 import useData from "_components/Player/hooks/useData";
 import useStatus from "_components/Player/hooks/useStatus";
 import useWindows from "_components/Player/hooks/useWindows";
+import McDragProbeTool from "_components/Player/tools/dragProbeTool";
 import { WindowI } from "_components/Player/types/window";
 import AiReports from "../AiReports";
 import Marks from "../Marks";
@@ -141,7 +142,10 @@ const Viewport: FunctionComponent = () => {
         maxScale: 20.0,
       });
       cst.addTool(LengthTool);
-      cst.addTool(DragProbeTool);
+      cst.addTool(DragProbeTool, {
+        defaultStrategy: "minimal",
+      });
+      cst.addTool(McDragProbeTool);
 
       setCurrentWinKey(key);
     }

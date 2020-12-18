@@ -11,4 +11,4 @@ export interface PlayerPropsI {
   backTo?: string; // 顶部返回键对应的返回地址
 }
 
-export type CstToolNameT = "Wwwc" | "Length" | "Pan" | "Zoom" | "DragProbe" | "";
+export type CstToolNameT = "Wwwc" | "Length" | "Pan" | "Zoom" | "DragProbe" | "McDragProbe" | "";

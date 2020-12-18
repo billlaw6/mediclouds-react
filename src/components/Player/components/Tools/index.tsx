@@ -86,7 +86,8 @@ const Tools: FunctionComponent = () => {
           switchToolInToolbar("Length", !isActiveMode("Length"));
           break;
         case "KeyS":
-          switchToolInToolbar("DragProbe", !isActiveMode("DragProbe"));
+          switchToolInToolbar("McDragProbe", !isActiveMode("McDragProbe"));
+          // switchToolInToolbar("DragProbe", !isActiveMode("DragProbe"));
           break;
         default:
           break;
@@ -212,9 +213,13 @@ const Tools: FunctionComponent = () => {
           <ToolsItem title="探针">
             <AimOutlined
               className={`${toolItemClassNameWithDisabled}${
-                isActiveMode("DragProbe") ? " active" : ""
+                isActiveMode("McDragProbe") ? " active" : ""
               }`}
-              onClick={() => switchToolInToolbar("DragProbe", !isActiveMode("DragProbe"))}
+              onClick={() => switchToolInToolbar("McDragProbe", !isActiveMode("McDragProbe"))}
+              // className={`${toolItemClassNameWithDisabled}${
+              //   isActiveMode("DragProbe") ? " active" : ""
+              // }`}
+              // onClick={() => switchToolInToolbar("DragProbe", !isActiveMode("DragProbe"))}
             />
           </ToolsItem>
           <ToolsItem title="插值渲染">

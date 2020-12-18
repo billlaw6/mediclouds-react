@@ -82,7 +82,7 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
         return "move";
       case "Wwwc":
         return "grabbing";
-      case "DragProbe":
+      case "McDragProbe":
         return "crosshair";
       case "Zoom":
         return "zoom-in";

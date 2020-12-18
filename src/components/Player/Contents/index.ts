@@ -1,5 +1,10 @@
 import { CstToolNameT } from "../types/common";
 
+export const DEFAULT_SETTINGS = {
+  textStyle: "#F7E107",
+  activeColor: "#E36B00",
+};
+
 export const CST_TOOL_NAMES: CstToolNameT[] = ["Length", "Pan", "Wwwc", "Zoom"];
 
 export const WWWC_PRESETS = [
