@@ -66,6 +66,14 @@ export default class McDragProbeTool extends BaseTool {
     this.dragEventData = {};
   }
 
+  postMouseDownCallback = (e: any) => {
+    const eventData = e.detail;
+    const { element } = eventData;
+
+    this.dragEventData = eventData;
+    cornerstone.updateImage(element);
+  };
+
   mouseDragCallback = (e: any): void => {
     const eventData = e.detail;
     const { element } = eventData;

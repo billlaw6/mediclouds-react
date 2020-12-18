@@ -125,29 +125,10 @@ const playerStatusReducer: Reducer<
     case HIDDEN_RIGHT_PAN:
       return close("showRightPan");
 
-    // case ENABLE_MOVING_MODE:
-    //   return switchMode("movingMode", true);
-    // case DISABLE_MOVING_MODE:
-    //   return switchMode("movingMode", false);
-
-    // case ENABLE_SCALE_MODE:
-    //   return switchMode("scaleMode", true);
-    // case DISABLE_SCALE_MODE:
-    //   return switchMode("scaleMode", false);
-    // case ENABLE_WWWC_MODE:
-    //   return switchMode("wwwcMode", true);
-    // case DISABLE_WWWC_MODE:
-    //   return switchMode("wwwcMode", false);
-
     case UPDATE_KEYNAME:
       return update("keyName", payload || "");
     case UPDATE_MOUSE_NUM:
       return update("mouseNum", payload || 0);
-
-    // case ENABLE_MEASURE_LENGTH:
-    //   return switchMode("measureLength", true);
-    // case DISABLE_MEASURE_LENGTH:
-    //   return switchMode("measureLength", false);
 
     case UPDATE_CURRENT_TOOL:
       return update("currentToolName", payload || "");

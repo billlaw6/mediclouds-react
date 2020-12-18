@@ -97,15 +97,15 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
     const { buttons } = e;
 
     switch (buttons) {
-      case 4:
-        cst.setToolActiveForElement(element, "Pan", { mouseButtonMask: 4 });
-        switchTool("Pan");
-        updateMouseNum(4);
-        break;
       case 1:
-        cst.setToolActiveForElement(element, "Zoom", { mouseButtonMask: 1 });
-        switchTool("Zoom");
+        cst.setToolActiveForElement(element, "Pan", { mouseButtonMask: 1 });
+        switchTool("Pan");
         updateMouseNum(1);
+        break;
+      case 4:
+        cst.setToolActiveForElement(element, "Zoom", { mouseButtonMask: 4 });
+        switchTool("Zoom");
+        updateMouseNum(4);
         break;
       case 2:
         cst.setToolActiveForElement(element, "Wwwc", { mouseButtonMask: 2 });
@@ -216,7 +216,7 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
   );
 
   useEffect(() => {
-    // document.addEventListener("keydown", onKeydown);
+    document.addEventListener("keydown", onKeydown);
     // document.addEventListener("keyup", onKeyup);
 
     // 初始化在cs上启用窗口 并将当前窗口的HTML元素更新到当前窗口数据内
