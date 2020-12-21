@@ -48,7 +48,7 @@ const Player: FunctionComponent<PlayerPropsI> = (props) => {
 
   return (
     <div id="player">
-      <Header backTo={backTo}></Header>
+      {/* <Header backTo={backTo}></Header> */}
       <Tools></Tools>
       <div className="player-content">
         <Viewport></Viewport>

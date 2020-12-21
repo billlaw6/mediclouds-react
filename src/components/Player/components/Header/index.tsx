@@ -4,6 +4,7 @@ import React, { FunctionComponent } from "react";
 import { useHistory } from "react-router";
 import useSettings from "_components/Player/hooks/useSettings";
 
+import logo from "_images/logo.png";
 import "./style.less";
 
 interface HeaderPropsI {
@@ -18,8 +19,9 @@ const Header: FunctionComponent<HeaderPropsI> = (props) => {
   return (
     <header className="header">
       <h2 className="title">
-        医影浏览器
-        <sub>版本: v0.1 alpha</sub>
+        <img src={logo} style={{ width: "100px" }}></img>
+        {/* 医影浏览器 */}
+        {/* <sub>版本: v0.1 alpha</sub> */}
       </h2>
       <div className="buttons">
         <Tag
@@ -31,6 +33,7 @@ const Header: FunctionComponent<HeaderPropsI> = (props) => {
         </Tag>
         <ArrowLeftOutlined
           className="back"
+          style={{ color: "#000" }}
           onClick={(): void => {
             backTo && history.push(backTo);
           }}

@@ -16,8 +16,10 @@ import {
   AimOutlined,
   DownOutlined,
   CaretDownOutlined,
+  InfoCircleOutlined,
+  ArrowLeftOutlined,
 } from "@ant-design/icons";
-import { Dropdown, Menu, Modal } from "antd";
+import { Dropdown, Menu, Modal, Tag } from "antd";
 import React, { FunctionComponent, useCallback, useEffect, useState } from "react";
 import { WWWC_PRESETS } from "_components/Player/Contents";
 import useData from "_components/Player/hooks/useData";
@@ -25,23 +27,20 @@ import useStatus from "_components/Player/hooks/useStatus";
 import useWindows from "_components/Player/hooks/useWindows";
 import { CstToolNameT } from "_components/Player/types/common";
 import { WindowI } from "_components/Player/types/window";
+import { useHistory } from "react-router";
+import logo from "_images/logo.png";
+
 import ToolsGroup from "./Group";
 import ToolsItem from "./Item";
-
 import "./style.less";
+import useSettings from "_components/Player/hooks/useSettings";
 
 const Tools: FunctionComponent = () => {
+  const history = useHistory();
   const { cst, cs } = useData();
   const { getFocusWindow, pause, play, next, prev, resetWindowImage } = useWindows();
-  const {
-    showLeftPan,
-    showRightPan,
-    switchPan,
-    switchTool,
-    currentToolName,
-    showExamInfo,
-    switchExamInfo,
-  } = useStatus();
+  const { switchTool, currentToolName, showExamInfo, switchExamInfo } = useStatus();
+  const { switchPlayerVersion } = useSettings();
   const { isPlay, data, frame, element } = getFocusWindow() || ({} as WindowI);
 
   const [viewport, setViewport] = useState<any>();
@@ -126,10 +125,13 @@ const Tools: FunctionComponent = () => {
   return (
     <div id="tools" className="tools">
       <article className="tools-left">
-        <ToolsItem title="显示/隐藏左边栏">
-          <MenuUnfoldOutlined
-            className={`tools-item${showLeftPan ? " active reverse" : ""}`}
-            onClick={(): void => switchPan("left", !showLeftPan)}
+        <ToolsItem title="返回资源列表">
+          <ArrowLeftOutlined
+            className="tools-item"
+            style={{ marginRight: 0 }}
+            onClick={(): void => {
+              history.push("/resources");
+            }}
           />
         </ToolsItem>
 
@@ -316,14 +318,31 @@ const Tools: FunctionComponent = () => {
             }}
           />
         </ToolsItem>
-      </article>
-      <article className="tools-right">
-        <ToolsItem title="显示/隐藏右边栏">
-          <MenuFoldOutlined
-            className={`tools-item${showRightPan ? " active reverse-right" : ""}`}
-            onClick={(): void => switchPan("right", !showRightPan)}
+        <ToolsItem title="关于">
+          <InfoCircleOutlined
+            className="tools-item"
+            onClick={(): void => {
+              Modal.info({
+                title: "关于医影浏览器",
+                content: (
+                  <div className="tools-about">
+                    <img src={logo}></img>
+                    <span>版本：0.0.1 alpha</span>
+                  </div>
+                ),
+              });
+            }}
           />
         </ToolsItem>
+      </article>
+      <article className="tools-right">
+        <Tag
+          className="back-old-version"
+          color="volcano"
+          onClick={(): void => switchPlayerVersion(false)}
+        >
+          返回旧版播放器
+        </Tag>
       </article>
     </div>
   );

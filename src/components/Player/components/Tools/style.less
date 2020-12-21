@@ -57,6 +57,9 @@
 
     &:first-child {
       margin-left: 0;
+      &::before {
+        display: none;
+      }
     }
 
     &:last-child {
@@ -122,6 +125,16 @@
     &.disabled {
       color: rgba(255, 255, 255, 0.3);
       cursor: not-allowed;
+    }
+  }
+
+  &-about {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    img {
+      width: 100px;
     }
   }
 }

@@ -1,6 +1,7 @@
-import { ApiOutlined } from "@ant-design/icons";
+import { ApiOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
 import React, { FunctionComponent, ReactNode, useState } from "react";
 import Scrollbars from "react-custom-scrollbars";
+import useStatus from "_components/Player/hooks/useStatus";
 
 import "./style.less";
 
@@ -18,6 +19,7 @@ interface SidePanPropsI {
 }
 
 const SidePan: FunctionComponent<SidePanPropsI> = (props) => {
+  const { showLeftPan, showRightPan, switchPan } = useStatus();
   const { className, location = "left", children, show, header, isScroll } = props;
 
   const getClassName = (): string => {
@@ -32,6 +34,9 @@ const SidePan: FunctionComponent<SidePanPropsI> = (props) => {
     return res;
   };
 
+  let arrow = <LeftOutlined />;
+  if ((show && location === "right") || (!show && location === "left")) arrow = <RightOutlined />;
+
   return (
     <div className={getClassName()}>
       {header}
@@ -43,6 +48,14 @@ const SidePan: FunctionComponent<SidePanPropsI> = (props) => {
         ) : (
           <div className="side-pan-content">{children}</div>
         )}
+      </div>
+      <div
+        className="side-pan-handle"
+        onClick={(): void => {
+          switchPan(location, location === "left" ? !showLeftPan : !showRightPan);
+        }}
+      >
+        {arrow}
       </div>
     </div>
   );
