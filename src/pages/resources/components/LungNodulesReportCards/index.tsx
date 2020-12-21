@@ -1,4 +1,4 @@
-import { Card, Checkbox, Col, Empty, Grid, Row, Modal, Pagination } from "antd";
+import { Card, Checkbox, Col, Empty, Grid, Row, Modal, Pagination, Badge } from "antd";
 import React, { FunctionComponent, ReactNode, useState } from "react";
 import { formatDate, getSelected } from "_helper";
 import { LungNoduleReportI } from "_types/ai";
@@ -98,7 +98,36 @@ const LungNodulesReportCards: FunctionComponent<LungNodulesReportCardsPropsI> = 
         cols = [];
         count = 0;
       }
-      const { id, thumbnail = "", err } = item;
+      const { id, thumbnail = "", err, flag } = item;
+      let badgeItem = {
+        text: "",
+        color: "blue",
+      };
+
+      switch (flag) {
+        case 0:
+          badgeItem = {
+            text: "基础版",
+            color: "blue",
+          };
+          break;
+        case 1:
+          badgeItem = {
+            text: "完整版",
+            color: "green",
+          };
+          break;
+
+        default:
+          break;
+      }
+
+      if (err)
+        badgeItem = {
+          text: "检测失败",
+          color: "red",
+        };
+
       cols.push(
         <Col
           className={`resources-lung-nodules-report-cards-item`}
@@ -116,21 +145,23 @@ const LungNodulesReportCards: FunctionComponent<LungNodulesReportCardsPropsI> = 
                 }}
               ></Checkbox>
             ) : null}
-            <Card
-              onClick={(): void => {
-                if (isSelectable || err) return;
-                if (!lungNodule || item.id !== lungNodule.id) {
-                  updateLungNodule(item);
-                }
+            <Badge.Ribbon {...badgeItem}>
+              <Card
+                onClick={(): void => {
+                  if (isSelectable || err) return;
+                  if (!lungNodule || item.id !== lungNodule.id) {
+                    updateLungNodule(item);
+                  }
 
-                setOpenModal(true);
-              }}
-              hoverable
-              cover={<img src={thumbnail || imgFail}></img>}
-              style={{ cursor: !isSelectable && !!err ? "not-allowed" : "pointer" }}
-            >
-              <CardMeta data={item}></CardMeta>
-            </Card>
+                  setOpenModal(true);
+                }}
+                hoverable
+                cover={<img src={thumbnail || imgFail}></img>}
+                style={{ cursor: !isSelectable && !!err ? "not-allowed" : "pointer" }}
+              >
+                <CardMeta data={item}></CardMeta>
+              </Card>
+            </Badge.Ribbon>
           </label>
         </Col>,
       );
