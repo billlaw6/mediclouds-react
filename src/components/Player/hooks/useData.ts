@@ -122,7 +122,7 @@ export default () => {
     /** 构建CollectionMap */
     exams.forEach((exam, examIndex) => {
       const { id, active, defaultFrame = 0 } = exam;
-      const { children } = examListRes[examIndex];
+      const { children, anonymous_flag } = examListRes[examIndex];
       const playerSeriesMap: PlayerSeriesMapT = new Map();
 
       children.forEach((item, seriesIndex) => {
@@ -144,7 +144,7 @@ export default () => {
         key: examIndex,
         isActive: active,
         data: playerSeriesMap,
-        // patientInfo,
+        isAnonymous: !!anonymous_flag,
       };
 
       _playerExamMap.set(examIndex, playerExam);

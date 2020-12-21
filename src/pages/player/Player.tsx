@@ -1322,11 +1322,7 @@ const Player: FunctionComponent<PlayerPropsI> = (props) => {
             color="purple"
             className="switch-new-player"
             onClick={(): void => {
-              account.role === RoleE.DOCTOR || account.role === RoleE.PATIENT
-                ? message.warning({
-                    content: "对不起，您暂无权限体验新版播放器",
-                  })
-                : switchPlayerVersion(true);
+              switchPlayerVersion(true);
             }}
           >
             切换新版播放器alpha

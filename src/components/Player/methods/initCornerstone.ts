@@ -29,7 +29,6 @@ export default () => {
   cornerstoneTools.toolColors.setToolColor(DEFAULT_SETTINGS.textStyle);
   if (process.env.NODE_ENV === "development") cornerstoneTools.enableLogger();
 
-  console.log("cornerstoneTools", cornerstoneTools);
   return {
     cs: cornerstone,
     cst: cornerstoneTools,

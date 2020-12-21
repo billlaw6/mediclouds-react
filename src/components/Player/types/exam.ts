@@ -7,8 +7,9 @@ export interface PlayerExamI {
   id: string; // exam id
   key: PlayerExamKeyT; // examMap key
   patientInfo?: PatientExamI;
-  isActive: boolean;
   data: PlayerSeriesMapT; // Player Series Map
+  isActive: boolean;
+  isAnonymous: boolean; // 是否匿名
 }
 
 export type PlayerExamMapT = Map<PlayerExamKeyT, PlayerExamI>;

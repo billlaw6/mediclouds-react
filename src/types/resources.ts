@@ -53,6 +53,7 @@ export interface ExamIndexI {
   study_date: string;
   lung_nodule_flag: 0 | 1; // 是否可以做肺结节筛查 0:N 1:Y
   children: SeriesI[];
+  anonymous_flag: 0 | 1; // 是否匿名
 }
 
 /* pdf结构 */
