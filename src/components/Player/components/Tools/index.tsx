@@ -15,6 +15,7 @@ import {
   TableOutlined,
   AimOutlined,
   DownOutlined,
+  CaretDownOutlined,
 } from "@ant-design/icons";
 import { Dropdown, Menu, Modal } from "antd";
 import React, { FunctionComponent, useCallback, useEffect, useState } from "react";
@@ -154,6 +155,7 @@ const Tools: FunctionComponent = () => {
               />
               <Dropdown
                 className="tools-item-dropdown"
+                trigger={["click"]}
                 overlay={
                   <Menu
                     selectedKeys={[wwwcKey]}
@@ -186,7 +188,8 @@ const Tools: FunctionComponent = () => {
                   </Menu>
                 }
               >
-                <DownOutlined className="tools-item-dropdown-target" />
+                <CaretDownOutlined className="tools-item-dropdown-target" />
+                {/* <DownOutlined className="tools-item-dropdown-target" /> */}
               </Dropdown>
             </span>
           </ToolsItem>
