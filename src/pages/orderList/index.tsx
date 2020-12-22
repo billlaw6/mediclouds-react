@@ -109,13 +109,20 @@ const OrderList: FunctionComponent = () => {
       });
 
     getOrderList(id.current, searchQuery)
-      .then((res) => setOrderList(res.results))
+      .then((res) => {
+        setOrderList(res.results);
+        setPagination(
+          Object.assign({}, pagination, {
+            total: res.count,
+          }),
+        );
+      })
       .catch((err) => console.error(err));
-  }, [dateRange, pagination, searchVal, filters]);
+  }, [dateRange, pagination.current, pagination.pageSize, searchVal, filters]);
 
   useEffect(() => {
     fetchData();
-  }, [fetchData, pagination, searchVal, filters]);
+  }, [fetchData]);
 
   /**
    * 批量选择
@@ -132,7 +139,7 @@ const OrderList: FunctionComponent = () => {
    * @param {number} [pageSize=10]
    */
   const onChangePagination = (current: number, pageSize = 10): void => {
-    setPagination({ current, pageSize });
+    setPagination(Object.assign({}, pagination, { current, pageSize }));
   };
 
   /**
@@ -175,7 +182,7 @@ const OrderList: FunctionComponent = () => {
           onChange: onChangePagination,
           onShowSizeChange: onChangePagination,
         }}
-        onChange={(pagination, filters): void => {
+        onChange={(pagination, filters, sort): void => {
           const _filters: any = {};
 
           for (const key in filters) {
