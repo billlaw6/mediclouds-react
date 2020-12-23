@@ -195,7 +195,7 @@ const Nodule: FunctionComponent<NodulePropsI> = (props) => {
                   onClick && onClick(disp_z);
                 }}
               >
-                跳转到播放器相应帧
+                跳转到浏览器相应帧
               </Button>
             </Space>
           </div>

@@ -187,7 +187,7 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
     setToolState({ toolName, data: measurementData });
   };
 
-  /** 当播放器渲染时触发 */
+  /** 当浏览器渲染时触发 */
   const onImageRendered = useCallback(
     (e: any) => {
       if (!cs) return;

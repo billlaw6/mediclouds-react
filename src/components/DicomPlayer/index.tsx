@@ -7,7 +7,7 @@ interface DicomPlayerPropsI {
 const DicomPlayer: FunctionComponent<DicomPlayerPropsI> = (props) => {
   return (
     <div id="dicomPlayer" className="player">
-      DICOM 播放器
+      DICOM 浏览器
     </div>
   );
 };

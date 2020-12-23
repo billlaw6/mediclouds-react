@@ -341,7 +341,7 @@ const Tools: FunctionComponent = () => {
           color="volcano"
           onClick={(): void => switchPlayerVersion(false)}
         >
-          返回旧版播放器
+          返回旧版浏览器
         </Tag>
       </article>
     </div>

@@ -38,7 +38,7 @@ const PlayerPage: FunctionComponent = () => {
             fontSize: "2rem",
           }}
         >
-          加载播放器...
+          加载浏览器...
         </div>
       }
     >

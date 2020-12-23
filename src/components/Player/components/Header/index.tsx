@@ -29,7 +29,7 @@ const Header: FunctionComponent<HeaderPropsI> = (props) => {
           color="volcano"
           onClick={(): void => switchPlayerVersion(false)}
         >
-          返回旧版播放器
+          返回旧版医影浏览器
         </Tag>
         <ArrowLeftOutlined
           className="back"

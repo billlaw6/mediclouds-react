@@ -1325,7 +1325,7 @@ const Player: FunctionComponent<PlayerPropsI> = (props) => {
               switchPlayerVersion(true);
             }}
           >
-            切换新版播放器alpha
+            切换新版医影浏览器
           </Tag>
           <LinkButton
             className="player-header-back"

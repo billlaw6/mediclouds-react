@@ -71,7 +71,7 @@ export const filterNoduleType = (
 /**
  *  过滤相对真实的结节
  *
- *  概率 >= .6  体积 >= 7
+ *  概率 >= .45  体积 >= 7
  *
  * @param {LungNoduleI[]} data
  * @returns {{real: LungNoduleI[], fake: LungNoduleI[]}}
@@ -83,7 +83,7 @@ export const filterNodulesTruth = (data: LungNoduleI[]) => {
   data.forEach((nodule) => {
     const { score, vol } = nodule;
 
-    if (score >= 0.6 && vol >= 7) real.push(nodule);
+    if (score >= 0.45 && vol >= 7) real.push(nodule);
     else fake.push(nodule);
   });
 
