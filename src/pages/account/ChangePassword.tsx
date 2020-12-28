@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from "react";
-import { UserI } from "_types/account";
+import { UserI } from "mc-api";
 import { Store } from "antd/lib/form/interface";
 import Form from "antd/lib/form/Form";
 import FormItem from "antd/lib/form/FormItem";

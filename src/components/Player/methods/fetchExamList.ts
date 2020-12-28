@@ -1,11 +1,10 @@
-import { getDicomSeries } from "_api/dicom";
-import { getExam } from "_api/resources";
-import { ExamIndexI } from "_types/resources";
+import { getExam, ExamI } from "mc-api";
 import { PlayerExamPropsI } from "../types/common";
 
 /** 获取指定的seriesList */
-export default async (exams: PlayerExamPropsI[]): Promise<ExamIndexI[]> => {
-  const fetchArr: Promise<ExamIndexI>[] = [];
+export default async (exams: PlayerExamPropsI[]): Promise<ExamI[]> => {
+  const fetchArr: Promise<ExamI>[] = [];
+
   exams.forEach((examProps) => {
     fetchArr.push(getExam(examProps.id));
   });

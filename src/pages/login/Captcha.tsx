@@ -1,11 +1,10 @@
 import React, { FunctionComponent, useState, useEffect, useCallback } from "react";
 import { FormItemProps } from "antd/lib/form";
-import { CaptchaI } from "_types/api";
 import FormItem from "antd/lib/form/FormItem";
 import { Input, Spin } from "antd";
 import md5 from "blueimp-md5";
 import { LoadingOutlined } from "@ant-design/icons";
-import { getCaptcha } from "_api/user";
+import { getCaptcha, CaptchaI } from "mc-api";
 
 import "./captchaStyle.less";
 

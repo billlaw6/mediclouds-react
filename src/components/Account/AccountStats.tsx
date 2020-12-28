@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from "react";
-import { RoleE, StatsI } from "_types/account";
+import { RoleE, StatsI } from "mc-api";
 import { Row, Col, Card, Statistic } from "antd";
 
 const AccountStats: FunctionComponent<{ role: RoleE; stats: StatsI | null }> = (props) => {

@@ -1,4 +1,4 @@
-import { SeriesI } from "_types/api";
+import { SeriesI } from "mc-api";
 import { PlayerExamKeyT } from "./exam";
 
 export type PlayerSeriesKeyT = number;

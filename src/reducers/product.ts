@@ -1,5 +1,6 @@
 import { Reducer } from "redux";
-import { ProdI, ProdActionE, ProdStateT } from "_types/product";
+import { ProdActionE, ProdStateT } from "_types/product";
+import { ProdI } from "mc-api";
 import { ActionI } from "_types/core";
 
 const DEFAULT_STATE: ProdStateT = [];

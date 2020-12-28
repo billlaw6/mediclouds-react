@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState } from "react";
-import { UserI } from "_types/account";
+import { UserI } from "mc-api";
 import { Store } from "antd/lib/form/interface";
 import { Upload, Button } from "antd";
 import { ImageFileToBase64 } from "_helper";
@@ -17,11 +17,16 @@ const Certificate: FunctionComponent<CertificatePropsI> = (props) => {
 
   const [preImg, setPreImg] = useState<{ file?: File; img?: string }>({});
 
+  const hasCertificate = certificate && certificate.length;
+  const previewImg = preImg.img || (certificate && certificate.length ? certificate[0] : "") || "";
+
   return (
     <div className="account-certificate">
       <div
         className="account-certificate-preview"
-        style={{ backgroundImage: `url(${preImg.img || certificate[0] || ""})` }}
+        style={{
+          backgroundImage: `url(${previewImg})`,
+        }}
       ></div>
       <Upload
         accept="image/*"
@@ -34,7 +39,7 @@ const Certificate: FunctionComponent<CertificatePropsI> = (props) => {
           return false;
         }}
       >
-        <Button>{certificate.length ? "更新企业资质" : "上传企业资质"}</Button>
+        <Button>{hasCertificate ? "更新企业资质" : "上传企业资质"}</Button>
       </Upload>
     </div>
   );

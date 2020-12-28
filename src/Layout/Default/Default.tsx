@@ -7,7 +7,7 @@ import Footer from "_components/Footer/Footer";
 
 /* action */
 import SideBtns from "_components/SideBtns";
-import { RoleE } from "_types/account";
+import { RoleE } from "mc-api";
 
 import useAccount from "_hooks/useAccount";
 import { IS_MOBILE } from "_constants";

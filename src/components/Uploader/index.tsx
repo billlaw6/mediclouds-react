@@ -4,7 +4,7 @@ import { useDropzone } from "react-dropzone";
 import { UploadOutlined } from "@ant-design/icons";
 
 import { UploaderCellI, UploaderStatusE } from "_types/api";
-import { uploadResources } from "_api/resources";
+import { uploadResources } from "mc-api";
 import FileProgress from "_components/FileProgress/FileProgress";
 
 import "./style.less";

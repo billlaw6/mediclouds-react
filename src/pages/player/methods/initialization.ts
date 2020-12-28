@@ -3,8 +3,7 @@
  *
  */
 
-import { getDicomSeries } from "_api/dicom";
-import { PatientExamI } from "_types/api";
+import { getSeriesList, PatientExamI } from "mc-api";
 
 import { PlayerDataI, PlayerDataMapT } from "../type";
 import cacheDicoms from "./cacheDicoms";
@@ -32,7 +31,7 @@ export default async (props: InitPropsI): Promise<InitResI | undefined> => {
 
   /** 获取序列信息列表 */
   try {
-    const dicomSeriesRes = await getDicomSeries(examId);
+    const dicomSeriesRes = await getSeriesList(examId);
     const { children, ...others } = dicomSeriesRes;
 
     patientInfo = others;

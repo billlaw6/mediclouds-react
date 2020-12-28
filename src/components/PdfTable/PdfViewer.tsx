@@ -1,7 +1,7 @@
 import { Modal, Pagination } from "antd";
+import { PdfI } from "mc-api";
 import React, { FunctionComponent, useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
-import { PdfI } from "_types/resources";
 
 interface PdfViewerPropsI {
   data?: PdfI | null;

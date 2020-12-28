@@ -1,7 +1,5 @@
-import { createOrder, getOrderStatus } from "_api/order";
-import { getOrderWechatPayQrcode } from "_api/pay";
+import { createOrder, getOrderStatus, getOrderWechatPayQrcode, OrderI } from "mc-api";
 import { getTrulyPrice } from "_helper";
-import { OrderI } from "_types/order";
 import useAccount from "./useAccount";
 import useProd from "./useProd";
 

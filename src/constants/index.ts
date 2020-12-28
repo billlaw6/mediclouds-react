@@ -1,4 +1,4 @@
-import { PatientExamI, SeriesBasicI } from "_types/api";
+import { PatientExamI, SeriesBasicI } from "mc-api";
 
 export const IS_MOBILE = /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent);
 
@@ -22,6 +22,10 @@ export const DEFAULT_SERIES: SeriesBasicI = {
   window_center: 0,
   thumbnail: "",
   display_frame_rate: 30,
+  axis_flag: 0,
+  d3_flag: 0,
+  otc_flag: 0,
+  window_flag: 0,
 };
 
 export const FULL_LUNG_NODULES_REPORT =

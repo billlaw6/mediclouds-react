@@ -1,6 +1,6 @@
 import { Button, Select, Space, message } from "antd";
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { getLungNoduleReport } from "_api/ai";
+import { getLungNoduleReport } from "mc-api";
 import useData from "_components/Player/hooks/useData";
 import useWindows from "_components/Player/hooks/useWindows";
 import Scrollbar from "react-custom-scrollbars";

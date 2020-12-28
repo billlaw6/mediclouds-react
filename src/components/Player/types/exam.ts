@@ -1,4 +1,4 @@
-import { PatientExamI } from "_types/api";
+import { PatientExamI } from "mc-api";
 import { PlayerSeriesMapT } from "./series";
 
 export type PlayerExamKeyT = number;

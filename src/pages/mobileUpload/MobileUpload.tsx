@@ -1,7 +1,6 @@
 import React, { useState, FunctionComponent, useRef } from "react";
 import { useDropzone } from "react-dropzone";
-import config from "_config";
-import axios from "axios";
+import { uploadDicom_OLD } from "mc-api";
 
 import { UploadStatusI } from "./type";
 import FileProgress from "_components/FileProgress/FileProgress";
@@ -9,9 +8,9 @@ import FileProgress from "_components/FileProgress/FileProgress";
 import { useDispatch } from "react-redux";
 import { InboxOutlined } from "@ant-design/icons";
 import { UploaderStatusE } from "_types/api";
+import { ResourcesActionE } from "_types/resources";
 
 import "./MobileUpload.less";
-import { ResourcesActionE } from "_types/resources";
 
 const MobileUpload: FunctionComponent = () => {
   const dispatch = useDispatch();
@@ -40,20 +39,15 @@ const MobileUpload: FunctionComponent = () => {
 
   const upload = async (formData: FormData, progressInfo: UploadStatusI): Promise<void> => {
     const { id } = progressInfo;
-    const URL = `${config.personalBaseUrl}/dicom/upload/`;
+
     try {
-      await axios.post(URL, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        onUploadProgress: function (progressEvent: any) {
-          const { loaded, total } = progressEvent;
-          updateCurrentLoad(
-            Object.assign({}, progressInfo, {
-              progress: (loaded / total) * 100,
-            }),
-          );
-        },
+      await uploadDicom_OLD(formData, (progressEvent: any) => {
+        const { loaded, total } = progressEvent;
+        updateCurrentLoad(
+          Object.assign({}, progressInfo, {
+            progress: (loaded / total) * 100,
+          }),
+        );
       });
 
       dispatch({ type: ResourcesActionE.GET_EXAM_LIST });

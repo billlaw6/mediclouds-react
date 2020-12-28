@@ -1,14 +1,14 @@
 /* eslint-disable react/display-name */
 import { Table } from "antd";
 import { ColumnsType } from "antd/es/table";
+import { PdfI, SearchQueryPropsI, SearchQueryResI } from "mc-api";
 import React, { FunctionComponent, ReactNode, useState } from "react";
 import { formatDate } from "_helper";
-import { GetSearchQueryPropsI, SearchQueryResI } from "_types/api";
-import { PdfI } from "_types/resources";
+
 import PdfViewer from "./PdfViewer";
 
 interface PdfTablePropsI {
-  searchQuery: GetSearchQueryPropsI;
+  searchQuery: SearchQueryPropsI;
   isSelectable?: boolean; // 是否选择模式
   selected?: PdfI[]; // 已选择的id
   data?: SearchQueryResI<PdfI>; // 数据

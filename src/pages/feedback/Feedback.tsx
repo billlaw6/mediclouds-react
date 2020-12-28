@@ -1,13 +1,12 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import React, { FunctionComponent, useState, useEffect, useRef } from "react";
+import React, { FunctionComponent, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Radio, Input, message } from "antd";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 
-import { FeedbackTypeI } from "_types/api";
-import { personalReq } from "_axios";
+import { FeedbackTypeI, sendFeedback, getFeekbackType } from "mc-api";
 
 import "./Feedback.less";
-import { ArrowLeftOutlined } from "@ant-design/icons";
 
 const TOTAL = 200;
 
@@ -20,11 +19,7 @@ const Feedback: FunctionComponent = () => {
     if (currentType) {
       if (!value) message.warning("详细描述不能为空");
       else
-        personalReq({
-          method: "POST",
-          url: "/user/feedback/",
-          data: { type_id: currentType.code, content: value },
-        })
+        sendFeedback({ type_id: currentType.code, content: value })
           .then((_res) => {
             setCurrentType(feedbackTypes[0]);
             setValue("");
@@ -37,10 +32,7 @@ const Feedback: FunctionComponent = () => {
   };
 
   useEffect(() => {
-    personalReq({
-      method: "GET",
-      url: "/user/feedback-type/",
-    })
+    getFeekbackType()
       .then((res) => {
         const types = (res as FeedbackTypeI[]).sort(
           (a, b) => parseInt(a.code, 10) - parseInt(b.code, 10),

@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useState } from "react";
 import { message, Tabs } from "antd";
 import useAccount from "_hooks/useAccount";
-import { RoleE } from "_types/account";
+import { RoleE } from "mc-api";
 
 import { Store } from "antd/lib/form/interface";
 

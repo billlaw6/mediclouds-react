@@ -8,13 +8,13 @@ import FileProgress from "_components/FileProgress/FileProgress";
 import { Link } from "react-router-dom";
 
 import { useDispatch } from "react-redux";
-import { checkDicomTotalCount, uploadDicom } from "_api/dicom";
 import wechatQrcode from "_images/wechat-qrcode.jpg";
 import { InboxOutlined, ArrowLeftOutlined } from "@ant-design/icons";
 import { UploaderStatusE } from "_types/api";
+import { ResourcesActionE } from "_types/resources";
+import { checkDicomParseProgress, uploadDicom_OLD } from "mc-api";
 
 import "./Upload.less";
-import { ResourcesActionE } from "_types/resources";
 
 const Upload: FunctionComponent = () => {
   const dispatch = useDispatch();
@@ -48,7 +48,7 @@ const Upload: FunctionComponent = () => {
     const { id } = progressInfo;
 
     try {
-      const errFiles = await uploadDicom(formData, (progressEvent: ProgressEvent) => {
+      const errFiles = await uploadDicom_OLD(formData, (progressEvent: ProgressEvent) => {
         const { loaded, total } = progressEvent;
         updateCurrentLoad(
           Object.assign({}, progressInfo, {
@@ -125,9 +125,9 @@ const Upload: FunctionComponent = () => {
 
   // 获取所有上传的dicom总量
   useEffect(() => {
-    checkDicomTotalCount()
+    checkDicomParseProgress()
       .then((res) => {
-        setTotal(res);
+        setTotal(res.total);
       })
       .catch((err) => console.error(err));
   }, []);

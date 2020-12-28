@@ -1,5 +1,5 @@
 import { AccountActionTypes } from "_types/actions";
-import { UserI, RoleE } from "_types/account";
+import { UserI, RoleE } from "mc-api";
 import { Reducer } from "redux";
 import { ActionI } from "_types/core";
 
@@ -38,6 +38,7 @@ const DEFAULT_ACCOUNT: AccountStateI = {
   my_ai_reports: 0,
   my_case_files: 0,
   my_dicom_files: 0,
+  certificate_status: 0,
 };
 
 const accountReducer: Reducer<AccountStateI, ActionI<AccountActionTypes, UserI>> = (

@@ -39,11 +39,9 @@ import LinkButton from "_components/LinkButton/LinkButton";
 import { Scrollbars } from "react-custom-scrollbars";
 
 import { SeriesImgCacheListT, ImgDrawInfoI, MprImgClientRects, MprImgAndSizeI } from "./type";
-import { Slider, Progress, Tooltip, Tag, message } from "antd";
-import { ImageI, SeriesListI, SeriesI, PatientExamI } from "_types/api";
+import { Slider, Progress, Tag } from "antd";
 import { CustomHTMLDivElement } from "_types/core";
 
-// import axios from "axios";
 import Shortcut from "./components/Shortcut";
 import imgLoaderrImg from "_images/img-load-err.jpg";
 import {
@@ -59,19 +57,25 @@ import {
   LeftOutlined,
   RightOutlined,
 } from "@ant-design/icons";
-import PatientInfo from "./components/PatientInfo";
-import getQueryString, { getTexVal } from "_helper";
 import useReport from "_hooks/useReport";
-import { getLungSeries, getMprSeries, getSeries } from "_api/resources";
-import { getSeriesList } from "./actions";
-import { LungNoduleI } from "_types/ai";
-
-import Fns from "./components/Fns";
+import {
+  getLungSeries,
+  getMprSeries,
+  getSeriesList_OLD,
+  getSeries,
+  LungNoduleI,
+  ImageI,
+  SeriesListI,
+  SeriesI,
+  PatientExamI,
+} from "mc-api";
 import useSettings from "_components/Player/hooks/useSettings";
 import useAccount from "_hooks/useAccount";
 
+import PatientInfo from "./components/PatientInfo";
+import Fns from "./components/Fns";
+
 import "./Player.less";
-import { RoleE } from "_types/account";
 
 const VIEWPORT_WIDTH_DEFAULT = 890; // 视图默认宽
 const VIEWPORT_HEIGHT_DEFAULT = 550; // 视图默认高
@@ -228,7 +232,7 @@ const Player: FunctionComponent<PlayerPropsI> = (props) => {
 
     /* 获取series 列表 */
     try {
-      const seriesListRes = await getSeriesList(id);
+      const seriesListRes = await getSeriesList_OLD(examId);
       if (!seriesListRes) return;
 
       const { children, ...args } = seriesListRes;

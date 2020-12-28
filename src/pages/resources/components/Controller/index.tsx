@@ -10,7 +10,7 @@ import { spawn } from "child_process";
 import React, { FunctionComponent, ReactElement, ReactNode } from "react";
 import LinkButton from "_components/LinkButton/LinkButton";
 import useResources from "_hooks/useResources";
-import { ExamSortKeyE, ImgAndPdfSortKeyE, ResourcesTypeE } from "_types/resources";
+import { ExamSortKeyE, ImgAndPdfSortKeyE, ResourcesTypeE } from "mc-api";
 
 import "./style.less";
 

@@ -7,15 +7,14 @@
 */
 
 import React, { FunctionComponent, useState, ReactNode } from "react";
-import { UserI, RoleE, StatsI } from "_types/account";
 import { Tabs, Input, Descriptions, Spin, DatePicker, Space } from "antd";
 import { EditOutlined, SyncOutlined, SaveOutlined, CloseOutlined } from "@ant-design/icons";
-import { getStats } from "_api/user";
+import { getStats, UserI, RoleE, StatsI } from "mc-api";
 import AccountList from "_components/AccountList";
 import AccountStats from "./AccountStats";
+import { getSexName } from "_helper";
 
 import "./style.less";
-import { getSexName } from "_helper";
 
 interface AccountPropsI extends UserI {
   [key: string]: any;

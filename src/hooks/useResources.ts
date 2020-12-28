@@ -1,21 +1,19 @@
 import { useDispatch, useSelector } from "react-redux";
+import { StoreStateI } from "_types/core";
+import { ResourcesActionE } from "_types/resources";
+import useAccount from "./useAccount";
 import {
-  delExamList,
   getExamList,
   getImgList,
-  getLungNodulesReportList,
   getPdfList,
+  getLungNodulesReportList,
   updateExamDesc,
-} from "_api/resources";
-import { GetSearchQueryPropsI } from "_types/api";
-import { StoreStateI } from "_types/core";
-import {
+  delResources,
+  SearchQueryPropsI,
+  ResourcesTypeE,
   ExamSortKeyE,
   ImgAndPdfSortKeyE,
-  ResourcesActionE,
-  ResourcesTypeE,
-} from "_types/resources";
-import useAccount from "./useAccount";
+} from "mc-api";
 
 export default () => {
   const { account } = useAccount();
@@ -34,22 +32,22 @@ export default () => {
 
   const { id = "" } = account;
 
-  const fetchExamList = async (searchQuery?: GetSearchQueryPropsI): Promise<void> => {
+  const fetchExamList = async (searchQuery?: SearchQueryPropsI): Promise<void> => {
     const res = await getExamList(id, searchQuery);
     dispatch({ type: ResourcesActionE.GET_EXAM_LIST, payload: res });
   };
 
-  const fetchImgList = async (searchQuery?: GetSearchQueryPropsI): Promise<void> => {
+  const fetchImgList = async (searchQuery?: SearchQueryPropsI): Promise<void> => {
     const res = await getImgList(id, searchQuery);
     dispatch({ type: ResourcesActionE.GET_IMG_LIST, payload: res });
   };
 
-  const fetchPdfList = async (searchQuery?: GetSearchQueryPropsI): Promise<void> => {
+  const fetchPdfList = async (searchQuery?: SearchQueryPropsI): Promise<void> => {
     const res = await getPdfList(id, searchQuery);
     dispatch({ type: ResourcesActionE.GET_PDF_LIST, payload: res });
   };
 
-  const fetchLungNodulesReportList = async (searchQuery?: GetSearchQueryPropsI): Promise<void> => {
+  const fetchLungNodulesReportList = async (searchQuery?: SearchQueryPropsI): Promise<void> => {
     const res = await getLungNodulesReportList(id, searchQuery);
     dispatch({ type: ResourcesActionE.GET_LUNG_NODULES_REPORT, payload: res });
   };
@@ -61,25 +59,25 @@ export default () => {
 
   /* 删除exam */
   const delExam = async (ids: string[]): Promise<void> => {
-    const res = await delExamList(ResourcesTypeE.EXAM, ids);
+    const res = await delResources(ResourcesTypeE.EXAM, ids);
     dispatch({ type: ResourcesActionE.DEL_EXAM_LIST, payload: res });
   };
 
   /* 删除pdf */
   const delPdf = async (ids: string[]): Promise<void> => {
-    const res = await delExamList(ResourcesTypeE.PDF, ids);
+    const res = await delResources(ResourcesTypeE.PDF, ids);
     dispatch({ type: ResourcesActionE.DEL_PDF_LIST, payload: res });
   };
 
   /* 删除图片 */
   const delImg = async (ids: string[]): Promise<void> => {
-    const res = await delExamList(ResourcesTypeE.IMG, ids);
+    const res = await delResources(ResourcesTypeE.IMG, ids);
     dispatch({ type: ResourcesActionE.DEL_IMG_LIST, payload: res });
   };
 
   /* 删除肺结节筛查报告 */
   const delLungNodulesReport = async (ids: string[]): Promise<void> => {
-    const res = await delExamList(ResourcesTypeE.LUNG_NODULES_REPORT, ids);
+    const res = await delResources(ResourcesTypeE.LUNG_NODULES_REPORT, ids);
     dispatch({ type: ResourcesActionE.DEL_LUNG_NODULES_REPORT, payload: res });
   };
 

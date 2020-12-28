@@ -1,14 +1,17 @@
 import { useDispatch, useSelector } from "react-redux";
 import {
   createCase,
-  delCase,
+  delCases,
   getCase,
-  getMineCaseList,
+  getCaseList,
   getSharedCaseList,
   updateCaseStamp,
-} from "_api/case";
-import { CaseActionE, CaseI, CaseTypeE, CreateCaseDataI } from "_types/case";
+  CaseI,
+  CaseTypeE,
+  CreateCaseDataI,
+} from "mc-api";
 import { StoreStateI } from "_types/core";
+import { CaseActionE } from "_types/case";
 
 export default () => {
   const dispatch = useDispatch();
@@ -19,7 +22,7 @@ export default () => {
 
   /** 获取自己的病例列表 */
   const fetchMineCaseList = (): void => {
-    getMineCaseList()
+    getCaseList()
       .then((res) => {
         dispatch({ type: CaseActionE.GET_MINE_LIST, payload: res });
       })
@@ -47,7 +50,7 @@ export default () => {
 
   const _delCase = async (ids: number[]): Promise<void> => {
     try {
-      await delCase(ids);
+      await delCases(ids);
       await fetchMineCaseList();
     } catch (error) {
       throw new Error(error);

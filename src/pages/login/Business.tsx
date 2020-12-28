@@ -1,9 +1,8 @@
 import React, { FunctionComponent, useState } from "react";
 import { Tabs, Input, Button, Form } from "antd";
-import { FormLoginDataI, PhoneLoginDataI } from "_types/api";
+import { LoginFormDataI, LoginPhoneDataI } from "mc-api";
 import useAccount from "_hooks/useAccount";
 
-import Captcha from "./Captcha";
 import SmsCode from "_components/SmsCode";
 
 const { TabPane } = Tabs;
@@ -28,13 +27,13 @@ const Business: FunctionComponent = () => {
           // if (!captchaVal) return;
 
           if (loginType === "form") {
-            const { username, password, captcha: _captcha } = vals as FormLoginDataI;
+            const { username, password } = vals as LoginFormDataI;
 
             formLogin(
               {
                 username,
                 password,
-                captcha: _captcha,
+                // captcha: _captcha,
               },
               "/manager",
             ).then(
@@ -43,9 +42,9 @@ const Business: FunctionComponent = () => {
             );
           }
           if (loginType === "phone") {
-            const { cell_phone, auth_code, captcha: _captcha } = vals as PhoneLoginDataI;
+            const { cell_phone, auth_code } = vals as LoginPhoneDataI;
 
-            phoneLogin({ cell_phone, auth_code, captcha: _captcha }).then(
+            phoneLogin({ cell_phone, auth_code }).then(
               () => console.log("phone login successed"),
               (err) => console.error(err),
             );

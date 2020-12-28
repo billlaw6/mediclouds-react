@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { LungNoduleReportI } from "_types/ai";
+import { LungNoduleReportI } from "mc-api";
 import { StoreStateI } from "_types/core";
 import { setDataToPlayerSeriesMap } from "../helpers";
 import fetchExamList from "../methods/fetchExamList";

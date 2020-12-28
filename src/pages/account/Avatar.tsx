@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState } from "react";
-import { UserI } from "_types/account";
+import { UserI } from "mc-api";
 import { Store } from "antd/lib/form/interface";
 import { Space, Upload, Button } from "antd";
 import { ImageFileToBase64 } from "_helper";

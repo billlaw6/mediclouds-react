@@ -1,8 +1,7 @@
 import React, { FunctionComponent, useState } from "react";
 import { Modal, Form, Input, Upload, Button } from "antd";
-import { HomeResI } from "../type";
 import { UploadOutlined } from "@ant-design/icons";
-import { updateHomeResList, createHomeResList } from "_api/manager";
+import { createWechatCover, updateWechatCover, WechatCoverI } from "mc-api";
 
 interface EditPanelPropsI {
   status: {
@@ -11,13 +10,13 @@ interface EditPanelPropsI {
   };
   onCancel: Function;
   onOk: Function;
-  data: HomeResI | undefined;
+  data: WechatCoverI | undefined;
 }
 
 const EditPanel: FunctionComponent<EditPanelPropsI> = (props) => {
   const { status, onCancel, onOk, data } = props;
   const { show, type } = status;
-  const [preData, setPreData] = useState<HomeResI>({});
+  const [preData, setPreData] = useState<WechatCoverI>({});
 
   const isEdit = type === "edit";
 
@@ -44,9 +43,9 @@ const EditPanel: FunctionComponent<EditPanelPropsI> = (props) => {
 
     try {
       if (isEdit && data) {
-        res = await updateHomeResList(data.id || "", formData);
+        res = await updateWechatCover(data.id || "", formData);
       } else {
-        res = await createHomeResList(formData);
+        res = await createWechatCover(formData);
       }
 
       setPreData({});

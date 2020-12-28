@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
 import Nail from "_components/Nail";
-import { RoleE } from "_types/account";
+import { RoleE } from "mc-api";
 
 interface AccountRolePropsI {
   role: RoleE;

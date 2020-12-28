@@ -1,5 +1,4 @@
-import { RoleE } from "./account";
-import { ProdI } from "./product";
+import { ProdI, RoleE } from "mc-api";
 
 /* 订单结构 */
 export interface OrderI {

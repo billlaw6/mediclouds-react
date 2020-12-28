@@ -2,9 +2,7 @@ import React, { FunctionComponent, useEffect, useState } from "react";
 import { Modal, Spin, Tabs } from "antd";
 
 import useResources from "_hooks/useResources";
-import { ExamIndexI, ImgI, PdfI, ResourcesTypeE } from "_types/resources";
 import Controller from "./components/Controller";
-import { GetSearchQueryPropsI } from "_types/api";
 
 import { flattenArr } from "_helper";
 import ExamCards from "_components/ExamCards";
@@ -12,18 +10,24 @@ import ImgCards from "_components/ImgCards";
 import PdfTable from "_components/PdfTable";
 import LungNodulesReportCards from "./components/LungNodulesReportCards";
 import Notify from "_components/Notify";
-import { checkDicomParseProgress } from "_api/dicom";
 import PrivacyNotice from "_components/PrivacyNotice";
-import { useHistory } from "react-router";
 import CreateCase from "./components/CreateCase";
-import { LungNoduleReportI } from "_types/ai";
+import {
+  SearchQueryPropsI,
+  ExamListItemI,
+  ImgI,
+  PdfI,
+  LungNoduleReportI,
+  checkDicomParseProgress,
+  ResourcesTypeE,
+} from "mc-api";
 
 import "./style.less";
 
 /** 已选列表 */
 interface SelectedI {
   [key: string]: any;
-  [ResourcesTypeE.EXAM]: ExamIndexI[];
+  [ResourcesTypeE.EXAM]: ExamListItemI[];
   [ResourcesTypeE.IMG]: ImgI[];
   [ResourcesTypeE.PDF]: PdfI[];
   [ResourcesTypeE.LUNG_NODULES_REPORT]: LungNoduleReportI[];
@@ -31,10 +35,10 @@ interface SelectedI {
 
 /* 资源当前的页码 */
 interface SearchQueryI {
-  [ResourcesTypeE.EXAM]: GetSearchQueryPropsI<"study_date" | "modality">;
-  [ResourcesTypeE.IMG]: GetSearchQueryPropsI<"created_at" | "filename">;
-  [ResourcesTypeE.PDF]: GetSearchQueryPropsI<"created_at" | "filename">;
-  [ResourcesTypeE.LUNG_NODULES_REPORT]: GetSearchQueryPropsI<"study_date" | "modality">;
+  [ResourcesTypeE.EXAM]: SearchQueryPropsI<"study_date" | "modality">;
+  [ResourcesTypeE.IMG]: SearchQueryPropsI<"created_at" | "filename">;
+  [ResourcesTypeE.PDF]: SearchQueryPropsI<"created_at" | "filename">;
+  [ResourcesTypeE.LUNG_NODULES_REPORT]: SearchQueryPropsI<"study_date" | "modality">;
 }
 
 const { TabPane } = Tabs;

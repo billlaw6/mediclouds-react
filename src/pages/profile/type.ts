@@ -1,4 +1,4 @@
-import { UserI } from "_types/account";
+import { UserI } from "mc-api";
 // import { UpdateUserActionFuncT } from "_actions/user";
 
 // export interface MapStateToPropsI {

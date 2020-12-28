@@ -1,12 +1,11 @@
 import React, { FunctionComponent, ReactNode, useEffect, useState } from "react";
 import { Input, Button, Popconfirm, Row, Col, Space, DatePicker, Modal, Select } from "antd";
 import { isUndefined } from "util";
+import { UserI, RoleE } from "mc-api";
+import useAccount from "_hooks/useAccount";
+import AccountRole from "_components/AccountRole";
 
 import "./style.less";
-import { UserI, RoleE } from "_types/account";
-import useAccount from "_hooks/useAccount";
-import { getAffiliatedList } from "_api/user";
-import AccountRole from "_components/AccountRole";
 
 interface ListControlBarPropsI {
   searchPlaceholder?: string;

@@ -1,4 +1,4 @@
-import { ImgI, PdfI, ExamSortKeyE } from "_types/resources";
+import { ImgI, PdfI, ExamSortKeyE } from "mc-api";
 
 export interface ResourcesStateI {
   sortType: ExamSortKeyE; // 排序规则

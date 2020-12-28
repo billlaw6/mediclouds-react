@@ -1,27 +1,32 @@
-import { Button, Descriptions, Input, message, PageHeader, Spin, Tabs, Tooltip } from "antd";
-import React, { FunctionComponent, useEffect, useRef, useState } from "react";
+import { Button, Descriptions, message, PageHeader, Spin, Tabs, Tooltip } from "antd";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router";
 import { getAgeByBirthday, getSexName } from "_helper";
 import useCase from "_hooks/useCase";
-import { CaseI } from "_types/case";
-import { GetSearchQueryPropsI } from "_types/api";
-import { ExamSortKeyE, ImgAndPdfSortKeyE, ReportSortKeyE, ResourcesTypeE } from "_types/resources";
 import ExamCards from "_components/ExamCards";
 import ImgCards from "_components/ImgCards";
 import PdfTable from "_components/PdfTable";
 import LungNodulesReportCards from "_pages/resources/components/LungNodulesReportCards";
 import { ShareAltOutlined } from "@ant-design/icons";
 import ClipboardJS from "clipboard";
+import {
+  CaseI,
+  ExamSortKeyE,
+  ImgAndPdfSortKeyE,
+  ReportSortKeyE,
+  ResourcesTypeE,
+  SearchQueryPropsI,
+} from "mc-api";
 
 import "./style.less";
 
 /* 资源当前的页码 */
 interface SearchQueryI {
   [key: string]: any;
-  [ResourcesTypeE.EXAM]: GetSearchQueryPropsI<"study_date" | "modality">;
-  [ResourcesTypeE.IMG]: GetSearchQueryPropsI<"created_at" | "filename">;
-  [ResourcesTypeE.PDF]: GetSearchQueryPropsI<"created_at" | "filename">;
-  [ResourcesTypeE.LUNG_NODULES_REPORT]: GetSearchQueryPropsI<"created_at">;
+  [ResourcesTypeE.EXAM]: SearchQueryPropsI<"study_date" | "modality">;
+  [ResourcesTypeE.IMG]: SearchQueryPropsI<"created_at" | "filename">;
+  [ResourcesTypeE.PDF]: SearchQueryPropsI<"created_at" | "filename">;
+  [ResourcesTypeE.LUNG_NODULES_REPORT]: SearchQueryPropsI<"created_at">;
 }
 
 const Case: FunctionComponent = () => {

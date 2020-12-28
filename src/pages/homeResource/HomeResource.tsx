@@ -4,8 +4,7 @@ import React, { FunctionComponent, useEffect, useState, ReactElement, useCallbac
 import { Table, Button, Popconfirm, Alert, Space } from "antd";
 
 import EditPanel from "./EditPanel/EditPanel";
-import { HomeResI } from "./type";
-import { delHomeResList, getHomeResList } from "_api/manager";
+import { delWechatCover, getWechatCoverList, WechatCoverI } from "mc-api";
 
 import "./HomeResource.less";
 
@@ -31,8 +30,8 @@ const columns = [
 ];
 
 const HomeResource: FunctionComponent = () => {
-  const [res, setRes] = useState<HomeResI[]>([]);
-  const [editItem, setEditItem] = useState<HomeResI>();
+  const [res, setRes] = useState<WechatCoverI[]>([]);
+  const [editItem, setEditItem] = useState<WechatCoverI>();
   const [editStatus, setEditStatus] = useState<{ show: boolean; type: "edit" | "create" }>({
     show: false,
     type: "create",
@@ -59,7 +58,7 @@ const HomeResource: FunctionComponent = () => {
   };
 
   const del = () => {
-    delHomeResList(checked)
+    delWechatCover(checked)
       .then(() => {
         setRes(res.filter((item) => checked.indexOf(item.id || "") < 0));
         setChecked([]);
@@ -73,7 +72,7 @@ const HomeResource: FunctionComponent = () => {
   };
 
   useEffect(() => {
-    getHomeResList()
+    getWechatCoverList()
       .then((res) => setRes(res))
       .catch((err) => console.log(err));
   }, []);
@@ -139,7 +138,7 @@ const HomeResource: FunctionComponent = () => {
         status={editStatus}
         onCancel={() => setEditStatus(Object.assign({}, editStatus, { show: false }))}
         onOk={() => {
-          getHomeResList()
+          getWechatCoverList()
             .then((res) => {
               setRes(res);
               setEditStatus(Object.assign({}, editStatus, { show: false }));

@@ -5,10 +5,9 @@ import QrcodeGenerator from "qrcode.react";
 
 import useAccount from "_hooks/useAccount";
 import useOrder from "_hooks/useOrder";
+import { getOrderStatus, OrderI } from "mc-api";
 
 import config from "_config";
-import { OrderI } from "_types/order";
-import { getOrderStatus } from "_api/order";
 
 import "./style.less";
 interface ScorePropsI {

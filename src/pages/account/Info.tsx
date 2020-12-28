@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from "react";
-import { UserI, RoleE } from "_types/account";
+import { UserI, RoleE } from "mc-api";
 import { Store } from "antd/lib/form/interface";
 import { Input, Select, DatePicker, Button, Form } from "antd";
 import moment from "moment";

@@ -24,10 +24,15 @@ import React, { FunctionComponent, useState, useEffect } from "react";
 import "./Gallery.less";
 import { Input, Button, Popconfirm, DatePicker, message, Select } from "antd";
 import { Random } from "mockjs";
-import { GalleryI, GalleryStatsI } from "_types/api";
 import GalleryList from "./components/List/List";
 import EditorPanel from "./components/EditorPanel/EditorPanel";
-import { getPublicImages, delPublicImages, getPublicImageStats } from "_api/dicom";
+import {
+  PublicGalleryI,
+  PublicGalleryStatsI,
+  getPublicGallerys,
+  delPublicGallerys,
+  getPublicGalleryStats,
+} from "mc-api";
 import { isNull, isUndefined } from "util";
 
 const GALLERY = {
@@ -52,8 +57,8 @@ const GALLERY = {
   image_type_name: "",
 };
 
-// const getMock = (count: number): GalleryI[] => {
-//   const result: GalleryI[] = [];
+// const getMock = (count: number): PublicGalleryI[] => {
+//   const result: PublicGalleryI[] = [];
 
 //   for (; count > 0; count--) {
 //     result.push({
@@ -80,10 +85,10 @@ const GALLERY = {
 //   return result;
 // };
 
-const init = async (): Promise<{ stats: GalleryStatsI[]; gallery: GalleryI[] }> => {
+const init = async (): Promise<{ stats: PublicGalleryStatsI[]; gallery: PublicGalleryI[] }> => {
   try {
-    const stats = await getPublicImageStats();
-    const gallery = await getPublicImages();
+    const stats = await getPublicGalleryStats();
+    const gallery = await getPublicGallerys();
 
     return { stats, gallery };
   } catch (error) {
@@ -92,8 +97,8 @@ const init = async (): Promise<{ stats: GalleryStatsI[]; gallery: GalleryI[] }> 
 };
 
 const Gallery: FunctionComponent = () => {
-  const [galleryStats, setGalleryStats] = useState<GalleryStatsI[]>([]);
-  const [gallery, setGallery] = useState<GalleryI[]>([]);
+  const [galleryStats, setGalleryStats] = useState<PublicGalleryStatsI[]>([]);
+  const [gallery, setGallery] = useState<PublicGalleryI[]>([]);
   const [search, setSearch] = useState<{
     date?: [string, string];
     title?: string;
@@ -101,7 +106,7 @@ const Gallery: FunctionComponent = () => {
     imgType?: string;
   }>({});
   const [isShow, setIsShow] = useState(false);
-  const [currentGallery, setCurrentGallery] = useState<GalleryI>(GALLERY);
+  const [currentGallery, setCurrentGallery] = useState<PublicGalleryI>(GALLERY);
   const [uploadMode, setUploadMode] = useState(false); // 是否为上传模式
   const [selected, setSelected] = useState<string[]>([]); // 已选择的节点
 
@@ -115,7 +120,7 @@ const Gallery: FunctionComponent = () => {
       .catch((err) => console.error(err));
   }, []);
 
-  const edit = (item: GalleryI): void => {
+  const edit = (item: PublicGalleryI): void => {
     setUploadMode(false);
     setCurrentGallery(item);
     setIsShow(true);
@@ -218,7 +223,7 @@ const Gallery: FunctionComponent = () => {
               onConfirm={(): void => {
                 /* 从这里删除 */
                 selected.length &&
-                  delPublicImages(selected)
+                  delPublicGallerys(selected)
                     .then(() => {
                       setGallery(gallery.filter((item) => selected.indexOf(item.id || "") < 0));
                       setSelected([]);
@@ -279,7 +284,7 @@ const Gallery: FunctionComponent = () => {
           setIsShow(false);
         }}
         onUpload={(): void => {
-          getPublicImages()
+          getPublicGallerys()
             .then((res) => {
               setGallery(res);
               setCurrentGallery(GALLERY);

@@ -1,8 +1,7 @@
 import React, { FunctionComponent, useState } from "react";
 import { Modal, Input, Form } from "antd";
 import { ModalProps } from "antd/lib/modal";
-import { createOrder } from "_api/order";
-import { OrderI } from "_types/order";
+import { createOrder, OrderI } from "mc-api";
 
 interface CreateOrderPropsI extends ModalProps {
   ownerId: string;

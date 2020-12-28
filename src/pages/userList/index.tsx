@@ -1,9 +1,8 @@
 /* eslint-disable react/display-name */
 import React, { FunctionComponent, Key, ReactNode, useEffect, useState } from "react";
 import { Modal, Table } from "antd";
-import { RoleE, UserI } from "_types/account";
 
-import { delAccount, disableUser, enableUser, getAllUser } from "_api/user";
+import { delUsers, disableUsers, enableUsers, getAllUsers, RoleE, UserI } from "mc-api";
 import { ColumnsType, TablePaginationConfig } from "antd/es/table";
 import AccountRole from "_components/AccountRole";
 import Nail from "_components/Nail";
@@ -46,7 +45,7 @@ const UserList: FunctionComponent = () => {
   const fetchList = (): void => {
     const { pageSize, current } = pagination;
 
-    getAllUser({
+    getAllUsers({
       current,
       size: pageSize,
       keyword: searchVal,
@@ -162,19 +161,19 @@ const UserList: FunctionComponent = () => {
           setSearchVal(val);
         }}
         onDel={(ids): void => {
-          delAccount(ids)
+          delUsers(ids)
             .then(() => {
               fetchList();
             })
             .catch((err) => console.error(err));
         }}
         onDisable={(ids): void => {
-          disableUser(ids)
+          disableUsers(ids)
             .then(() => fetchList())
             .catch((err) => console.error(err));
         }}
         onEnable={(ids): void => {
-          enableUser(ids)
+          enableUsers(ids)
             .then(() => fetchList())
             .catch((err) => console.error(err));
         }}

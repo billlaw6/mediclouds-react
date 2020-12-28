@@ -1,5 +1,4 @@
-import { getLungNoduleReport } from "_api/ai";
-import { LungNoduleReportI } from "_types/ai";
+import { getLungNoduleReport, LungNoduleReportI } from "mc-api";
 import { PlayerExamPropsI } from "../types/common";
 
 /** 获取指定的报告Map */

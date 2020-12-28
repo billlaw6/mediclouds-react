@@ -21,8 +21,7 @@ import React, {
 } from "react";
 import { Table, Modal } from "antd";
 import useAccount from "_hooks/useAccount";
-import { UserI, RoleE } from "_types/account";
-import { delAccount, disableUser, enableUser, getAffiliatedList } from "_api/user";
+import { getAffiliatedList, UserI, RoleE, delUsers, disableUsers, enableUsers } from "mc-api";
 import { ColumnsType } from "antd/es/table";
 import { Key } from "antd/es/table/interface";
 import Account from "_components/Account";
@@ -218,19 +217,19 @@ const AccountList: FunctionComponent<AccountListPropsI> = (props) => {
         searchPlaceholder={searchPlaceholder || "搜索账户名、手机号"}
         onSearch={onSearch}
         onDel={(ids): void => {
-          delAccount(ids)
+          delUsers(ids)
             .then((res) => {
               fetchData();
             })
             .catch((err) => console.error(err));
         }}
         onDisable={(ids): void => {
-          disableUser(ids)
+          disableUsers(ids)
             .then(() => fetchData())
             .catch((err) => console.error(err));
         }}
         onEnable={(ids): void => {
-          enableUser(ids)
+          enableUsers(ids)
             .then(() => fetchData())
             .catch((err) => console.error(err));
         }}

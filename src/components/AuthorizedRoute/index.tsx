@@ -1,7 +1,8 @@
 import React, { FunctionComponent } from "react";
 import { Route, RouteProps, Redirect, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { RoleE, UserI, AccountStatusE } from "_types/account";
+import { RoleE, UserI, UserStatusE } from "mc-api";
+// import { AccountStatusE } from "_types/account";
 import { StoreStateI } from "_types/core";
 import { PermissionT } from "_types/router";
 import useUrlQuery from "_hooks/useUrlQuery";
@@ -11,7 +12,7 @@ interface AuthorizedRoutePropsI extends RouteProps {
   permission?: PermissionT;
 }
 
-const hasPermission = (key: RoleE | AccountStatusE, permission: PermissionT): boolean =>
+const hasPermission = (key: RoleE | UserStatusE, permission: PermissionT): boolean =>
   !!(permission.indexOf(key) > -1);
 
 const AuthorizedRoute: FunctionComponent<AuthorizedRoutePropsI> = (props) => {
@@ -25,8 +26,8 @@ const AuthorizedRoute: FunctionComponent<AuthorizedRoutePropsI> = (props) => {
   const { permission = [], children, ...args } = props;
 
   const goLogin =
-    hasPermission(AccountStatusE.DISABLED, permission) ||
-    (hasPermission(AccountStatusE.LOGIN, permission) && !account.login) ||
+    hasPermission(UserStatusE.DISABLED, permission) ||
+    (hasPermission(UserStatusE.LOGIN, permission) && !account.login) ||
     (account.login && permission.length && !hasPermission(account.role, permission));
 
   if (s) {

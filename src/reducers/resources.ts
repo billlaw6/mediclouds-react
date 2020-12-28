@@ -1,11 +1,10 @@
+import { ExamListItemI, ImgI, PdfI, LungNoduleReportI, SearchQueryResI } from "mc-api";
 import { Reducer } from "redux";
-import { LungNoduleReportI } from "_types/ai";
-import { SearchQueryResI } from "_types/api";
 import { ActionI } from "_types/core";
-import { ExamIndexI, ImgI, PdfI, ResourcesActionE } from "_types/resources";
+import { ResourcesActionE } from "_types/resources";
 
 interface ResourcesStateI {
-  examList?: SearchQueryResI<ExamIndexI>;
+  examList?: SearchQueryResI<ExamListItemI>;
   imgList?: SearchQueryResI<ImgI>;
   pdfList?: SearchQueryResI<PdfI>;
   lungNodulesReportList?: SearchQueryResI<LungNoduleReportI>;

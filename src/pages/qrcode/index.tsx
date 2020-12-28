@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from "react";
 import QrcodeGenerator from "qrcode.react";
 import useAccount from "_hooks/useAccount";
-import { RoleE } from "_types/account";
+import { RoleE } from "mc-api";
 
 import config from "_config";
 

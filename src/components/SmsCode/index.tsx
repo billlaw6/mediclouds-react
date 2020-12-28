@@ -2,7 +2,7 @@ import React, { FunctionComponent, useState, useEffect } from "react";
 import { FormItemProps } from "antd/lib/form";
 import FormItem from "antd/lib/form/FormItem";
 import { Input } from "antd";
-import { getSmsCode } from "_api/user";
+import { sendSmsCode } from "mc-api";
 
 interface CellPhoneCodePropsI extends FormItemProps {
   loginType: "form" | "phone";
@@ -48,7 +48,7 @@ const SmsCode: FunctionComponent<CellPhoneCodePropsI> = (props) => {
             style={{ cursor: "pointer" }}
             onClick={(): void => {
               if (countdown >= 0 || !cell_phone) return;
-              getSmsCode({ cell_phone, captcha })
+              sendSmsCode({ cell_phone, captcha })
                 .then((res) => {
                   setCountdown(DEFAULT_SEC);
                 })

@@ -8,7 +8,7 @@ import GeneratorQrcode from "qrcode.react";
 import useOrder from "_hooks/useOrder";
 
 import { filterNodulesTruth, getCountWithNoduleType, getRenderData } from "./helper";
-import { OrderI } from "_types/order";
+import { OrderI } from "mc-api";
 
 import VariableCard from "./components/VariableCard";
 import Desc from "./components/Desc";

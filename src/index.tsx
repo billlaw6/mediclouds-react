@@ -10,6 +10,8 @@ import zh_CN from "./locales/zh_CN";
 import en_US from "./locales/en_US";
 import { PersistGate } from "redux-persist/integration/react";
 import wechatQrcode from "_images/wechat-qrcode.jpg";
+import { publicApi, personalApi } from "mc-api";
+import { BASE_URL } from "_config";
 
 /* 
   为使用Antd的datePicker组件，需要正确设置国际化（针对antd组件）
@@ -26,6 +28,9 @@ import "regenerator-runtime/runtime";
 
 export const store = configureStore();
 // const persistor = persistStore(store);
+
+publicApi.setBaseUrl(BASE_URL);
+personalApi.setBaseUrl(BASE_URL);
 
 // 下面两种模式有区别，原因未知。
 // let messages = {

@@ -1,14 +1,13 @@
 import { Checkbox, Image, Pagination, Empty } from "antd";
 import React, { FunctionComponent, ReactElement } from "react";
-import { GetSearchQueryPropsI, SearchQueryResI } from "_types/api";
 import Gallery from "react-photo-gallery";
-import { ImgI } from "_types/resources";
 import { formatDate, getSelected } from "_helper";
+import { SearchQueryPropsI, SearchQueryResI, ImgI } from "mc-api";
 
 import "./style.less";
 
 interface ImgCardsPropsI {
-  searchQuery: GetSearchQueryPropsI;
+  searchQuery: SearchQueryPropsI;
   data?: SearchQueryResI<ImgI>;
   isSelectable?: boolean; // 是否选择模式
   selected?: ImgI[]; // 已选择的id

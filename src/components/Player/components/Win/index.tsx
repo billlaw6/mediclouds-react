@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from "react";
-import { Progress, Slider } from "antd";
+import { Alert, message, Progress, Slider } from "antd";
 import { SliderSingleProps } from "antd/lib/slider";
 
 import useData from "_components/Player/hooks/useData";
@@ -10,9 +10,11 @@ import { WindowI } from "_components/Player/types/window";
 import useMouse from "_components/Player/hooks/useMouse";
 import useMarks from "_components/Player/hooks/useMarks";
 import { drawCircle } from "_components/Player/helpers";
+import customerService from "_images/xiaoying-wechat-qrcode.png";
 
 import Information from "../Information";
 import "./style.less";
+import { request } from "mc-api";
 interface WinPropsI {
   data: WindowI;
   viewportWidth: number; // viewport宽度
@@ -162,6 +164,19 @@ const Win: FunctionComponent<WinPropsI> = (props) => {
 
     const index = frame > -1 ? frame : frameInSeries;
     const currentImg = cache[index];
+    if (!currentImg) {
+      message.warn({
+        content: (
+          <span>
+            没有可渲染的DICOM文件，请重新上传DICOM或微信扫码联系客服（Medimages）
+            <img src={customerService} style={{ width: "220px" }}></img>
+          </span>
+        ),
+        duration: 5000,
+      });
+
+      return;
+    }
 
     if (tempSeriesId !== id) {
       cs.displayImage(element, currentImg, cs.getDefaultViewportForImage(element, currentImg));

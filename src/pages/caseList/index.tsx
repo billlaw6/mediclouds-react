@@ -6,7 +6,7 @@ import React, { FunctionComponent, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { formatDate, getAgeByBirthday, getSexName } from "_helper";
 import useCase from "_hooks/useCase";
-import { CaseI, CaseTypeE } from "_types/case";
+import { CaseI, CaseTypeE } from "mc-api";
 
 import "./style.less";
 

@@ -2,12 +2,11 @@
 import React, { FunctionComponent, useState, useEffect } from "react";
 import { Modal, Button, Checkbox } from "antd";
 import { useDispatch } from "react-redux";
-import { getPrivacyNotice, agreePrivacyNotice } from "_api/user";
-// import { setUserAction } from "_actions/user";
+import useAccount from "_hooks/useAccount";
+import { getPrivacyNotice, agreePrivacyNotice } from "mc-api";
 
 import { PrivacyNoticePropsI } from "./type";
 import "./style.less";
-import useAccount from "_hooks/useAccount";
 
 const PrivacyNotice: FunctionComponent<PrivacyNoticePropsI> = (props) => {
   const { account: user, updateAccount } = useAccount();

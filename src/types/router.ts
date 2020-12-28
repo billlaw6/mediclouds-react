@@ -3,10 +3,10 @@
 import { ComponentType } from "react";
 import FullscreenLayout from "_layout/FullscreenLayout/FullscreenLayout";
 import DefaultLayout from "_layout/Default/Default";
-import { RoleE, AccountStatusE } from "./account";
+import { RoleE, UserStatusE } from "mc-api";
 
 /* 路由权限 */
-export type PermissionT = (RoleE | AccountStatusE)[];
+export type PermissionT = (RoleE | UserStatusE)[];
 
 /* 路由 */
 export interface RoutesI {

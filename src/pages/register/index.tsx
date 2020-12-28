@@ -3,8 +3,7 @@ import { Button, Form, Input, Result } from "antd";
 import getQueryString from "_helper";
 import SmsCode from "_components/SmsCode";
 import useAccount from "_hooks/useAccount";
-import { RegisterDataI } from "_types/api";
-import { CheckCircleTwoTone } from "@ant-design/icons";
+import { InviteRegisterDataI } from "mc-api";
 
 import "./style.less";
 
@@ -20,7 +19,7 @@ const Register: FunctionComponent = () => {
   const onFinish = (vals: any) => {
     const { cell_phone, auth_code } = vals;
 
-    const data: RegisterDataI = {
+    const data: InviteRegisterDataI = {
       cell_phone,
       auth_code,
       account_id: id,

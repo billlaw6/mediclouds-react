@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
-import { generateLungNodule, getLungNoduleReport } from "_api/ai";
-import { AiReportActionE, LungNoduleReportI } from "_types/ai";
+import { generateLungNodule, getLungNoduleReport, LungNoduleReportI } from "mc-api";
+import { AiReportActionE } from "_types/ai";
 import { StoreStateI } from "_types/core";
 
 export default () => {

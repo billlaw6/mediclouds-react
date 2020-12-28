@@ -8,19 +8,18 @@ import React, {
   useCallback,
   useRef,
 } from "react";
-import { OrderI } from "_types/order";
 import { Table } from "antd";
 import { ColumnsType } from "antd/lib/table";
-import { getOrderList } from "_api/order";
+import { getOrderList, OrderI } from "mc-api";
 import Modal from "antd/lib/modal/Modal";
 import OrderInfo from "_components/OrderInfo";
 
 import OrderStatus from "_components/OrderStatus";
 import ListControlBar from "_components/ListControlBar";
 import useAccount from "_hooks/useAccount";
+import { formatDate } from "_helper";
 
 import "./style.less";
-import { formatDate } from "_helper";
 
 const OrderList: FunctionComponent = () => {
   const { account } = useAccount();

@@ -1,4 +1,4 @@
-import { LungNoduleI } from "_types/ai";
+import { LungNoduleI } from "mc-api";
 
 /* 结节渲染结构 */
 export interface RenderDataI {

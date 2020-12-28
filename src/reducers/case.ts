@@ -1,7 +1,7 @@
 import { Reducer } from "redux";
-import { SearchQueryResI } from "_types/api";
 import { ActionI } from "_types/core";
-import { CaseActionE, CaseI } from "_types/case";
+import { CaseActionE } from "_types/case";
+import { CaseI, SearchQueryResI } from "mc-api";
 
 interface CaseStateI {
   // mineList?: SearchQueryResI<CaseI>;

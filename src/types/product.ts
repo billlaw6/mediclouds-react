@@ -3,6 +3,8 @@
  *
  */
 
+import { ProdI } from "mc-api";
+
 /** 商品action */
 export enum ProdActionE {
   CREATE = "create_prod",
@@ -23,7 +25,7 @@ export interface ProdCreateDataI {
   flag?: 0 | 1;
 }
 
-/** 商品结构 */
-export interface ProdI extends ProdCreateDataI {
-  id: number;
-}
+// /** 商品结构 */
+// export interface ProdI extends ProdCreateDataI {
+//   id: number;
+// }

@@ -1,8 +1,7 @@
 import { Card, Checkbox, Col, Empty, Grid, Row, Modal, Pagination, Badge } from "antd";
 import React, { FunctionComponent, ReactNode, useState } from "react";
 import { formatDate, getSelected } from "_helper";
-import { LungNoduleReportI } from "_types/ai";
-import { GetSearchQueryPropsI, SearchQueryResI } from "_types/api";
+import { LungNoduleReportI, SearchQueryPropsI, SearchQueryResI } from "mc-api";
 import LungNoduleReport from "_components/LungNoduleReport";
 
 import Desc from "_components/LungNoduleReport/components/Desc";
@@ -15,7 +14,7 @@ const { Meta } = Card;
 const { useBreakpoint } = Grid;
 
 interface LungNodulesReportCardsPropsI {
-  searchQuery: GetSearchQueryPropsI;
+  searchQuery: SearchQueryPropsI;
   isSelectable?: boolean; // 是否选择模式
   selected?: LungNoduleReportI[]; // 已选择的id
   data?: SearchQueryResI<LungNoduleReportI>; // 数据

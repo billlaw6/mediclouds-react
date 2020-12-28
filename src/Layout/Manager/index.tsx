@@ -2,7 +2,7 @@ import React, { FunctionComponent, ReactNode } from "react";
 import { Layout, Space, Alert } from "antd";
 
 import ManagerSider from "_components/ManagerSider";
-import { RoleE } from "_types/account";
+import { RoleE } from "mc-api";
 
 import { WarningOutlined } from "@ant-design/icons";
 import Manager from "_pages/manager";
@@ -85,7 +85,7 @@ const ManagerLayout: FunctionComponent = () => {
             </Space>
           </div>
         </Header>
-        {!certificate.length && role === RoleE.BUSINESS ? (
+        {(!certificate || !certificate.length) && role === RoleE.BUSINESS ? (
           <Alert
             type="warning"
             message="您的企业资质未上传或未通过审核，部分功能受限。"

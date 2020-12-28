@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
 import { Collapse } from "antd";
-import { LungNoduleI } from "_types/ai";
+import { LungNoduleI } from "mc-api";
 
 import { NoduleItemsI } from "./../../types";
 import VariableCard from "../VariableCard";

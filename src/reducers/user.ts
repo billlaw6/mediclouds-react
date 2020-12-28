@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { UserI, RoleE } from "_types/account";
+import { UserI, RoleE } from "mc-api";
 import { AccountActionTypes } from "_types/actions";
 import { Reducer } from "redux";
 import { ActionI } from "_types/core";
@@ -39,6 +39,7 @@ const DEFAULT_USER: CustomerStateI = {
   my_dicom_files: 0,
   my_case_files: 0,
   my_ai_reports: 0,
+  certificate_status: 0,
 };
 
 const userReducer: Reducer<CustomerStateI, ActionI<AccountActionTypes, UserI>> = (

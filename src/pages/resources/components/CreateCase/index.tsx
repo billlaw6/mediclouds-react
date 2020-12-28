@@ -1,4 +1,12 @@
 import { Button, DatePicker, Form, Input, message, Modal, Popconfirm, Select, Tabs } from "antd";
+import {
+  ExamListItemI,
+  ImgI,
+  PdfI,
+  SearchQueryPropsI,
+  LungNoduleReportI,
+  CreateCaseDataI,
+} from "mc-api";
 import moment from "moment";
 import React, { FunctionComponent, useState } from "react";
 import ExamCards from "_components/ExamCards";
@@ -6,24 +14,13 @@ import ImgCards from "_components/ImgCards";
 import PdfTable from "_components/PdfTable";
 import { formatDate } from "_helper";
 import useCase from "_hooks/useCase";
+import { ExamSortKeyE, ImgAndPdfSortKeyE, ReportSortKeyE, ResourcesTypeE } from "mc-api";
 
-import { LungNoduleReportI } from "_types/ai";
-import { GetSearchQueryPropsI } from "_types/api";
-import { CreateCaseDataI } from "_types/case";
-import {
-  ExamIndexI,
-  ExamSortKeyE,
-  ImgAndPdfSortKeyE,
-  ImgI,
-  PdfI,
-  ReportSortKeyE,
-  ResourcesTypeE,
-} from "_types/resources";
 import LungNodulesReportCards from "../LungNodulesReportCards";
 
 interface CreateCasePropsI {
   show: boolean; // 是否显示
-  [ResourcesTypeE.EXAM]?: ExamIndexI[];
+  [ResourcesTypeE.EXAM]?: ExamListItemI[];
   [ResourcesTypeE.IMG]?: ImgI[];
   [ResourcesTypeE.PDF]?: PdfI[];
   [ResourcesTypeE.LUNG_NODULES_REPORT]?: LungNoduleReportI[];
@@ -34,10 +31,10 @@ interface CreateCasePropsI {
 /* 资源当前的页码 */
 interface SearchQueryI {
   [key: string]: any;
-  [ResourcesTypeE.EXAM]: GetSearchQueryPropsI<"study_date" | "modality">;
-  [ResourcesTypeE.IMG]: GetSearchQueryPropsI<"created_at" | "filename">;
-  [ResourcesTypeE.PDF]: GetSearchQueryPropsI<"created_at" | "filename">;
-  [ResourcesTypeE.LUNG_NODULES_REPORT]: GetSearchQueryPropsI<"created_at">;
+  [ResourcesTypeE.EXAM]: SearchQueryPropsI<"study_date" | "modality">;
+  [ResourcesTypeE.IMG]: SearchQueryPropsI<"created_at" | "filename">;
+  [ResourcesTypeE.PDF]: SearchQueryPropsI<"created_at" | "filename">;
+  [ResourcesTypeE.LUNG_NODULES_REPORT]: SearchQueryPropsI<"created_at">;
 }
 
 const { Item: FormItem } = Form;
@@ -88,8 +85,8 @@ const CreateCase: FunctionComponent<CreateCasePropsI> = (props) => {
     info.birthday = formatDate(info.birthday.toString());
     const createCaseData: CreateCaseDataI = Object.assign({}, info);
     if (exam) createCaseData.exams = exam.map((item) => item.id);
-    if (pdf) createCaseData.pdfs = pdf.map((item) => item.id);
-    if (imgs) createCaseData.imgs = imgs.map((item) => item.id);
+    if (pdf) createCaseData.pdfs = pdf.map((item) => (item.id as unknown) as number);
+    if (imgs) createCaseData.imgs = imgs.map((item) => (item.id as unknown) as number);
     if (lung_nodules_report) createCaseData.ai_reports = lung_nodules_report.map((item) => item.id);
 
     createCaseFunction(createCaseData)

@@ -9,10 +9,9 @@ import React, {
   useCallback,
 } from "react";
 import Table, { ColumnsType } from "antd/lib/table";
-import { UserI, RoleE } from "_types/account";
+import { UserI, delUsers, getPatientList } from "mc-api";
 import { Space, Button, Result } from "antd";
 import useAccount from "_hooks/useAccount";
-import { delAccount, getCustomerList } from "_api/user";
 import CreateOrder from "_components/CreateOrder";
 import { ResultStatusType } from "antd/lib/result";
 import ListControlBar from "_components/ListControlBar";
@@ -154,7 +153,7 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
         start: dateRange[0],
         end: dateRange[1],
       });
-    getCustomerList(id.current, searchQuery)
+    getPatientList(id.current, searchQuery)
       .then((res) => setList({ total: res.count, arr: res.results }))
       .catch((err) => console.error(err));
     getProdList()
@@ -226,7 +225,7 @@ const CustomerList: FunctionComponent<CustomerListPropsI> = (props) => {
             onSearch={onSearch}
             onDateChage={onDateChange}
             onDel={(ids): void => {
-              delAccount(ids)
+              delUsers(ids)
                 .then((res) => console.log("del customer success"))
                 .catch((err) => console.error(err));
             }}

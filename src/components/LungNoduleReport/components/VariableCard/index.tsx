@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from "react";
-import { LungNoduleI } from "_types/ai";
+import { LungNoduleI } from "mc-api";
 import { useHistory } from "react-router";
 
 import Nodule from "../Nodule";

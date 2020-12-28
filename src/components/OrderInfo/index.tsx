@@ -1,5 +1,4 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { OrderI } from "_types/order";
 import { Descriptions, Input, Form, Button, Space, Tabs, Popconfirm, Menu, Select } from "antd";
 import { Store } from "antd/lib/form/interface";
 
@@ -7,10 +6,8 @@ import OrderStatus from "_components/OrderStatus";
 import { WarningOutlined } from "@ant-design/icons";
 
 import Uploader from "_components/Uploader";
-import { RoleE } from "_types/account";
-import { updateOrder } from "_api/order";
+import { updateOrder, getOrderWechatPayQrcode, OrderI, RoleE } from "mc-api";
 import QrcodeGenerator from "qrcode.react";
-import { getOrderWechatPayQrcode } from "_api/pay";
 
 import "./style.less";
 import { formatDate } from "_helper";

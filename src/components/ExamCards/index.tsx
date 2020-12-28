@@ -2,24 +2,22 @@ import { Row, Col, Pagination, message, Button, Spin, Modal, Empty as AntdEmpty 
 import { Gutter } from "antd/lib/grid/row";
 import React, { FunctionComponent, ReactElement, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { generateLungNodule } from "_api/ai";
+import { generateLungNodule, SearchQueryPropsI, SearchQueryResI, ExamListItemI } from "mc-api";
 import DicomCard from "_components/DicomCard/DicomCard";
 import { getSelected } from "_helper";
 import useOrder from "_hooks/useOrder";
 import useResources from "_hooks/useResources";
-import { GetSearchQueryPropsI, SearchQueryResI } from "_types/api";
-import { ExamIndexI } from "_types/resources";
 
 import Empty from "_pages/resources/components/Empty";
 
 import "./style.less";
 
 interface ExamCardsPropsI {
-  data?: SearchQueryResI<ExamIndexI>;
-  searchQuery: GetSearchQueryPropsI;
+  data?: SearchQueryResI<ExamListItemI>;
+  searchQuery: SearchQueryPropsI;
   isSelectable?: boolean; // 是否选择模式
-  selected?: ExamIndexI[]; // 已选择的id
-  onSelected?: (selected: ExamIndexI[]) => void; //  当选择时触发
+  selected?: ExamListItemI[]; // 已选择的id
+  onSelected?: (selected: ExamListItemI[]) => void; //  当选择时触发
   onChangePagination?: (current: number) => void; // 当页码更新时触发
   onUpdateDescSuccess?: Function; // 当更新描述成功时
   disabledDesc?: boolean; // 不显示备注
@@ -90,12 +88,12 @@ const ExamCards: FunctionComponent<ExamCardsPropsI> = (props) => {
     });
   };
 
-  const onClickItem = (exam: ExamIndexI): void => {
+  const onClickItem = (exam: ExamListItemI): void => {
     if (!isSelectable) {
       history.push(`/player/?exam=${exam.id}`);
     } else {
       // 点击单个时触发
-      const list = getSelected(selected, exam) as ExamIndexI[];
+      const list = getSelected(selected, exam) as ExamListItemI[];
       onSelected && onSelected(list);
     }
   };

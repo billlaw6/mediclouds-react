@@ -1,10 +1,9 @@
 import React, { FunctionComponent, ReactNode, useState } from "react";
-import { RoleE } from "_types/account";
 import useAccount from "_hooks/useAccount";
 import { Form, Input, Radio, Button, Result } from "antd";
 import { useHistory } from "react-router";
 
-import { createAccount } from "_api/user";
+import { createUser, RoleE } from "mc-api";
 
 import "./style.less";
 
@@ -56,7 +55,7 @@ const ManagerCreateAccount: FunctionComponent = () => {
 
   const onSubmit = (vals: any): void => {
     /* 发送创建账户的API */
-    createAccount(vals)
+    createUser(vals)
       .then((res) => {
         setCreateStatus("successed");
       })

@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
 import React, { FunctionComponent } from "react";
-import { RoleE } from "_types/account";
+import { RoleE } from "mc-api";
 import AccountList from "_components/AccountList";
 import useAccount from "_hooks/useAccount";
 

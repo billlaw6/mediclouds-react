@@ -16,7 +16,7 @@ import LoginAffiliate from "_pages/login_affiliate/LoginAffiliate";
 // import OauthAffilate from "_pages/oauth/OauthAffilate";
 import Home from "_pages/home";
 import { RoutesI } from "_types/router";
-import { AccountStatusE, RoleE } from "_types/account";
+import { RoleE, UserStatusE } from "mc-api";
 import Manager from "_pages/manager";
 import ManagerLayout from "_layout/Manager";
 import Register from "_pages/register";
@@ -35,7 +35,7 @@ const routes: RoutesI[] = [
     exact: true,
     component: Resources,
     layout: DefaultLayout,
-    permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN, RoleE.DOCTOR, RoleE.PATIENT],
+    permission: [UserStatusE.LOGIN, RoleE.SUPER_ADMIN, RoleE.DOCTOR, RoleE.PATIENT],
     // component: Home,
     // layout: FullscreenLayout,
   },
@@ -44,7 +44,7 @@ const routes: RoutesI[] = [
     path: "/resources",
     component: Resources,
     layout: DefaultLayout,
-    permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN, RoleE.DOCTOR, RoleE.PATIENT],
+    permission: [UserStatusE.LOGIN, RoleE.SUPER_ADMIN, RoleE.DOCTOR, RoleE.PATIENT],
   },
   {
     name: "caseList",
@@ -52,14 +52,14 @@ const routes: RoutesI[] = [
     component: CaseList,
     layout: DefaultLayout,
     exact: true,
-    permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN, RoleE.DOCTOR, RoleE.PATIENT],
+    permission: [UserStatusE.LOGIN, RoleE.SUPER_ADMIN, RoleE.DOCTOR, RoleE.PATIENT],
   },
   {
     name: "case",
     path: "/case/:id",
     component: Case,
     layout: DefaultLayout,
-    permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN, RoleE.DOCTOR, RoleE.PATIENT],
+    permission: [UserStatusE.LOGIN, RoleE.SUPER_ADMIN, RoleE.DOCTOR, RoleE.PATIENT],
   },
   {
     name: "login",
@@ -72,14 +72,14 @@ const routes: RoutesI[] = [
     path: "/player",
     component: Player,
     layout: FullscreenLayout,
-    permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN, RoleE.PATIENT, RoleE.DOCTOR],
+    permission: [UserStatusE.LOGIN, RoleE.SUPER_ADMIN, RoleE.PATIENT, RoleE.DOCTOR],
   },
   {
     name: "upload",
     path: "/upload",
     component: Upload,
     layout: DefaultLayout,
-    permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN, RoleE.PATIENT, RoleE.DOCTOR],
+    permission: [UserStatusE.LOGIN, RoleE.SUPER_ADMIN, RoleE.PATIENT, RoleE.DOCTOR],
   },
   {
     name: "oauth",
@@ -91,14 +91,14 @@ const routes: RoutesI[] = [
     path: "/profile",
     component: Profile,
     layout: DefaultLayout,
-    permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN, RoleE.PATIENT, RoleE.DOCTOR],
+    permission: [UserStatusE.LOGIN, RoleE.SUPER_ADMIN, RoleE.PATIENT, RoleE.DOCTOR],
   },
   {
     name: "feedback",
     path: "/feedback",
     component: Feedback,
     layout: DefaultLayout,
-    permission: [AccountStatusE.LOGIN, RoleE.SUPER_ADMIN, RoleE.PATIENT, RoleE.DOCTOR],
+    permission: [UserStatusE.LOGIN, RoleE.SUPER_ADMIN, RoleE.PATIENT, RoleE.DOCTOR],
   },
   {
     name: "manager",
@@ -106,7 +106,7 @@ const routes: RoutesI[] = [
     component: Manager,
     layout: ManagerLayout,
     permission: [
-      AccountStatusE.LOGIN,
+      UserStatusE.LOGIN,
       RoleE.SUPER_ADMIN,
       RoleE.BUSINESS,
       RoleE.MANAGER,
@@ -117,7 +117,7 @@ const routes: RoutesI[] = [
     name: "mobileUpload",
     path: "/mu",
     component: MobileUpload,
-    permission: [AccountStatusE.LOGIN],
+    permission: [UserStatusE.LOGIN],
   },
   {
     name: "loginAffiliate",

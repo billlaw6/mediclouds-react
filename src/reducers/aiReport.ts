@@ -1,5 +1,6 @@
 import { Reducer } from "redux";
-import { AiReportActionE, AiReportPayloadT, AiReportStateI, LungNoduleReportI } from "_types/ai";
+import { AiReportStateI, LungNoduleReportI } from "mc-api";
+import { AiReportActionE, AiReportPayloadT } from "_types/ai";
 import { ActionI } from "_types/core";
 
 const DEFAULT_STATE: AiReportStateI = {

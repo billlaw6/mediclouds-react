@@ -1,7 +1,7 @@
 import { Button, Descriptions, Space } from "antd";
 import React, { FunctionComponent, useEffect, useRef, useState } from "react";
 import { getMaxDimIdx, getTexVal } from "_helper";
-import { LungNoduleI } from "_types/ai";
+import { LungNoduleI } from "mc-api";
 
 import "./style.less";
 

@@ -1,5 +1,5 @@
 import Mock from "mockjs";
-import { UserI } from "_types/account";
+import { UserI } from "mc-api";
 
 interface GenerateAccountPorpsI {
   isSuper?: boolean;

@@ -1,11 +1,7 @@
-import {
-  ExamSortKeyE,
-  ImgAndPdfSortKeyE,
-  ResourcesActionE,
-  ResourcesTypeE,
-} from "_types/resources";
+import { ExamSortKeyE, ImgAndPdfSortKeyE, ResourcesTypeE, CaseTypeE } from "mc-api";
 import { ActionI } from "_types/core";
-import { CaseActionE, CaseTypeE } from "_types/case";
+import { CaseActionE } from "_types/case";
+import { ResourcesActionE } from "_types/resources";
 
 interface SettingsStateI {
   resourcesSortBy: {

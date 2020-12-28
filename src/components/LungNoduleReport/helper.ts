@@ -1,4 +1,4 @@
-import { LungNoduleI } from "_types/ai";
+import { LungNoduleI } from "mc-api";
 import { NoduleItemsI, RenderDataI } from "./types";
 
 export type LongAxisT = "min" | "mid" | "max"; // min: 小于6mm mid: 6-8mm max: 大于8mm

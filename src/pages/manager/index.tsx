@@ -2,8 +2,7 @@ import React, { FunctionComponent, useState, useEffect } from "react";
 
 import AccountStats from "_components/Account/AccountStats";
 import useAccount from "_hooks/useAccount";
-import { StatsI } from "_types/account";
-import { getStats } from "_api/user";
+import { getStats, StatsI } from "mc-api";
 
 import "./style.less";
 

@@ -1,6 +1,6 @@
 import { Reducer } from "redux";
 import { PlayerWindowsActionE } from "_components/Player/types/actions";
-import { WindowMapT, WindowI, WindowKeyT } from "_components/Player/types/window";
+import { WindowMapT, WindowI } from "_components/Player/types/window";
 import { ActionI } from "_types/core";
 
 interface PlayerWindowsStateI {

@@ -20,12 +20,13 @@ import { isUndefined } from "util";
 
 import { UploadOutlined } from "@ant-design/icons";
 import { RcFile } from "antd/lib/upload/interface";
-import { uploadPublicImage, updatePublicImage } from "_api/dicom";
+import { uploadPublicGallery, updatePublicGallery } from "mc-api";
 
-import "./EditorPanel.less";
 import TextArea from "antd/lib/input/TextArea";
 import { Moment } from "moment";
 import moment from "moment";
+
+import "./EditorPanel.less";
 
 /* 
 
@@ -130,12 +131,12 @@ const EditorPanel: FunctionComponent<EditorPanelPropsI> = (props) => {
       }
 
       if (uploadMode) {
-        const res = await uploadPublicImage(formData);
+        const res = await uploadPublicGallery(formData);
         onUpload && onUpload(res.data);
       } else {
         const id = gallery.id || "";
         formData.append("id", id);
-        const res = await updatePublicImage(id, formData);
+        const res = await updatePublicGallery(id, formData);
         onUpdate && onUpdate(res.data);
       }
     } catch (error) {

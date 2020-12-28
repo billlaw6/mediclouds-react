@@ -1,9 +1,7 @@
-import { personalReq } from "_axios";
 import { ReactNode } from "react";
-import { GetSearchQueryPropsI } from "_types/api";
 import CryptoJS from "crypto-js";
 import moment from "moment";
-import { ProdI } from "_types/product";
+import { ProdI, SearchQueryPropsI } from "mc-api";
 
 export const isArray = (arr: any): boolean => Array.isArray(arr);
 export const isUndefined = (val: any): boolean => typeof val === "undefined";
@@ -23,39 +21,6 @@ export const decrypt = (str: string, secret = "FreMaNgo_&_Mediclouds"): any => {
   const decrypted = bytes.toString(CryptoJS.enc.Utf8);
   const res = JSON.parse(decrypted);
   return res;
-};
-
-/**
- * @description 检查dicom解析进度并返回剩余解析量
- * @returns {Promise<number>}
- */
-export const checkDicomParseProgress = async (): Promise<number> => {
-  try {
-    const res = await personalReq({
-      method: "GET",
-      url: "/dicom/parse-progress/",
-    });
-
-    return res.parsing as number;
-  } catch (error) {
-    throw new Error(error);
-  }
-};
-
-/**
- * @description 检查dicom解析进度并返回所有上传的dicom计数
- * @returns {Promise<number>}
- */
-export const checkDicomTotalCount = async (): Promise<number> => {
-  try {
-    const res = await personalReq({
-      method: "GET",
-      url: "/dicom/parse-progress/",
-    });
-    return res.total as number;
-  } catch (error) {
-    throw new Error(error);
-  }
 };
 
 /**
@@ -138,7 +103,7 @@ export const clearSessionStorage = (key?: string): void => {
  *
  * @param {GetSearchQueryPropsI} props
  */
-export const getSearchQuery = (props?: GetSearchQueryPropsI): string => {
+export const getSearchQuery = (props?: SearchQueryPropsI): string => {
   if (!props) return "";
 
   const {

@@ -1,9 +1,9 @@
 import React, { FunctionComponent, useRef, useEffect, useState } from "react";
 import TextArea from "antd/lib/input/TextArea";
 import marked from "marked";
+import { getPrivacyNotice, updatePrivacyNotice } from "mc-api";
 
 import "./MdEditor.less";
-import { getPrivacyNotice, updatePrivacyNotice } from "_api/user";
 
 const domParser = new DOMParser();
 

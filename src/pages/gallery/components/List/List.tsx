@@ -2,7 +2,7 @@
 import React, { FunctionComponent } from "react";
 import { GalleryListPropsI } from "_pages/gallery/type";
 import { Table } from "antd";
-import { GalleryI } from "_types/api";
+import { PublicGalleryI } from "mc-api";
 import moment from "moment";
 
 import "./List.less";
@@ -54,9 +54,9 @@ const columns = [
 
 /* 过滤 */
 const filter = (
-  items: GalleryI[],
+  items: PublicGalleryI[],
   search?: { date?: [string, string]; title?: string; desc?: string; imgType?: string },
-): GalleryI[] => {
+): PublicGalleryI[] => {
   if (!search) return items;
   const { title, date, desc, imgType } = search;
 
@@ -81,8 +81,8 @@ const filter = (
 
 const GalleryList: FunctionComponent<GalleryListPropsI> = (props) => {
   const { items, search, onClick, onSelect } = props;
-  const dicoms: GalleryI[] = [],
-    imgs: GalleryI[] = [];
+  const dicoms: PublicGalleryI[] = [],
+    imgs: PublicGalleryI[] = [];
 
   items.forEach((item) => {
     const { dicom_flag, series_id, created_at, ...others } = item;
@@ -99,7 +99,7 @@ const GalleryList: FunctionComponent<GalleryListPropsI> = (props) => {
   });
 
   /* 处理某些字段 */
-  const handle = (items: GalleryI[]) =>
+  const handle = (items: PublicGalleryI[]) =>
     items.map((item) => {
       const res = Object.assign({}, item, {
         // dicom_flag: item.dicom_flag === 1 ? "是" : "否",

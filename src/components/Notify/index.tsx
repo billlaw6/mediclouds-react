@@ -2,7 +2,7 @@ import React, { FunctionComponent, useState } from "react";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 
-import { checkDicomParseProgress } from "_helper";
+import { checkDicomParseProgress } from "mc-api";
 
 import "./style.less";
 
@@ -25,7 +25,7 @@ const Notify: FunctionComponent<NotifyPropsI> = (props) => {
       checkDicomParseProgress()
         .then((res) => {
           setTimeout(() => {
-            onChange && onChange(res);
+            onChange && onChange(res.parsing);
             setIsLoading(false);
           }, 3000);
         })

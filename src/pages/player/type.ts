@@ -1,4 +1,4 @@
-import { ImageI, SeriesI, SeriesListI } from "_types/api";
+import { ImageI, SeriesI, SeriesListI } from "mc-api";
 
 export interface QueryDataI {
   exam: string; // 检查 id

@@ -1,17 +1,15 @@
 import { Reducer } from "redux";
 import { PlayerActionE } from "_components/Player/types/actions";
 import { PlayerExamMapT } from "_components/Player/types/exam";
-import { LungNoduleReportI } from "_types/ai";
-import { SeriesListI } from "_types/api";
+import { ExamI, LungNoduleReportI, SeriesListI } from "mc-api";
 import { ActionI } from "_types/core";
-import { ExamIndexI } from "_types/resources";
 
 interface PlayerStateI {
   cs?: any; // cornerstone
   cst?: any; // cornerstone tools
   csImgLoader?: any; // cornerstone WADO Image Loader
   playerExamMap?: PlayerExamMapT; // 检查映射集合
-  examList?: ExamIndexI[]; // 原始检查数据数组
+  examList?: ExamI[]; // 原始检查数据数组
   examInfos?: SeriesListI[];
   lungNoduleReport?: Map<number, LungNoduleReportI>; // 当前的肺结节筛查数据映射集合 对应Exam的key
 }
