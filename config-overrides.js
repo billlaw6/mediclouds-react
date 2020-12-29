@@ -56,8 +56,6 @@ module.exports = {
       ["_images"]: path.join(SRC, "assets", "images"),
       ["_actions"]: path.join(SRC, "store", "actions"),
       ["_helper"]: path.join(SRC, "helper", "index.ts"),
-      ["_axios"]: path.join(SRC, "api", "index.ts"),
-      ["_api"]: path.join(SRC, "api"),
       ["_store"]: path.join(SRC, "store"),
       ["_assets"]: path.join(SRC, "assets"),
       ["_types"]: path.join(SRC, "types"),

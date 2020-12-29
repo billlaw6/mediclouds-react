@@ -43,31 +43,6 @@ export const getQueryString = <T = any>(): any => {
 
 export default getQueryString;
 
-/**
- * 清除token
- */
-export const clearToken = (): void => {
-  window.localStorage.removeItem("token");
-};
-
-/**
- * 设置token
- * @param {string} token
- */
-export const setToken = (token: string): void => {
-  if (!token) return;
-  window.localStorage.setItem("token", encrypt(`Token ${token}`, "FreMaNgo_^_T"));
-};
-
-/**
- * 获取token
- */
-export const getToken = (): string => {
-  const tokenStr = window.localStorage.getItem("token") || "";
-  if (!tokenStr) return "";
-  return decrypt(tokenStr, "FreMaNgo_^_T");
-};
-
 export const setLocalStorage = (key: string, value: string): void => {
   window.localStorage.setItem(key, encrypt(value, "FreMaNgo_^_T"));
 };
@@ -81,21 +56,6 @@ export const getLocalStorage = (key: string): string | undefined => {
 export const clearLocalStorage = (key?: string): void => {
   if (key) window.localStorage.removeItem(key);
   else window.localStorage.clear();
-};
-
-export const setSessionStorage = (key: string, value: string): void => {
-  window.sessionStorage.setItem(key, encrypt(value, "FreMaNgo_^_T"));
-};
-
-export const getSessionStorage = (key: string): string | undefined => {
-  const storageStr = window.sessionStorage.getItem(key);
-  if (!storageStr) return;
-  return decrypt(storageStr, "FreMaNgo_^_T");
-};
-
-export const clearSessionStorage = (key?: string): void => {
-  if (key) window.sessionStorage.removeItem(key);
-  else window.sessionStorage.clear();
 };
 
 /**

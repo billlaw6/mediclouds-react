@@ -29,8 +29,23 @@ import "regenerator-runtime/runtime";
 export const store = configureStore();
 // const persistor = persistStore(store);
 
+const handleErr = (err: any) => {
+  const { baseURL, status, data, url, statusText } = err.response;
+
+  switch (status) {
+    case 401:
+    case 403:
+      window.location.href = "/login";
+      break;
+    default:
+      break;
+  }
+};
+
 publicApi.setBaseUrl(BASE_URL);
+publicApi.setHandleResErr(handleErr);
 personalApi.setBaseUrl(BASE_URL);
+personalApi.setHandleResErr(handleErr);
 
 // 下面两种模式有区别，原因未知。
 // let messages = {

@@ -14,7 +14,7 @@ import customerService from "_images/xiaoying-wechat-qrcode.png";
 
 import Information from "../Information";
 import "./style.less";
-import { request } from "mc-api";
+
 interface WinPropsI {
   data: WindowI;
   viewportWidth: number; // viewport宽度
