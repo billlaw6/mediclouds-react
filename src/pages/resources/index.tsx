@@ -247,19 +247,25 @@ const Resources: FunctionComponent = () => {
     });
   };
 
+  const checkParseisDone = () => {
+    checkDicomParseProgress()
+      .then((res) => {
+        setParingInfo(res);
+        if (res.parsing <= 0) {
+          timer && window.clearInterval(timer);
+          timer = null;
+        } else {
+          if (!showNotify) setShowNotify(true);
+        }
+      })
+      .catch((err) => console.error(err));
+  };
+
   useEffect(() => {
+    checkParseisDone();
+
     timer = window.setInterval(() => {
-      checkDicomParseProgress()
-        .then((res) => {
-          setParingInfo(res);
-          if (res.parsing <= 0) {
-            timer && window.clearInterval(timer);
-            timer = null;
-          } else {
-            if (!showNotify) setShowNotify(true);
-          }
-        })
-        .catch((err) => console.error(err));
+      checkParseisDone();
     }, 5000);
   }, []);
 
@@ -338,6 +344,7 @@ const Resources: FunctionComponent = () => {
         >
           <TabPane className="resources-tabs-item" tab="检查" key={ResourcesTypeE.EXAM}>
             <ExamCards
+              disabledAi={parsingInfo ? !!parsingInfo.parsing : false}
               data={examList}
               isSelectable={selectMode}
               searchQuery={searchQuery[ResourcesTypeE.EXAM]}

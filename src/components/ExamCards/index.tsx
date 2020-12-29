@@ -1,4 +1,14 @@
-import { Row, Col, Pagination, message, Button, Spin, Modal, Empty as AntdEmpty } from "antd";
+import {
+  Row,
+  Col,
+  Pagination,
+  message,
+  Button,
+  Spin,
+  Modal,
+  Empty as AntdEmpty,
+  Tooltip,
+} from "antd";
 import { Gutter } from "antd/lib/grid/row";
 import React, { FunctionComponent, ReactElement, useState } from "react";
 import { useHistory } from "react-router-dom";
@@ -21,7 +31,8 @@ interface ExamCardsPropsI {
   onChangePagination?: (current: number) => void; // 当页码更新时触发
   onUpdateDescSuccess?: Function; // 当更新描述成功时
   disabledDesc?: boolean; // 不显示备注
-  disabledAi?: boolean; // 不显示AI功能
+  disabledAi?: boolean; // 禁用AI功能
+  hiddenAi?: boolean; // 不显示AI功能
   disabledEmptyTip?: boolean; // 不显示空的情况下提醒用户上传DICOM
 }
 
@@ -36,6 +47,7 @@ const ExamCards: FunctionComponent<ExamCardsPropsI> = (props) => {
     onUpdateDescSuccess,
     disabledDesc,
     disabledAi,
+    hiddenAi,
     disabledEmptyTip,
   } = props;
   const { buyLungNodulesReport } = useOrder();
@@ -147,18 +159,26 @@ const ExamCards: FunctionComponent<ExamCardsPropsI> = (props) => {
           updateDesc={(value: string): void => updateDesc(id, value)}
           disabledDesc={disabledDesc}
         ></DicomCard>
-        {lung_nodule_flag && !disabledAi ? (
+        {lung_nodule_flag && !hiddenAi ? (
           <div>
             <span>AI功能：</span>
-            <Button
-              onClick={(e): void => {
-                e.stopPropagation();
-                generateReport(id);
-              }}
-              key="lung-nodules"
-            >
-              肺结节AI筛查
-            </Button>
+            {disabledAi ? (
+              <Tooltip title="请等待全部DICOM解析完成再使用AI筛查功能">
+                <Button disabled={true} key="lung-nodules">
+                  肺结节AI筛查
+                </Button>
+              </Tooltip>
+            ) : (
+              <Button
+                onClick={(e): void => {
+                  e.stopPropagation();
+                  generateReport(id);
+                }}
+                key="lung-nodules"
+              >
+                肺结节AI筛查
+              </Button>
+            )}
           </div>
         ) : null}
       </Col>,

@@ -30,15 +30,18 @@ export const store = configureStore();
 // const persistor = persistStore(store);
 
 const handleErr = (err: any) => {
-  const { baseURL, status, data, url, statusText } = err.response;
+  const { response, message } = err;
+  if (response) {
+    const { baseURL, status, data, url, statusText } = response;
 
-  switch (status) {
-    case 401:
-    case 403:
-      window.location.href = "/login";
-      break;
-    default:
-      break;
+    switch (status) {
+      case 401:
+      case 403:
+        window.location.href = "/login";
+        break;
+      default:
+        break;
+    }
   }
 };
 
