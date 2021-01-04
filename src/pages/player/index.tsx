@@ -1,6 +1,4 @@
 import React, { FunctionComponent, lazy, Suspense } from "react";
-// import Player from "_components/Player";
-// import OldPlayer from "./Player";
 import useSettings from "_components/Player/hooks/useSettings";
 import useUrlQuery from "_hooks/useUrlQuery";
 import { QueryDataI } from "./type";

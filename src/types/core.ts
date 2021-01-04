@@ -129,6 +129,13 @@ export declare interface Document {
   msExitFullscreen: () => void;
 }
 
+/**
+ * 动作
+ *
+ * @type {T} 动作type的类型
+ * @type {P} payload 的类型
+ * @memberof ActionI
+ */
 export interface ActionI<T, P> extends AnyAction {
   type: T;
   payload?: P;
