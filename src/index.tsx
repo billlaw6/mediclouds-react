@@ -37,6 +37,7 @@ const handleErr = (err: any) => {
     switch (status) {
       case 401:
       case 403:
+        window.localStorage.clear();
         window.location.href = "/login";
         break;
       default:
