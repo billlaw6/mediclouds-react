@@ -49,6 +49,8 @@ module.exports = {
     ),
     // addWebpackPlugin(new AntdDayjsWebpackPlugin()),
     addWebpackAlias({
+      ["react"]: path.resolve(__dirname, "node_modules", "react"),
+      ["react-dom"]: path.resolve(__dirname, "node_modules", "react-dom"),
       ["_components"]: path.join(SRC, "components"),
       ["_pages"]: path.join(SRC, "pages"),
       ["_constants"]: path.join(SRC, "constants", "index.ts"),

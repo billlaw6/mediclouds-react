@@ -67,7 +67,7 @@ export default () => {
       clearToken();
       const { token, user_info } = loginRes;
       if (token) {
-        setToken(token);
+        setToken(`Token ${token}`);
         dispatch({ type: AccountActionTypes.PERSONAL_LOGIN_PHONE, payload: user_info });
         history.replace(url);
       }

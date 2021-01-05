@@ -3,12 +3,17 @@ import useSettings from "_components/Player/hooks/useSettings";
 import useUrlQuery from "_hooks/useUrlQuery";
 import { QueryDataI } from "./type";
 import DefalutLayout from "_layout/Default/Default";
+import { useHistory } from "react-router";
+import logo from "_images/logo.png";
+import customerService from "_images/xiaoying-wechat-qrcode.png";
 
-const NewPlayer = lazy(() => import("_components/Player"));
+const NewPlayer = lazy(() => import("mc-browser"));
 const OldPlayer = lazy(() => import("./Player"));
 
 const PlayerPage: FunctionComponent = () => {
   /** 获取url中的query */
+  const history = useHistory();
+  const { switchPlayerVersion } = useSettings();
   const {
     exam: id,
     series: originSeriesId,
@@ -51,7 +56,12 @@ const PlayerPage: FunctionComponent = () => {
               defaultLungNodule: !!lungnodule,
             },
           ]}
-          backTo="/resources"
+          onClickBackBtn={() => history.push("/resources")}
+          onClickOldVersionBtn={() => {
+            switchPlayerVersion(false);
+          }}
+          logo={logo}
+          customerService={customerService}
         ></NewPlayer>
       ) : (
         <DefalutLayout>
