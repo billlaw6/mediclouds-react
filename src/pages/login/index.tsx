@@ -37,7 +37,7 @@ const Login: FunctionComponent = () => {
   const [type, setType] = useState<"personal" | "business">(defaultType); // 切换登录类型
   const [nav, setNav] = useState(queryNav);
   const [loginType, setLoginType] = useState<"authCode" | "qrcode" | "pwd">(
-    f ? "authCode" : "qrcode",
+    IS_MOBILE ? "authCode" : f ? "authCode" : "qrcode",
   );
 
   useEffect(() => {

@@ -7,6 +7,7 @@ import useAccount from "_hooks/useAccount";
 import { clearLocalStorage, encrypt, getLocalStorage } from "_helper";
 
 import "./personal.less";
+import { IS_MOBILE } from "_constants";
 
 const { Item: FormItem } = Form;
 
@@ -194,10 +195,10 @@ const Personal: FunctionComponent<PersonalPropsI> = (props) => {
 
     switch (type) {
       case "authCode":
-        result = [btns.wechatQrcode, btns.pwd];
+        result = [IS_MOBILE ? null : btns.wechatQrcode, btns.pwd];
         break;
       case "pwd":
-        result = [btns.wechatQrcode, btns.authCode];
+        result = [IS_MOBILE ? null : btns.wechatQrcode, btns.authCode];
         break;
       default:
         result = [btns.authCode, btns.pwd];
