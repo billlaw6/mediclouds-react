@@ -7953,8 +7953,8 @@ marked@^1.2.4:
     crypto-js "^4.0.0"
 
 "mc-browser@git+ssh://git@github.com:itcat99/mc-browser.git":
-  version "1.0.2"
-  resolved "git+ssh://git@github.com:itcat99/mc-browser.git#6b507a96fc353b91b43aa80e19a490858b2cf5ab"
+  version "1.0.3"
+  resolved "git+ssh://git@github.com:itcat99/mc-browser.git#17a1d4645a90a4a07c0a2d32915fa974bea8bf69"
   dependencies:
     antd "^4.9.4"
     cornerstone-core "^2.3.0"
