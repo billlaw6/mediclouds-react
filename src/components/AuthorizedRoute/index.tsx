@@ -25,7 +25,7 @@ const AuthorizedRoute: FunctionComponent<AuthorizedRoutePropsI> = (props) => {
 
   const { permission = [], children, ...args } = props;
 
-  const goLogin =
+  const permissionDenied =
     hasPermission(UserStatusE.DISABLED, permission) ||
     (hasPermission(UserStatusE.LOGIN, permission) && !account.login) ||
     (account.login && permission.length && !hasPermission(account.role, permission));
@@ -36,20 +36,11 @@ const AuthorizedRoute: FunctionComponent<AuthorizedRoutePropsI> = (props) => {
     if (pathname !== "/login" && pathname !== "/oauth") clearLocalStorage("s");
   }
 
-  if (goLogin) return <Redirect to="/login"></Redirect>;
-  // if (hasPermission(AccountStatusE.DISABLED, permission))
-  //   return <Redirect to={loginUrl}></Redirect>;
-  // if (hasPermission(AccountStatusE.LOGIN, permission)) {
-  //   if (!account.login) return <Redirect to={loginUrl}></Redirect>;
-  // }
-
-  // if (account.login) {
-  //   const { role } = account;
-
-  //   if (permission.length && !hasPermission(role, permission)) {
-  //     return <Redirect to={loginUrl}></Redirect>;
-  //   }
-  // }
+  if (permissionDenied) {
+    // 如果因没有权限导致跳转登录页，则记录s 当登录后跳转回之前的页面
+    setLocalStorage("s", JSON.stringify({ nav: pathname, search }));
+    return <Redirect to="/login"></Redirect>;
+  }
 
   return <Route {...args}>{children}</Route>;
 };

@@ -12,17 +12,18 @@
 
 import React, { FunctionComponent, useEffect, useState } from "react";
 
-import LoginBtn from "./LoginBtn";
-
 import logo from "_images/logo.png";
 import welcome from "_assets/videos/welcome.mp4";
 
+import useUrlQuery from "_hooks/useUrlQuery";
+import { getLocalStorage } from "_helper";
+import { IS_MOBILE } from "_constants";
+
+import LoginBtn from "./LoginBtn";
 import Personal from "./Personal";
 import Business from "./Business";
-import useUrlQuery from "_hooks/useUrlQuery";
 
 import "./style.less";
-import { clearLocalStorage, getLocalStorage } from "_helper";
 
 interface UrlQueryI {
   b?: 1; // 是否以企业用户登录打开
@@ -52,7 +53,7 @@ const Login: FunctionComponent = () => {
 
   return (
     <>
-      <div className="login">
+      <div className={`login${IS_MOBILE ? " mobile" : ""}`}>
         <div className="login-spinner">
           <video className="login-show" src={welcome} autoPlay loop></video>
         </div>

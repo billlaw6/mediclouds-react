@@ -4270,7 +4270,7 @@ date-fns@^2.15.0:
 
 dayjs@^1.8.30, dayjs@^1.9.6:
   version "1.10.1"
-  resolved "https://registry.npm.taobao.org/dayjs/download/dayjs-1.10.1.tgz#114f678624842035396667a24eb1436814bc16fd"
+  resolved "https://registry.npm.taobao.org/dayjs/download/dayjs-1.10.1.tgz?cache=0&sync_timestamp=1609677431622&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fdayjs%2Fdownload%2Fdayjs-1.10.1.tgz#114f678624842035396667a24eb1436814bc16fd"
   integrity sha1-EU9nhiSEIDU5ZmeiTrFDaBS8Fv0=
 
 debug@2.6.9, debug@^2.2.0, debug@^2.3.3, debug@^2.6.0, debug@^2.6.9:
@@ -7953,8 +7953,8 @@ marked@^1.2.4:
     crypto-js "^4.0.0"
 
 "mc-browser@git+ssh://git@github.com:itcat99/mc-browser.git":
-  version "1.0.0"
-  resolved "git+ssh://git@github.com:itcat99/mc-browser.git#be72120d6dbfdb9e9697ab6e424fd01eb9ec7fb8"
+  version "1.0.1"
+  resolved "git+ssh://git@github.com:itcat99/mc-browser.git#d2b0c0f4ab299a1274b4ac7e57d09ba29d099a5a"
   dependencies:
     antd "^4.9.4"
     cornerstone-core "^2.3.0"

@@ -6,6 +6,7 @@ import DefalutLayout from "_layout/Default/Default";
 import { useHistory } from "react-router";
 import logo from "_images/logo.png";
 import customerService from "_images/xiaoying-wechat-qrcode.png";
+import { IS_MOBILE } from "_constants";
 
 const NewPlayer = lazy(() => import("mc-browser"));
 const OldPlayer = lazy(() => import("./Player"));
@@ -45,7 +46,7 @@ const PlayerPage: FunctionComponent = () => {
         </div>
       }
     >
-      {isNewPlayer ? (
+      {isNewPlayer || IS_MOBILE ? (
         <NewPlayer
           exams={[
             {

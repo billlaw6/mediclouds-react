@@ -31,6 +31,7 @@ export const store = configureStore();
 
 const handleErr = (err: any) => {
   const { response, message } = err;
+  console.log("err response", response);
   if (response) {
     const { baseURL, status, data, url, statusText } = response;
 
@@ -83,7 +84,7 @@ const MobileHome: FunctionComponent = () => (
   </div>
 );
 
-const ignoreArr: string[] = ["register", "public-ct", "e"];
+const ignoreArr: string[] = ["register", "public-ct", "e", "player", "login"];
 // const ignoreArr = ["affiliate", "player"];
 const { pathname } = window.location;
 const showMobilePage = ignoreArr.every((item) => pathname.indexOf(item) < 0);
