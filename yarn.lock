@@ -7953,8 +7953,8 @@ marked@^1.2.4:
     crypto-js "^4.0.0"
 
 "mc-browser@git+ssh://git@github.com:itcat99/mc-browser.git":
-  version "1.0.1"
-  resolved "git+ssh://git@github.com:itcat99/mc-browser.git#d2b0c0f4ab299a1274b4ac7e57d09ba29d099a5a"
+  version "1.0.2"
+  resolved "git+ssh://git@github.com:itcat99/mc-browser.git#6b507a96fc353b91b43aa80e19a490858b2cf5ab"
   dependencies:
     antd "^4.9.4"
     cornerstone-core "^2.3.0"
@@ -10518,9 +10518,9 @@ rc-upload@~3.3.4:
     rc-util "^5.2.0"
 
 rc-util@^5.0.0, rc-util@^5.0.1, rc-util@^5.0.5, rc-util@^5.0.6, rc-util@^5.0.7, rc-util@^5.1.0, rc-util@^5.2.0, rc-util@^5.2.1, rc-util@^5.3.0, rc-util@^5.4.0, rc-util@^5.5.0, rc-util@^5.5.1:
-  version "5.6.2"
-  resolved "https://registry.npm.taobao.org/rc-util/download/rc-util-5.6.2.tgz?cache=0&sync_timestamp=1608884795688&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Frc-util%2Fdownload%2Frc-util-5.6.2.tgz#7c3f4516a8a6215a57d8d41b65c1b9925d915d89"
-  integrity sha1-fD9FFqimIVpX2NQbZcG5kl2RXYk=
+  version "5.6.3"
+  resolved "https://registry.npm.taobao.org/rc-util/download/rc-util-5.6.3.tgz?cache=0&sync_timestamp=1609832966108&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Frc-util%2Fdownload%2Frc-util-5.6.3.tgz#969c1c4b03e5b532554ebd0e568c00e40c41290c"
+  integrity sha1-lpwcSwPltTJVTr0OVowA5AxBKQw=
   dependencies:
     react-is "^16.12.0"
     shallowequal "^1.1.0"
