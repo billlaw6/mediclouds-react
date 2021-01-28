@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { Modal, Spin, Tabs } from "antd";
+import { message, Modal, Spin, Tabs } from "antd";
 
 import useResources from "_hooks/useResources";
 import Controller from "./components/Controller";
@@ -20,9 +20,15 @@ import {
   LungNoduleReportI,
   checkDicomParseProgress,
   ResourcesTypeE,
+  createUser,
+  createCase,
+  CaseI,
+  delCases,
 } from "mc-api";
+import ClipboardJS from "clipboard";
 
 import "./style.less";
+import useCase from "_hooks/useCase";
 
 /** 已选列表 */
 interface SelectedI {
@@ -101,6 +107,10 @@ const Resources: FunctionComponent = () => {
     total: number;
   } | null>(null); // 解析进度
   const [showCreateCase, setShowCreateCase] = useState(false); // 显示创建病例
+
+  const { updateCaseStamp } = useCase();
+  const [showSimpleCaseModal, setShowSimpleCaseModal] = useState(false); // 显示一键分享的modal窗口
+  const [simpleCase, setSimpleCase] = useState<CaseI>(); // 一键分享的病例
 
   /**
    * 更新所选tab页的已选id列表
@@ -182,6 +192,39 @@ const Resources: FunctionComponent = () => {
     if (!Object.keys(ids).length) return;
 
     setShowCreateCase(true);
+  };
+
+  const onCreateSimpleCase = () => {
+    const ids: any = {};
+
+    for (const key of Object.keys(selected)) {
+      const data = selected[key];
+      const val = flattenArr(data);
+
+      if (val.length) {
+        const _key = key === "lung_nodules_report" ? "ai_reports" : `${key}s`;
+
+        ids[_key] = val.map((item) => (item as any).id);
+      }
+    }
+
+    if (!Object.keys(ids).length) return;
+
+    setShowSimpleCaseModal(true);
+    setSelectMode(false);
+    setSelected({
+      [ResourcesTypeE.EXAM]: [],
+      [ResourcesTypeE.IMG]: [],
+      [ResourcesTypeE.PDF]: [],
+      [ResourcesTypeE.LUNG_NODULES_REPORT]: [],
+    });
+
+    createCase(ids)
+      .then((res) => {
+        setSimpleCase(res);
+        return updateCaseStamp(Date.now(), res.id);
+      })
+      .catch((err) => console.error(err));
   };
 
   /**
@@ -313,6 +356,7 @@ const Resources: FunctionComponent = () => {
         isSelectable={selectMode}
         onDel={confirmDel}
         onCreateCase={onCreateCase}
+        onCreateSimpleCase={onCreateSimpleCase}
         onSelectBtn={(): void => setSelectMode(true)}
         onClickCancelBtn={(): void => {
           setSelectMode(false);
@@ -416,6 +460,44 @@ const Resources: FunctionComponent = () => {
           setSelectMode(false);
         }}
       ></CreateCase>
+      <Modal
+        title="生成分享"
+        visible={showSimpleCaseModal}
+        okText={<span className="case-share-btn">确定</span>}
+        destroyOnClose
+        keyboard={false}
+        maskClosable={false}
+        onOk={() => {
+          if (!simpleCase) return;
+
+          const clipboard = new ClipboardJS(".case-share-btn", {
+            text: (): string => {
+              return `请使用电脑浏览器打开\r\nhttps://mi.mediclouds.cn/case/${simpleCase.id}?s=1`;
+            },
+          });
+
+          clipboard.on("success", (e) => {
+            message.success("病例地址已复制成功！", () => {
+              message.destroy();
+            });
+
+            setShowSimpleCaseModal(false);
+            setSimpleCase(undefined);
+          });
+        }}
+        onCancel={() => {
+          setShowSimpleCaseModal(false);
+          if (!simpleCase) return;
+
+          delCases([(simpleCase.id as unknown) as number])
+            .then(() => {
+              setSimpleCase(undefined);
+            })
+            .catch((err) => console.error(err));
+        }}
+      >
+        <span>{simpleCase ? "点击“确定”按钮进行分享操作" : "正在生成"}</span>
+      </Modal>
     </section>
   );
 };

@@ -62,14 +62,14 @@ const CaseList: FunctionComponent = () => {
     {
       dataIndex: "sex",
       key: "sex",
-      title: "年龄",
+      title: "性别",
       render: (value) => <span>{getSexName(value)}</span>,
     },
     {
       dataIndex: "birthday",
       key: "birthday",
       title: "年龄",
-      render: (value) => <span>{getAgeByBirthday(value)}</span>,
+      render: (value) => <span>{getAgeByBirthday(value) || ""}</span>,
     },
     {
       dataIndex: "created_at",

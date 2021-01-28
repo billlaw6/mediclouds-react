@@ -21,6 +21,7 @@ interface ControllerPropsI {
   onClickCancelBtn?: Function; // 当点击后退按钮时
   onDel?: Function; // 触发删除动作
   onCreateCase?: Function; // 触发创建病例动作
+  onCreateSimpleCase?: Function; // 触发创建病例动作
   onSortByChange?: (val: ExamSortKeyE | ImgAndPdfSortKeyE) => void; // 当排序规则改变时触发
   resourcesType: ResourcesTypeE; // 当前的资源类型
 }
@@ -32,6 +33,7 @@ const Controller: FunctionComponent<ControllerPropsI> = (props) => {
     isSelectable,
     onDel,
     onCreateCase,
+    onCreateSimpleCase,
     onSelectBtn,
     onClickCancelBtn,
     onSortByChange,
@@ -137,6 +139,7 @@ const Controller: FunctionComponent<ControllerPropsI> = (props) => {
         )}
         <span onClick={(): void => onDel && onDel()}>删除</span>
         <span onClick={(): void => onCreateCase && onCreateCase()}>创建病例</span>
+        <span onClick={(): void => onCreateSimpleCase && onCreateSimpleCase()}>一键分享</span>
       </div>
     );
   };
