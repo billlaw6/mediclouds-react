@@ -12,6 +12,7 @@ const {
   overrideDevServer,
 } = require("customize-cra");
 const copyWebpackPlugin = require("copy-webpack-plugin");
+const CompressionPlugin = require("compression-webpack-plugin");
 
 const SRC = path.resolve(__dirname, "src");
 
@@ -67,6 +68,13 @@ module.exports = {
     }),
     NODE_ENV === "production" && BUILD_MODE === "analyze"
       ? addWebpackPlugin(new BundleAnalyzerPlugin())
+      : undefined,
+    NODE_ENV === "production"
+      ? addWebpackPlugin(
+          new CompressionPlugin({
+            threshold: 100 * 1024,
+          }),
+        )
       : undefined,
   ),
   // devServer: overrideDevServer(addProxy()),
