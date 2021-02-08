@@ -43,7 +43,7 @@
     "husky": "^4.3.0",
     "less": "^3.12.2",
     "less-loader": "^7.1.0",
-    "marked": "^1.2.4",
+    "marked": "^2.0.0",
     "mc-api": "git+ssh://git@github.com:itcat99/mc-api.git",
     "mc-browser": "git+ssh://git@github.com:itcat99/mc-browser.git",
     "moment": "^2.29.1",
