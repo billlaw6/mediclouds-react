@@ -46,7 +46,7 @@
     "marked": "^1.2.4",
     "mc-api": "git+ssh://git@github.com:itcat99/mc-api.git",
     "mc-browser": "git+ssh://git@github.com:itcat99/mc-browser.git",
-    "moment": "^2.29.1",
+    "moment": "^2.29.4",
     "puppeteer": "^3.3.0",
     "qrcode.react": "^1.0.0",
     "qs": "^6.9.4",
